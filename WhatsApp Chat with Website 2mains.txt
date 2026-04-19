@@ -1,0 +1,598 @@
+9/12/25, 09:45 - Messages and calls are end-to-end encrypted. Only people in this chat can read, listen to, or share them. *Learn more*
+9/12/25, 09:45 - You created the group: Website 2mains
+9/12/25, 09:45 - Audrey Relandeau was added
+9/12/25, 09:45 - You changed this group's icon
+9/12/25, 09:46 - Alice / Алиса: Hello Audrey, 
+Je crée ce groupe pour laisser en un seul endroit tout ce qui touche au site, et permettre d'ajouter des personnes en cours de route si tu le souhaites <This message was edited>
+9/12/25, 09:46 - Alice / Алиса: Pour le nom de domaine sur Infomaniak je vais t'envoyer les différentes étapes à faire de ton côté <This message was edited>
+9/12/25, 09:51 - Alice / Алиса: Il va falloir faire deux choses : 
+1 - *Créer un token*
+2- *Entrer les paramètres DNS*
+
+Désolé ça va être un peu technique, mais je vais t'envoyer le comment faire
+9/12/25, 09:52 - Alice / Алиса: 1 - *Créer un token*
+
+Tu peux suivre ce tuto, ça explique comment faire
+Il faudra me donner la suite de caractère que ça va te donner
+
+https://www.infomaniak.com/fr/support/faq/2582/ajouter-et-gerer-les-tokens-api-infomaniak
+9/12/25, 09:54 - Alice / Алиса: 2- *Entrer les paramètres DNS*
+
+Tu peux suivre ce tuto (la partie "Modifier un enregistrement existant)
+https://www.infomaniak.com/fr/support/faq/2051/modifier-la-zone-dns-mode-avance-dun-domaine-gere-par-infomaniak
+
+Et quand tu sera sur la page avec des lignes qui racontent des trucs qui tu comprends pas, il faudra juste ajouter une nouvelle ligne avec ça
+
+*1800 IN A  86.250.19.1*
+
+et après cliquer sur enregistrer en haut à droite, et c'est tout ! <This message was edited>
+9/12/25, 10:09 - Audrey Relandeau: Les thèmes WordPress que j’aime bien:
+
+https://demos.codexcoder.com/heal/charity/demo-01/
+
+https://we.tl/t-46mNztRKo9
+9/12/25, 10:09 - Audrey Relandeau: Cc- vais faire de mon mieux 😅
+9/12/25, 10:09 - Alice / Алиса: Si tu galère tu me dis, on regardera ensemble
+9/12/25, 10:13 - Audrey Relandeau: Suis sur les thème WordPress, y’en a des milliers, je me’ perds….:(
+Je veux un Ruel qui facilite la présentation de services type boîte mais avce les pages classiques d’une asso sur « notre
+Mission, notre vision », « faites un don » et « devenir bénévoles » , voir un espace pour ceowgoundinf et blog - et présentation des partenaires
+
+Le premier lien de la liste semble pouvoir faire ça - même si j’aurais bien aimé un style plus « pro » ou militant engagé/plaisoyer » que « charité »…. » mais on va adapter :)
+9/12/25, 10:15 - Audrey Relandeau: Le truc est que j’envhaine les asso today - donc vais faire ça entre deux, du lit (comme now) ou de la voiture :)….sinon ce sera ce soir - 
+
+Mais je te dis oui! :) 
+Pour quand en as tu besoin par rapport à tes dispos? 
+Et peux tu m’envoyer ton mail que je te renvoie le lien we transferts et autres docs.
+Merki!
+9/12/25, 10:15 - +33 6 65 97 39 76 joined from the community
+9/12/25, 10:20 - You changed this group's settings to allow only admins to add others to this group.
+9/12/25, 10:20 - You changed this group's settings to allow all members to add others to this group.
+9/12/25, 10:20 - You turned on admin approval to join this group. Tap to change.
+9/12/25, 11:12 - Audrey Relandeau: https://we.tl/t-46mNztRKo9
+
+Ça cnest en fait le lien we transfert
+9/12/25, 15:03 - Audrey Relandeau: Et voici le token : 9v3DaAj5zN2yFy9aUhQsiTQimhMKyBwb_CQWsAbdJESLDXHj9m1-izpgDdKKSP-GFr6DDeU6gIpOKDGy
+9/12/25, 15:03 - Alice / Алиса: Congrats
+9/12/25, 15:06 - Audrey Relandeau: <Media omitted>
+Je comprends pas…:)
+9/12/25, 15:07 - Alice / Алиса: Alors non c'est pas un transfert
+9/12/25, 15:07 - Alice / Алиса: En fait quand tu arrives dans l'interface admin il faut aller sur 
+Domaine 
+Et après il faut chercher sur la gauche 
+zone DNS
+9/12/25, 15:07 - Alice / Алиса: Et une fois que tu es dans un DNS tu cliques sur l'onglet avancé
+9/12/25, 15:07 - Alice / Алиса: Et là tu copies colle la ligne que je t'ai donné, entre deux autres lignes évidemment
+9/12/25, 15:08 - Audrey Relandeau: https://www.infomaniak.com/fr/support/faq/2051/modifier-la-zone-dns-mode-avance-dun-domaine-gere-par-infomaniak
+9/12/25, 15:08 - Audrey Relandeau: Suis sur cette page
+9/12/25, 15:18 - Audrey Relandeau: <Media omitted>
+Est ce cette page dont tu parles par « interface admin »?
+9/12/25, 15:33 - Alice / Алиса: Je suis en voiture
+9/12/25, 16:27 - +33 6 65 97 39 76 left
+9/13/25, 11:08 - Alice / Алиса: Hello
+9/13/25, 11:08 - Alice / Алиса: Alors, le how to
+9/13/25, 11:08 - Alice / Алиса: IMG-20250913-WA0001.jpg (file attached)
+On se connecte
+9/13/25, 11:09 - Alice / Алиса: IMG-20250913-WA0005.jpg (file attached)
+Domaine
+9/13/25, 11:10 - Alice / Алиса: IMG-20250913-WA0002.jpg (file attached)
+Moi j'ai plusieurs domaine listén, toi tu n'en a qu'un, et tu clique dessus
+9/13/25, 11:10 - Alice / Алиса: IMG-20250913-WA0003.jpg (file attached)
+Zone DNS
+9/13/25, 11:10 - Alice / Алиса: IMG-20250913-WA0004.jpg (file attached)
+Vue avancée
+9/13/25, 11:11 - Alice / Алиса: IMG-20250913-WA0006.jpg (file attached)
+Et tu rajoutes cette ligne là
+9/13/25, 11:11 - Alice / Алиса: IMG-20250913-WA0007.jpg (file attached)
+Et tu clique sur Enregistrer
+9/13/25, 11:17 - Audrey Relandeau: Cc. Je tente now!
+9/13/25, 11:23 - Audrey Relandeau: <Media omitted>
+Je tombe automatiquement sur cette page quand je me connecte à Infomaniak
+9/13/25, 11:24 - Alice / Алиса: ah je sais pourquoi
+9/13/25, 11:24 - Alice / Алиса: https://login.infomaniak.com/fr/login
+9/13/25, 11:24 - Alice / Алиса: Passe par cette page
+9/13/25, 11:24 - Audrey Relandeau: <Media omitted>
+Idem - ça m’envoie la
+9/13/25, 11:25 - Alice / Алиса: T'es sur ton tel, peut-être ça ?
+9/13/25, 11:25 - Alice / Алиса: je sais pas
+9/13/25, 11:25 - Audrey Relandeau: Oui sur mon tel
+9/13/25, 11:25 - Audrey Relandeau: Je tente autrement et te dis - merci:€
+9/13/25, 11:26 - Audrey Relandeau: <Media omitted>
+Suis là now:)…
+9/13/25, 11:29 - Audrey Relandeau: <Media omitted>
+J’y suis - mais j’ajoute comment? Car quand je fais + , ça me demande d’ajouter un sous domaine, pas des chiffres…
+9/13/25, 11:30 - Alice / Алиса: faut pas faire plus
+9/13/25, 11:30 - Alice / Алиса: Tu peux écrire en dessous directement
+9/13/25, 11:30 - Alice / Алиса: tu fait retour à la ligne et tu copie colle le truc
+9/13/25, 11:30 - Alice / Алиса: 1800 IN A  86.250.19.1
+9/13/25, 11:32 - Audrey Relandeau: <Media omitted>
+Comme ça? J’arrive pas à m’aligner avec le 3600
+9/13/25, 11:32 - Alice / Алиса: aligne pas
+9/13/25, 11:32 - Alice / Алиса: il va le faire
+9/13/25, 11:32 - Alice / Алиса: et oui c'est bon
+9/13/25, 11:33 - Audrey Relandeau: <Media omitted>
+Tout bon. And now?
+9/13/25, 11:33 - Alice / Алиса: Enregitrsrer et c'est fini pour toi
+9/13/25, 11:34 - Alice / Алиса: J'attend 20 min que l'info se propage dans les serveurs DNS, et je te dirai si c'est ok
+9/13/25, 11:34 - Audrey Relandeau: <Media omitted>
+Done!
+9/13/25, 11:34 - Alice / Алиса: ça dis en gros que 2ùmainsdefemmes.org, pointe vers mon serveur, et que c'est donc là qu'il ira cherhcer les infos à afficher
+9/13/25, 11:35 - Alice / Алиса: Et le token d'hier c'est ce qui me permet de mettre en place un truc qui permettra d'avoir le petit cadenas https pour sécuriser le site
+9/13/25, 11:35 - Alice / Алиса: Merci
+9/13/25, 11:36 - Audrey Relandeau: C’est moi:) 
+Par contre g pris la Ksuite et chais pas quoi en faire…je pourrais remplacer mon gmail.com par 2mainsdefemmes.org de mon adresse mail?
+9/13/25, 11:36 - Alice / Алиса: T'as payé pour la ksuite ?
+9/13/25, 11:37 - Audrey Relandeau: Je crois oui un peu genre moins de 10e
+9/13/25, 11:37 - Alice / Алиса: pour l'année ou pour le mois ?
+9/13/25, 11:37 - Audrey Relandeau: Annee
+9/13/25, 11:38 - Alice / Алиса: Oki
+Bon on aurait pu faire sans (avec un domaine tu as une adresse email gratuite fournit)
+Mais vu que tu l'as, on va s'en servir
+9/13/25, 11:38 - Alice / Алиса: Et oui du coup tu peux créer des adresses genre contact@2mainsdefemmes.org
+9/13/25, 11:38 - Alice / Алиса: Et d'autres si besoin
+9/13/25, 11:38 - Audrey Relandeau: Top , j’aimerai bien ça ;)
+9/13/25, 11:40 - Audrey Relandeau: Et oublie o s de télécharger le lien we transfert. Il marchait que pour 3 jours.
+Et si tu me donnes ton adresse mail perso, je t’envoie d’autres docs. Ou j’envoie tout ici?
+9/13/25, 11:41 - Alice / Алиса: tu peux poser ici, je pref en vrai
+9/13/25, 11:46 - Audrey Relandeau: identité visuelle 2mains de femme.pdf (file attached)
+identité visuelle 2mains de femme
+9/17/25, 20:09 - Audrey Relandeau: Cc Alice. Comment vas? Dis suis en train de faire le tab de suivi des bénévoles de L’asso et caler le dispos et activités. Et je me
+Rends compte que j’ai pas ton noms de famille:) ça t’embêtes pas de me le partager? Juste au cas où j’aurais une autre Alice ds le groupe bientôt :)😉
+
+Et dis moi si je dois te préparer des trucs pour le site, suis au taquet si besoin :)
+9/17/25, 20:09 - Alice / Алиса: Hellooooooo
+9/17/25, 20:09 - Alice / Алиса: Alice Aussel Delamaide
+9/17/25, 20:09 - Alice / Алиса: Je me suis pas encore lancé dessus, je pense que je vais m'y mettre ce weekend 😉
+9/17/25, 20:10 - Alice / Алиса: J'espère que tu vas bien toi 🌻
+9/17/25, 20:10 - Audrey Relandeau: Pas de pression ni urgence - c’était plus pour moi et savoir ce que je pouvais faire à ce stade pour aider:)
+9/26/25, 11:00 - Audrey Relandeau: mail reseau benevoles 2MDF.docx (file attached)
+mail reseau benevoles 2MDF
+9/26/25, 11:00 - Audrey Relandeau: Cc Alice. Comment vas tu?
+Ici fait froid, fait fatigue alors qu’on est qu’en début d’année. Mais sinon tout va bien ahah.
+
+Dis, j’ai envoyé un mail avec infos et request au groupe de bénévoles. Le voici ici . Et le lien vers le questionnaire en ligne que je vous demande de remplir avant fin de mois si possible (5min). Merkii!:)
+Peut
+9/26/25, 11:01 - Audrey Relandeau: J’espère que tout va de ton côté. 😘
+9/27/25, 01:04 - Alice / Алиса: Hello Audrey
+J'espère que tu vas bien
+9/27/25, 01:04 - Alice / Алиса: Ici ça va
+Ambiance chelou sur Mada depuis 2 jours, grosss émeutes, pillages géneralisés, on est en full lockdown jusqu'à nouvel ordre
+9/27/25, 01:05 - Alice / Алиса: Je voulais commencer ce soir à bosser sur le site, mais j'ai un p'tit souci
+9/27/25, 01:05 - Alice / Алиса: Tu as fait une petite erreur ici
+Dans l'adresse tu as mis 29 au lieu de 19
+9/27/25, 01:06 - Alice / Алиса: si tu reprends ici l'adresse qu'il fallait entrer est :  86.250.19.1
+9/27/25, 01:06 - Alice / Алиса: Est-ce que tu crois que tu aurais moyen de changer ces prochains jours stp
+9/27/25, 01:44 - Audrey Relandeau: <Media omitted>
+Done!
+9/27/25, 01:46 - Audrey Relandeau: Waouh truc de ouf! Quel a été le déclic? Quelles sont les revendications? En dehors de l’injustice, corruption et dictature bien sûr🫢
+9/27/25, 01:46 - Audrey Relandeau: Ça doit être super étrange…fait gaffe à toi du coup!
+9/27/25, 01:49 - Audrey Relandeau: Je viens de lire: protestation contre les délestages au départ,  pdt que le prez est aux UN…. <This message was edited>
+9/28/25, 14:27 - Alice / Алиса: Hello Audrey
+9/28/25, 14:27 - Alice / Алиса: Bon ça se calme ici, c'est cool
+9/28/25, 14:27 - Alice / Алиса: J'espère que toi tu vas bien
+9/28/25, 14:28 - Alice / Алиса: Côté site, j'ai pu avancer, et mettre en place le base de travail
+Instalaiton du Worpress, certificat HTTPS
+https://2mainsdefemmes.org
+9/28/25, 14:28 - Alice / Алиса: Bon c'est vide, il nous reste tout à faire
+9/28/25, 14:28 - Alice / Алиса: Tu pourras me filer ton email stp que je te crée un compte ?
+9/28/25, 14:28 - Alice / Алиса: Aussi, j'avais pas pu télecharger tes liens weTransfert à emps, est-ce que tu as gardé ce qu'i y avait dedans ?
+9/28/25, 14:29 - Alice / Алиса: Et question suivante : est-ce que tu as un peu de contenu à me filer pour commencer à mettre des trucs en place dedans ?
+9/28/25, 14:38 - Audrey Relandeau: fiche memo fondamentaux.docx (file attached)
+fiche memo fondamentaux
+9/28/25, 14:38 - Audrey Relandeau: PA 2Mains de femmes - draft 1.docx (file attached)
+PA 2Mains de femmes - draft 1
+9/28/25, 14:39 - Audrey Relandeau: schéma des piliers de 2Mains de femmes.png (file attached)
+schéma des piliers de 2Mains de femmes
+9/28/25, 14:39 - Audrey Relandeau: le toucher.png (file attached)
+le toucher
+9/28/25, 14:39 - Audrey Relandeau: photo mains calins.jpg (file attached)
+photo mains calins
+9/28/25, 14:39 - Audrey Relandeau: logo principal.png (file attached)
+logo principal
+9/28/25, 14:40 - Audrey Relandeau: Annexe 3 - derniére composition CA.pdf (file attached)
+Annexe 3 - derniére composition CA
+9/28/25, 14:40 - Audrey Relandeau: Annexe 1 - fiche de structure 2mains de femmes.pdf (file attached)
+Annexe 1 - fiche de structure 2mains de femmes
+9/28/25, 14:40 - Audrey Relandeau: Annexe 5 - leaflet de comm - 2mains de femmes.VF.pdf (file attached)
+Annexe 5 - leaflet de comm - 2mains de femmes.VF
+9/28/25, 14:40 - Audrey Relandeau: document de projet_2MainsFemmes_LHM2025.pdf (file attached)
+document de projet_2MainsFemmes_LHM2025
+9/28/25, 14:42 - Audrey Relandeau: Cc - top’top ça prend vie c’est trop chouette :)
+sorry suis en rando ds les gorges du fier :):) j’ai plus bcp de batterie w je t’envoie ce que j’ai depuis mon ordi - et je te renverrais ce soir le lien we transfert.
+Et mon dresse mail 2mainsdefemmes@gmail.com….mais fan de la création d’une adresse contact@2mainsdefemmes.org 😉
+9/28/25, 14:42 - Audrey Relandeau: Des bises - je me reconnecte ce soir!😘
+9/28/25, 14:44 - Audrey Relandeau: Et L’asso s’écrit « 2mains de femmes » - pas « deux mains de femmes » (cf le noms sur le
+Blog😉) <This message was edited>
+9/29/25, 09:46 - Audrey Relandeau: Cc Alice - désolée pour hier, en balade et plus de batterie:)
+J’espère que les éléments envoyés ont pu aider.
+Je vais aller voir le lien today. Et tu me diras comment je peux/dois retravailler les contenus pour que ça entre. J’imagine qu’il faudrait avoir l’architecture/l’arborescence de notre site au final, pour que je crée chaque contenu en cohérence , right?
+À suivre;)
+
+Belle journée/belle semaine
+9/29/25, 10:16 - Alice / Алиса: Hello Audrey
+9/29/25, 10:16 - Alice / Алиса: Merci pour tes messages et ces docs <This message was edited>
+9/29/25, 10:16 - Alice / Алиса: La prochaine étape ça sera de commencer à faire un design
+9/29/25, 10:17 - Alice / Алиса: Pour ça il me faudra (comme on en avait parlé) ces exemples de sites/themes qui te plaisent
+9/29/25, 10:17 - Alice / Алиса: Ensuite, on verra, mais aussi, comme je te l'avais indiqué, il faudra surement passer par l'achat d'un theme / builder (50/60€] pour garder une certaine modularité dans la construction du site
+9/29/25, 10:18 - Alice / Алиса: Et après seulement on pourra mettre le contenu dedans, et voir à quoi ça va ressembler
+9/29/25, 10:54 - Audrey Relandeau: Cc - je t’avais partagé ces deux thèmes WordPress que j’avais vu/bien aimé - même si je me suis pas mal perdu entre tous les thèmes proposés…:) je retourne voir cet aprèm et te fais d’autre proposition de thème si besoin.
+Par contre pas sûre de savoir où acheter le builder dont tu parles. Sur le
+Même site des thèmes WordPress?
+Bsie
+9/29/25, 10:56 - Alice / Алиса: Hello Audrey
+Pour le builder je te dirai en fonction de ce qu'on décide un peu en terme de théme
+9/29/25, 10:56 - Alice / Алиса: Aussi tu m'avzis parlé d'une ou plusieurs adresses email
+Tu as l'explicatif ici sur le commet faire : https://www.infomaniak.com/fr/support/faq/1993/creer-une-adresse-mail-ou-la-supprimer
+9/29/25, 11:16 - Audrey Relandeau: Cool - je vais donc créer notre première adresse mail today 💪🍾🥳
+9/30/25, 12:44 - Audrey Relandeau: un théme que je trouve pas mal correspondre: https://themeforest.net/item/children-charity-nonprofit-ngo-wordpress-theme-with-donations/20208839
+9/30/25, 12:44 - Audrey Relandeau: un autre: https://www.nicdarkthemes.com/themes/donation/wp/demo/charity/
+9/30/25, 12:44 - Audrey Relandeau: un autre: https://www.nicdarkthemes.com/themes/donation/wp/demo/healthcare/
+9/30/25, 12:45 - Audrey Relandeau: https://preview.themeforest.net/item/welfare-ngo-nonprofit-organization-charity-theme/full_screen_preview/12059579
+9/30/25, 12:54 - Audrey Relandeau: et velle ci, plu en lien avec du corporate/bussiness pour présenter nos offres de services - mais pas de démo accessible (ou j'ai pas su comment): https://themeforest.net/item/care-multiniche-wordpress-theme-for-health-yoga-childcare-and-nutrition-business/15860229
+9/30/25, 12:55 - Audrey Relandeau: j'avoue ne pas savoir comment trnacher entre ces thémes, je n'ai pas de comprhension des critéres prioritaires sur lesquels choisir. ton avis technique et d'utilisatrice me serait aidant si tu as. sinon, je choisirais entre l'un de ceux là et je l'acheterais. bise:)
+10/1/25, 16:58 - +33 6 85 23 89 55 requested to join.
+10/1/25, 17:00 - +33 6 85 23 89 55 requested to join.
+10/2/25, 10:18 - Alice / Алиса: Hello Audrey
+10/2/25, 10:18 - Alice / Алиса: J'espère que tu vas bien
+10/2/25, 10:19 - Alice / Алиса: Bon normal que tu sache pas trop quel thème choisir, et il faut pas
+10/2/25, 10:19 - Alice / Алиса: C'était plus pour moi pour avoir une idée de ce qui te plait
+10/2/25, 10:19 - Alice / Алиса: Ca m'indique un peu quel orga tenter d'adopter
+10/2/25, 10:19 - Audrey Relandeau: Cc!
+10/2/25, 10:19 - Alice / Алиса: Je regarde ça dans la journée, et je te dirai quel builder on peut prendre en fonction
+10/2/25, 10:20 - Alice / Алиса: Sinon, y'a qq'un.e qui demande a rejoindre le groupe (je sais pas si tu as vu)
+10/2/25, 10:20 - Audrey Relandeau: Sur mon vélo de salle de sport…réveil musclé!:):)
+10/2/25, 10:21 - Audrey Relandeau: Mon père! Il se plante tjrs sur Watsapp et notre communauté - il est secrétaire de notre asso :)
+10/2/25, 10:21 - Audrey Relandeau: Bon et toi ça va à tana? Suis en lien un peu avec Joela et les infos….ca semble merder grave….maiq pr etre un mal pour un bien si ca fait un peu bouger les lignes politiques….
+10/2/25, 10:22 - Alice / Алиса: Ecoute moi ça va
+Je suis ce qu'il se passe, en ésperant pour les gens d'ici un changement oui
+10/2/25, 10:22 - Audrey Relandeau: Il me disait que les milliardaires avaient vidé hier la banque de mada pour se barrer avec leurs sousous😡
+10/2/25, 10:23 - Alice / Алиса: C'est faux, c'est une rumeur
+10/2/25, 10:23 - Audrey Relandeau: Aaah!
+10/2/25, 10:23 - Alice / Алиса: Y'a bcp de rumeur qui circulent en ce moment
+10/2/25, 10:23 - Alice / Алиса: Hier y'avait aussi la rumeur de la fuite du PR à l'étranger
+10/2/25, 10:23 - Alice / Алиса: Bref, comme d'hab, et avec les RS, faut faire gaffe 😅
+10/2/25, 10:23 - Audrey Relandeau: Oui je l’ai entendu celle là - où que le prez allait démissionné en revenant des UN:)
+10/2/25, 10:24 - Alice / Алиса: No no 
+Il a viré le gouvernement en revenant, mais pour le moment rien ne prouve qu'il a fuit
+10/2/25, 10:24 - Audrey Relandeau: Un effet performatif attendu pr être 😉😋
+10/8/25, 11:33 - Alice / Алиса: Hello Audrey
+10/8/25, 11:33 - Alice / Алиса: J'espère que tu vas bien et que tout roule pour toi
+10/8/25, 11:33 - Alice / Алиса: Je viens de prendre un p'tit temps hier sur la question du site, et j'ai fais un p'tit tour des builders existant
+10/8/25, 11:35 - Audrey Relandeau: Cc - fraîchement mais ça va:)
+Cool!
+10/8/25, 11:37 - Alice / Алиса: My advise sur le theme builder à acquérir : https://themeforest.net/item/salient-responsive-multipurpose-theme/4363266
+10/8/25, 11:38 - Audrey Relandeau: Quels sont tes points forts pour ce site/builder? Que je comprenne mieux - et je te suis bien sûr sur ce choix
+10/8/25, 11:39 - Audrey Relandeau: La facilité de construction, si j’ai bien compris
+10/8/25, 11:41 - Alice / Алиса: En fait des builders il y en à pleins
+Tous à peu près au même prix
+
+Le choix c'est fait sur un ratio entre complétude de l'outil d'un côté (nombre de fonction possible, facilité d'utilisation, possibilité d'évolution) et de l'autre le fait que le thème ne soit pas trop consommateurs de ressources (serveur et data), qui ferait que le site rame sur les ordis des gens. 
+
+Ce builder là, me semble un bon mix entre les deux/ Assez moderne pour permettre pas mal de choses, tout en étant pas une méga usine à gaz
+10/8/25, 11:44 - Audrey Relandeau: Top! Je le prends donc:)
+10/8/25, 11:45 - Audrey Relandeau: Y a r il une manip particulière pour être sure que tu puisses y avaler accès? Ou juste je suis les instructions d’achat et on voit aprzs
+10/8/25, 11:55 - Alice / Алиса: Non non, tu suis le chemin d'achat comme sur un site e-commerce standard
+10/8/25, 11:55 - Alice / Алиса: A la fin ça va te donner un lien de télechargement
+10/8/25, 11:55 - Alice / Алиса: Et ça il faudra me le donner
+10/8/25, 12:02 - Audrey Relandeau: <Media omitted>
+10/8/25, 12:02 - Audrey Relandeau: ca me donne pas de lien mais un bouton de telechargement, qui me charge cela
+10/8/25, 12:03 - Alice / Алиса: si tu clic droit sur le bouton
+10/8/25, 12:03 - Alice / Алиса: tu as pas "copier ce lien" ou qq chose comme àa ?
+10/8/25, 12:03 - Audrey Relandeau: https://themeforest.net/user/2mainsdefemmes/download_purchase/c0d95b16-3037-4e9f-9a42-bb5d335ac681
+10/8/25, 12:03 - Audrey Relandeau: yep:)
+10/8/25, 12:03 - Alice / Алиса: Zut, ça marche pas <This message was edited>
+10/8/25, 12:04 - Alice / Алиса: https://www.swisstransfer.com/fr-fr
+10/8/25, 12:04 - Alice / Алиса: Tuy peux balancer le dosier par là stp
+10/8/25, 12:04 - Alice / Алиса: et m'envoyer le lien
+10/8/25, 12:04 - Alice / Алиса: C'est comme WeTransfer
+10/8/25, 12:07 - Audrey Relandeau: https://www.swisstransfer.com/d/34522cff-6ad0-4435-a07e-f78238efac4e
+10/9/25, 11:12 - You changed the group description
+10/9/25, 11:12 - Alice / Алиса: Hello Audrey
+J'espère que tout roule pour oti
+10/9/25, 11:12 - Alice / Алиса: J'ai push tous les fichiers que tu m'avais patragé dans mon cloud, pour centraliser et simplifier
+10/9/25, 11:12 - Alice / Алиса: https://cloud.alyss.cc/s/paBe7kDPMBew2XZ
+10/9/25, 11:12 - Alice / Алиса: Je mets le lien en description du groupe
+10/9/25, 11:13 - Alice / Алиса: Tu pourra y push toi même d'autres fichiers, organiser le dossier si besoin, modifier tes textes dedans, ect
+10/9/25, 11:57 - Alice / Алиса: Et j'ai une question aussi
+10/9/25, 11:57 - Alice / Алиса: Pourquoi le lien vers la page Hello Asso est cassé ?
+https://www.helloasso.com/associations/2mains-de-femmes
+10/9/25, 11:57 - Alice / Алиса: Le prmeier lien Google qu'on a quand on tape le nom de l'asso + hello asso
+10/9/25, 11:58 - Alice / Алиса: Parce que du coup je trouve la page pour adhérer
+https://www.helloasso.com/associations/2mains-de-femmes/adhesions/adhesion-a-l-association-2mains-de-femmes
+10/9/25, 11:58 - Alice / Алиса: Mais pas celle pour faire un don
+10/9/25, 12:06 - Audrey Relandeau: Cc - merci! Pas sûre de tout comprendre à ce que je dois faire mais vais ouvrir ton premier lien et te relire plus tranquillement et sûrement mieux comprendre :)
+
+Pour le lien helloasso, mince, je ne sais pas….quoi faire pour le recoller?
+Dans tous les cas, en allant sur la page adhésion, helloasso demande sinon veut aussi faire un don et tu peux ne faire qu’un don…est ce donc que pour eux il n’y a qu’une seule page/lien pour les deux?? Je t’avoue que je ne sais pas
+10/9/25, 12:10 - Audrey Relandeau: Aye compris / c’est notre iCloud à nous pour le site :):) pour l’instant, pas plus de docs à y mettre - pt être des photos/images.
+J’aurais surment à y modifier des textes/cooiee/coller des parties en fonction de l’arborescence du site et de où on décide de mettre quoi.
+10/9/25, 12:10 - Alice / Алиса: J'ai trouvé deux lines qui pourraient t'aider à voir un peu les possibilités avec HelloAsso
+
+- https://unaape.asso.fr/site/wp-content/uploads/2022/06/Guide-de-lancement-UNAAPE-x-HelloAsso.pdf
+-https://www.aixenprovence.fr/IMG/pdf/kit_de_prise_en_main_de_la_plateforme_helloasso.pdf
+
+Je pense que ça serait bien d'avoir une page don
+Tout le monde ne veux pas obligatoirement adhérer
+10/9/25, 12:10 - Audrey Relandeau: Comment veux tu avancer la dessus?
+10/9/25, 12:12 - Audrey Relandeau: Top - je vais aller voir comment créer une page dédiée DONS sur hello asso ce soir. Merci <This message was edited>
+10/9/25, 12:13 - Alice / Алиса: Je suis dessus, doucement
+Je suis sur le header (menu du haut), puis je vais faire le footer (ou on mettra les autres liens)
+Et après je vais commencer doucement à créer les structures de pages
+10/9/25, 12:13 - Audrey Relandeau: Trop biiieeen!:)
+Pas de pression, juste pour être sure que j’ai fait ce qu’il fallait de mon côté pour que tu aies les bons « outils » pour lancer ce travail :):) merkiiii:)
+10/10/25, 15:54 - Alice / Алиса: Hello Audrey, 
+Dis est-ce que tu aurais moyen stp de verser dans le cloud les autres logos désigné et présents dans la charte graphique
+Pour le moment j'ai qu'un modèle
+10/10/25, 15:54 - Alice / Алиса: Celui-ci
+10/10/25, 15:55 - Audrey Relandeau: Cc - et non…..la graphiste m’a lâché en cours de route et m’a dit m’envoyer au moins tous les modèles/versions des logos réalisés et elle ne l’a tjrs pas fait. Je la relance right now!
+10/10/25, 15:56 - Alice / Алиса: Ca roulotte
+10/10/25, 16:00 - Alice / Алиса: Aussi Audrey, je vais doucement avoir besoin de clarifier avec toi ce qu'on mets exactement sur chaque page
+Je me dis que si tu as moyen, ça m'aiderait d'avoir un document par page du site
+10/10/25, 16:01 - Alice / Алиса: Pour l'architecture j'ai suivi ce que tu m'avais dis à savoir
+
+Header sur site
+- Acceuil
+- Association
+- Entreprise <This message was edited>
+10/10/25, 16:01 - Alice / Алиса: POour la footer j'ai mis ça <This message was edited>
+10/10/25, 16:01 - Audrey Relandeau: Parfait - je peux faire ça
+10/10/25, 16:01 - Alice / Алиса: You deleted this message
+10/10/25, 16:01 - Audrey Relandeau: Header?
+10/10/25, 16:01 - Audrey Relandeau: Footer?
+10/10/25, 16:01 - Alice / Алиса: haha dézsolé
+10/10/25, 16:02 - Alice / Алиса: Le header c'est le truc en haut du site, le menu du navigation géneral tout en haut que tu vois quand tu ouvre
+10/10/25, 16:02 - Alice / Алиса: Le footer c'est ce qui est en bas, les autres liens moins structurant
+10/10/25, 16:02 - Audrey Relandeau: C’est moi - je sens que je devrais piger ces mots….mais non!😅
+10/10/25, 16:02 - Alice / Алиса: IMG-20251010-WA0004.jpg (file attached)
+en gros ça fait ça sans contenu entre les deux
+10/10/25, 16:04 - Alice / Алиса: Niveau couleur, taille de typo tout ça on revetra dans un second temps hein
+10/10/25, 16:05 - Alice / Алиса: Pour le moment, je crée les pages, les liens, la structure génerale
+10/10/25, 16:05 - Audrey Relandeau: Alors ds le header j’aurais plutôt: 1. Vous êtes une structure d’accueil; 2. Vous êtes une enreprise; 3. Vous êtes un.particulier.e; 4. Pour nous rejoindre
+10/10/25, 16:05 - Alice / Алиса: Bcp trop long
+10/10/25, 16:05 - Alice / Алиса: Je vais essayer tu vas voir
+10/10/25, 16:06 - Audrey Relandeau: Ben oui mais 1.asso ça exclut les boites privés qui accueillent des femmes ephad privée, les collectifs etc…
+10/10/25, 16:07 - Audrey Relandeau: Ou alors 1. Acteurs de la santé/action sociale; 2. Entreprises; 3. Particulier.e; 4. Nous rejoindre
+10/10/25, 16:08 - Alice / Алиса: Regarde là https://2mainsdefemmes.org/
+10/10/25, 16:08 - Alice / Алиса: ça donne comment sur on écran d'ordi ?
+Moi j'ai une méga résolution
+10/10/25, 16:09 - Audrey Relandeau: Suis sur mon tel et ça passe très bien - sauf les majuscules Vous Êtes…;)
+10/10/25, 16:09 - Alice / Алиса: On verra toutes ces questonsn de maj et autres plus tard
+10/10/25, 16:09 - Alice / Алиса: Ca sera vraiment dans un deuxième temps
+10/10/25, 16:10 - Audrey Relandeau: Mais j’aime bien ce que j’ai vu, même si les titres sur deux lignes
+10/10/25, 16:11 - Audrey Relandeau: Et on est ok que c’est dans accueil que l’on pourra décliner toutes les infos sur qui nous sommes, nos valeurs, ce que sont nos activités en approche philo, les éventuels événements/infos régulières….ou c’est mieux de créer un header « qui sommes nous »
+10/10/25, 16:11 - Alice / Алиса: non non le heaer c'est les liens principaux
+10/10/25, 16:12 - Alice / Алиса: Le reste ça sera entre le header (en couleur) et le footer (en blanc)
+10/10/25, 16:12 - Alice / Алиса: Donc on y mettra bien tout ce que tu veux
+10/10/25, 16:12 - Alice / Алиса: Mais ça il va falloir créer des docs pour que je sache quoi mettre dedans 😅
+10/10/25, 16:12 - Alice / Алиса: IMG-20251010-WA0005.jpg (file attached)
+Sur plus petit écran ça donnera ça
+10/10/25, 16:13 - Audrey Relandeau: L’idée est que chaque autre header contiennent des infos spé à chaque type d’acteur/client, mais que tout le transversal » se retrouve « avant » dans « acceuil » ou dans « qui sommes nous «  semon
+10/10/25, 16:14 - Audrey Relandeau: Moi ça me va, si on peut encore jouer un peu sur la typo et sur Majuscules/minusculzs
+10/10/25, 16:14 - Alice / Алиса: Alors non le header reste à chaque page
+10/10/25, 16:14 - Alice / Алиса: le pricniep du hedar c'est justement d'être l'arbre qui permet de naviguer entre les branche
+10/10/25, 16:15 - Audrey Relandeau: Ok, j’ai compris avec ton message au dessus
+10/10/25, 16:15 - Alice / Алиса: Mais en dessous on peut mettre un sous-header si tu veux
+10/10/25, 16:15 - Alice / Алиса: Et toute les infos après dans le page entre header, sous-header et footer
+10/10/25, 16:15 - Alice / Алиса: Mais normalement le sous-header, c'est pour de la navigation aussi
+10/10/25, 16:15 - Alice / Алиса: C'est pas une bonne pratique d'y mettre des infos
+10/10/25, 16:16 - Alice / Алиса: IMG-20251010-WA0006.jpg (file attached)
+10/10/25, 16:16 - Alice / Алиса: Structure d'une page web
+Nous on a mixé nav et header (c'est courant)
+10/10/25, 16:16 - Alice / Алиса: IMG-20251010-WA0007.jpg (file attached)
+ou ça
+10/10/25, 16:16 - Alice / Алиса: ça te donne une idée de la structure génerale
+10/10/25, 16:17 - Audrey Relandeau: Ok pour du sous header alors….plus on va signifier/accomaogzne chacun a comprendre dans quelle partie il est et ce qu’il va y trouver, mieux c’est pour moi. Même si ça fait un peu vieux jeu…je me perds parfois ds des sites ou y’a pleins d’encarts, d’infos dans une même page sans savoir ce à quoi chacune corresponds…tu vois ce que je veux dire?
+Donc les sous header pourraient aider à structurer plus, si j’ai bien compris
+10/10/25, 16:19 - Alice / Алиса: bah l'idée d'un sous header c'est d'avoir un truc comme ça
+
+ACCEUIL
+PAGE 1
+----- Sous-page 1
+----- Sous-page 2
+----- Sous-page 3
+PAGE 2
+----- Sous-page 1
+----- Sous-page 2
+----- Sous-page 3
+PAGE 3
+----- Sous-page 1
+----- Sous-page 2
+----- Sous-page 3
+
+
+Dans le header sur toutes les pages tu auras acceuile et page 1, 2 et 3
+Puis dans le sous-hdeader de la page 1, tu auraus sous-page 1, 2 3 de la page 1, et ainsi de suite
+10/10/25, 16:19 - Audrey Relandeau: Très bien!:)
+10/10/25, 16:20 - Audrey Relandeau: Donc on mettra « qui sommes nous » en sous page 1 du header « Acceuil » par ex
+10/10/25, 16:20 - Audrey Relandeau: Aaah non, pas le Acceuil
+10/10/25, 16:20 - Alice / Алиса: Est-ce que tu aurais moyen de me faire un document squelette aussi comme ça stp ?
+
+De quelle page avec qui ? ça m'aidera  comprendre ce que tu veux
+10/10/25, 16:21 - Audrey Relandeau: Oui, je vais te faire ça sur Excel
+10/10/25, 16:21 - Alice / Алиса: attend plus simple
+10/10/25, 16:21 - Alice / Алиса: Je vais te filer un lien sur un truc de mind mapping
+10/10/25, 16:21 - Audrey Relandeau: Tu es sur que ça va être plus simple ahahha <This message was edited>
+10/10/25, 16:22 - Alice / Алиса: Essai ça https://excalidraw.com/#room=pqn7yk3v3j6e2abeubjo,SbTj-dAXIhGa-sDktsWsYb
+10/10/25, 16:24 - Audrey Relandeau: https://www.mas-asso.fr/
+10/10/25, 16:25 - Audrey Relandeau: Pour exemple j’aime bien la pemeieee partie de déroule de ce site . Une grande partie sur L’asso et ses partenaires/financiers et docu/ressources utiles, puis 3 autres parties par thème d’implication
+10/10/25, 16:25 - Audrey Relandeau: Nous ça pourrait être la même 1er partie mais mais autre seraient par type de partenaire/ clzint
+10/10/25, 16:28 - Alice / Алиса: ça roule
+10/10/25, 16:28 - Alice / Алиса: Dans les doc uements que tu me fra par page, tu peux coller des liens vers d'autres sites en disant j'aime ci ou ça
+10/10/25, 19:22 - Audrey Relandeau: Est ce que tu penses que l’on peut faire pareil que pour le LE MAS , avoir et un header ET une colonne a gauche fixe qui nous permet aussi de naviguer vers nos 3 axes d’intervention ou nos 3 types de clients/partenaires?
+Ou c’est une arborescence trop complexe pour notre niveau de site sur WordPress? <This message was edited>
+10/12/25, 18:31 - Alice / Алиса: Hello, 
+Avec le builder WordPress je vois pas trop comment faire ça pour être franche
+
+Je pense que pour commencer on pourrai partir dans une direction plus courante et mettre qq chose en ligne, et voir dans un deuxième temps ce qu'il sera possible de faire, par moi ou qq'un.e d'autre <This message was edited>
+10/14/25, 12:22 - Audrey Relandeau: coucou - desolée, je n'ai pas oublié de t'envoyer ma proposition de structure, juste pas eu le temps de me poser dessus. mais ce soir sans faute:)
+10/14/25, 12:24 - Audrey Relandeau: wetransfer_logo-fichiers_2025-10-13_1710.zip (file attached)
+wetransfer_logo-fichiers_2025-10-13_1710.zip
+10/14/25, 12:24 - Alice / Алиса: Hello Audrey
+10/14/25, 12:24 - Alice / Алиса: Tu peux mettre ça dans le cloud stp ?
+10/14/25, 12:25 - Alice / Алиса: Pour ça don't worry, je suis pas dans le rush
+10/14/25, 12:25 - Audrey Relandeau: aaah mais oui :)
+10/14/25, 12:26 - Audrey Relandeau: done!
+10/15/25, 12:34 - Audrey Relandeau: coucou alice - j'espere que ca va, avec tous ces evenements assez historiques que vous vivez sur place. avec retard, voici deux options d'arborescence que j'ai pensé un peu. Je n'arrive pas trop a me décider sur laquelle privilégier, sachant que je sens bien la seconde plus simple mais que j'aime bcp bcp l'entrée par public cible pour éclairer chacun.....en même temps, si tu me dis que ca sera pas trop compliqué de passer de l'option 2 à l'option 1 quand on aura réellement ouvert les offres aux entreprises et aux femmes en ind, peut être alors faire un 2 temps, d'abord l'option 2 au moins jusqu'u 1er trimestre 2026, puis option 1. OU direct option 1 si ca prends deja pas mal de temps de la faire :). Je l'ai fait sur excel car 2 options et pas a l'aise avec l'outil que tu m'as envoyé, sorry 🫢
+10/15/25, 12:37 - Audrey Relandeau: je mets le doc dans le cloud
+10/16/25, 11:35 - Alice / Алиса: Hello Audrey, 
+J'espère que vas bien
+10/16/25, 11:35 - Alice / Алиса: Je viens de regarder les deux arbo, c'est clair pour moi
+10/16/25, 11:37 - Audrey Relandeau: cc - top!:)
+10/16/25, 11:37 - Alice / Алиса: Toutefois il y à un "mais"
+Dans la première ça fait 7 boutons dans le header, et dans la deuxième 8
+C'est trop. D'autant plus avec des titres aussi longs
+Sur pleins de configuration d'ordinateur ça ne s'affichera pas
+10/16/25, 11:37 - Alice / Алиса: IMG-20251016-WA0002.jpg (file attached)
+J'ai test la version à 7 boutons, et sur un ordi pourtant avec une résolution standar + ça donne ça
+10/16/25, 11:38 - Audrey Relandeau: les "dons" et "contact" comptent comme des header c'est ca?
+10/16/25, 11:38 - Alice / Алиса: Le header c'est la zone des liens en haut, donc oui
+10/16/25, 11:38 - Audrey Relandeau: si oui, on les enleve et on reste sur ceux que j'ai mis en colonne
+10/16/25, 11:38 - Audrey Relandeau: en couleur*
+10/16/25, 11:38 - Audrey Relandeau: et le Acceuil aussi donc?
+10/16/25, 11:39 - Audrey Relandeau: je croyais que le "Acceuil" etait la page par defaut tout le temps, pas un "choix" dans le header
+10/16/25, 11:39 - Alice / Алиса: Bah oui mais si les gens vont dans une autre pahge
+Faut bien qu'iels puissent retourner à l'accueil
+10/16/25, 11:39 - Audrey Relandeau: et que dans l'accueil on pouvait juste mettre les actu et eventuellement un agenda d'actions et au moins la phrase d'accroche/mission de l'asso
+10/16/25, 11:40 - Audrey Relandeau: yep tu as raison ahah
+10/16/25, 11:41 - Alice / Алиса: Sans "dons" et "nous contacter" et en retirant "Nos axes", ça donne ça
+C'est dejç pas mal hein
+10/16/25, 11:41 - Alice / Алиса: IMG-20251016-WA0003.jpg (file attached)
+10/16/25, 11:41 - Alice / Алиса: Erreur
+10/16/25, 11:41 - Alice / Алиса: J'avais laissé "nous rejoindre"
+10/16/25, 11:41 - Alice / Алиса: IMG-20251016-WA0004.jpg (file attached)
+10/16/25, 11:42 - Audrey Relandeau: bon, faut en enlever alors....mince.....j'irais sur 1. Accueil, 2. l'aso, 3. vous etes Une structure ou femme concernée..., 4. vous etes une entreprise, 5. Faites un don.....jouable? ou l'option que tu viens de proposer,
+10/16/25, 11:43 - Audrey Relandeau: Je trouve ta propal peut être plus claire.....j'hésite car pas sure qu'une entreprise se retrouverait dans cette version......mais peut être pas la priorité pour l'instant..... <This message was edited>
+10/16/25, 11:45 - Alice / Алиса: Ma proposition correspond à ton deuxième  onglet 😉 <This message was edited>
+10/16/25, 11:45 - Audrey Relandeau: oui :)
+10/16/25, 11:46 - Audrey Relandeau: mais je me dis en le voyant que le terme "offre de service", meme si ok pour moi, pourrait faire "grincer" des dents certains partenaires, asso et financeurs....et risque sur la fiscalisation/a but non lucratif. DOnc mon premier onglet evite cela et oriente chacun selon ce qu'il est.......
+10/16/25, 11:48 - Alice / Алиса: IMG-20251016-WA0005.jpg (file attached)
+Option 1
+10/16/25, 11:48 - Alice / Алиса: Je pense que c'est trop long, et chargé
+10/16/25, 11:49 - Audrey Relandeau: oui revenons a la premiere option - et je mettrais les interventions.Activités dans le Header 2. L'association". cela ferait: H1. Acceuil; H2. L'association; H3. vous etes une structure d'accueil ou femme concernée; H4. Vous etes une entreprise, H5. Faire un don - et on retrouverait en footnote: Agir avec nous - Nous contacter - Infos legale...
+10/16/25, 11:49 - Audrey Relandeau: jouable?
+10/16/25, 11:51 - Audrey Relandeau: et si le titre du H3 est trop long, je cherche plus court;) ou on enlevera le statut "femme concernée" et je mettrais juste un encart dans l'acceuil pour dire qu'une feemme peut aussi nous contacter en direct pour des parcours personnalisés, un truc comme cela
+10/16/25, 11:53 - Alice / Алиса: Surtout que femme concernée, si tu veux t'adresser au minorité de genre ça coince un peu
+10/16/25, 11:54 - Audrey Relandeau: ah en quel sens? - sachant que evidement on dira trés vite ce que l'on entend par femme dans tous nos textes "personne se reconnaissant du genre féminin" - comme on l'a fait sur notre plaquette; et clairmet il faudra quelque par "expliquer" notre choix de noms et position sur la question politique feministe <This message was edited>
+10/16/25, 11:55 - Alice / Алиса: Dans le sens ou toutes les personnes trans-féminine se reconnaissent pas dans le mot "femme", que ça exclu les personnes non-binaires et les mecs trans <This message was edited>
+10/16/25, 11:55 - Audrey Relandeau: notre noms porte deja le mot "femme", ce que meril m'a deja dit etre un "frein"/obstacle pour certaines pers, en tout cas que ca ne parlera pas toutes.....
+10/16/25, 11:56 - Alice / Алиса: IMG-20251016-WA0006.jpg (file attached)
+10/16/25, 11:56 - Audrey Relandeau: oui ca exclu toutes les personnes qui ne se reconnaissent pas ou ne sont pas discriminé du fait d'être reconnu comme du genre féminin - qui est pour l'instant bien notre cible prioritaire , les pers qui subissent les discriminations/exlusions/violences liées au genre féminin <This message was edited>
+10/16/25, 11:59 - Audrey Relandeau: mais ouverte à le discuter avec toi pour voir ce qui est le plus pertinent/juste pour toustes en term de vocabulare pour ne pas exclure ceuxlles que nous ne voudrions pas exclure. mais on assume pour l'instant exclure de notre axe 1 les pers se reconnaissant ou etant assigné du genre masculin...
+10/16/25, 11:59 - Audrey Relandeau: chais pas si trés claire et si j'utilise les bons mots.....avec plaiz pour en discuter plus en détail:)
+10/16/25, 12:20 - Alice / Алиса: Juste pour préciser ce que je voulais dire tout à l’heure :
+
+Pour beaucoup de personnes trans et/ou non-binaires, le mot « femme » ne correspond pas à leur identité, même si elles subissent des violences sexistes ou liées au féminin. 
+Ce n’est pas qu’une question d’ajouter une phrase explicative à côté : le mot lui-même peut faire obstacle ou créer un sentiment d’exclusion.
+
+Et il y a aussi toutes les personnes trans-féminines qui ne se définissent pas comme femmes, mais qui pourtant se reconnaissent dans le spectre du féminin, les personnes non-binaires qui vivent du sexisme et des violences basées sur le genre, ou les mecs trans qui subissent des violences parce qu’ils ont été socialisés comme filles ou n'ont pas un passing le permettant de passer sous les radars. 
+Selon les mots qu’on choisit, ces personnes comprennent vite si elles sont légitimes ou non à franchir la porte.
+
+Du coup je pense que ce point devrait être posé clairement dans la stratégie de l’asso : est-ce qu’on vise les femmes comme identité, ou les personnes concernées par les violences basées sur le genre (même sans se dire femmes) ? Parce que selon comment on nomme, on inclut ou on exclut.oir. <This message was edited>
+10/16/25, 12:28 - Audrey Relandeau: les pers concernées par les violences basées sur le genre - mais avec le mot "femme" dans notre noms d'asso; donc cohérence/explication juste à poser/expliciter <This message was edited>
+10/16/25, 12:30 - Audrey Relandeau: je te ferais lire, si ok pour toi, la partie de notre projet asso qui parle de notre public cible, pour etre "dans les clous" ;) - et tout le PA d'ailleurs, car je risque fort de faire des oubli de language, etant sensibilisée mais pas experte sur le sujet :)
+10/16/25, 12:48 - Alice / Алиса: Je me dis un truc en te lisant : si Meril l’a déjà soulevé, et que moi je le relève aussi, alors c’est sans doute pas un détail de formulation mais un angle mort réel.
+Les personnes concernées le voient très vite — et souvent avant nous — donc si on ne clarifie pas en interne ce qu’on entend par “public visé”, on risque d'envoyer un message d'exclusion à des gens. Cette question des identités et minorités de genre semblent être un angle mort et iels vont le ressentir. 
+
+Accueillir un public spécifique, surtout sur les questions de genre, ça demande de se former un minimum et de poser clairement le cadre, pas juste de “bien expliquer” autour d’un mot. Ça peut valoir le coup d’en faire un vrai point de réflexion dans la stratégie de l’asso et de poser les mots, les questions et de surtout prévoir des temps de formation
+10/16/25, 12:49 - Audrey Relandeau: je prends note - et ajout dans les thémes de formation à proposer aux benevoles - merci
+10/16/25, 12:54 - Alice / Алиса: Je ne parlais pas seulement d’une formation pour les bénévoles 😉
+Pour moi c’est un sujet de fond, qui touche à la stratégie de l’asso, à son positionnement politique et à qui elle inclut ou exclut — pas juste une sensibilisation ponctuelle.
+10/16/25, 12:55 - Audrey Relandeau: tous les membres de l'asso sont des bénévoles, donc j'y inclueais aussi le CA et choix stratégiques qui en decouleraient <This message was edited>
+10/16/25, 12:58 - Audrey Relandeau: Dans les trucs à faire et priorités, en transparence, ce sera deja top de reussir à organiser au moins un temps de sensib/reflexion sur le sujet avant l'AG 2025 (qu'on a prevu fin nov et durant laquelle on doit présenter le PA)...et que l'on a qu'un CA avant cette date et des benevoles pas dispos.....
+10/16/25, 12:58 - Audrey Relandeau: mais j'ai bien cet element en tete et en pertinence - je l'inclue dans la TO DO list des trucs importants.....:):)
+10/16/25, 13:09 - Alice / Алиса: Ca rouleeee
+10/16/25, 13:09 - Alice / Алиса: Du coup, à partir de nos échanges de tout à l'heure, tu pourra mettre à jour l'arborescence que tu souhaite avoir stp ?
+Comme ça je crée la structure et les pages vides en fonction <This message was edited>
+10/16/25, 20:45 - Audrey Relandeau: Je viens de te mettre l’option 3 ds notre cloud. Bsie
+10/17/25, 11:18 - Alice / Алиса: Hell, 
+Je viens de regarder
+10/17/25, 11:20 - Alice / Алиса: J'ai une question
+
+Est-ce que tu veux que ce que tu as indiqué comme sub-header, ça soit vraiment un sub-header, ou que ça soit un menu déroulant dans le header
+
+je te montre
+10/17/25, 11:21 - Alice / Алиса: IMG-20251017-WA0006.jpg (file attached)
+Un sub-header ça donnerai ça en très gros
+
+Tu clique sur le header, tu arrivé sur la page que tu as cliqué, et là tu as un sub-header qui est apparu et qui t'offre une navigation secondaire
+10/17/25, 11:21 - Alice / Алиса: IMG-20251017-WA0007.jpg (file attached)
+La deuxième option c'est ça
+10/17/25, 11:22 - Alice / Алиса: ça change pas grand chose, si ça n'est que dans l'optiopn 1, il faut une pâge d'acceuil par "catégorie" du header et que tu dois aller sur chaque acceuil de catégorie pour avoir accès au sous-lien de cette catégorie
+10/17/25, 11:24 - Audrey Relandeau: Hum hum intéressante question….:) et les deux ont des points intéressants….j’y réfléchis sous ma douche et te réponds juste après :) à tout
+10/17/25, 11:47 - Audrey Relandeau: Quelle est ta préférence en tant qu’utilisatrice de sites web?
+Une introduction à chaque catégorie pour comprendre quoi trouver dedans/infos clés avant d’aller dans les sous catégories ou directement voir toutes les sous catégories possibles et choisir celle où t’intéresse?
+
+Dans tous les cas, si je prends l’option 1, je pourrais remonter une partie des infos des sous header existants dans cette page Intel, soit même réduire le nombre de sous header.
+
+Pour l’accueil je trouve ça top d’avoir une intro avant d’aller dans les « autres » sous header (option 1). Mais je trouve pas forcément ça le plus pertinent pour les header 2 et 3…bon va falloir choisir….
+Je pencherais je pense pour l’option 1 dans cette première version de site car asso pas très connue et pt être besoin d’un peu plus d’aide/Acc à se retrouver dans le site pour en comprendre toutes les infos….
+
+Mais je comprends bien que l’option 2 est immédiatement plus lisible….,
+10/17/25, 11:53 - Alice / Алиса: En vrai je pense que l'option 1 est mieux
+Mais ça fait + de clics
+Et ça te fais créer des contenus en plus
+10/17/25, 11:53 - Alice / Алиса: Mais je pense que c'est clairement le mieux oui
+10/17/25, 11:55 - Audrey Relandeau: Ok alors allons sur l’option 1:)
+11/4/25, 16:44 - Audrey Relandeau: Bonjour bonjour madame!:)
+Peut être toujours en vacances et si h’ c’est le cas, oublie ce message 😉
+Si non, juste pour te dire que je suis de retour des miennes et vais commencer à drafter des contenus pour nos pages créées. Pourrais tu juste me renvoyer le lien pour le site bêta/test que tu as lancé? 
+Si on je reprendrais le dernier tab Excel de l’arborescence finale choisie .
+
+Des bises
+11/24/25, 12:45 - Alice / Алиса: Coucou Audrey, 
+J'espère que tu vas bien, 
+
+Je ne suis pas en vacances, c'est prévu pour la fin d'année.
+Toutefois d'ici là, j'ai un planning boulot/perso très chargé, et après je serai en visite terrain tout le mois de janvier..
+Je risque donc de n'avoir pas de temps de dispo pour bosser sur le site, avant début février. 
+
+Ca te laissera le temps pour préparer les pages à construire !
+11/24/25, 14:08 - Audrey Relandeau: Cc - oh sorry. J’avais cru me rappeler que tu m’avais dit être off sur un tps en oct - nov.
+
+Ok, noté pour re-avancer sur le site plutôt zn février.
+Pour les pages à construire, pourrais tu juste me donner une idée du nombre de mots ou format attendu pour chacune - j’avoue avoir du mal à visualiser le rendu final et le besoin (en terme de densité) de chaque page. 
+Ou tout est libre et possible??:)
+11/24/25, 14:09 - Alice / Алиса: Hello
+11/24/25, 14:09 - Alice / Алиса: Alors non justement, j'avais dis que j'étais dispo jusqu'à mi/fin octobre 😅 
+
+Mais pas grave
+11/24/25, 14:10 - Alice / Алиса: Pour le formqt oui c'est libre.
+Je te laisse regarder sur les autres sites du même genre comment c'est fait et après c'est une décision éditoriale à prendre de ton côté
+11/24/25, 14:11 - Audrey Relandeau: Oui j avais compris ça, t’inquiète. Mais je croyais que c’était parce que tu étais off un peu après. Bref! J’ai traîné sorry <This message was edited>
+11/24/25, 22:53 - +33 6 49 34 58 07 requested to join.
+1/28/26, 12:17 - Audrey Relandeau: Cc Alice. J’espère que tu vas bien. Comme discuter j’ai avancé sur quelques cont eus écrits - pas finis - pour nourrir notre site. J’aimerais pouvoir « le lancer » pour  notre AG le 7 mars.
+Me confirmes tu que tu aurais quelques temps sur février pour m’aider à cela? Si je t’envoie les bons contenus bien sûr:)
+
+*Si oui*, merciiiii!:):). 
+peux tu me dire/donner des consignes que ce qu’il te faut pour avancer et tes deadlines éventuelles.
+
+*Si plus/pas le temps* - car je me rappelle que tu es déjà grave engagée sur plein de trucs dont la fac:) - je comprends bien sûr. Dismoi vite juste svp et je vois comment je peux faire autrement - et comment du coup récupérer la main sur la partie technique que tu as déjà créé pour que quelqu’un d autre le fasse (je ne saurais pas le faire of course :)).
+
+Des bises à toi
+Belle journée
+1/28/26, 12:27 - Audrey Relandeau: This message was deleted
+1/28/26, 14:18 - Alice / Алиса: Hello ma chère Audrey, 
+J'espère que tu vas bien
+1/28/26, 14:18 - Alice / Алиса: Je te souhaite une belle et heureuse année !
+1/28/26, 14:18 - Alice / Алиса: Je suis désolé, je crois me rendre compte en te lisant que je n'ai pas répondu à ton message perso
+Toutes mes excuses
+1/28/26, 14:19 - Alice / Алиса: Concernant le site, oui oui je te confirme bien qu'en février les choses devraient aller mieux de mon côté niveau dispo
+1/28/26, 14:19 - Alice / Алиса: Je donne un cours à la fac le 10 février, et après je suis à nouveau plus dispo, moins la tête dans l'eau
+1/30/26, 17:20 - Audrey Relandeau: Cc / chouette! Je me fixe donc le 10 comme deadline pour avancer un max avant sur les contenus!:)
+Si on peut se caler un point visio après le 10 pour se caler sur c’le reste à faire - et se faire un Cc en live ;) - ça serait cool. Tu me diras en fonction de tes temps.
+Une bise
+2/19/26, 22:33 - Audrey Relandeau: Cc madame! Comment vas?
+Une dispo semaine pro ou celle d’après pour faire un p’tit point visio sur notre chantier web. Je bloque un peu mais pas par manque d’envie ou de contenus, plus par manque de methodo et visibilité. Ta mise à jour sur ce qui est déjà fait et sur ce dit tu as concrètement besoin m’aidera surment :)
+Merkii!
+Bises
+2/23/26, 15:41 - Alice / Алиса: Coucou Audrey
+2/23/26, 15:41 - Alice / Алиса: J'espère que tu vas bien
+2/23/26, 15:41 - Alice / Алиса: Petit coucou en passant pour répondre à ton message
+2/23/26, 15:41 - Alice / Алиса: Alors, je suis toujours chaude pour bosser sur le site, mais il va falloir bien s'organiser
+2/23/26, 15:42 - Alice / Алиса: Y'a eu deux gros cyclones à Mada, et on fait deux réponses d'urgence, et je suis complétement sous l'eau niveau boulot
+2/23/26, 15:42 - Alice / Алиса: Donc c'est possible, mais va falloir qu'on soit efficaces 😅
+3/18/26, 16:52 - Audrey Relandeau: coucou alice - Bon, a quasi un mois de ton dernier message, j'espère que ton agenda pro s'est un peu calmé....quoique j'en doute au vu de ce que tu me racontes de mada :(. rien ne vous est épargné, entre catastrophes humaines et climatiques rhhhh
+3/18/26, 16:57 - Audrey Relandeau: Du coup, sur notre projet de site, quelle methodo préféres tu pour être  le plus efficient pour toi? Que je t'envoie tout d'un coup (tous les contenus de toutes les pages) ou au fur et a mesure que je les fait? sachant que je n'avance moi meme pas trés vite sur le sujet. Je n'ai fait que les contenu de la page "association" par ex pour le moment.
+3/18/26, 17:00 - Audrey Relandeau: page Association.docx (file attached)
+page Association.docx
+3/18/26, 17:00 - Audrey Relandeau: arborescence site WEB. V2.xlsx (file attached)
+arborescence site WEB. V2.xlsx
