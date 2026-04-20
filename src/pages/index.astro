@@ -1,133 +1,71 @@
 ---
+import { getEntry, getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
+import PageRenderer from '../components/PageRenderer.astro';
 import Section from '../components/Section.astro';
-import BlocCartes from '../components/BlocCartes.astro';
-import BlocStat from '../components/BlocStat.astro';
 import BlocCitation from '../components/BlocCitation.astro';
 import Draft from '../components/Draft.astro';
-import { site } from '../config/site';
+import { getSiteSettings } from '../lib/site';
+
+const page = await getEntry('pages', 'accueil');
+if (!page) throw new Error('content/pages/accueil.md introuvable');
+
+const settings = await getSiteSettings();
+
+// Témoignage à la une : premier témoignage avec a_la_une = true,
+// sinon premier de la liste, sinon rien.
+const allTemoignages = (await getCollection('temoignages')).sort(
+  (a, b) => a.data.ordre - b.data.ordre,
+);
+const featured = allTemoignages.find((t) => t.data.a_la_une) ?? allTemoignages[0];
+const FeaturedContent = featured ? (await render(featured)).Content : null;
+
+// Prochains événements (3 max, à venir).
+const now = new Date();
+const aVenir = (await getCollection('evenements'))
+  .filter((e) => e.data.date_debut.valueOf() >= now.valueOf())
+  .sort((a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf())
+  .slice(0, 3);
+
+function formatDate(d: Date): string {
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(d);
+}
+
+const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
 ---
 
 <Layout>
-  <Hero
-    titre="Se (re)toucher pour se (re)lier"
-    accroche="2mains de femmes agit contre l'isolement corporel des femmes par le toucher relationnel — non médicalisé, non sexualisé, fondé sur le consentement."
-    ctaPrimaire={{ label: 'Découvrir nos actions', href: '/association/interventions' }}
-    ctaSecondaire={{ label: 'Faire un don', href: site.helloasso.don, externe: true }}
-    variant="beige"
-  />
+  <PageRenderer page={page} />
 
-  <Section titre="Ce que nous faisons">
-    <BlocCartes
-      cartes={[
-        {
-          titre: 'Accompagnement corporel',
-          description:
-            "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps et aux autres, dans un cadre sécurisé.",
-          href: '/association/interventions',
-          cta: 'En savoir plus',
-          couleur: 'orange',
-        },
-        {
-          titre: 'Sensibilisation & formation',
-          description:
-            "Nous accompagnons les équipes du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques.",
-          href: '/pour/structures',
-          cta: 'Nos formats',
-          couleur: 'violet',
-        },
-        {
-          titre: 'Recherche-action & plaidoyer',
-          description:
-            "Documenter, partager et porter la voix pour faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité.",
-          href: '/isolement-corporel',
-          cta: 'Comprendre',
-          couleur: 'magenta',
-        },
-      ]}
-    />
-  </Section>
-
-  <Section titre="Un impensé social" fond="beige">
-    <div class="mb-8 max-w-3xl">
-      <p class="text-lg leading-relaxed">
-        L'isolement corporel, c'est l'absence récurrente de toucher bienveillant — ou au
-        contraire la présence de touchers uniquement toxiques. Un impensé social encore
-        largement absent des politiques publiques, et qui touche particulièrement les femmes
-        vulnérables.
-      </p>
-    </div>
-    <BlocStat
-      stats={[
-        {
-          valeur: '7 M+',
-          legende: "Personnes isolées socialement en France (11 % de la population).",
-          source: 'Fondation de France',
-        },
-        {
-          valeur: '40 %',
-          legende:
-            "des personnes sans-abri à Lyon sont des femmes. Mais 90 % des usagers des services sont des hommes.",
-          source: 'Rapport du Sénat, 2024',
-        },
-        {
-          valeur: '321 000',
-          legende:
-            "femmes victimes chaque année de violences conjugales physiques, sexuelles ou psychologiques en France.",
-          source: 'Miprof',
-        },
-      ]}
-    />
-    <p class="mt-6 text-sm">
-      <a href="/isolement-corporel" class="font-semibold text-orange hover:underline"
-        >Comprendre l'isolement corporel →</a
-      >
-    </p>
-  </Section>
-
-  <Section titre="Pour qui ?">
-    <BlocCartes
-      colonnes={3}
-      cartes={[
-        {
-          titre: "Vous êtes une structure d'accueil",
-          description:
-            "Enrichissez vos accompagnements en intégrant le toucher relationnel auprès des femmes que vous recevez.",
-          href: '/pour/structures',
-          cta: 'Nos offres',
-          couleur: 'bleu',
-        },
-        {
-          titre: 'Vous êtes une entreprise',
-          description:
-            "Soutenez le projet via le mécénat, ou mobilisez vos équipes autour du toucher, du consentement et du lien.",
-          href: '/pour/entreprises',
-          cta: 'Mécénat',
-          couleur: 'vert',
-        },
-        {
-          titre: 'Vous êtes une femme concernée',
-          description:
-            "Nos accompagnements sont gratuits, respectueux de votre rythme et de votre consentement.",
-          href: '/pour/femmes',
-          cta: 'Nous rencontrer',
-          couleur: 'magenta',
-        },
-      ]}
-    />
-  </Section>
-
-  <Section fond="beige">
-    <Draft reason="Citation fictive — à remplacer par une vraie parole">
-      <BlocCitation
-        variant="paper"
-        citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
-        auteur="Marion"
-        role="Participante, 56 ans — Lyon"
-      />
-    </Draft>
-  </Section>
+  {
+    featured && FeaturedContent && (
+      <Section fond="beige">
+        {featured.data.fictif ? (
+          <Draft reason={`Citation fictive — ${featured.data.auteur}`}>
+            <BlocCitation
+              variant="paper"
+              auteur={featured.data.auteur}
+              role={featured.data.role}
+            >
+              <FeaturedContent />
+            </BlocCitation>
+          </Draft>
+        ) : (
+          <BlocCitation
+            variant="paper"
+            auteur={featured.data.auteur}
+            role={featured.data.role}
+          >
+            <FeaturedContent />
+          </BlocCitation>
+        )}
+      </Section>
+    )
+  }
 
   <Section titre="Soutenir l'association" fond="violet">
     <div class="grid gap-8 md:grid-cols-2">
@@ -143,7 +81,7 @@ import { site } from '../config/site';
         </p>
         <div class="flex flex-wrap gap-3">
           <a
-            href={site.helloasso.don}
+            href={settings.helloasso_don}
             target="_blank"
             rel="noopener"
             class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
@@ -158,30 +96,59 @@ import { site } from '../config/site';
           </a>
         </div>
       </div>
-      <Draft reason="Événements fictifs — doublon de l'agenda">
-        <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
-          <h3 class="mb-3 text-xl font-bold">Prochains rendez-vous</h3>
-          <ul class="space-y-3 text-sm">
-            <li>
-              <p class="font-semibold">Atelier découverte auto-massages</p>
-              <p class="opacity-70">15 mai 2026 · La Médiane, Lyon 3</p>
-            </li>
-            <li>
-              <p class="font-semibold">Apéro des bénévoles</p>
-              <p class="opacity-70">22 mai 2026 · Pôle Bert, Lyon</p>
-            </li>
-            <li>
-              <p class="font-semibold">Formation toucher relationnel</p>
-              <p class="opacity-70">7 juin 2026 · Lyon</p>
-            </li>
-          </ul>
-          <p class="mt-4">
-            <a href="/agenda" class="text-sm font-semibold text-orange hover:underline"
-              >Voir l'agenda →</a
-            >
-          </p>
-        </div>
-      </Draft>
+      {
+        aVenir.length > 0 && (
+          <div>
+            {hasFictiveEvents ? (
+              <Draft reason="Événements fictifs — à remplacer via le CMS">
+                <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
+                  <h2 class="mb-3 text-xl font-bold">Prochains rendez-vous</h2>
+                  <ul class="space-y-3 text-sm">
+                    {aVenir.map((e) => (
+                      <li>
+                        <p class="font-semibold">{e.data.title}</p>
+                        <p class="opacity-70">
+                          {formatDate(e.data.date_debut)} · {e.data.lieu}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                  <p class="mt-4">
+                    <a
+                      href="/agenda"
+                      class="text-sm font-semibold text-orange hover:underline"
+                    >
+                      Voir l'agenda →
+                    </a>
+                  </p>
+                </div>
+              </Draft>
+            ) : (
+              <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
+                <h2 class="mb-3 text-xl font-bold">Prochains rendez-vous</h2>
+                <ul class="space-y-3 text-sm">
+                  {aVenir.map((e) => (
+                    <li>
+                      <p class="font-semibold">{e.data.title}</p>
+                      <p class="opacity-70">
+                        {formatDate(e.data.date_debut)} · {e.data.lieu}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+                <p class="mt-4">
+                  <a
+                    href="/agenda"
+                    class="text-sm font-semibold text-orange hover:underline"
+                  >
+                    Voir l'agenda →
+                  </a>
+                </p>
+              </div>
+            )}
+          </div>
+        )
+      }
     </div>
   </Section>
 </Layout>

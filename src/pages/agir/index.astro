@@ -1,69 +1,12 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import Hero from '../../components/Hero.astro';
-import Section from '../../components/Section.astro';
-import BlocCartes from '../../components/BlocCartes.astro';
-import Prose from '../../components/Prose.astro';
+import PageRenderer from '../../components/PageRenderer.astro';
+
+const page = await getEntry('pages', 'agir');
+if (!page) throw new Error("content/pages/agir.md introuvable");
 ---
 
-<Layout
-  title="Agir avec nous"
-  description="Bénévolat, praticien·nes solidaires, commissions techniques : plusieurs manières de faire vivre 2mains de femmes."
->
-  <Hero
-    titre="Agir avec nous"
-    accroche="L'association ne tient que par l'engagement de ses membres et de son réseau. Quelques heures par mois, un samedi par saison, ou un engagement régulier : il y a une place pour vous."
-    variant="orange"
-  />
-
-  <Section>
-    <BlocCartes
-      colonnes={2}
-      cartes={[
-        {
-          titre: 'Devenir bénévole',
-          description:
-            "Trois profils possibles : intervenant·e auprès des femmes, appui au développement via les commissions, ou ponctuel·le sur un chantier.",
-          href: '/agir/benevolat',
-          cta: 'Découvrir les profils',
-          couleur: 'violet',
-        },
-        {
-          titre: 'Praticien·nes solidaires',
-          description:
-            "Vous êtes masseur·se, calinothérapeute, socio-esthéticienne, ostéo, kiné… Rejoignez notre réseau de praticien·nes engagé·es auprès des femmes précaires.",
-          href: '/agir/praticiennes',
-          cta: 'Rejoindre le réseau',
-          couleur: 'orange',
-        },
-      ]}
-    />
-  </Section>
-
-  <Section titre="Et plus informellement" fond="beige">
-    <Prose>
-      <p>
-        On peut aussi nous soutenir en :
-      </p>
-      <ul>
-        <li>
-          <strong>Parlant de nous</strong> — à vos collègues, vos voisines, votre asso de
-          quartier, votre structure. L'isolement corporel reste tu : en parler, c'est déjà
-          agir.
-        </li>
-        <li>
-          <strong>Partageant nos ressources</strong> — articles, chiffres, témoignages sur
-          vos réseaux.
-        </li>
-        <li>
-          <strong>Adhérant à l'association</strong> — à prix libre, pour faire partie de la
-          communauté et voter en AG.
-        </li>
-        <li>
-          <strong>Faisant un don</strong> — montant libre via
-          <a href={`/soutenir/dons`}>HelloAsso</a>.
-        </li>
-      </ul>
-    </Prose>
-  </Section>
+<Layout title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+  <PageRenderer page={page} />
 </Layout>

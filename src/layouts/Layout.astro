@@ -2,7 +2,8 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { site } from '../config/site';
+import Banderole from '../components/Banderole.astro';
+import { getSiteSettings } from '../lib/site';
 
 type Props = {
   title?: string;
@@ -11,15 +12,22 @@ type Props = {
   noindex?: boolean;
 };
 
+const settings = await getSiteSettings();
+
 const {
   title,
-  description = site.mission,
+  description = settings.mission,
   image = '/brand/logo.svg',
   noindex = false,
 } = Astro.props;
 
-const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
-const canonical = new URL(Astro.url.pathname, site.url).toString();
+const fullTitle = title
+  ? `${title} — ${settings.nom_asso}`
+  : `${settings.nom_asso} — ${settings.accroche_globale}`;
+const canonical = new URL(Astro.url.pathname, settings.url).toString();
+
+const bandero = settings.banderole_urgence;
+const showBandero = bandero?.active && bandero.message;
 ---
 
 <!doctype html>
@@ -39,7 +47,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString();
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, site.url).toString()} />
+    <meta property="og:image" content={new URL(image, settings.url).toString()} />
     <meta property="og:locale" content="fr_FR" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -62,10 +70,11 @@ const canonical = new URL(Astro.url.pathname, site.url).toString();
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#contenu" class="skip-link">Aller au contenu principal</a>
-    <Header />
+    {showBandero && <Banderole message={bandero!.message!} couleur={bandero!.couleur} />}
+    <Header settings={settings} />
     <main id="contenu" class="flex-1">
       <slot />
     </main>
-    <Footer />
+    <Footer settings={settings} />
   </body>
 </html>

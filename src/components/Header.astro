@@ -1,5 +1,8 @@
 ---
-import { navigation, site } from '../config/site';
+import { navigation, type SiteSettings } from '../lib/site';
+
+type Props = { settings: SiteSettings };
+const { settings } = Astro.props;
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) =>
@@ -8,9 +11,13 @@ const isActive = (href: string) =>
 
 <header class="sticky top-0 z-40 border-b border-beige bg-paper/95 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-    <a href="/" class="flex items-center gap-2" aria-label={`Accueil — ${site.name}`}>
+    <a
+      href="/"
+      class="flex items-center gap-2"
+      aria-label={`Accueil — ${settings.nom_asso}`}
+    >
       <img src="/brand/logo.svg" alt="" class="h-10 w-auto" width="140" height="40" />
-      <span class="sr-only">{site.name}</span>
+      <span class="sr-only">{settings.nom_asso}</span>
     </a>
 
     <nav aria-label="Navigation principale" class="hidden lg:block">
@@ -29,16 +36,16 @@ const isActive = (href: string) =>
                 {item.label}
               </a>
               {item.children && (
-                <ul
-                  class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-                >
+                <ul class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                   {item.children.map((child) => (
                     <li>
                       <a
                         href={child.href}
                         class:list={[
                           'block rounded px-3 py-2 text-sm hover:bg-beige',
-                          isActive(child.href) ? 'text-orange font-semibold' : 'text-ink',
+                          isActive(child.href)
+                            ? 'text-orange font-semibold'
+                            : 'text-ink',
                         ]}
                       >
                         {child.label}
@@ -55,7 +62,7 @@ const isActive = (href: string) =>
 
     <div class="flex items-center gap-3">
       <a
-        href={site.helloasso.don}
+        href={settings.helloasso_don}
         target="_blank"
         rel="noopener"
         class="hidden rounded-full bg-orange px-4 py-2 text-sm font-bold text-paper shadow-sm transition-colors hover:bg-magenta md:inline-block"
@@ -70,7 +77,21 @@ const isActive = (href: string) =>
         aria-label="Ouvrir le menu"
         data-menu-toggle
       >
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+        <svg
+          viewBox="0 0 24 24"
+          width="22"
+          height="22"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
       </button>
     </div>
   </div>
@@ -85,7 +106,9 @@ const isActive = (href: string) =>
                 href={item.href}
                 class:list={[
                   'block rounded px-3 py-2 text-base font-semibold',
-                  isActive(item.href) ? 'bg-beige text-orange' : 'text-ink hover:bg-beige',
+                  isActive(item.href)
+                    ? 'bg-beige text-orange'
+                    : 'text-ink hover:bg-beige',
                 ]}
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
@@ -115,7 +138,7 @@ const isActive = (href: string) =>
         }
         <li class="pt-3">
           <a
-            href={site.helloasso.don}
+            href={settings.helloasso_don}
             target="_blank"
             rel="noopener"
             class="block rounded-full bg-orange px-4 py-3 text-center font-bold text-paper"

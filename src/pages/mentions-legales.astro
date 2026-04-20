@@ -1,98 +1,12 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import Section from '../components/Section.astro';
-import Prose from '../components/Prose.astro';
-import Draft from '../components/Draft.astro';
-import { site } from '../config/site';
+import PageRenderer from '../components/PageRenderer.astro';
+
+const page = await getEntry('pages', 'mentions-legales');
+if (!page) throw new Error("content/pages/mentions-legales.md introuvable");
 ---
 
-<Layout title="Mentions légales">
-  <Hero titre="Mentions légales" variant="beige" />
-
-  <Section>
-    <Prose>
-      <h2>Éditeur du site</h2>
-      <p>
-        <strong>2mains de femmes</strong><br />
-        Association loi 1901, créée en 2024<br />
-        Siège : {site.contact.address}<br />
-        Email : <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
-        Téléphone : {site.contact.phone}
-      </p>
-      <Draft reason="SIREN et RNA à récupérer auprès d'Audrey">
-        <p>
-          SIREN : <em>[à compléter]</em><br />
-          Numéro RNA : <em>W… [à compléter]</em>
-        </p>
-      </Draft>
-
-      <h2>Directrice de la publication</h2>
-      <p>{site.legal.directeurPublication}, présidente de l'association.</p>
-
-      <h2>Hébergeur</h2>
-      <Draft reason="Coordonnées hébergeur (mon identité ou domiciliation) à arbitrer">
-        <p>
-          Serveur privé, hébergé en France.<br />
-          Les coordonnées complètes de l'hébergeur sont disponibles sur simple demande à
-          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
-        </p>
-      </Draft>
-
-      <h2>Propriété intellectuelle</h2>
-      <p>
-        L'ensemble des contenus du site (textes, images, logo, identité visuelle) est la
-        propriété de l'association 2mains de femmes, sauf mention contraire.
-      </p>
-      <p>
-        Les logos, photos et éléments graphiques fournis par nos partenaires, financeurs ou
-        pris lors d'événements restent la propriété de leurs auteur·ices. Leur utilisation
-        hors du site requiert leur accord préalable.
-      </p>
-      <p>
-        Vous souhaitez réutiliser un contenu (citation, donnée chiffrée, extrait d'article) ?
-        Écrivez-nous — nous sommes généralement favorables au partage, avec mention de la
-        source.
-      </p>
-
-      <h2>Crédits</h2>
-      <ul>
-        <li>Identité visuelle : graphiste de l'association (2025).</li>
-        <li>
-          Typographie : <a
-            href="https://fonts.google.com/specimen/Nunito"
-            target="_blank"
-            rel="noopener"
-          >Nunito</a> (SIL Open Font License), auto-hébergée sur notre serveur.
-        </li>
-        <li>
-          Site réalisé avec <a href="https://astro.build" target="_blank" rel="noopener"
-            >Astro</a
-          > et <a href="https://tailwindcss.com" target="_blank" rel="noopener">Tailwind CSS</a>.
-        </li>
-      </ul>
-
-      <h2>Liens externes</h2>
-      <p>
-        Ce site contient des liens vers des sites tiers (HelloAsso, partenaires, ressources,
-        réseaux sociaux). L'association n'est pas responsable du contenu de ces sites.
-      </p>
-
-      <h2>Responsabilité</h2>
-      <p>
-        Les informations publiées sur ce site sont fournies à titre indicatif. Malgré tout
-        le soin apporté à leur rédaction, des erreurs ou omissions peuvent subsister.
-        Signalez-les-nous à
-        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
-      </p>
-
-      <h2>Signalement de contenu</h2>
-      <p>
-        Vous pensez qu'un contenu enfreint vos droits, votre vie privée ou la loi ?
-        Écrivez-nous — nous répondons sous 7 jours maximum.
-      </p>
-
-      <p class="mt-8 text-sm opacity-60">Dernière mise à jour : avril 2026.</p>
-    </Prose>
-  </Section>
+<Layout title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+  <PageRenderer page={page} />
 </Layout>

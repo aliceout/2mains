@@ -1,96 +1,12 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import Hero from '../../components/Hero.astro';
-import Section from '../../components/Section.astro';
-import Prose from '../../components/Prose.astro';
-import BlocCitation from '../../components/BlocCitation.astro';
+import PageRenderer from '../../components/PageRenderer.astro';
+
+const page = await getEntry('pages', 'toucher');
+if (!page) throw new Error("content/pages/toucher.md introuvable");
 ---
 
-<Layout
-  title="Le toucher relationnel"
-  description="Définir le toucher relationnel : non médical, non sexuel, non violent, au service du lien."
->
-  <Hero
-    titre="Le toucher relationnel"
-    sousTitre="L'isolement corporel"
-    accroche="Un toucher non médical, non sexuel, non violent — qui cherche à établir un contact bienveillant et tendre. Un besoin humain vital qui apaise, rassure, structure l'identité et soutient la confiance."
-    variant="violet"
-  />
-
-  <Section titre="De quoi parle-t-on ?">
-    <Prose>
-      <p>
-        Le toucher relationnel est un toucher
-        <strong>non sexualisé, sans diagnostic médical, qui cherche à établir un contact
-        bienveillant et tendre</strong>. Il se distingue clairement :
-      </p>
-      <ul>
-        <li>
-          <strong>du toucher médical</strong>, qui examine, soigne ou évalue ;
-        </li>
-        <li>
-          <strong>du toucher thérapeutique</strong> (ostéopathie, kiné), qui vise un travail
-          sur les tissus ;
-        </li>
-        <li>
-          <strong>du toucher sexuel ou érotique</strong>, qui relève de l'intime et du
-          consentement spécifique ;
-        </li>
-        <li>
-          <strong>du toucher violent ou intrusif</strong>, qui abîme.
-        </li>
-      </ul>
-      <p>
-        Il est plus proche de ce que recouvrent la câlinothérapie, certaines pratiques
-        d'éveil corporel, d'automassage, de respiration en présence, ou encore de jeux
-        tactiles — toujours dans un <strong>cadre éthique</strong>, consenti, ajusté à la
-        personne.
-      </p>
-    </Prose>
-  </Section>
-
-  <Section titre="Pourquoi c'est vital" fond="beige">
-    <Prose>
-      <p>
-        Le toucher bienveillant est un des premiers régulateurs émotionnels connus du vivant.
-        Il active des hormones liées à l'attachement et à l'apaisement (ocytocine), réduit
-        les marqueurs de stress (cortisol), structure l'image de soi dès la petite enfance,
-        et soutient la confiance envers les autres tout au long de la vie.
-      </p>
-      <p>
-        Pour des personnes dont le corps a été traversé par la violence, la médicalisation,
-        la marchandisation ou l'invisibilisation, retrouver un toucher sécurisant, choisi,
-        sans injonction de performance, c'est parfois <strong>retrouver un sentiment
-        d'exister comme sujet, et non plus comme objet</strong>.
-      </p>
-    </Prose>
-  </Section>
-
-  <Section>
-    <BlocCitation
-      variant="beige"
-      citation="Ce manque de toucher sécurisant, en particulier pour les femmes, nourrit détresse psychique, repli, perte d'estime de soi, abandon du corps et ruptures sociales. C'est cela, l'isolement corporel."
-      auteur="Extrait du leaflet 2mains de femmes"
-    />
-  </Section>
-
-  <Section titre="Un cadre, toujours" fond="violet">
-    <Prose>
-      <p class="!text-paper">
-        Parce que le sujet est sensible, nous travaillons exclusivement dans un cadre
-        sécurisant :
-      </p>
-      <ul class="!text-paper">
-        <li>Consentement explicite, renouvelé à chaque séance ;</li>
-        <li>Possibilité d'arrêter ou d'ajuster à tout moment, sans justification ;</li>
-        <li>
-          Formation et supervision des intervenant·es, avec un cadre déontologique strict ;
-        </li>
-        <li>
-          Coopération avec les équipes professionnelles qui accompagnent déjà la personne ;
-        </li>
-        <li>Gratuité pour les femmes accompagnées dans le cadre de nos parcours.</li>
-      </ul>
-    </Prose>
-  </Section>
+<Layout title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+  <PageRenderer page={page} />
 </Layout>

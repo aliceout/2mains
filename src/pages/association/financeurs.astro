@@ -1,30 +1,25 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 
+const page = await getEntry('pages', 'financeurs');
+if (!page) throw new Error('content/pages/financeurs.md introuvable');
+
 const all = (await getCollection('partenaires')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
-const financeurs = all.filter((p) =>
-  p.data.type === 'financeur public' || p.data.type === 'financeur privé',
+const financeurs = all.filter(
+  (p) => p.data.type === 'financeur public' || p.data.type === 'financeur privé',
 );
 const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif');
 const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
-<Layout
-  title="Financeurs et partenaires"
-  description="Les alliances qui soutiennent notre ancrage local et notre capacité d'innovation sociale."
->
-  <Hero
-    titre="Financeurs et partenaires"
-    sousTitre="L'association"
-    accroche="Le développement de 2mains de femmes repose sur des alliances de confiance avec des financeurs, des réseaux de l'ESS et des partenaires du social, du médico-social et de la santé. Ces coopérations soutiennent notre ancrage local, la qualité de nos actions et notre capacité d'innovation sociale."
-    variant="beige"
-  />
+<Layout title={page.data.title} description={page.data.description}>
+  {page.data.hero && <Hero {...page.data.hero} />}
 
   {
     financeurs.length > 0 && (
@@ -90,7 +85,8 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
     <Prose>
       <h2 class="!text-paper">Vous souhaitez nous soutenir ?</h2>
       <p>
-        Collectivité, entreprise, fondation, réseau ou structure associative : parlons-nous.
+        Collectivité, entreprise, fondation, réseau ou structure associative :
+        parlons-nous.
       </p>
       <p>
         <a href="/contact" class="!text-paper !underline">Nous écrire</a> ·{' '}

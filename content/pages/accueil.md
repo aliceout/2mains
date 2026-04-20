@@ -1,0 +1,68 @@
+---
+title: "Accueil"
+description: "2mains de femmes — se (re)toucher pour se (re)lier. Association lyonnaise contre l'isolement corporel des femmes par le toucher relationnel."
+hero:
+  titre: "Se (re)toucher pour se (re)lier"
+  accroche: "2mains de femmes agit contre l'isolement corporel des femmes par le toucher relationnel — non médicalisé, non sexualisé, fondé sur le consentement."
+  variant: "beige"
+  cta_primaire:
+    label: "Découvrir nos actions"
+    href: "/association/interventions"
+  cta_secondaire:
+    label: "Faire un don"
+    href: "https://www.helloasso.com/associations/2mains-de-femmes"
+    externe: true
+sections:
+  - type: "cartes"
+    titre: "Ce que nous faisons"
+    colonnes: 3
+    cartes:
+      - titre: "Accompagnement corporel"
+        description: "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps et aux autres, dans un cadre sécurisé."
+        href: "/association/interventions"
+        cta: "En savoir plus"
+        couleur: "orange"
+      - titre: "Sensibilisation & formation"
+        description: "Nous accompagnons les équipes du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques."
+        href: "/pour/structures"
+        cta: "Nos formats"
+        couleur: "violet"
+      - titre: "Recherche-action & plaidoyer"
+        description: "Documenter, partager et porter la voix pour faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité."
+        href: "/isolement-corporel"
+        cta: "Comprendre"
+        couleur: "magenta"
+  - type: "stats"
+    titre: "Un impensé social"
+    fond: "beige"
+    intro: "L'isolement corporel, c'est l'absence récurrente de toucher bienveillant — ou au contraire la présence de touchers uniquement toxiques. Un impensé social encore largement absent des politiques publiques, qui touche particulièrement les femmes vulnérables."
+    stats:
+      - valeur: "7 M+"
+        legende: "Personnes isolées socialement en France (11 % de la population)."
+        source: "Fondation de France"
+      - valeur: "40 %"
+        legende: "des personnes sans-abri à Lyon sont des femmes. Mais 90 % des usagers des services sont des hommes."
+        source: "Rapport du Sénat, 2024"
+      - valeur: "321 000"
+        legende: "femmes victimes chaque année de violences conjugales physiques, sexuelles ou psychologiques en France."
+        source: "Miprof"
+  - type: "cartes"
+    titre: "Pour qui ?"
+    colonnes: 3
+    cartes:
+      - titre: "Vous êtes une structure d'accueil"
+        description: "Enrichissez vos accompagnements en intégrant le toucher relationnel auprès des femmes que vous recevez."
+        href: "/pour/structures"
+        cta: "Nos offres"
+        couleur: "bleu"
+      - titre: "Vous êtes une entreprise"
+        description: "Soutenez le projet via le mécénat, ou mobilisez vos équipes autour du toucher, du consentement et du lien."
+        href: "/pour/entreprises"
+        cta: "Mécénat"
+        couleur: "vert"
+      - titre: "Vous êtes une femme concernée"
+        description: "Nos accompagnements sont gratuits, respectueux de votre rythme et de votre consentement."
+        href: "/pour/femmes"
+        cta: "Nous rencontrer"
+        couleur: "magenta"
+---

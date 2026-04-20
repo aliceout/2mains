@@ -5,6 +5,7 @@ date_fin: 2026-06-07T17:00:00
 lieu: "Lyon (lieu à préciser)"
 public: "professionnels"
 gratuit: true
+fictif: true
 inscription_url: "mailto:contact@2mainsdefemmes.org?subject=Inscription formation 7 juin"
 ---
 

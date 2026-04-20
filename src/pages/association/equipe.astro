@@ -1,26 +1,23 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
-import { site } from '../../config/site';
+import { getSiteSettings } from '../../lib/site';
+
+const page = await getEntry('pages', 'equipe');
+if (!page) throw new Error('content/pages/equipe.md introuvable');
+
+const settings = await getSiteSettings();
 
 const ca = (await getCollection('equipe')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
 ---
 
-<Layout
-  title="Notre équipe"
-  description="Conseil d'administration, bénévoles et réseau de praticien·nes solidaires de 2mains de femmes."
->
-  <Hero
-    titre="Notre équipe"
-    sousTitre="L'association"
-    accroche="2mains de femmes s'appuie sur une gouvernance participative. Conseil d'administration, bénévoles, personnes ressources et partenaires contribuent ensemble au développement du projet avec une même exigence : qualité relationnelle, éthique et ancrage terrain."
-    variant="orange"
-  />
+<Layout title={page.data.title} description={page.data.description}>
+  {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section titre="Le conseil d'administration">
     <Prose>
@@ -82,10 +79,10 @@ const ca = (await getCollection('equipe')).sort(
   <Section titre="Les praticien·nes solidaires">
     <Prose>
       <p>
-        Nous développons progressivement un réseau de <strong>praticien·nes du toucher et/ou
-        du corps</strong> prêt·es à soutenir l'association par le biais de collectes de dons
-        auprès de leur clientèle, et/ou de séances sans reste à charge pour les femmes
-        accompagnées par 2mains de femmes.
+        Nous développons progressivement un réseau de <strong>praticien·nes du toucher
+        et/ou du corps</strong> prêt·es à soutenir l'association par le biais de collectes
+        de dons auprès de leur clientèle, et/ou de séances sans reste à charge pour les
+        femmes accompagnées par 2mains de femmes.
       </p>
       <p>
         Ce réseau vise à faciliter le (re)accès à la santé des femmes en situation de
@@ -112,7 +109,7 @@ const ca = (await getCollection('equipe')).sort(
       </ul>
       <p>
         Envie de contribuer à une commission ?
-        <a href={`mailto:${site.contact.email}`}>Écrivez-nous</a>.
+        <a href={`mailto:${settings.email_contact}`}>Écrivez-nous</a>.
       </p>
     </Prose>
   </Section>

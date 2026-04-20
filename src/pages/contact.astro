@@ -1,20 +1,27 @@
 ---
+import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
-import { site } from '../config/site';
+import Draft from '../components/Draft.astro';
+import { getSiteSettings } from '../lib/site';
+
+const page = await getEntry('pages', 'contact');
+if (!page) throw new Error('content/pages/contact.md introuvable');
+
+const settings = await getSiteSettings();
+
+// Endpoint backend (service contact-mail Docker).
+// Configuré via la variable PUBLIC_CONTACT_ENDPOINT (ex: "/api/contact").
+// En dev sans serveur, on tombe sur un formulaire mailto: avec un ruban "Draft"
+// pour indiquer que l'envoi n'est pas câblé.
+const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? (import.meta.env.PROD ? '/api/contact' : '');
+const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
 ---
 
-<Layout
-  title="Nous contacter"
-  description="Écrire à 2mains de femmes — un message, une question, une envie de rejoindre le projet."
->
-  <Hero
-    titre="Nous contacter"
-    accroche="Un message, une question, une idée, une envie — écrivez-nous, nous lisons tout et nous répondons."
-    variant="violet"
-  />
+<Layout title={page.data.title} description={page.data.description}>
+  {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>
     <div class="grid gap-10 md:grid-cols-[1fr_1fr]">
@@ -23,40 +30,40 @@ import { site } from '../config/site';
           <h2>Nos coordonnées</h2>
           <p>
             <strong>Par email</strong><br />
-            <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+            <a href={`mailto:${settings.email_contact}`}>{settings.email_contact}</a>
           </p>
           <p>
             <strong>Par téléphone</strong><br />
-            {site.contact.phone}
+            {settings.telephone}
           </p>
           <p>
             <strong>Où nous trouver</strong><br />
-            {site.contact.address}
+            {settings.adresse}
           </p>
           <h3>Sur les réseaux</h3>
           <ul>
             {
-              site.social.facebook && (
+              settings.reseaux.facebook && (
                 <li>
-                  <a href={site.social.facebook} target="_blank" rel="noopener">
+                  <a href={settings.reseaux.facebook} target="_blank" rel="noopener">
                     Facebook
                   </a>
                 </li>
               )
             }
             {
-              site.social.instagram && (
+              settings.reseaux.instagram && (
                 <li>
-                  <a href={site.social.instagram} target="_blank" rel="noopener">
+                  <a href={settings.reseaux.instagram} target="_blank" rel="noopener">
                     Instagram
                   </a>
                 </li>
               )
             }
             {
-              site.social.linkedin && (
+              settings.reseaux.linkedin && (
                 <li>
-                  <a href={site.social.linkedin} target="_blank" rel="noopener">
+                  <a href={settings.reseaux.linkedin} target="_blank" rel="noopener">
                     LinkedIn
                   </a>
                 </li>
@@ -67,127 +74,211 @@ import { site } from '../config/site';
       </div>
 
       <div>
-        <form
-          id="contact-form"
-          class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
-        >
-          <h2 class="text-2xl font-bold">Nous écrire</h2>
-
-          <label class="flex flex-col gap-1">
-            <span class="text-sm font-semibold">Votre nom</span>
-            <input
-              name="nom"
-              type="text"
-              required
-              maxlength="200"
-              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
-            />
-          </label>
-
-          <label class="flex flex-col gap-1">
-            <span class="text-sm font-semibold">Votre email</span>
-            <input
-              name="email"
-              type="email"
-              required
-              maxlength="320"
-              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
-            />
-          </label>
-
-          <label class="flex flex-col gap-1">
-            <span class="text-sm font-semibold">Vous êtes</span>
-            <select
-              name="type"
-              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+        {
+          mode === 'mailto' && (
+            <Draft reason="Formulaire en mode mailto — PUBLIC_CONTACT_ENDPOINT non défini">
+              <form
+                action={`mailto:${settings.email_contact}`}
+                method="post"
+                enctype="text/plain"
+                class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
+              >
+                <h2 class="text-2xl font-bold">Nous écrire</h2>
+                <label class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold">Votre nom</span>
+                  <input
+                    name="nom"
+                    type="text"
+                    required
+                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  />
+                </label>
+                <label class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold">Votre email</span>
+                  <input
+                    name="email"
+                    type="email"
+                    required
+                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  />
+                </label>
+                <label class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold">Vous êtes</span>
+                  <select
+                    name="type"
+                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  >
+                    <option>Une femme qui souhaite en savoir plus</option>
+                    <option>Une structure d'accueil</option>
+                    <option>Une entreprise</option>
+                    <option>Un·e praticien·ne du corps</option>
+                    <option>Un·e futur·e bénévole</option>
+                    <option>Un·e journaliste / chercheur·se</option>
+                    <option>Autre</option>
+                  </select>
+                </label>
+                <label class="flex flex-col gap-1">
+                  <span class="text-sm font-semibold">Votre message</span>
+                  <textarea
+                    name="message"
+                    rows="6"
+                    required
+                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  />
+                </label>
+                <input
+                  type="text"
+                  name="website"
+                  tabindex={-1}
+                  autocomplete="off"
+                  class="hidden"
+                  aria-hidden="true"
+                />
+                <button
+                  type="submit"
+                  class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+                >
+                  Envoyer le message
+                </button>
+                <p class="text-xs opacity-70">
+                  Ce formulaire ouvre pour l'instant votre logiciel de messagerie par
+                  défaut. Le backend SMTP sera branché quand le serveur sera configuré.
+                </p>
+              </form>
+            </Draft>
+          )
+        }
+        {
+          mode === 'smtp' && (
+            <form
+              method="POST"
+              action={endpoint}
+              class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
+              data-contact-form
             >
-              <option>Une femme qui souhaite en savoir plus</option>
-              <option>Une structure d'accueil</option>
-              <option>Une entreprise</option>
-              <option>Un·e praticien·ne du corps</option>
-              <option>Un·e futur·e bénévole</option>
-              <option>Un·e journaliste / chercheur·se</option>
-              <option>Autre</option>
-            </select>
-          </label>
+              <h2 class="text-2xl font-bold">Nous écrire</h2>
 
-          <label class="flex flex-col gap-1">
-            <span class="text-sm font-semibold">Votre message</span>
-            <textarea
-              name="message"
-              rows="6"
-              required
-              maxlength="5000"
-              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
-            ></textarea>
-          </label>
+              <label class="flex flex-col gap-1">
+                <span class="text-sm font-semibold">
+                  Votre nom <span class="text-orange">*</span>
+                </span>
+                <input
+                  name="nom"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                />
+              </label>
 
-          {/* Honeypot anti-spam — caché pour humain, piège pour bot */}
-          <input
-            type="text"
-            name="website"
-            tabindex="-1"
-            autocomplete="off"
-            class="hidden"
-            aria-hidden="true"
-          />
+              <label class="flex flex-col gap-1">
+                <span class="text-sm font-semibold">
+                  Votre email <span class="text-orange">*</span>
+                </span>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                />
+              </label>
 
-          <button
-            type="submit"
-            class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta disabled:opacity-50"
-          >
-            Envoyer le message
-          </button>
+              <label class="flex flex-col gap-1">
+                <span class="text-sm font-semibold">Vous êtes</span>
+                <select
+                  name="type"
+                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                >
+                  <option>Une femme qui souhaite en savoir plus</option>
+                  <option>Une structure d'accueil</option>
+                  <option>Une entreprise</option>
+                  <option>Un·e praticien·ne du corps</option>
+                  <option>Un·e futur·e bénévole</option>
+                  <option>Un·e journaliste / chercheur·se</option>
+                  <option>Autre</option>
+                </select>
+              </label>
 
-          <p
-            id="contact-feedback"
-            class="text-sm"
-            role="status"
-            aria-live="polite"
-          >
-          </p>
-        </form>
+              <label class="flex flex-col gap-1">
+                <span class="text-sm font-semibold">
+                  Votre message <span class="text-orange">*</span>
+                </span>
+                <textarea
+                  name="message"
+                  rows="6"
+                  required
+                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                />
+              </label>
+
+              {/* Honeypot */}
+              <input
+                type="text"
+                name="website"
+                tabindex={-1}
+                autocomplete="off"
+                class="hidden"
+                aria-hidden="true"
+              />
+
+              <button
+                type="submit"
+                class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+              >
+                Envoyer le message
+              </button>
+
+              <p role="status" aria-live="polite" class="text-sm" data-status />
+            </form>
+          )
+        }
       </div>
     </div>
   </Section>
 </Layout>
 
-<script>
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const feedback = document.getElementById('contact-feedback') as HTMLElement | null;
-  if (form && feedback) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
-      button.disabled = true;
-      feedback.textContent = 'Envoi en cours…';
-      feedback.style.color = '';
-
-      const data = Object.fromEntries(new FormData(form).entries());
-
-      try {
-        const res = await fetch('/api/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+{
+  mode === 'smtp' && (
+    <script is:inline>
+      (function () {
+        const form = document.querySelector('[data-contact-form]');
+        if (!form) return;
+        const status = form.querySelector('[data-status]');
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!status) return;
+          const btn = form.querySelector('button[type=submit]');
+          btn?.setAttribute('disabled', 'true');
+          status.textContent = 'Envoi en cours…';
+          try {
+            const fd = new FormData(form);
+            const payload = Object.fromEntries(fd.entries());
+            const res = await fetch(form.action, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (res.ok) {
+              status.textContent =
+                'Merci ! Votre message a bien été envoyé. Nous vous répondons sous quelques jours.';
+              status.className = 'text-sm text-vert';
+              form.reset();
+            } else {
+              const err = await res.json().catch(() => ({}));
+              status.textContent =
+                'Erreur : ' + (err.error || 'envoi impossible, réessayez plus tard.');
+              status.className = 'text-sm text-magenta';
+              btn?.removeAttribute('disabled');
+            }
+          } catch (err) {
+            status.textContent =
+              'Erreur réseau. Vérifiez votre connexion et réessayez.';
+            status.className = 'text-sm text-magenta';
+            btn?.removeAttribute('disabled');
+          }
         });
-        if (res.ok) {
-          feedback.style.color = 'var(--color-bleu)';
-          feedback.textContent = 'Merci, votre message est bien envoyé. On vous répond vite.';
-          form.reset();
-        } else {
-          const body = await res.json().catch(() => ({}));
-          feedback.style.color = 'var(--color-magenta)';
-          feedback.textContent =
-            body.error || `Erreur ${res.status}. Réessayez ou écrivez-nous directement.`;
-        }
-      } catch {
-        feedback.style.color = 'var(--color-magenta)';
-        feedback.textContent =
-          "Impossible de joindre le serveur. Écrivez-nous directement à contact@2mainsdefemmes.org.";
-      } finally {
-        button.disabled = false;
-      }
-    });
-  }
-</script>
+      })();
+    </script>
+  )
+}

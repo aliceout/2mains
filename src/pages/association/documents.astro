@@ -1,13 +1,14 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 
+const page = await getEntry('pages', 'documents');
+if (!page) throw new Error('content/pages/documents.md introuvable');
+
 const docs = (await getCollection('documents')).sort((a, b) => {
-  // À paraître en bas ; sinon par date décroissante
-  if (a.data.a_paraitre !== b.data.a_paraitre)
-    return a.data.a_paraitre ? 1 : -1;
+  if (a.data.a_paraitre !== b.data.a_paraitre) return a.data.a_paraitre ? 1 : -1;
   const da = a.data.date?.valueOf() ?? 0;
   const db = b.data.date?.valueOf() ?? 0;
   return db - da;
@@ -19,16 +20,8 @@ function formatDate(d: Date | undefined): string {
 }
 ---
 
-<Layout
-  title="Nos documents"
-  description="Projet associatif, rapports d'activité, ressources — à télécharger librement."
->
-  <Hero
-    titre="Nos documents"
-    sousTitre="L'association"
-    accroche="Nos textes de référence et ressources sont en libre accès. Une question sur un document ? Écrivez-nous."
-    variant="beige"
-  />
+<Layout title={page.data.title} description={page.data.description}>
+  {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>
     <ul class="grid gap-4 md:grid-cols-2">

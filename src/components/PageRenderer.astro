@@ -1,0 +1,133 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import { marked } from 'marked';
+import Hero from './Hero.astro';
+import Section from './Section.astro';
+import Prose from './Prose.astro';
+import BlocCartes from './BlocCartes.astro';
+import BlocValeurs from './BlocValeurs.astro';
+import BlocStat from './BlocStat.astro';
+import BlocCitation from './BlocCitation.astro';
+import Draft from './Draft.astro';
+
+type Props = {
+  page: CollectionEntry<'pages'>;
+};
+
+const { page } = Astro.props;
+const { hero, sections } = page.data;
+
+// Si la page a un corps markdown (hors sections), on le rend en zone prose
+// principale. Utile pour les pages très textuelles.
+const { Content } = await render(page);
+const hasBody = Boolean(page.body && page.body.trim().length > 0);
+---
+
+{hero && <Hero {...hero} />}
+
+{
+  // Si pas de sections mais du body markdown, on le rend.
+  sections.length === 0 && hasBody && (
+    <Section>
+      <Prose>
+        <Content />
+      </Prose>
+    </Section>
+  )
+}
+
+{
+  sections.map((s) => {
+    if (s.type === 'prose') {
+      const html = marked.parse(s.body, { async: false }) as string;
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <Prose>
+            <Fragment set:html={html} />
+          </Prose>
+        </Section>
+      );
+    }
+    if (s.type === 'cartes') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <BlocCartes cartes={s.cartes} colonnes={s.colonnes} />
+        </Section>
+      );
+    }
+    if (s.type === 'valeurs') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <BlocValeurs valeurs={s.valeurs} />
+        </Section>
+      );
+    }
+    if (s.type === 'stats') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          {s.intro && (
+            <div class="mb-8 max-w-3xl">
+              <p class="text-lg leading-relaxed">{s.intro}</p>
+            </div>
+          )}
+          <BlocStat stats={s.stats} />
+        </Section>
+      );
+    }
+    if (s.type === 'citation') {
+      const inner = (
+        <BlocCitation
+          citation={s.citation}
+          auteur={s.auteur}
+          role={s.role}
+          variant={s.variant}
+        />
+      );
+      return (
+        <Section fond={s.fond}>
+          {s.fictif ? (
+            <Draft reason={`Citation fictive — ${s.auteur}`}>{inner}</Draft>
+          ) : (
+            inner
+          )}
+        </Section>
+      );
+    }
+    if (s.type === 'cta') {
+      return (
+        <Section fond={s.fond ?? 'violet'}>
+          <div class="grid gap-4">
+            <h2 class="text-3xl font-bold md:text-4xl">{s.titre}</h2>
+            {s.corps && <p class="max-w-3xl text-lg leading-relaxed">{s.corps}</p>}
+            {(s.cta_primaire || s.cta_secondaire) && (
+              <div class="mt-2 flex flex-wrap gap-3">
+                {s.cta_primaire && (
+                  <a
+                    href={s.cta_primaire.href}
+                    target={s.cta_primaire.externe ? '_blank' : undefined}
+                    rel={s.cta_primaire.externe ? 'noopener' : undefined}
+                    class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+                  >
+                    {s.cta_primaire.label}
+                  </a>
+                )}
+                {s.cta_secondaire && (
+                  <a
+                    href={s.cta_secondaire.href}
+                    target={s.cta_secondaire.externe ? '_blank' : undefined}
+                    rel={s.cta_secondaire.externe ? 'noopener' : undefined}
+                    class="rounded-full border-2 border-current px-6 py-3 font-bold hover:bg-paper/10"
+                  >
+                    {s.cta_secondaire.label}
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </Section>
+      );
+    }
+    return null;
+  })
+}

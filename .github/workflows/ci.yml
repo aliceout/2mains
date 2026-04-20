@@ -36,6 +36,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Accessibility audit
+        run: pnpm a11y
+
       - name: Smoke test — routes render
         run: |
           test -f dist/index.html

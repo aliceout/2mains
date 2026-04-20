@@ -1,34 +1,26 @@
-// Configuration globale du site.
-// Ces valeurs seront déplaçables dans une collection CMS `site/settings.md`.
+// Helper pour charger les paramètres globaux depuis la collection `site`.
+// Utilisé par les pages et composants pour éviter le code dur.
+import { getCollection, getEntry } from 'astro:content';
 
-export const site = {
-  name: '2mains de femmes',
-  url: 'https://2mainsdefemmes.org',
-  tagline: 'Se (re)toucher pour se (re)lier',
-  mission:
-    "Nous agissons contre l'isolement corporel des femmes par le toucher relationnel.",
-  contact: {
-    email: 'contact@2mainsdefemmes.org',
-    phone: '06 07 08 57 66',
-    address: 'Tiers-lieu La Médiane, 255 rue de Créqui, 69003 Lyon',
-  },
-  helloasso: {
-    don: 'https://www.helloasso.com/associations/2mains-de-femmes',
-    adhesion:
-      'https://www.helloasso.com/associations/2mains-de-femmes/adhesions/adhesion-a-l-association-2mains-de-femmes',
-  },
-  social: {
-    facebook: 'https://www.facebook.com/2mainsdefemmes',
-    instagram: 'https://www.instagram.com/2mainsdefemmes',
-    linkedin: '',
-  },
-  legal: {
-    siren: '', // TODO Audrey
-    rna: '', // TODO Audrey (numéro W…)
-    directeurPublication: 'Audrey Relandeau',
-  },
-} as const;
+export async function getSiteSettings() {
+  let entry = await getEntry('site', 'settings');
+  if (!entry) {
+    // Fallback : prendre la première entrée disponible (en cas d'id différent)
+    const all = await getCollection('site');
+    if (all.length === 0) {
+      throw new Error(
+        "content/site/settings.md introuvable — vérifier content/site/ et src/content/config.ts",
+      );
+    }
+    entry = all[0];
+  }
+  return entry.data;
+}
 
+export type SiteSettings = Awaited<ReturnType<typeof getSiteSettings>>;
+
+// La navigation reste en dur — elle relève de la structure du site, pas
+// du contenu. Pour la modifier, éditer ce fichier.
 export type NavItem = {
   label: string;
   href: string;
