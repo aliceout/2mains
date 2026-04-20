@@ -11,14 +11,17 @@ Organisation : par priorité (🔴 bloquant avant que je touche du code · 🟠 
 **1.1** 🔴 Comment tu veux qu'on bosse ensemble ?
 - [ ] Tu m'envoies des briefs, je code en autonomie, tu reviews les PRs
 - [ ] Tu pilotes, je suis un exécutant : je ne fais que ce que tu demandes, pas d'initiative
-- [ ] On co-construit : je propose, tu arbitres, on itère
+- [x] On co-construit : je propose, tu arbitres, on itère
 - [ ] Autre : ____
 
 **1.2** 🔴 Quel est ton niveau d'implication côté contenu ? Le plan dit « Alice = tech, Audrey = contenu », mais en pratique Audrey avance lentement. Est-ce que tu veux que je te propose des drafts de contenu (à partir des docs LHM, fiche mémo, leaflet) qu'Audrey validera, ou tu préfères attendre qu'elle te donne tout ?
+R: contenu je gère pas. je connais mal cette asso
 
 **1.3** 🟠 Est-ce que je peux écrire directement sur `main`, ou tu veux un flow PR systématique ?
+R: sur main tant sinon est en first dev rush
 
-**1.4** 🟠 Quand je bute sur un arbitrage éditorial ou politique (ex : inclusivité de genre, QPV oui/non, offre de service payante), qu'est-ce que je fais ? Je te demande à toi, je te mets un `[À DEMANDER À AUDREY]` en commentaire, ou je propose et tu tranches ?
+**1.4** 🟠 Quand je bute sur un arbitrage éditorial ou politique (ex : inclusivité de genre, QPV oui/non, offre de service payante), qu'est-ce que je fais ? Je te demande à toi, je te mets un `[À DEMANDER À AUDREY]` en commentaire, ou je propose et tu tranches ? 
+R: je tranche mais pour l'instant la structure est plus importante que le fond. quand on sait pas on mettra de la donné pour remplir, qu'elle corrigera
 
 ---
 
@@ -27,88 +30,115 @@ Organisation : par priorité (🔴 bloquant avant que je touche du code · 🟠 
 Pour chaque point, j'ai besoin de savoir si c'est **acté** (je peux partir là-dessus) ou **en discussion** (je mets en pause / workaround).
 
 **2.1** 🟠 L'arborescence finale : option 1 de `arborescence-site-web-v2.xlsx` + les 6 headers que tu as listés dans le plan — **acté** avec Audrey ou encore à confirmer ?
+R : c'est une base oui, on adaptera après
 
 **2.2** 🟠 Le pivot WordPress → Astro + Sveltia : Audrey est au courant ? (Vu qu'elle a payé 60€ pour le thème Salient.) Sinon, c'est une décision que tu as prise seule et qu'il faut que je traite comme telle.
+R: oui validé
 
 **2.3** 🟠 La discussion sur l'inclusivité de genre (WhatsApp 16/10/2025) : où elle en est ? Tu avais dit à Audrey que c'était un sujet de fond stratégique. Résolu, en cours, enterré ?
+R : aucune info
 
 **2.4** 🟠 Les témoignages : tu as des sources réelles, ou je pars sur des placeholders « témoignages à venir » ?
+R : non, mets du cake
 
 ---
 
 ## 3. Stack et déploiement
 
 **3.1** 🔴 **Repo** : Gitea self-host (cohérent avec ta philosophie) ou GitHub privé (plus rapide à mettre en place) ?
+R : GitHub
 
 **3.2** 🔴 **Serveur** : mêmes specs que celui où tourne le WP actuel ? Tu as déjà Docker + Nginx + Certbot + un reverse proxy configurés ? Je peux partir du principe que je pousse un `docker-compose.yml` et que ça marche ?
+R : oui j'ai tout ça
 
 **3.3** 🔴 **WordPress existant** : je le tue quand ? Options :
-- [ ] Maintenant, je travaille sur `2mainsdefemmes.org` direct, le site est vide puis se remplit
+- [x] Maintenant, je travaille sur `2mainsdefemmes.org` direct, le site est vide puis se remplit
 - [ ] Je bosse sur un sous-domaine `preview.` jusqu'à avoir un MVP, puis bascule
 - [ ] Je bosse sur un domaine à moi, puis bascule en fin de Phase 3
 
 **3.4** 🔴 **Nom du repo** : `2mdf-site` (comme tu avais suggéré dans le plan), `2mains-site`, autre ?
+R : 2mains, tu bosses déjà dedant
 
 **3.5** 🟠 **Branches** : une seule `main` = prod, ou `main` + `preview` (le CMS pousse sur `preview`, tu merge quand tu valides) ?
+R: pour l'instant main uniquement
 
 **3.6** 🟠 **Sveltia CMS auth** : le proxy `sveltia-cms-auth` en Docker, c'est toi qui l'as déjà tourné quelque part ou c'est neuf ? (Influence sur le temps Phase 1.)
+R : j'ai pas compris la question
 
 **3.7** 🟡 **Analytics** : rien / Plausible / Umami ? Ma préférence : rien pour la v1.
+R: Rien tout court
 
 **3.8** 🟡 **Monitoring uptime** : tu as déjà un Uptime Kuma ou équivalent sur ton serveur, ou je mets quelque chose de neuf ?
+R : rien non plus et laisse comme ça
 
 **3.9** 🔵 **Logs et backups** : tu as une stack de backup centralisée (Restic, Borg) que je dois brancher, ou je mets un simple cron `tar + rsync` ?
+R : oui c'est moi qui gère
 
 ---
 
 ## 4. Design system et composants
 
 **4.1** 🟠 **Framework CSS** : Tailwind (comme dans le plan) confirmé, ou tu préfères du CSS vanilla + design tokens custom ?
+R: tailwind
 
 **4.2** 🟠 **Iconographie** : on se limite au picto maison (`brand/pictos/PICTO.svg` décliné en couleurs), ou on s'autorise une librairie d'icônes (Lucide, Phosphor) pour les affordances UI (burger, flèches, chevrons) ?
+R : utilise ce que tu veux
 
 **4.3** 🟠 **Photos** : tu as des photos droits OK pour l'asso ? Ou je me débrouille avec le picto, des formes organiques et de la typo ? (Le plan insiste sur « pas d'images stock pauvres ».)
+R : non j'ai rien. prends dans unsplash
 
 **4.4** 🟡 **Composants complexes** : tu acceptes un peu de JS côté client (Astro islands) pour l'accordéon, le menu mobile, le carrousel témoignages — ou tu veux 100 % statique sans JS ?
+R : oui oui
 
 **4.5** 🟡 **Animations** : on fait quoi ? Rien, un peu de `fade-in` discret au scroll, ou plus ?
+R : j'en sais rien décide 
 
 ---
 
 ## 5. Workflow de développement
 
 **5.1** 🔴 **Typo TS** : `tsconfig` strict par défaut ? (Astro le permet.)
+R : oui
 
 **5.2** 🟠 **Linter / formatter** : ESLint + Prettier, Biome, rien ? Tu as déjà un stack standard que tu utilises sur tes autres projets ?
+R; oui tu mets 
 
 **5.3** 🟠 **Tests** : zéro test automatisé pour un site vitrine (recette manuelle) ? Ou tu veux au moins un smoke test (le site build, les routes répondent) ?
+R : si un peu de test, le minimum 
 
 **5.4** 🟠 **CI** : quand je push, qu'est-ce qui se passe côté CI ?
 - [ ] Rien, webhook → build local sur serveur
-- [ ] GitHub Actions / Gitea Actions qui build + tests avant le webhook
+- [x] GitHub Actions / Gitea Actions qui build + tests avant le webhook
 - [ ] CI qui build et push dist/ direct sur serveur (pas de build serveur-side)
 
 **5.5** 🔵 **Conventions de commit** : Conventional Commits, ou libre ?
+R : non
 
 ---
 
 ## 6. Contenu — ce que tu veux que je produise
 
 **6.1** 🟠 Je peux me servir des docs dans `references/` pour **rédiger des drafts** des pages manquantes (Isolement corporel, Pour structures/entreprises/femmes, Agir) — OK pour toi ? Ou tu attends qu'Audrey écrive ?
+R : base sur ce que tu as, invente de reste (j'ai ajouté des docs depuis ton scan)
 
 **6.2** 🟠 Les **mentions légales** et la **politique de confidentialité** : je peux en rédiger un brouillon générique « pas de cookie, pas de tracker, formulaire → mail » qu'Audrey validera ?
+R : oui fais
 
 **6.3** 🟡 La **page 404** : ton message d'erreur préféré (ton léger, renvoi vers accueil) ?
+R : truc joli et rigolo
 
 ---
 
 ## 7. Planning et dispo
 
 **7.1** 🔴 Quand tu prévois d'attaquer la Phase 1 ? (Tu disais à Audrey fin février / début mars, puis Mada cyclones + boulot.) Je veux savoir si je prépare un environnement tout de suite ou juste une spec.
+R : Maintenant
 
 **7.2** 🟠 Tu veux que je te fasse une **estimation en heures** de chaque phase, pour que tu puisses planifier ta charge ?
+R : non je m'en fous car elles sont toujours fausses
 
 **7.3** 🟡 **Point de synchro** : tu veux un format recurring (Slack-like async chaque semaine), des visios ponctuelles, un `STATUS.md` que je tiens à jour ?
+R : non
 
 ---
 
