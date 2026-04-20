@@ -65,19 +65,42 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
+      - name: Check secrets are configured
+        id: check
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          missing=()
+          [ -z "$DEPLOY_SSH_KEY" ] && missing+=("DEPLOY_SSH_KEY")
+          [ -z "$DEPLOY_HOST" ] && missing+=("DEPLOY_HOST")
+          [ -z "$DEPLOY_USER" ] && missing+=("DEPLOY_USER")
+          [ -z "$DEPLOY_PATH" ] && missing+=("DEPLOY_PATH")
+          if [ ${#missing[@]} -gt 0 ]; then
+            echo "::notice::Déploiement ignoré — secrets manquants : ${missing[*]}. Voir README section « Déploiement serveur »."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Download build artifact
+        if: steps.check.outputs.skip == 'false'
         uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist
 
       - name: Install SSH key
+        if: steps.check.outputs.skip == 'false'
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_ed25519
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           ssh-keyscan -H "${{ secrets.DEPLOY_HOST }}" >> ~/.ssh/known_hosts
 
       - name: Rsync dist/ to server
+        if: steps.check.outputs.skip == 'false'
         run: |
           rsync -avz --delete \
             --rsh="ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
@@ -85,4 +108,5 @@ jobs:
             "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}/"
 
       - name: Done
+        if: steps.check.outputs.skip == 'false'
         run: echo "Déployé sur ${{ secrets.DEPLOY_HOST }}:${{ secrets.DEPLOY_PATH }}"

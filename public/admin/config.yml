@@ -117,10 +117,24 @@ collections:
       - name: categorie
         label: Catégorie
         widget: select
-        options: ['projet associatif', 'rapport d''activité', 'ressource', 'communication']
-      - { name: fichier, label: Fichier (PDF), widget: file }
-      - { name: date, label: Date, widget: date }
+        options:
+          ['projet associatif', "rapport d'activité", 'ressource', 'communication', 'présentation']
+      - {
+          name: fichier,
+          label: 'Fichier (PDF)',
+          widget: file,
+          required: false,
+          hint: "Optionnel si le document est à paraître.",
+        }
+      - { name: date, label: Date, widget: date, required: false }
       - { name: description_courte, label: Description courte, widget: text, required: false }
+      - {
+          name: a_paraitre,
+          label: 'À paraître ?',
+          widget: boolean,
+          default: false,
+          hint: "Si coché, le document apparaît comme 'À paraître' sans lien de téléchargement.",
+        }
 
   # ---- Témoignages ----
   - name: temoignages
@@ -134,13 +148,21 @@ collections:
     slug: '{{slug}}'
     fields:
       - { name: auteur, label: Auteur, widget: string }
-      - { name: role, label: Rôle / contexte, widget: string, required: false }
+      - { name: role, label: 'Rôle / contexte', widget: string, required: false }
       - name: contexte
         label: Type
         widget: select
         options: ['participante', 'partenaire', 'professionnelle']
       - { name: photo, label: Photo, widget: image, required: false }
-      - { name: texte, label: Texte, widget: markdown }
+      - { name: ordre, label: 'Ordre', widget: number, default: 0, value_type: int }
+      - {
+          name: fictif,
+          label: 'Témoignage fictif ?',
+          widget: boolean,
+          default: false,
+          hint: 'Si coché, affiche un ruban « À valider » sur le site — utile pour les placeholders.',
+        }
+      - { name: body, label: Texte, widget: markdown }
 
   # ---- Paramètres globaux du site ----
   - name: site

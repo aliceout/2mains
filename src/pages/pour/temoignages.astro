@@ -1,10 +1,46 @@
 ---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
-import Prose from '../../components/Prose.astro';
 import BlocCitation from '../../components/BlocCitation.astro';
 import Draft from '../../components/Draft.astro';
+
+const all = (await getCollection('temoignages')).sort(
+  (a, b) => a.data.ordre - b.data.ordre,
+);
+
+type Item = CollectionEntry<'temoignages'>;
+
+async function renderGroup(items: Item[]) {
+  return Promise.all(
+    items.map(async (t) => {
+      const { Content } = await render(t);
+      return { ...t, Content };
+    }),
+  );
+}
+
+const groups = [
+  {
+    titre: 'Paroles de participantes',
+    fond: undefined as 'beige' | undefined,
+    items: await renderGroup(all.filter((t) => t.data.contexte === 'participante')),
+    draftReason: 'Témoignages fictifs — à remplacer par de vraies paroles',
+  },
+  {
+    titre: 'Paroles de partenaires',
+    fond: 'beige' as const,
+    items: await renderGroup(all.filter((t) => t.data.contexte === 'partenaire')),
+    draftReason: 'Témoignages partenaires fictifs — à solliciter auprès des structures',
+  },
+  {
+    titre: 'Paroles de professionnel·les',
+    fond: undefined,
+    items: await renderGroup(all.filter((t) => t.data.contexte === 'professionnelle')),
+    draftReason: 'Témoignages pros fictifs — à solliciter auprès du réseau',
+  },
+];
 ---
 
 <Layout
@@ -18,72 +54,39 @@ import Draft from '../../components/Draft.astro';
     variant="beige"
   />
 
-  <Section titre="Paroles de participantes">
-    <Draft reason="Témoignages fictifs — à remplacer par de vraies paroles recueillies avec consentement">
-      <div class="grid gap-6 md:grid-cols-2">
-        <BlocCitation
-          variant="paper"
-          citation="Pendant longtemps, je pensais que mon corps était juste un problème. Là, c'est la première fois depuis des années que quelqu'un me touche sans rien me demander en retour. Ça change tout."
-          auteur="Leïla"
-          role="Participante, 42 ans"
-        />
-        <BlocCitation
-          variant="paper"
-          citation="Je suis arrivée méfiante. On m'avait dit que je pouvais dire non, et je l'ai dit, souvent. Et puis un jour j'ai dit oui, et j'ai pleuré, et ça m'a fait du bien de pleurer dans un endroit où j'étais en sécurité."
-          auteur="Marion"
-          role="Participante, 56 ans"
-        />
-        <BlocCitation
-          variant="paper"
-          citation="Après les ateliers collectifs, on reste entre nous. On parle. Ça me manquait, ce genre de moments avec d'autres femmes. Je me sens moins seule."
-          auteur="Fatoumata"
-          role="Participante, 34 ans"
-        />
-        <BlocCitation
-          variant="paper"
-          citation="J'ai appris à m'auto-masser les mains. Ça a l'air bête, mais le soir, quand je n'arrive pas à dormir, je le fais et ça m'apaise."
-          auteur="Claire"
-          role="Participante, 68 ans"
-        />
-      </div>
-    </Draft>
-  </Section>
+  {
+    groups.map((g) =>
+      g.items.length === 0 ? null : (
+        <Section titre={g.titre} fond={g.fond}>
+          {g.items.some((t) => t.data.fictif) ? (
+            <Draft reason={g.draftReason}>
+              <div class="grid gap-6 md:grid-cols-2">
+                {g.items.map(({ data, Content }) => (
+                  <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
+                    <Content />
+                  </BlocCitation>
+                ))}
+              </div>
+            </Draft>
+          ) : (
+            <div class="grid gap-6 md:grid-cols-2">
+              {g.items.map(({ data, Content }) => (
+                <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
+                  <Content />
+                </BlocCitation>
+              ))}
+            </div>
+          )}
+        </Section>
+      ),
+    )
+  }
 
-  <Section titre="Paroles de partenaires" fond="beige">
-    <Draft reason="Témoignages partenaires fictifs — à solliciter auprès des structures">
-      <div class="grid gap-6 md:grid-cols-2">
-        <BlocCitation
-          variant="paper"
-          citation="Nous cherchions depuis longtemps à intégrer une dimension corporelle dans nos accompagnements, sans savoir comment. 2mains de femmes a apporté une méthode, un cadre, et surtout une écoute réelle de ce que nos bénéficiaires vivent."
-          auteur="Équipe associative"
-          role="CHRS lyonnais — structure partenaire"
-        />
-        <BlocCitation
-          variant="paper"
-          citation="L'approche complète vraiment nos actions. Les femmes que nous orientons reviennent nous voir avec un rapport à elles-mêmes différent. C'est un apport qualitatif qu'on ne soupçonnait pas."
-          auteur="Coordinatrice sociale"
-          role="Accueil de jour, Lyon"
-        />
-      </div>
-    </Draft>
-  </Section>
-
-  <Section titre="Paroles de professionnel·les">
-    <Draft reason="Témoignages pros fictifs — à solliciter auprès des praticien·nes et TS du réseau">
-      <div class="grid gap-6 md:grid-cols-2">
-        <BlocCitation
-          variant="paper"
-          citation="Intervenir auprès de femmes en grande fragilité demande un cadre exigeant. Chez 2mains de femmes, on pense le toucher comme une éthique, pas comme une technique. Ça change ma pratique de masseuse."
-          auteur="Praticienne solidaire"
-          role="Réseau des Mains de 2mains"
-        />
-        <BlocCitation
-          variant="paper"
-          citation="La formation sur le toucher relationnel m'a fait repenser ma posture, y compris dans des gestes très simples comme poser une main sur une épaule lors d'un entretien."
-          auteur="Travailleuse sociale"
-          role="Lyon"
-        />
-      </div>
-    </Draft>
-  </Section>
+  {
+    all.length === 0 && (
+      <Section>
+        <p class="text-sm opacity-70">Aucun témoignage publié pour l'instant.</p>
+      </Section>
+    )
+  }
 </Layout>

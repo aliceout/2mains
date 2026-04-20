@@ -20,7 +20,7 @@ Lutte contre l'isolement corporel des femmes par le toucher relationnel.
    - [Système `<Draft>`](#contenu-fictif--le-système-draft)
    - [Contenu géré via CMS](#contenu-géré-via-cms)
    - [Flux de publication](#flux-de-publication--ce-qui-se-passe-quand-audrey-clique--publier-)
-   - [Branchement des collections](#comment-brancher-une-page-à-sa-collection)
+   - [Pages branchées aux collections](#quelles-pages-sont-branchées-à-quelle-collection)
 6. [Déploiement serveur](#déploiement-serveur) ← **section install**
 7. [Accessibilité, SEO, RGPD](#accessibilité-seo-rgpd)
 8. [Charte graphique](#charte-graphique)
@@ -50,16 +50,24 @@ Pour la prod : voir [Déploiement serveur](#déploiement-serveur).
 │   ├── layouts/            # Layout global (head, header, footer)
 │   ├── components/         # Composants Astro réutilisables
 │   ├── config/site.ts      # Nav + infos globales (contact, HelloAsso, légal)
+│   ├── content.config.ts   # Schémas Zod des 5 collections CMS
 │   └── styles/global.css   # Tailwind + tokens couleurs charte + @font-face
+├── content/                # Contenu éditorial (édité par Sveltia, commité dans le repo)
+│   ├── equipe/             # 1 .md par membre du CA
+│   ├── evenements/         # 1 .md par événement
+│   ├── partenaires/        # 1 .md par financeur/partenaire
+│   ├── documents/          # 1 .md par document à télécharger
+│   └── temoignages/        # 1 .md par parole recueillie
 ├── public/
 │   ├── admin/              # Sveltia CMS (config.yml + shell html)
 │   ├── brand/              # Logos et pictos SVG servis sur le site
 │   ├── fonts/              # Nunito self-hostée (4 fichiers .woff2)
 │   └── uploads/            # Médias uploadés via le CMS (en runtime)
-├── content/                # (créé par le CMS) contenu markdown/frontmatter
+├── services/
+│   └── contact-mail/       # Mini-service Docker : HTTP form → SMTP
 ├── brand/                  # Sources brand (PNG/SVG/PDF) — référence interne
 ├── references/             # Docs sources de l'asso (PDF, DOCX) — référence
-├── .github/workflows/      # CI GitHub Actions
+├── .github/workflows/      # CI GitHub Actions (build + deploy SSH)
 ├── 2mains-site-plan.md     # Spec historique
 ├── ROADMAP.md              # Roadmap des phases
 ├── QUESTIONS.md            # Arbitrages (mes questions → tes réponses)
@@ -189,73 +197,42 @@ Total : **1 à 3 minutes** entre le clic "Publier" et la visibilité en ligne.
 Si le build échoue (TypeScript, smoke test rouge) : le déploiement n'a pas lieu, l'état
 précédent reste en ligne, et un mail GitHub Actions prévient Alice. **Pas de rollback à faire.**
 
-### État actuel du branchement des collections
+### Quelles pages sont branchées à quelle collection
 
-**Important** : les collections CMS sont **configurées** (l'admin sait les éditer), mais les
-pages Astro **ne les consomment pas encore** toutes — elles ont du contenu écrit en dur dans
-les `.astro`. Concrètement :
+Les 5 collections éditoriales sont déjà consommées par les pages Astro — les édits
+CMS d'Audrey apparaissent directement après un commit sans changement de code :
 
-- ✅ Ce qui **marche déjà** (une édition CMS apparaît sur le site sans changement de code) :
-  - `documents/` et `partenaires/` logos : les PDFs et images uploadés via le CMS sont
-    servis directement depuis `/uploads/` sans besoin de code.
-- ⚠️ Ce qui est **à brancher** (pages qui utilisent un tableau codé en dur plutôt qu'une
-  collection) :
-  - `/agenda` → collection `evenements`
-  - `/association/equipe` → collection `equipe`
-  - `/association/documents` → collection `documents`
-  - `/association/financeurs` → collection `partenaires`
-  - `/pour/temoignages` → collection `temoignages`
-  - `/pour/structures`, `/pour/femmes`, `/` : citations individuelles → `temoignages`
-  - Tous les Hero + sections texte → collection `pages` (plus structurant, à prévoir)
-  - Banderole d'urgence (home header) → `site.banderole_urgence`
+| Collection    | Pages qui l'affichent                                           |
+| ------------- | --------------------------------------------------------------- |
+| `evenements`  | `/agenda`                                                       |
+| `equipe`      | `/association/equipe`                                           |
+| `documents`   | `/association/documents`                                        |
+| `partenaires` | `/association/financeurs`                                       |
+| `temoignages` | `/pour/temoignages`                                             |
 
-### Comment brancher une page à sa collection
+Le schéma des collections est déclaré dans `src/content.config.ts` (Zod). Les fichiers
+markdown sont dans `content/<collection>/*.md`. Audrey n'a pas besoin de connaître tout
+ça — elle utilise l'admin, Sveltia écrit les fichiers pour elle.
 
-Exemple avec l'agenda. On passe d'un tableau codé en dur vers une lecture de `content/evenements/`.
+Ce qui reste écrit en dur dans les `.astro` (et qui devra passer par un changement de
+code pour bouger) :
+- les **textes des pages statiques** (accueil, qui-sommes-nous, interventions, isolement
+  corporel, pour structures/entreprises/femmes, agir, soutenir, mentions légales…) ;
+- la **bannière d'urgence** (pas encore implémentée) ;
+- les **citations isolées** sur `/`, `/pour/structures`, `/pour/femmes`.
 
-1. **Déclarer la collection côté Astro** dans `src/content/config.ts` (à créer) :
+Pour brancher une nouvelle page à une collection, le patron est :
 
-   ```ts
-   import { defineCollection, z } from 'astro:content';
-
-   const evenements = defineCollection({
-     type: 'content',
-     schema: z.object({
-       title: z.string(),
-       date_debut: z.coerce.date(),
-       date_fin: z.coerce.date().optional(),
-       lieu: z.string(),
-       adresse: z.string().optional(),
-       cover: z.string().optional(),
-       public: z.enum(['tout public', 'professionnels', 'femmes concernées', 'adhérents']),
-       gratuit: z.boolean().default(true),
-       inscription_url: z.string().optional(),
-     }),
-   });
-
-   export const collections = { evenements };
-   ```
-
-2. **Consommer la collection** dans `src/pages/agenda.astro` :
-
-   ```astro
-   ---
-   import { getCollection } from 'astro:content';
-   const evenements = (await getCollection('evenements')).sort(
-     (a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf()
-   );
-   const now = new Date();
-   const aVenir = evenements.filter((e) => e.data.date_debut >= now);
-   ---
-   ```
-
-3. **Retirer le `<Draft>`** et le tableau codé en dur.
-
-4. **Ajouter un fichier de démo** côté repo ou via l'admin pour vérifier, puis push.
-
-La même logique s'applique à chaque collection. **C'est le gros chantier qui reste pour
-rendre le site réellement « géré par le CMS »** — à prévoir une fois qu'Audrey est
-connectable à l'admin et qu'elle a rempli au moins un élément de chaque collection.
+```astro
+---
+import { getCollection, render } from 'astro:content';
+const items = await getCollection('ma_collection');
+---
+{items.map(async (item) => {
+  const { Content } = await render(item);
+  return <article><h2>{item.data.titre}</h2><Content /></article>;
+})}
+```
 
 ---
 
@@ -460,16 +437,18 @@ backend:
 
 Push, build, déploiement — et `/admin/` devient fonctionnel.
 
-### 6. Backend du formulaire de contact (pas encore fait)
+### 6. Backend du formulaire de contact
 
-Le formulaire `/contact` est actuellement en mode `mailto:` provisoire. Pour un vrai
-envoi SMTP, un mini-service Node à ajouter :
+Le service est prêt, livré dans `services/contact-mail/` — un petit conteneur Node qui
+reçoit le `POST /send` du formulaire et relaie par SMTP.
+
+Sur le serveur :
 
 ```yaml
-# docker-compose.yml
+# À ajouter dans ton docker-compose.yml
 services:
-  contact-smtp:
-    build: ./contact-smtp
+  contact-mail:
+    build: ./services/contact-mail
     restart: unless-stopped
     ports:
       - "127.0.0.1:3002:3000"
@@ -478,11 +457,26 @@ services:
       SMTP_PORT: 587
       SMTP_USER: contact@2mainsdefemmes.org
       SMTP_PASS: ${SMTP_PASS}
-      TO: contact@2mainsdefemmes.org
+      CONTACT_TO: contact@2mainsdefemmes.org
+      ALLOWED_ORIGIN: https://2mainsdefemmes.org
+      RATE_LIMIT_PER_HOUR: "5"
 ```
 
-Le code du service reste à écrire — environ 40 lignes de Node + Express + nodemailer.
-À brancher quand le reste du site est en place.
+Côté nginx, on proxy `/api/contact` vers ce service :
+
+```nginx
+# Dans le server block de 2mainsdefemmes.org
+location = /api/contact {
+    limit_except POST OPTIONS { deny all; }
+    proxy_pass http://127.0.0.1:3002/send;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto https;
+}
+```
+
+Le formulaire `/contact` envoie déjà du JSON sur `/api/contact` — rien à changer côté
+front. Détails : [`services/contact-mail/README.md`](./services/contact-mail/README.md).
 
 ### 7. Backups
 
@@ -586,24 +580,15 @@ Grand brouillon non-exhaustif, à tenir à jour :
 - [ ] Créer le user `deploy` + clé SSH + configurer les 4 secrets GitHub Actions
 - [ ] Créer le vhost nginx + certbot pour `2mainsdefemmes.org`
 - [ ] Créer l'OAuth App GitHub + configurer le proxy `sveltia-cms-auth`
+- [ ] Déployer le service `contact-mail` + location nginx
 - [ ] Décommissionner le WordPress existant
 - [ ] Tests d'accessibilité (axe, Lighthouse ≥ 90)
 
-**Branchement des collections CMS** (pour que les édits d'Audrey se reflètent sur le site) :
-- [ ] Créer `src/content/config.ts` avec les 7 schémas Zod
-- [ ] Brancher `/agenda` sur la collection `evenements`
-- [ ] Brancher `/association/equipe` sur la collection `equipe`
-- [ ] Brancher `/association/documents` sur `documents`
-- [ ] Brancher `/association/financeurs` sur `partenaires`
-- [ ] Brancher `/pour/temoignages` sur `temoignages`
-- [ ] Brancher la banderole d'urgence (home) sur `site.settings`
-- [ ] Voir à plus long terme : pages statiques ↔ collection `pages`
-
 **Contenu à valider / remplacer** (cf. `/status` et `DRAFTS.md`) :
-- [ ] 8 témoignages fictifs → vraies paroles
-- [ ] 4 événements agenda fictifs → vrais événements via CMS
-- [ ] Encart "Prochains RDV" sur la home
-- [ ] Formulaire contact → backend SMTP
+- [ ] 8 témoignages fictifs → vraies paroles (via CMS)
+- [ ] 4 événements agenda à valider ou remplacer (via CMS)
+- [ ] Encart "Prochains RDV" sur la home (actuellement en dur)
+- [ ] Remplacer ou retirer les 2 citations isolées (home + `/pour/femmes`)
 
 **Confort / plus tard** :
 - [ ] Page `/demo` listant tous les blocs (pour revue visuelle)

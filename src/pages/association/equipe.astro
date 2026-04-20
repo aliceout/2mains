@@ -1,20 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 import { site } from '../../config/site';
 
-const ca = [
-  { nom: 'Audrey Relandeau', role: 'Fondatrice · Présidente' },
-  { nom: 'Sylvie Bouko', role: 'Vice-présidente' },
-  { nom: 'Elsa Moulin', role: 'Vice-présidente' },
-  { nom: 'Michel Relandeau', role: 'Secrétaire' },
-  { nom: 'Estelle Pourcelot', role: 'Trésorière' },
-  { nom: 'Noémia Augusto', role: 'Administratrice' },
-  { nom: 'Sandrine Amaré', role: 'Administratrice' },
-  { nom: 'Cécile Bourgeat', role: 'Administratrice' },
-];
+const ca = (await getCollection('equipe')).sort(
+  (a, b) => a.data.ordre - b.data.ordre,
+);
 ---
 
 <Layout
@@ -32,9 +26,9 @@ const ca = [
     <Prose>
       <p>
         Le CA porte les orientations de l'association, garantit le cadre éthique et
-        accompagne la structuration du projet. Il veille à la cohérence entre la mission, les
-        partenariats et les actions menées sur le terrain. En 2025, le CA a fait le choix de
-        ne pas élire de bureau.
+        accompagne la structuration du projet. Il veille à la cohérence entre la mission,
+        les partenariats et les actions menées sur le terrain. En 2025, le CA a fait le
+        choix de ne pas élire de bureau.
       </p>
     </Prose>
 
@@ -42,26 +36,29 @@ const ca = [
       {
         ca.map((membre) => (
           <li class="rounded-xl border border-beige bg-paper p-5">
-            <p class="text-lg font-bold">{membre.nom}</p>
-            <p class="text-sm text-violet">{membre.role}</p>
+            <p class="text-lg font-bold">{membre.data.nom}</p>
+            <p class="text-sm text-violet">{membre.data.role}</p>
+            {membre.data.bio_courte && (
+              <p class="mt-2 text-sm leading-relaxed">{membre.data.bio_courte}</p>
+            )}
           </li>
         ))
       }
     </ul>
 
     <p class="mt-6 text-sm opacity-70">
-      Composition actée au 24 septembre 2025. Le CA est limité à 12 membres. Au moins une
-      femme concernée par notre mission siège au CA.
+      Le CA est limité à 12 membres. Au moins une femme concernée par notre mission y
+      siège.
     </p>
   </Section>
 
   <Section titre="Les bénévoles — les Mains de 2mains" fond="beige">
     <Prose>
       <p>
-        Les bénévoles participent à la vie associative, à l'organisation d'actions, au soutien
-        logistique et au développement du projet selon leurs disponibilités et compétences.
-        Ils et elles sont une ressource essentielle pour faire vivre une association ancrée
-        dans la coopération et la sororité.
+        Les bénévoles participent à la vie associative, à l'organisation d'actions, au
+        soutien logistique et au développement du projet selon leurs disponibilités et
+        compétences. Ils et elles sont une ressource essentielle pour faire vivre une
+        association ancrée dans la coopération et la sororité.
       </p>
       <p>Trois profils de bénévolat cohabitent (cumulables) :</p>
       <ol>
@@ -101,10 +98,11 @@ const ca = [
   <Section titre="Gouvernance participative" fond="beige">
     <Prose>
       <p>
-        Quatre commissions techniques mixtes, se réunissant au moins une fois tous les quatre
-        mois, permettent d'impliquer partenaires, participant·es et expert·es dans le
-        développement de l'association, <strong>sans nécessiter d'être administrateur·ice ou
-        adhérent·e</strong>. Ce modèle assure une gouvernance agile et inclusive.
+        Quatre commissions techniques mixtes, se réunissant au moins une fois tous les
+        quatre mois, permettent d'impliquer partenaires, participant·es et expert·es dans
+        le développement de l'association, <strong>sans nécessiter d'être
+        administrateur·ice ou adhérent·e</strong>. Ce modèle assure une gouvernance agile
+        et inclusive.
       </p>
       <ul>
         <li>CT projet associatif</li>

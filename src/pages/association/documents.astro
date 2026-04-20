@@ -1,49 +1,22 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
-import Prose from '../../components/Prose.astro';
 
-const docs = [
-  {
-    titre: "Fiche de structure — 2mains de femmes",
-    categorie: "Présentation",
-    date: "Septembre 2025",
-    description:
-      "Présentation détaillée de l'association : vision, mission, piliers, publics, gouvernance, impacts, indicateurs.",
-    lien: "#",
-  },
-  {
-    titre: "Leaflet de communication",
-    categorie: "Communication",
-    date: "2025",
-    description: "Plaquette grand public — version courte et accessible.",
-    lien: "#",
-  },
-  {
-    titre: "Document de projet — Lyon Habitat Métropole 2025",
-    categorie: "Projet",
-    date: "Septembre 2025",
-    description:
-      "« Se (re)toucher pour se (re)lier : une innovation au service des femmes isolées » — projet porté par 2mains de femmes auprès du fonds de dotation LHM.",
-    lien: "#",
-  },
-  {
-    titre: "Projet associatif 2025–2028",
-    categorie: "Stratégie",
-    date: "À paraître",
-    description:
-      "Vision, orientations stratégiques et plan d'action triennal. Voté en AG en décembre 2025.",
-    lien: null,
-  },
-  {
-    titre: "Rapport d'activité 2025",
-    categorie: "Rapport",
-    date: "À paraître",
-    description: "Bilan des actions, participantes, partenariats et finances de l'année écoulée.",
-    lien: null,
-  },
-];
+const docs = (await getCollection('documents')).sort((a, b) => {
+  // À paraître en bas ; sinon par date décroissante
+  if (a.data.a_paraitre !== b.data.a_paraitre)
+    return a.data.a_paraitre ? 1 : -1;
+  const da = a.data.date?.valueOf() ?? 0;
+  const db = b.data.date?.valueOf() ?? 0;
+  return db - da;
+});
+
+function formatDate(d: Date | undefined): string {
+  if (!d) return 'À paraître';
+  return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(d);
+}
 ---
 
 <Layout
@@ -63,30 +36,33 @@ const docs = [
         docs.map((d) => (
           <li class="flex flex-col rounded-xl border border-beige bg-paper p-6">
             <p class="text-xs font-semibold tracking-wide uppercase text-violet">
-              {d.categorie} · {d.date}
+              {d.data.categorie} · {formatDate(d.data.date)}
             </p>
-            <h2 class="mt-2 mb-2 text-xl font-bold">{d.titre}</h2>
-            <p class="mb-4 flex-1 text-sm leading-relaxed">{d.description}</p>
-            {d.lien ? (
+            <h2 class="mt-2 mb-2 text-xl font-bold">{d.data.titre}</h2>
+            {d.data.description_courte && (
+              <p class="mb-4 flex-1 text-sm leading-relaxed">
+                {d.data.description_courte}
+              </p>
+            )}
+            {d.data.a_paraitre ? (
+              <span class="inline-flex w-fit items-center gap-2 rounded-full border border-beige px-4 py-2 text-sm font-semibold opacity-70">
+                À paraître
+              </span>
+            ) : d.data.fichier ? (
               <a
-                href={d.lien}
+                href={d.data.fichier}
                 class="inline-flex w-fit items-center gap-2 rounded-full bg-orange px-4 py-2 text-sm font-bold text-paper hover:bg-magenta"
               >
                 Télécharger le PDF →
               </a>
             ) : (
               <span class="inline-flex w-fit items-center gap-2 rounded-full border border-beige px-4 py-2 text-sm font-semibold opacity-70">
-                À paraître
+                Disponible sur demande
               </span>
             )}
           </li>
         ))
       }
     </ul>
-
-    <p class="mt-8 text-sm opacity-70">
-      Certains liens pointent vers des emplacements temporaires — les documents définitifs
-      seront mis en ligne au fur et à mesure de leur consolidation.
-    </p>
   </Section>
 </Layout>

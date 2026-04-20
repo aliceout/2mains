@@ -1,0 +1,18 @@
+# Exemple à copier dans le docker-compose.yml de ton serveur.
+# Les secrets doivent être dans un .env à côté (ignorer dans git).
+
+services:
+  contact-mail:
+    build: ./services/contact-mail
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3002:3000"
+    environment:
+      SMTP_HOST: mail.infomaniak.com
+      SMTP_PORT: 587
+      SMTP_SECURE: "false"
+      SMTP_USER: contact@2mainsdefemmes.org
+      SMTP_PASS: ${SMTP_PASS}
+      CONTACT_TO: contact@2mainsdefemmes.org
+      ALLOWED_ORIGIN: https://2mainsdefemmes.org
+      RATE_LIMIT_PER_HOUR: "5"

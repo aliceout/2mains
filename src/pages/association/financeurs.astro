@@ -1,66 +1,18 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 
-const financeurs = [
-  {
-    nom: 'Ville de Lyon',
-    type: 'Financeur public',
-    description: "Soutien aux projets ESS émergents (2025).",
-  },
-  {
-    nom: 'F.I.S. — France Innovation Sociale',
-    type: 'Financeur privé',
-    description: "Accompagnement aux projets innovants (2025).",
-  },
-  {
-    nom: 'Lyon Métropole Habitat',
-    type: 'Financeur / partenaire',
-    description: "Partenariat pour l'identification des femmes en résidences HLM.",
-  },
-];
-
-const partenaires = [
-  {
-    nom: "L'Éclaircie — Le MAS",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "SALVA — Le MAS",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "Olympe — Le MAS",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "ALPIL",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "Un Chez Soi d'Abord Lyon",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "Foyer Notre-Dame des Sans-Abris — Les Grandes Voisines",
-    type: "Partenaire associatif",
-  },
-  {
-    nom: "EHPAD Morlot",
-    type: "Partenaire médico-social",
-  },
-  {
-    nom: "La Maison des Femmes",
-    type: "Partenaire associatif",
-  },
-];
-
-const reseaux = [
-  { nom: 'Ronalpia', description: "Incubateur d'entrepreneur·es sociales." },
-  { nom: 'Anciela', description: "Accompagnement de porteur·ses de projets citoyens." },
-];
+const all = (await getCollection('partenaires')).sort(
+  (a, b) => a.data.ordre - b.data.ordre,
+);
+const financeurs = all.filter((p) =>
+  p.data.type === 'financeur public' || p.data.type === 'financeur privé',
+);
+const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif');
+const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
 <Layout
@@ -74,50 +26,65 @@ const reseaux = [
     variant="beige"
   />
 
-  <Section titre="Nos financeurs">
-    <ul class="grid gap-4 md:grid-cols-3">
-      {
-        financeurs.map((f) => (
-          <li class="rounded-xl border-t-4 border-t-violet bg-paper p-6 shadow-sm">
-            <p class="text-xs font-semibold tracking-wide uppercase text-violet">{f.type}</p>
-            <h3 class="mt-1 mb-2 text-lg font-bold">{f.nom}</h3>
-            <p class="text-sm leading-relaxed">{f.description}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </Section>
+  {
+    financeurs.length > 0 && (
+      <Section titre="Nos financeurs">
+        <ul class="grid gap-4 md:grid-cols-3">
+          {financeurs.map((f) => (
+            <li class="rounded-xl border-t-4 border-t-violet bg-paper p-6 shadow-sm">
+              <p class="text-xs font-semibold tracking-wide uppercase text-violet">
+                {f.data.type}
+              </p>
+              <h3 class="mt-1 mb-2 text-lg font-bold">{f.data.nom}</h3>
+              {f.data.description_courte && (
+                <p class="text-sm leading-relaxed">{f.data.description_courte}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )
+  }
 
-  <Section titre="Nos partenaires associatifs et médico-sociaux" fond="beige">
-    <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-      {
-        partenaires.map((p) => (
-          <li class="rounded-lg bg-paper p-4">
-            <p class="text-xs font-semibold uppercase text-orange">{p.type}</p>
-            <p class="mt-1 font-bold">{p.nom}</p>
-          </li>
-        ))
-      }
-    </ul>
-    <p class="mt-6 text-sm opacity-80">
-      À ces partenaires s'ajoutent les centres sociaux, les conciergeries sociales et les
-      associations de quartier qui repèrent et orientent les femmes concernées sur les
-      quartiers prioritaires de la métropole lyonnaise.
-    </p>
-  </Section>
+  {
+    partenairesAsso.length > 0 && (
+      <Section titre="Nos partenaires associatifs et médico-sociaux" fond="beige">
+        <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+          {partenairesAsso.map((p) => (
+            <li class="rounded-lg bg-paper p-4">
+              <p class="text-xs font-semibold uppercase text-orange">{p.data.type}</p>
+              <p class="mt-1 font-bold">{p.data.nom}</p>
+              {p.data.description_courte && (
+                <p class="mt-1 text-sm leading-relaxed">{p.data.description_courte}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+        <p class="mt-6 text-sm opacity-80">
+          À ces partenaires s'ajoutent les centres sociaux, les conciergeries sociales et
+          les associations de quartier qui repèrent et orientent les femmes concernées sur
+          les quartiers prioritaires de la métropole lyonnaise.
+        </p>
+      </Section>
+    )
+  }
 
-  <Section titre="Nos réseaux d'accompagnement">
-    <ul class="grid gap-4 md:grid-cols-2">
-      {
-        reseaux.map((r) => (
-          <li class="rounded-xl border border-beige bg-paper p-6">
-            <h3 class="text-lg font-bold">{r.nom}</h3>
-            <p class="mt-1 text-sm">{r.description}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </Section>
+  {
+    reseaux.length > 0 && (
+      <Section titre="Nos réseaux d'accompagnement">
+        <ul class="grid gap-4 md:grid-cols-2">
+          {reseaux.map((r) => (
+            <li class="rounded-xl border border-beige bg-paper p-6">
+              <h3 class="text-lg font-bold">{r.data.nom}</h3>
+              {r.data.description_courte && (
+                <p class="mt-1 text-sm">{r.data.description_courte}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )
+  }
 
   <Section fond="violet">
     <Prose>

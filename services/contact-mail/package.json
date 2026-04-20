@@ -1,0 +1,17 @@
+{
+  "name": "2mdf-contact-mail",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mini-service qui reçoit le POST du formulaire de contact et relaie par SMTP.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "nodemailer": "^7.0.10"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

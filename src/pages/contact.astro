@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
-import Draft from '../components/Draft.astro';
 import { site } from '../config/site';
 ---
 
@@ -68,11 +67,8 @@ import { site } from '../config/site';
       </div>
 
       <div>
-      <Draft reason="Formulaire en mode mailto — backend d'envoi SMTP à brancher">
         <form
-          action={`mailto:${site.contact.email}`}
-          method="post"
-          enctype="text/plain"
+          id="contact-form"
           class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
         >
           <h2 class="text-2xl font-bold">Nous écrire</h2>
@@ -83,6 +79,7 @@ import { site } from '../config/site';
               name="nom"
               type="text"
               required
+              maxlength="200"
               class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
             />
           </label>
@@ -93,6 +90,7 @@ import { site } from '../config/site';
               name="email"
               type="email"
               required
+              maxlength="320"
               class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
             />
           </label>
@@ -119,6 +117,7 @@ import { site } from '../config/site';
               name="message"
               rows="6"
               required
+              maxlength="5000"
               class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
             ></textarea>
           </label>
@@ -135,18 +134,60 @@ import { site } from '../config/site';
 
           <button
             type="submit"
-            class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+            class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta disabled:opacity-50"
           >
             Envoyer le message
           </button>
 
-          <p class="text-xs opacity-70">
-            Ce formulaire ouvre pour l'instant votre logiciel de messagerie par défaut. Un
-            backend SMTP sera branché prochainement.
+          <p
+            id="contact-feedback"
+            class="text-sm"
+            role="status"
+            aria-live="polite"
+          >
           </p>
         </form>
-      </Draft>
       </div>
     </div>
   </Section>
 </Layout>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const feedback = document.getElementById('contact-feedback') as HTMLElement | null;
+  if (form && feedback) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const button = form.querySelector('button[type=submit]') as HTMLButtonElement;
+      button.disabled = true;
+      feedback.textContent = 'Envoi en cours…';
+      feedback.style.color = '';
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (res.ok) {
+          feedback.style.color = 'var(--color-bleu)';
+          feedback.textContent = 'Merci, votre message est bien envoyé. On vous répond vite.';
+          form.reset();
+        } else {
+          const body = await res.json().catch(() => ({}));
+          feedback.style.color = 'var(--color-magenta)';
+          feedback.textContent =
+            body.error || `Erreur ${res.status}. Réessayez ou écrivez-nous directement.`;
+        }
+      } catch {
+        feedback.style.color = 'var(--color-magenta)';
+        feedback.textContent =
+          "Impossible de joindre le serveur. Écrivez-nous directement à contact@2mainsdefemmes.org.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  }
+</script>
