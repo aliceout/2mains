@@ -3,14 +3,98 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+import { site } from '../../config/site';
 ---
 
-<Layout title="Faire un don">
-  <Hero titre="Faire un don" sousTitre="Nous soutenir" accroche="Votre don nous permet d'accompagner gratuitement les femmes les plus vulnérables. Paiement sécurisé via HelloAsso, déductible à 66%." variant="orange" />
-  <Section>
+<Layout
+  title="Faire un don"
+  description="Soutenir 2mains de femmes par un don ponctuel ou mensuel. Déductible à 66 %."
+>
+  <Hero
+    titre="Faire un don"
+    sousTitre="Nous soutenir"
+    accroche="Votre don rend possible l'accompagnement gratuit des femmes les plus vulnérables. Déductible à 66 % de votre impôt sur le revenu."
+    variant="orange"
+    ctaPrimaire={{ label: 'Donner sur HelloAsso', href: site.helloasso.don, externe: true }}
+  />
+
+  <Section titre="Pourquoi donner ?">
     <Prose>
-      <p>Votre don nous permet d'accompagner gratuitement les femmes les plus vulnérables. Paiement sécurisé via HelloAsso, déductible à 66%..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
+      <p>
+        Nous accompagnons <strong>gratuitement</strong> des femmes en grande précarité, dans
+        un cadre qui respecte leur consentement, leur rythme et leur histoire. Pour que cette
+        gratuité tienne dans la durée, nous avons besoin de dons individuels pérennes.
+      </p>
+      <p>
+        Les financements publics et privés couvrent une partie de nos charges, mais
+        <strong>votre soutien direct</strong> reste le meilleur garant de notre indépendance :
+        il nous permet de refuser ce qui ne rentre pas dans notre éthique, de dire non à
+        certaines commandes, et d'orienter nos efforts vers les publics qui en ont le plus
+        besoin.
+      </p>
+    </Prose>
+  </Section>
+
+  <Section titre="Que permet votre don" fond="beige">
+    <Prose>
+      <ul>
+        <li>
+          <strong>20 €</strong> : une séance individuelle (matériel, transport, supervision
+          intervenante).
+        </li>
+        <li>
+          <strong>50 €</strong> : un atelier collectif de 2h pour 6 à 10 femmes.
+        </li>
+        <li>
+          <strong>100 €</strong> : une session complète d'atelier sur plusieurs séances.
+        </li>
+        <li>
+          <strong>500 €</strong> : un parcours complet d'accompagnement corporel pour une
+          femme (jusqu'à 24 séances).
+        </li>
+      </ul>
+      <p>
+        Avec la déduction fiscale à 66 %, un don de 100 € ne vous coûte réellement que 34 €.
+      </p>
+    </Prose>
+  </Section>
+
+  <Section>
+    <div class="rounded-2xl bg-orange p-8 text-paper md:p-12">
+      <h2 class="text-3xl font-bold md:text-4xl">Faites un don maintenant</h2>
+      <p class="mt-3 max-w-xl opacity-95">
+        Paiement 100 % sécurisé via HelloAsso, plateforme solidaire sans commission sur les
+        dons. Reçu fiscal envoyé automatiquement.
+      </p>
+      <a
+        href={site.helloasso.don}
+        target="_blank"
+        rel="noopener"
+        class="mt-6 inline-block rounded-full bg-ink px-6 py-3 font-bold text-paper hover:bg-magenta"
+      >
+        Donner via HelloAsso →
+      </a>
+    </div>
+  </Section>
+
+  <Section titre="Autres manières de soutenir">
+    <Prose>
+      <ul>
+        <li>
+          <strong>Adhérer</strong> à prix libre —
+          <a href={site.helloasso.adhesion} target="_blank" rel="noopener">
+            sur HelloAsso
+          </a>
+          .
+        </li>
+        <li>
+          <strong>Mécénat entreprise</strong> —
+          <a href="/soutenir/mecenat">en savoir plus</a>.
+        </li>
+        <li>
+          <strong>Donner du temps</strong> — <a href="/agir/benevolat">devenir bénévole</a>.
+        </li>
+      </ul>
     </Prose>
   </Section>
 </Layout>

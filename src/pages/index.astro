@@ -3,13 +3,16 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import BlocCartes from '../components/BlocCartes.astro';
+import BlocStat from '../components/BlocStat.astro';
+import BlocCitation from '../components/BlocCitation.astro';
+import Prose from '../components/Prose.astro';
 import { site } from '../config/site';
 ---
 
 <Layout>
   <Hero
     titre="Se (re)toucher pour se (re)lier"
-    accroche="2mains de femmes agit contre l'isolement corporel des femmes grâce au toucher relationnel — non médicalisé, non sexualisé, fondé sur le consentement."
+    accroche="2mains de femmes agit contre l'isolement corporel des femmes par le toucher relationnel — non médicalisé, non sexualisé, fondé sur le consentement."
     ctaPrimaire={{ label: 'Découvrir nos actions', href: '/association/interventions' }}
     ctaSecondaire={{ label: 'Faire un don', href: site.helloasso.don, externe: true }}
     variant="beige"
@@ -19,7 +22,7 @@ import { site } from '../config/site';
     <BlocCartes
       cartes={[
         {
-          titre: "Accompagnement corporel",
+          titre: 'Accompagnement corporel',
           description:
             "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps et aux autres, dans un cadre sécurisé.",
           href: '/association/interventions',
@@ -27,7 +30,7 @@ import { site } from '../config/site';
           couleur: 'orange',
         },
         {
-          titre: "Sensibilisation & formation",
+          titre: 'Sensibilisation & formation',
           description:
             "Nous accompagnons les équipes du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques.",
           href: '/pour/structures',
@@ -35,7 +38,7 @@ import { site } from '../config/site';
           couleur: 'violet',
         },
         {
-          titre: "Recherche-action & plaidoyer",
+          titre: 'Recherche-action & plaidoyer',
           description:
             "Documenter, partager et porter la voix pour faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité.",
           href: '/isolement-corporel',
@@ -46,7 +49,44 @@ import { site } from '../config/site';
     />
   </Section>
 
-  <Section titre="Pour qui ?" fond="beige">
+  <Section titre="Un impensé social" fond="beige">
+    <div class="mb-8 max-w-3xl">
+      <p class="text-lg leading-relaxed">
+        L'isolement corporel, c'est l'absence récurrente de toucher bienveillant — ou au
+        contraire la présence de touchers uniquement toxiques. Un impensé social encore
+        largement absent des politiques publiques, et qui touche particulièrement les femmes
+        vulnérables.
+      </p>
+    </div>
+    <BlocStat
+      stats={[
+        {
+          valeur: '7 M+',
+          legende: "Personnes isolées socialement en France (11 % de la population).",
+          source: 'Fondation de France',
+        },
+        {
+          valeur: '40 %',
+          legende:
+            "des personnes sans-abri à Lyon sont des femmes. Mais 90 % des usagers des services sont des hommes.",
+          source: 'Rapport du Sénat, 2024',
+        },
+        {
+          valeur: '321 000',
+          legende:
+            "femmes victimes chaque année de violences conjugales physiques, sexuelles ou psychologiques en France.",
+          source: 'Miprof',
+        },
+      ]}
+    />
+    <p class="mt-6 text-sm">
+      <a href="/isolement-corporel" class="font-semibold text-orange hover:underline"
+        >Comprendre l'isolement corporel →</a
+      >
+    </p>
+  </Section>
+
+  <Section titre="Pour qui ?">
     <BlocCartes
       colonnes={3}
       cartes={[
@@ -59,7 +99,7 @@ import { site } from '../config/site';
           couleur: 'bleu',
         },
         {
-          titre: "Vous êtes une entreprise",
+          titre: 'Vous êtes une entreprise',
           description:
             "Soutenez le projet via le mécénat, ou mobilisez vos équipes autour du toucher, du consentement et du lien.",
           href: '/pour/entreprises',
@@ -67,7 +107,7 @@ import { site } from '../config/site';
           couleur: 'vert',
         },
         {
-          titre: "Vous êtes une femme concernée",
+          titre: 'Vous êtes une femme concernée',
           description:
             "Nos accompagnements sont gratuits, respectueux de votre rythme et de votre consentement.",
           href: '/pour/femmes',
@@ -78,26 +118,66 @@ import { site } from '../config/site';
     />
   </Section>
 
+  <Section fond="beige">
+    <BlocCitation
+      variant="paper"
+      citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
+      auteur="Marion"
+      role="Participante, 56 ans — Lyon"
+    />
+  </Section>
+
   <Section titre="Soutenir l'association" fond="violet">
-    <p class="mb-8 max-w-3xl text-lg">
-      75 adhérent·es et une centaine de soutiens individuels nous permettent déjà d'exister. Un don,
-      une adhésion ou du bénévolat font la différence.
-    </p>
-    <div class="flex flex-wrap gap-3">
-      <a
-        href={site.helloasso.don}
-        target="_blank"
-        rel="noopener"
-        class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
-      >
-        Faire un don
-      </a>
-      <a
-        href="/agir/benevolat"
-        class="rounded-full border-2 border-paper px-6 py-3 font-bold text-paper hover:bg-paper/10"
-      >
-        Devenir bénévole
-      </a>
+    <div class="grid gap-8 md:grid-cols-2">
+      <div>
+        <p class="mb-4 text-lg leading-relaxed">
+          75 adhérent·es et une centaine de soutiens individuels nous permettent déjà
+          d'exister. Un don, une adhésion, du temps bénévole, un partenariat : chaque
+          engagement compte.
+        </p>
+        <p class="mb-6 text-sm opacity-90">
+          Don de 100 € = 34 € après déduction fiscale. Une séance individuelle financée pour
+          environ 20 €.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a
+            href={site.helloasso.don}
+            target="_blank"
+            rel="noopener"
+            class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+          >
+            Faire un don
+          </a>
+          <a
+            href="/agir/benevolat"
+            class="rounded-full border-2 border-paper px-6 py-3 font-bold hover:bg-paper/10"
+          >
+            Devenir bénévole
+          </a>
+        </div>
+      </div>
+      <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
+        <h3 class="mb-3 text-xl font-bold">Prochains rendez-vous</h3>
+        <ul class="space-y-3 text-sm">
+          <li>
+            <p class="font-semibold">Atelier découverte auto-massages</p>
+            <p class="opacity-70">15 mai 2026 · La Médiane, Lyon 3</p>
+          </li>
+          <li>
+            <p class="font-semibold">Apéro des bénévoles</p>
+            <p class="opacity-70">22 mai 2026 · Pôle Bert, Lyon</p>
+          </li>
+          <li>
+            <p class="font-semibold">Formation toucher relationnel</p>
+            <p class="opacity-70">7 juin 2026 · Lyon</p>
+          </li>
+        </ul>
+        <p class="mt-4">
+          <a href="/agenda" class="text-sm font-semibold text-orange hover:underline"
+            >Voir l'agenda →</a
+          >
+        </p>
+      </div>
     </div>
   </Section>
 </Layout>

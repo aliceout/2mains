@@ -3,14 +3,137 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
+
+type Evenement = {
+  titre: string;
+  date: string;
+  dateIso: string;
+  lieu: string;
+  public: string;
+  gratuit: boolean;
+  description: string;
+  inscription?: string;
+};
+
+// Événements de démo — à remplacer par la collection CMS `evenements/`.
+const evenements: Evenement[] = [
+  {
+    titre: 'Atelier découverte — auto-massages et toucher du consentement',
+    date: '15 mai 2026, 14h–16h',
+    dateIso: '2026-05-15',
+    lieu: 'Tiers-lieu La Médiane, Lyon 3',
+    public: 'Femmes concernées',
+    gratuit: true,
+    description:
+      "Un format court pour expérimenter, dans un cadre bienveillant, les bases du toucher relationnel : auto-massages, exercices de respiration et de consentement, temps d'échange.",
+    inscription: `mailto:contact@2mainsdefemmes.org?subject=Inscription atelier 15 mai`,
+  },
+  {
+    titre: 'Apéro des bénévoles',
+    date: '22 mai 2026, 18h30',
+    dateIso: '2026-05-22',
+    lieu: 'Tiers-lieu Pôle Bert, Lyon',
+    public: 'Bénévoles et curieuses·eux',
+    gratuit: true,
+    description:
+      "Moment convivial mensuel : accueil des nouveaux·elles, point sur les chantiers en cours, partage d'actualités.",
+  },
+  {
+    titre: "Formation : animer un atelier de sensibilisation au toucher relationnel",
+    date: '7 juin 2026, 9h–17h',
+    dateIso: '2026-06-07',
+    lieu: 'Lyon (lieu à préciser)',
+    public: 'Bénévoles intervenant·es',
+    gratuit: true,
+    description:
+      "Une journée animée par un·e professionnel·le extérieur·e pour se doter des repères et de la posture nécessaires pour animer nos ateliers découverte.",
+    inscription: `mailto:contact@2mainsdefemmes.org?subject=Inscription formation 7 juin`,
+  },
+  {
+    titre: 'Conférence-débat — « La place des corps dans le prendre soin »',
+    date: '26 juin 2026, 19h',
+    dateIso: '2026-06-26',
+    lieu: 'Ma Friche Urbaine, Lyon',
+    public: 'Tout public',
+    gratuit: true,
+    description:
+      "Co-animée avec le groupe « Prendre soin » de Ma Friche Urbaine, une soirée pour discuter de la dimension corporelle dans les pratiques sociales et médico-sociales.",
+  },
+];
+
+const now = new Date();
+const aVenir = evenements.filter((e) => new Date(e.dateIso) >= now);
+const passes = evenements.filter((e) => new Date(e.dateIso) < now);
 ---
 
-<Layout title="Agenda">
-  <Hero titre="Agenda" accroche="Ateliers, apéros bénévoles, conférences, événements publics — retrouvez-nous." variant="beige" />
+<Layout
+  title="Agenda"
+  description="Ateliers, apéros bénévoles, formations, conférences — retrouvez 2mains de femmes."
+>
+  <Hero
+    titre="Agenda"
+    accroche="Ateliers découverte, apéros bénévoles, formations, conférences-débats. Certains événements sont ouverts à toutes et tous, d'autres réservés à nos publics."
+    variant="beige"
+  />
+
+  <Section titre="À venir">
+    {
+      aVenir.length === 0 ? (
+        <p class="text-sm opacity-70">Aucun événement programmé pour l'instant. Restez en lien par email.</p>
+      ) : (
+        <ul class="grid gap-4 md:grid-cols-2">
+          {aVenir.map((e) => (
+            <li class="rounded-xl border border-beige bg-paper p-6">
+              <p class="text-xs font-semibold uppercase tracking-wide text-orange">
+                {e.date} · {e.lieu}
+              </p>
+              <h2 class="mt-2 mb-1 text-xl font-bold">{e.titre}</h2>
+              <div class="mb-3 flex flex-wrap gap-2 text-xs">
+                <span class="rounded-full bg-beige px-3 py-1">{e.public}</span>
+                {e.gratuit && <span class="rounded-full bg-vert px-3 py-1">Gratuit</span>}
+              </div>
+              <p class="text-sm leading-relaxed">{e.description}</p>
+              {e.inscription && (
+                <p class="mt-4">
+                  <a
+                    href={e.inscription}
+                    class="font-semibold text-orange hover:underline"
+                  >
+                    S'inscrire / en savoir plus →
+                  </a>
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </Section>
+
+  {
+    passes.length > 0 && (
+      <Section titre="Événements passés" fond="beige">
+        <ul class="grid gap-3 md:grid-cols-2">
+          {passes.map((e) => (
+            <li class="rounded-lg bg-paper p-4 opacity-80">
+              <p class="text-xs uppercase tracking-wide text-violet">{e.date} · {e.lieu}</p>
+              <p class="mt-1 font-semibold">{e.titre}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    )
+  }
+
   <Section>
     <Prose>
-      <p>Ateliers, apéros bénévoles, conférences, événements publics — retrouvez-nous..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
+      <p class="text-sm opacity-70">
+        <em>
+          Cet agenda est temporaire. Une fois le CMS connecté, Audrey pourra ajouter,
+          modifier et retirer les événements directement depuis l'admin — sans passer par le
+          code.
+        </em>
+      </p>
     </Prose>
   </Section>
 </Layout>

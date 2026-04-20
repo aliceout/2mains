@@ -3,14 +3,79 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+import BlocCartes from '../../components/BlocCartes.astro';
+import BlocStat from '../../components/BlocStat.astro';
+import BlocCitation from '../../components/BlocCitation.astro';
 ---
 
-<Layout title="L'isolement corporel">
-  <Hero titre="L'isolement corporel" accroche="Un impensé social que 2mains de femmes contribue à nommer et à traiter." variant="magenta" />
+<Layout
+  title="L'isolement corporel"
+  description="Comprendre l'isolement corporel — un impensé social qui touche particulièrement les femmes vulnérables."
+>
+  <Hero
+    titre="L'isolement corporel"
+    accroche="L'isolement corporel, c'est l'absence récurrente de toucher bienveillant — ou, au contraire, la présence de touchers uniquement toxiques ou intrusifs. Un impensé social que nous contribuons à nommer et à traiter."
+    variant="magenta"
+  />
+
+  <Section titre="Quelques chiffres">
+    <BlocStat
+      stats={[
+        {
+          valeur: '7 M+',
+          legende: 'Personnes de +15 ans en isolement relationnel en France (11 % de la population).',
+          source: 'Fondation de France.',
+        },
+        {
+          valeur: '1/3',
+          legende: "des Français·es disent manquer de contact physique au quotidien.",
+        },
+        {
+          valeur: '40 %',
+          legende: "de la population sans-abri à Lyon sont des femmes, alors que 90 % des usagers des services dédiés sont des hommes.",
+        },
+      ]}
+    />
+  </Section>
+
+  <Section titre="Pour aller plus loin" fond="beige">
+    <BlocCartes
+      colonnes={3}
+      cartes={[
+        {
+          titre: 'Un impensé social',
+          description:
+            "Pourquoi l'isolement corporel est-il si peu nommé, si peu traité, et pourquoi frappe-t-il particulièrement les femmes vulnérables ?",
+          href: '/isolement-corporel/impense',
+          cta: "Lire l'analyse",
+          couleur: 'magenta',
+        },
+        {
+          titre: 'Le toucher relationnel',
+          description:
+            "Qu'appelle-t-on toucher relationnel ? En quoi est-il différent du toucher médical, sexuel, ou de la socio-esthétique ?",
+          href: '/isolement-corporel/toucher',
+          cta: 'Comprendre',
+          couleur: 'violet',
+        },
+        {
+          titre: 'Ressources',
+          description:
+            "Études, articles, bibliographie — pour approfondir la question du toucher, de la santé mentale et du lien social.",
+          href: '/isolement-corporel/ressources',
+          cta: 'Consulter',
+          couleur: 'bleu',
+        },
+      ]}
+    />
+  </Section>
+
   <Section>
-    <Prose>
-      <p>Un impensé social que 2mains de femmes contribue à nommer et à traiter..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
-    </Prose>
+    <BlocCitation
+      variant="violet"
+      citation="L'exemple du peau-à-peau en maternité, qui a réduit de moitié la mortalité des bébés prématurés, montre à quel point le toucher est vital. Les adultes aussi ont besoin de se sentir touché·es et de toucher, pour se sentir vivant·es et visibles."
+      auteur="Équipe 2mains de femmes"
+      role="Extrait du document de projet"
+    />
   </Section>
 </Layout>

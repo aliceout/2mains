@@ -1,0 +1,36 @@
+---
+type Props = {
+  citation: string;
+  auteur: string;
+  role?: string;
+  variant?: 'beige' | 'violet' | 'paper';
+};
+
+const { citation, auteur, role, variant = 'beige' } = Astro.props;
+
+const bg = {
+  beige: 'bg-beige text-ink',
+  violet: 'bg-violet text-paper',
+  paper: 'bg-paper text-ink border border-beige',
+}[variant];
+---
+
+<figure class:list={['relative rounded-2xl p-6 md:p-8', bg]}>
+  <svg
+    aria-hidden="true"
+    class="absolute -top-2 -left-2 h-10 w-10 opacity-30"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+  >
+    <path
+      d="M7 7h4v4H9c0 2 2 3 3 3v2c-3 0-5-2-5-5V7zm8 0h4v4h-2c0 2 2 3 3 3v2c-3 0-5-2-5-5V7z"
+    ></path>
+  </svg>
+  <blockquote class="text-lg leading-relaxed italic">
+    <p>{citation}</p>
+  </blockquote>
+  <figcaption class="mt-4 text-sm font-semibold">
+    — {auteur}
+    {role && <span class="block font-normal opacity-80">{role}</span>}
+  </figcaption>
+</figure>

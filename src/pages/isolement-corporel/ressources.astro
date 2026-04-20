@@ -3,14 +3,88 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+
+const ressources = [
+  {
+    type: 'Article',
+    titre: 'Le toucher, un besoin fondamental',
+    source: 'Sciencepost',
+    date: '12 avril 2024',
+    description:
+      "Synthèse accessible d'une étude scientifique sur les effets du toucher sur la santé mentale et physique.",
+    lien: null,
+  },
+  {
+    type: 'Dossier',
+    titre: "La santé en action n°461 — Covid-19 et santé mentale",
+    source: 'Santé publique France',
+    date: 'Septembre 2022',
+    description:
+      "Dossier sur la dégradation de la santé mentale des Français·es pendant la pandémie, plus marquée pour les populations fragiles.",
+    lien: null,
+  },
+  {
+    type: 'Rapport',
+    titre: "Femmes sans-abri : l'urgence d'agir",
+    source: 'Délégation aux droits des femmes, Sénat',
+    date: '2024',
+    description:
+      "État des lieux de l'explosion du nombre de femmes à la rue en France (40 % de la population SDF) et de l'inadéquation des dispositifs.",
+    lien: null,
+  },
+  {
+    type: 'Statistiques',
+    titre: 'Chiffres de référence sur les violences faites aux femmes',
+    source: 'Miprof / gouvernement',
+    date: 'Mis à jour annuellement',
+    description:
+      "En France, 321 000 femmes de 18 à 74 ans subissent chaque année des violences physiques, sexuelles ou psychologiques de conjoint ou ex-conjoint.",
+    lien: null,
+  },
+];
 ---
 
-<Layout title="Documents ressources">
-  <Hero titre="Documents ressources" sousTitre="L'isolement corporel" accroche="Études, articles, outils — pour aller plus loin sur l'isolement corporel et le toucher relationnel." variant="beige" />
+<Layout
+  title="Ressources"
+  description="Études, articles, rapports sur l'isolement corporel, le toucher relationnel et la santé mentale des femmes."
+>
+  <Hero
+    titre="Documents ressources"
+    sousTitre="L'isolement corporel"
+    accroche="Une sélection d'études, d'articles et de rapports qui nourrissent notre réflexion et notre pratique. À lire pour aller plus loin."
+    variant="beige"
+  />
+
   <Section>
-    <Prose>
-      <p>Études, articles, outils — pour aller plus loin sur l'isolement corporel et le toucher relationnel..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
-    </Prose>
+    <ul class="grid gap-4 md:grid-cols-2">
+      {
+        ressources.map((r) => (
+          <li class="rounded-xl border border-beige bg-paper p-6">
+            <p class="text-xs font-semibold uppercase tracking-wide text-violet">
+              {r.type} · {r.date}
+            </p>
+            <h2 class="mt-2 mb-1 text-lg font-bold">{r.titre}</h2>
+            <p class="mb-3 text-sm opacity-80">{r.source}</p>
+            <p class="text-sm leading-relaxed">{r.description}</p>
+            {r.lien && (
+              <p class="mt-4">
+                <a
+                  href={r.lien}
+                  target="_blank"
+                  rel="noopener"
+                  class="font-semibold text-orange hover:underline"
+                >
+                  Accéder à la ressource →
+                </a>
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="mt-8 text-sm opacity-70">
+      Nous complétons régulièrement cette sélection. Vous connaissez une ressource qui
+      devrait s'y trouver ? <a href="/contact" class="underline">Écrivez-nous</a>.
+    </p>
   </Section>
 </Layout>

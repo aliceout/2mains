@@ -3,14 +3,147 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
+import { site } from '../config/site';
 ---
 
-<Layout title="Nous contacter">
-  <Hero titre="Nous contacter" accroche="Un message, une question, une idée : écrivez-nous." variant="violet" />
+<Layout
+  title="Nous contacter"
+  description="Écrire à 2mains de femmes — un message, une question, une envie de rejoindre le projet."
+>
+  <Hero
+    titre="Nous contacter"
+    accroche="Un message, une question, une idée, une envie — écrivez-nous, nous lisons tout et nous répondons."
+    variant="violet"
+  />
+
   <Section>
-    <Prose>
-      <p>Un message, une question, une idée : écrivez-nous..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
-    </Prose>
+    <div class="grid gap-10 md:grid-cols-[1fr_1fr]">
+      <div>
+        <Prose>
+          <h2>Nos coordonnées</h2>
+          <p>
+            <strong>Par email</strong><br />
+            <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+          </p>
+          <p>
+            <strong>Par téléphone</strong><br />
+            {site.contact.phone}
+          </p>
+          <p>
+            <strong>Où nous trouver</strong><br />
+            {site.contact.address}
+          </p>
+          <h3>Sur les réseaux</h3>
+          <ul>
+            {
+              site.social.facebook && (
+                <li>
+                  <a href={site.social.facebook} target="_blank" rel="noopener">
+                    Facebook
+                  </a>
+                </li>
+              )
+            }
+            {
+              site.social.instagram && (
+                <li>
+                  <a href={site.social.instagram} target="_blank" rel="noopener">
+                    Instagram
+                  </a>
+                </li>
+              )
+            }
+            {
+              site.social.linkedin && (
+                <li>
+                  <a href={site.social.linkedin} target="_blank" rel="noopener">
+                    LinkedIn
+                  </a>
+                </li>
+              )
+            }
+          </ul>
+        </Prose>
+      </div>
+
+      <div>
+        <form
+          action={`mailto:${site.contact.email}`}
+          method="post"
+          enctype="text/plain"
+          class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
+        >
+          <h2 class="text-2xl font-bold">Nous écrire</h2>
+
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-semibold">Votre nom</span>
+            <input
+              name="nom"
+              type="text"
+              required
+              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+            />
+          </label>
+
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-semibold">Votre email</span>
+            <input
+              name="email"
+              type="email"
+              required
+              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+            />
+          </label>
+
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-semibold">Vous êtes</span>
+            <select
+              name="type"
+              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+            >
+              <option>Une femme qui souhaite en savoir plus</option>
+              <option>Une structure d'accueil</option>
+              <option>Une entreprise</option>
+              <option>Un·e praticien·ne du corps</option>
+              <option>Un·e futur·e bénévole</option>
+              <option>Un·e journaliste / chercheur·se</option>
+              <option>Autre</option>
+            </select>
+          </label>
+
+          <label class="flex flex-col gap-1">
+            <span class="text-sm font-semibold">Votre message</span>
+            <textarea
+              name="message"
+              rows="6"
+              required
+              class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+            ></textarea>
+          </label>
+
+          {/* Honeypot anti-spam — caché pour humain, piège pour bot */}
+          <input
+            type="text"
+            name="website"
+            tabindex="-1"
+            autocomplete="off"
+            class="hidden"
+            aria-hidden="true"
+          />
+
+          <button
+            type="submit"
+            class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+          >
+            Envoyer le message
+          </button>
+
+          <p class="text-xs opacity-70">
+            Ce formulaire ouvrira votre logiciel de messagerie par défaut. Nous mettrons
+            bientôt en place un envoi direct via notre serveur.
+          </p>
+        </form>
+      </div>
+    </div>
   </Section>
 </Layout>

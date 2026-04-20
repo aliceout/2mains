@@ -3,14 +3,90 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+
+const docs = [
+  {
+    titre: "Fiche de structure — 2mains de femmes",
+    categorie: "Présentation",
+    date: "Septembre 2025",
+    description:
+      "Présentation détaillée de l'association : vision, mission, piliers, publics, gouvernance, impacts, indicateurs.",
+    lien: "#",
+  },
+  {
+    titre: "Leaflet de communication",
+    categorie: "Communication",
+    date: "2025",
+    description: "Plaquette grand public — version courte et accessible.",
+    lien: "#",
+  },
+  {
+    titre: "Document de projet — Lyon Habitat Métropole 2025",
+    categorie: "Projet",
+    date: "Septembre 2025",
+    description:
+      "« Se (re)toucher pour se (re)lier : une innovation au service des femmes isolées » — projet porté par 2mains de femmes auprès du fonds de dotation LHM.",
+    lien: "#",
+  },
+  {
+    titre: "Projet associatif 2025–2028",
+    categorie: "Stratégie",
+    date: "À paraître",
+    description:
+      "Vision, orientations stratégiques et plan d'action triennal. Voté en AG en décembre 2025.",
+    lien: null,
+  },
+  {
+    titre: "Rapport d'activité 2025",
+    categorie: "Rapport",
+    date: "À paraître",
+    description: "Bilan des actions, participantes, partenariats et finances de l'année écoulée.",
+    lien: null,
+  },
+];
 ---
 
-<Layout title="Nos documents">
-  <Hero titre="Nos documents" sousTitre="L'association" accroche="Projet associatif, rapports d'activité, ressources — à télécharger librement." variant="beige" />
+<Layout
+  title="Nos documents"
+  description="Projet associatif, rapports d'activité, ressources — à télécharger librement."
+>
+  <Hero
+    titre="Nos documents"
+    sousTitre="L'association"
+    accroche="Nos textes de référence et ressources sont en libre accès. Une question sur un document ? Écrivez-nous."
+    variant="beige"
+  />
+
   <Section>
-    <Prose>
-      <p>Projet associatif, rapports d'activité, ressources — à télécharger librement..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
-    </Prose>
+    <ul class="grid gap-4 md:grid-cols-2">
+      {
+        docs.map((d) => (
+          <li class="flex flex-col rounded-xl border border-beige bg-paper p-6">
+            <p class="text-xs font-semibold tracking-wide uppercase text-violet">
+              {d.categorie} · {d.date}
+            </p>
+            <h2 class="mt-2 mb-2 text-xl font-bold">{d.titre}</h2>
+            <p class="mb-4 flex-1 text-sm leading-relaxed">{d.description}</p>
+            {d.lien ? (
+              <a
+                href={d.lien}
+                class="inline-flex w-fit items-center gap-2 rounded-full bg-orange px-4 py-2 text-sm font-bold text-paper hover:bg-magenta"
+              >
+                Télécharger le PDF →
+              </a>
+            ) : (
+              <span class="inline-flex w-fit items-center gap-2 rounded-full border border-beige px-4 py-2 text-sm font-semibold opacity-70">
+                À paraître
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-8 text-sm opacity-70">
+      Certains liens pointent vers des emplacements temporaires — les documents définitifs
+      seront mis en ligne au fur et à mesure de leur consolidation.
+    </p>
   </Section>
 </Layout>

@@ -3,14 +3,103 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+import BlocCartes from '../../components/BlocCartes.astro';
 ---
 
-<Layout title="Nos interventions">
-  <Hero titre="Nos interventions" sousTitre="L'association" accroche="Trois axes complémentaires pour une transformation durable de la place des corps dans les parcours de vie." variant="violet" />
-  <Section>
+<Layout
+  title="Nos interventions"
+  description="Les trois axes d'intervention de 2mains de femmes : accompagnement corporel, sensibilisation, recherche-action."
+>
+  <Hero
+    titre="Nos interventions"
+    sousTitre="L'association"
+    accroche="Nos actions se situent à la croisée de trois domaines : la santé mentale, le lien social et l'égalité de genre. Nous développons trois axes complémentaires pour agir durablement sur la place des corps et du toucher dans les parcours de vie."
+    variant="violet"
+  />
+
+  <Section titre="Trois axes complémentaires">
+    <BlocCartes
+      colonnes={3}
+      cartes={[
+        {
+          titre: "Axe 1 — Accompagnement corporel des femmes",
+          description:
+            "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps, retrouver des repères de sécurité relationnelle et réinvestir le lien aux autres. Parcours d'au moins 4 séances hebdomadaires, pouvant aller jusqu'à 6 mois.",
+          href: '/pour/femmes',
+          cta: "En savoir plus",
+          couleur: 'orange',
+        },
+        {
+          titre: "Axe 2 — Sensibilisation & formation",
+          description:
+            "Nous accompagnons les équipes professionnelles et bénévoles du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques : formations, groupes d'échanges, interventions en équipe.",
+          href: '/pour/structures',
+          cta: "Organiser une intervention",
+          couleur: 'violet',
+        },
+        {
+          titre: "Axe 3 — Recherche-action & plaidoyer",
+          description:
+            "Nous contribuons à faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité. Nous documentons, partageons et portons une parole engagée pour faire évoluer pratiques et représentations.",
+          href: '/isolement-corporel',
+          cta: "Comprendre l'isolement corporel",
+          couleur: 'magenta',
+        },
+      ]}
+    />
+  </Section>
+
+  <Section titre="Notre méthode" fond="beige">
     <Prose>
-      <p>Trois axes complémentaires pour une transformation durable de la place des corps dans les parcours de vie..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
+      <p>Notre méthode d'intervention repose sur quelques principes stables :</p>
+      <ul>
+        <li>Un cadre sécurisant, fondé sur le consentement ;</li>
+        <li>Une approche centrée sur la personne ;</li>
+        <li>La coopération avec les équipes partenaires ;</li>
+        <li>Une logique d'ajustement aux contextes ;</li>
+        <li>L'attention à la continuité des parcours.</li>
+      </ul>
+      <p>
+        <strong>
+          Nous ne remplaçons pas les accompagnements médicaux, psychologiques ou sociaux
+          existants : nous venons les compléter en intégrant la dimension corporelle et
+          relationnelle.
+        </strong>
+      </p>
+
+      <h2>Un parcours type</h2>
+      <p>
+        Un parcours d'accompagnement corporel se construit à partir d'une récurrence
+        hebdomadaire d'au moins 4 séances, et peut aller d'un mois (4 séances) à 6 mois
+        (24 séances).
+      </p>
+      <p>
+        Chaque séance est adaptée <strong>aux besoins et aux souhaits de la femme</strong> à
+        l'instant T. Le contenu peut combiner, selon le choix : respiration, automassage, éveil
+        corporel guidé, massages, jeux tactiles, temps d'écoute active. Nous consolidons trois
+        protocoles types pour répondre aux grands enjeux de chaque groupe de femmes, tout en
+        restant adaptables à chaque situation.
+      </p>
+
+      <h2>Nos publics prioritaires</h2>
+      <p>
+        L'association s'adresse à toute femme vivant sur la métropole de Lyon et se sentant en
+        isolement corporel. Sur 2025–2028, nous priorisons l'accès :
+      </p>
+      <ul>
+        <li>aux femmes sans domicile fixe ou mal logées,</li>
+        <li>aux survivantes de violences corporelles (sexuelles et autres),</li>
+        <li>aux femmes handicapées ou en rémission de maladies chroniques,</li>
+        <li>aux travailleuses du sexe,</li>
+        <li>aux femmes en prison,</li>
+        <li>aux femmes âgées isolées,</li>
+        <li>aux femmes en transition.</li>
+      </ul>
+      <p>
+        Nous travaillons à partir d'une
+        <strong>approche intersectionnelle des fragilités</strong>, prônant une attention
+        centrée sur chaque personne pour personnaliser nos réponses.
+      </p>
     </Prose>
   </Section>
 </Layout>

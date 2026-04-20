@@ -2,15 +2,74 @@
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
+import BlocCartes from '../../components/BlocCartes.astro';
 import Prose from '../../components/Prose.astro';
+import { site } from '../../config/site';
 ---
 
-<Layout title="Nous soutenir">
-  <Hero titre="Nous soutenir" accroche="Dons, adhésions, mécénat — plusieurs manières de faire exister le projet." variant="magenta" />
+<Layout
+  title="Nous soutenir"
+  description="Dons, adhésions, mécénat — plusieurs manières de soutenir 2mains de femmes."
+>
+  <Hero
+    titre="Nous soutenir"
+    accroche="75 adhérent·es et une centaine de soutiens individuels nous permettent déjà d'exister. Votre soutien rend possible l'accompagnement gratuit des femmes les plus vulnérables."
+    variant="magenta"
+    ctaPrimaire={{ label: 'Faire un don', href: site.helloasso.don, externe: true }}
+    ctaSecondaire={{ label: 'Adhérer', href: site.helloasso.adhesion, externe: true }}
+  />
+
   <Section>
+    <BlocCartes
+      colonnes={3}
+      cartes={[
+        {
+          titre: 'Faire un don',
+          description:
+            "Un don ponctuel ou mensuel via HelloAsso. Déductible à 66 % de l'impôt sur le revenu. À partir de 5 €.",
+          href: '/soutenir/dons',
+          cta: 'En savoir plus',
+          couleur: 'orange',
+        },
+        {
+          titre: 'Adhérer',
+          description:
+            "Adhésion à prix libre — rejoignez les 75 adhérent·es qui soutiennent l'association et participent à l'AG.",
+          href: site.helloasso.adhesion,
+          cta: 'Adhérer sur HelloAsso',
+          couleur: 'violet',
+        },
+        {
+          titre: 'Mécénat entreprise',
+          description:
+            "Votre entreprise peut nous soutenir financièrement, en nature, ou en compétences. Défiscalisable à 60 %.",
+          href: '/soutenir/mecenat',
+          cta: 'Découvrir',
+          couleur: 'vert',
+        },
+      ]}
+    />
+  </Section>
+
+  <Section titre="À quoi ça sert, concrètement ?" fond="beige">
     <Prose>
-      <p>Dons, adhésions, mécénat — plusieurs manières de faire exister le projet..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
+      <ul>
+        <li>
+          <strong>20 €</strong> : une séance individuelle (matériel, transport, supervision
+          intervenante).
+        </li>
+        <li>
+          <strong>100 €</strong> : une session d'atelier collectif avec 6 à 10 femmes.
+        </li>
+        <li>
+          <strong>500 €</strong> : un parcours complet d'accompagnement corporel pour une
+          femme (jusqu'à 24 séances).
+        </li>
+        <li>
+          <strong>2 000 €</strong> : une journée de formation animée par un·e
+          professionnel·le extérieur·e, ouverte à l'ensemble de nos bénévoles.
+        </li>
+      </ul>
     </Prose>
   </Section>
 </Layout>

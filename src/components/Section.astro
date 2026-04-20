@@ -1,7 +1,7 @@
 ---
 type Props = {
   titre?: string;
-  fond?: 'paper' | 'beige' | 'violet' | 'orange';
+  fond?: 'paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu';
   taille?: 'sm' | 'md' | 'lg';
 };
 
@@ -12,6 +12,9 @@ const bgClass = {
   beige: 'bg-beige text-ink',
   violet: 'bg-violet text-paper',
   orange: 'bg-orange text-paper',
+  magenta: 'bg-magenta text-paper',
+  vert: 'bg-vert text-ink',
+  bleu: 'bg-bleu text-paper',
 }[fond];
 
 const padClass = {

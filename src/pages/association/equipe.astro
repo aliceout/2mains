@@ -3,14 +3,119 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+import { site } from '../../config/site';
+
+const ca = [
+  { nom: 'Audrey Relandeau', role: 'Fondatrice · Présidente' },
+  { nom: 'Sylvie Bouko', role: 'Vice-présidente' },
+  { nom: 'Elsa Moulin', role: 'Vice-présidente' },
+  { nom: 'Michel Relandeau', role: 'Secrétaire' },
+  { nom: 'Estelle Pourcelot', role: 'Trésorière' },
+  { nom: 'Noémia Augusto', role: 'Administratrice' },
+  { nom: 'Sandrine Amaré', role: 'Administratrice' },
+  { nom: 'Cécile Bourgeat', role: 'Administratrice' },
+];
 ---
 
-<Layout title="Notre équipe">
-  <Hero titre="Notre équipe" sousTitre="L'association" accroche="CA, bénévoles, praticien·nes solidaires : une gouvernance participative et contributive." variant="orange" />
-  <Section>
+<Layout
+  title="Notre équipe"
+  description="Conseil d'administration, bénévoles et réseau de praticien·nes solidaires de 2mains de femmes."
+>
+  <Hero
+    titre="Notre équipe"
+    sousTitre="L'association"
+    accroche="2mains de femmes s'appuie sur une gouvernance participative. Conseil d'administration, bénévoles, personnes ressources et partenaires contribuent ensemble au développement du projet avec une même exigence : qualité relationnelle, éthique et ancrage terrain."
+    variant="orange"
+  />
+
+  <Section titre="Le conseil d'administration">
     <Prose>
-      <p>CA, bénévoles, praticien·nes solidaires : une gouvernance participative et contributive..</p>
-      <p class="text-sm opacity-70 italic">[Contenu à compléter — placeholder automatique.]</p>
+      <p>
+        Le CA porte les orientations de l'association, garantit le cadre éthique et
+        accompagne la structuration du projet. Il veille à la cohérence entre la mission, les
+        partenariats et les actions menées sur le terrain. En 2025, le CA a fait le choix de
+        ne pas élire de bureau.
+      </p>
+    </Prose>
+
+    <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {
+        ca.map((membre) => (
+          <li class="rounded-xl border border-beige bg-paper p-5">
+            <p class="text-lg font-bold">{membre.nom}</p>
+            <p class="text-sm text-violet">{membre.role}</p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-6 text-sm opacity-70">
+      Composition actée au 24 septembre 2025. Le CA est limité à 12 membres. Au moins une
+      femme concernée par notre mission siège au CA.
+    </p>
+  </Section>
+
+  <Section titre="Les bénévoles — les Mains de 2mains" fond="beige">
+    <Prose>
+      <p>
+        Les bénévoles participent à la vie associative, à l'organisation d'actions, au soutien
+        logistique et au développement du projet selon leurs disponibilités et compétences.
+        Ils et elles sont une ressource essentielle pour faire vivre une association ancrée
+        dans la coopération et la sororité.
+      </p>
+      <p>Trois profils de bénévolat cohabitent (cumulables) :</p>
+      <ol>
+        <li>
+          <strong>Bénévole intervenant·e</strong> auprès des femmes accompagnées — cœur de
+          l'association.
+        </li>
+        <li>
+          <strong>Bénévole en appui au développement</strong>, via la participation aux
+          commissions techniques.
+        </li>
+        <li>
+          <strong>Bénévole ponctuel·le</strong>, mobilisable selon envies et compétences sur
+          des chantiers ou événements : logistique, outils, comm, graphisme…
+        </li>
+      </ol>
+      <p><a href="/agir/benevolat">Rejoindre les bénévoles →</a></p>
+    </Prose>
+  </Section>
+
+  <Section titre="Les praticien·nes solidaires">
+    <Prose>
+      <p>
+        Nous développons progressivement un réseau de <strong>praticien·nes du toucher et/ou
+        du corps</strong> prêt·es à soutenir l'association par le biais de collectes de dons
+        auprès de leur clientèle, et/ou de séances sans reste à charge pour les femmes
+        accompagnées par 2mains de femmes.
+      </p>
+      <p>
+        Ce réseau vise à faciliter le (re)accès à la santé des femmes en situation de
+        précarité financière, ayant reconnecté à leur corps et au toucher.
+      </p>
+      <p><a href="/agir/praticiennes">Intégrer le réseau →</a></p>
+    </Prose>
+  </Section>
+
+  <Section titre="Gouvernance participative" fond="beige">
+    <Prose>
+      <p>
+        Quatre commissions techniques mixtes, se réunissant au moins une fois tous les quatre
+        mois, permettent d'impliquer partenaires, participant·es et expert·es dans le
+        développement de l'association, <strong>sans nécessiter d'être administrateur·ice ou
+        adhérent·e</strong>. Ce modèle assure une gouvernance agile et inclusive.
+      </p>
+      <ul>
+        <li>CT projet associatif</li>
+        <li>CT recherche de fonds et partenariats</li>
+        <li>CT réseau pro et intervenant·es</li>
+        <li>CT communication externe et vie associative</li>
+      </ul>
+      <p>
+        Envie de contribuer à une commission ?
+        <a href={`mailto:${site.contact.email}`}>Écrivez-nous</a>.
+      </p>
     </Prose>
   </Section>
 </Layout>

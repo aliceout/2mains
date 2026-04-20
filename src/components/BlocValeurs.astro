@@ -1,0 +1,35 @@
+---
+type Valeur = {
+  nom: string;
+  description: string;
+  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+};
+
+type Props = { valeurs: Valeur[] };
+const { valeurs } = Astro.props;
+
+const dotClass = {
+  orange: 'bg-orange',
+  violet: 'bg-violet',
+  magenta: 'bg-magenta',
+  vert: 'bg-vert',
+  bleu: 'bg-bleu',
+};
+---
+
+<div class="grid gap-6 md:grid-cols-2">
+  {
+    valeurs.map((v) => (
+      <div class="flex gap-4 rounded-xl bg-paper p-6 shadow-sm">
+        <span
+          class:list={['mt-2 h-4 w-4 shrink-0 rounded-full', dotClass[v.couleur ?? 'orange']]}
+          aria-hidden="true"
+        />
+        <div>
+          <h3 class="mb-2 text-xl font-bold">{v.nom}</h3>
+          <p class="text-sm leading-relaxed">{v.description}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
