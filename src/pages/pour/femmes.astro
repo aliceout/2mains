@@ -4,6 +4,7 @@ import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 import BlocCitation from '../../components/BlocCitation.astro';
+import Draft from '../../components/Draft.astro';
 import { site } from '../../config/site';
 ---
 
@@ -71,12 +72,14 @@ import { site } from '../../config/site';
   </Section>
 
   <Section>
-    <BlocCitation
-      variant="beige"
-      citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Juste être là, avec quelqu'un qui ne me demandait rien, ça m'a déjà fait du bien. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
-      auteur="Témoignage participante"
-      role="Lyon — témoignage anonymisé"
-    />
+    <Draft reason="Citation fictive">
+      <BlocCitation
+        variant="beige"
+        citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Juste être là, avec quelqu'un qui ne me demandait rien, ça m'a déjà fait du bien. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
+        auteur="Témoignage participante"
+        role="Lyon — témoignage anonymisé"
+      />
+    </Draft>
   </Section>
 
   <Section titre="Comment nous rencontrer">

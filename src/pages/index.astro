@@ -6,6 +6,7 @@ import BlocCartes from '../components/BlocCartes.astro';
 import BlocStat from '../components/BlocStat.astro';
 import BlocCitation from '../components/BlocCitation.astro';
 import Prose from '../components/Prose.astro';
+import Draft from '../components/Draft.astro';
 import { site } from '../config/site';
 ---
 
@@ -119,12 +120,14 @@ import { site } from '../config/site';
   </Section>
 
   <Section fond="beige">
-    <BlocCitation
-      variant="paper"
-      citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
-      auteur="Marion"
-      role="Participante, 56 ans — Lyon"
-    />
+    <Draft reason="Citation fictive — à remplacer par une vraie parole">
+      <BlocCitation
+        variant="paper"
+        citation="Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
+        auteur="Marion"
+        role="Participante, 56 ans — Lyon"
+      />
+    </Draft>
   </Section>
 
   <Section titre="Soutenir l'association" fond="violet">
@@ -156,28 +159,30 @@ import { site } from '../config/site';
           </a>
         </div>
       </div>
-      <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
-        <h3 class="mb-3 text-xl font-bold">Prochains rendez-vous</h3>
-        <ul class="space-y-3 text-sm">
-          <li>
-            <p class="font-semibold">Atelier découverte auto-massages</p>
-            <p class="opacity-70">15 mai 2026 · La Médiane, Lyon 3</p>
-          </li>
-          <li>
-            <p class="font-semibold">Apéro des bénévoles</p>
-            <p class="opacity-70">22 mai 2026 · Pôle Bert, Lyon</p>
-          </li>
-          <li>
-            <p class="font-semibold">Formation toucher relationnel</p>
-            <p class="opacity-70">7 juin 2026 · Lyon</p>
-          </li>
-        </ul>
-        <p class="mt-4">
-          <a href="/agenda" class="text-sm font-semibold text-orange hover:underline"
-            >Voir l'agenda →</a
-          >
-        </p>
-      </div>
+      <Draft reason="Événements fictifs — doublon de l'agenda">
+        <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
+          <h3 class="mb-3 text-xl font-bold">Prochains rendez-vous</h3>
+          <ul class="space-y-3 text-sm">
+            <li>
+              <p class="font-semibold">Atelier découverte auto-massages</p>
+              <p class="opacity-70">15 mai 2026 · La Médiane, Lyon 3</p>
+            </li>
+            <li>
+              <p class="font-semibold">Apéro des bénévoles</p>
+              <p class="opacity-70">22 mai 2026 · Pôle Bert, Lyon</p>
+            </li>
+            <li>
+              <p class="font-semibold">Formation toucher relationnel</p>
+              <p class="opacity-70">7 juin 2026 · Lyon</p>
+            </li>
+          </ul>
+          <p class="mt-4">
+            <a href="/agenda" class="text-sm font-semibold text-orange hover:underline"
+              >Voir l'agenda →</a
+            >
+          </p>
+        </div>
+      </Draft>
     </div>
   </Section>
 </Layout>

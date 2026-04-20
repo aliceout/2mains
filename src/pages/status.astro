@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Prose from '../components/Prose.astro';
+
+/**
+ * Page d'audit — liste tous les <Draft> présents dans le site.
+ * Scan statique à build-time via import.meta.glob (Vite).
+ * Accessible via /status. Marquée noindex.
+ */
+
+type DraftItem = {
+  file: string;
+  route: string;
+  reason: string;
+};
+
+// Charge le contenu brut de tous les .astro du dossier pages, récursivement.
+const rawFiles = import.meta.glob('./**/*.astro', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+function fileToRoute(path: string): string {
+  // path est du style './pour/structures.astro' ou './index.astro'
+  const rel = path.replace(/^\.\//, '').replace(/\.astro$/, '');
+  if (rel === 'index' || rel === 'status') return '/' + rel;
+  return '/' + rel.replace(/\/index$/, '');
+}
+
+const drafts: DraftItem[] = [];
+const reasonRegex = /<Draft[\s\n]+reason=(?:"([^"]+)"|\{`([^`]+)`\})/g;
+
+for (const [path, contents] of Object.entries(rawFiles)) {
+  if (path.endsWith('status.astro')) continue;
+  const route = fileToRoute(path);
+  let m: RegExpExecArray | null;
+  while ((m = reasonRegex.exec(contents)) !== null) {
+    const reason = m[1] ?? m[2] ?? '';
+    drafts.push({ file: path, route, reason });
+  }
+}
+
+const byRoute = drafts.reduce<Record<string, DraftItem[]>>((acc, d) => {
+  (acc[d.route] ??= []).push(d);
+  return acc;
+}, {});
+const routes = Object.keys(byRoute).sort();
+---
+
+<Layout
+  title="Statut du contenu"
+  description="Audit des contenus à valider — page interne, non indexée."
+  noindex
+>
+  <Hero
+    titre="Statut du contenu"
+    sousTitre="Audit interne"
+    accroche={`${drafts.length} zone${drafts.length > 1 ? 's' : ''} marquée${drafts.length > 1 ? 's' : ''} « à valider » sur ${routes.length} page${routes.length > 1 ? 's' : ''}. Cette page est non indexée — accessible par URL uniquement.`}
+    variant="orange"
+  />
+
+  <Section>
+    <Prose>
+      <p>
+        Chaque entrée ci-dessous correspond à un composant
+        <code>&lt;Draft reason="..."&gt;</code> trouvé dans le code. Pour valider, il faut :
+      </p>
+      <ol>
+        <li>remplacer le contenu à l'intérieur du composant par du contenu vérifié ;</li>
+        <li>retirer le wrapper <code>&lt;Draft&gt;</code>.</li>
+      </ol>
+      <p>
+        Tant que le wrapper est présent, la zone est entourée d'un ruban orange
+        « À VALIDER » visible par tout le monde (utile côté Audrey).
+      </p>
+    </Prose>
+
+    <div class="mt-8 space-y-6">
+      {
+        routes.length === 0 ? (
+          <p class="rounded-xl bg-vert p-6 font-semibold">
+            ✓ Aucun contenu marqué comme fictif. Bravo.
+          </p>
+        ) : (
+          routes.map((route) => (
+            <div class="rounded-xl border border-beige bg-paper p-5">
+              <h2 class="mb-3 text-lg font-bold">
+                <a href={route} class="text-orange hover:underline">
+                  {route}
+                </a>{' '}
+                <span class="text-sm font-normal opacity-70">
+                  ({byRoute[route].length})
+                </span>
+              </h2>
+              <ul class="space-y-2 text-sm">
+                {byRoute[route].map((d) => (
+                  <li class="flex gap-3">
+                    <span class="mt-0.5 rounded bg-orange px-2 py-0.5 text-xs font-bold text-paper">
+                      DRAFT
+                    </span>
+                    <span>{d.reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        )
+      }
+    </div>
+  </Section>
+</Layout>

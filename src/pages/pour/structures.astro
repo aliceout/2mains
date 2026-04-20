@@ -5,6 +5,7 @@ import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 import BlocCartes from '../../components/BlocCartes.astro';
 import BlocCitation from '../../components/BlocCitation.astro';
+import Draft from '../../components/Draft.astro';
 import { site } from '../../config/site';
 ---
 
@@ -109,12 +110,14 @@ import { site } from '../../config/site';
   </Section>
 
   <Section fond="beige">
-    <BlocCitation
-      variant="paper"
-      citation="Nous cherchions depuis longtemps à intégrer la dimension corporelle dans nos accompagnements, sans savoir par où commencer. 2mains de femmes nous a apporté un cadre, une méthode, et surtout des intervenantes formées qui respectent nos bénéficiaires."
-      auteur="Témoignage partenaire"
-      role="Association d'hébergement, Lyon — témoignage à compléter"
-    />
+    <Draft reason="Citation partenaire fictive">
+      <BlocCitation
+        variant="paper"
+        citation="Nous cherchions depuis longtemps à intégrer la dimension corporelle dans nos accompagnements, sans savoir par où commencer. 2mains de femmes nous a apporté un cadre, une méthode, et surtout des intervenantes formées qui respectent nos bénéficiaires."
+        auteur="Témoignage partenaire"
+        role="Association d'hébergement, Lyon — témoignage à compléter"
+      />
+    </Draft>
   </Section>
 
   <Section fond="bleu">

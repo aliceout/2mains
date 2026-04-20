@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
+import Draft from '../components/Draft.astro';
 import { site } from '../config/site';
 ---
 
@@ -17,20 +18,26 @@ import { site } from '../config/site';
         Association loi 1901, créée en 2024<br />
         Siège : {site.contact.address}<br />
         Email : <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
-        Téléphone : {site.contact.phone}<br />
-        SIREN : <em>[à compléter]</em><br />
-        Numéro RNA : <em>W… [à compléter]</em>
+        Téléphone : {site.contact.phone}
       </p>
+      <Draft reason="SIREN et RNA à récupérer auprès d'Audrey">
+        <p>
+          SIREN : <em>[à compléter]</em><br />
+          Numéro RNA : <em>W… [à compléter]</em>
+        </p>
+      </Draft>
 
       <h2>Directrice de la publication</h2>
       <p>{site.legal.directeurPublication}, présidente de l'association.</p>
 
       <h2>Hébergeur</h2>
-      <p>
-        Serveur privé, hébergé en France.<br />
-        Les coordonnées complètes de l'hébergeur sont disponibles sur simple demande à
-        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
-      </p>
+      <Draft reason="Coordonnées hébergeur (mon identité ou domiciliation) à arbitrer">
+        <p>
+          Serveur privé, hébergé en France.<br />
+          Les coordonnées complètes de l'hébergeur sont disponibles sur simple demande à
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+        </p>
+      </Draft>
 
       <h2>Propriété intellectuelle</h2>
       <p>

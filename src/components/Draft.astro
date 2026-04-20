@@ -1,0 +1,75 @@
+---
+/**
+ * <Draft reason="..."> — marque visuellement un contenu inventé / provisoire.
+ *
+ * - Bordure orange pointillée + ruban "À VALIDER" en haut à droite
+ * - Attribut `data-draft="reason"` exposé pour l'audit (page /status)
+ * - Toujours visible (en prod comme en dev) : Audrey voit donc directement
+ *   ce qui reste à valider. Pour cacher en prod, passer `hide` à true.
+ */
+type Props = {
+  reason: string;
+  hide?: boolean;
+};
+
+const { reason, hide = false } = Astro.props;
+---
+
+{
+  hide ? (
+    <slot />
+  ) : (
+    <div class="draft-marker" data-draft={reason}>
+      <span class="draft-marker__tag" aria-label={`À valider : ${reason}`}>
+        À valider · {reason}
+      </span>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  .draft-marker {
+    position: relative;
+    border: 2px dashed var(--color-orange);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    margin: 0.25rem 0;
+  }
+
+  .draft-marker__tag {
+    position: absolute;
+    top: -0.75rem;
+    right: 1rem;
+    background: var(--color-orange);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+    z-index: 1;
+    pointer-events: none;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .draft-marker__tag {
+      animation: draft-pulse 2.4s ease-in-out infinite;
+    }
+  }
+
+  @keyframes draft-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.75;
+    }
+  }
+</style>

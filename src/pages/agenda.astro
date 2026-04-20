@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
+import Draft from '../components/Draft.astro';
 
 type Evenement = {
   titre: string;
@@ -81,31 +82,33 @@ const passes = evenements.filter((e) => new Date(e.dateIso) < now);
       aVenir.length === 0 ? (
         <p class="text-sm opacity-70">Aucun événement programmé pour l'instant. Restez en lien par email.</p>
       ) : (
-        <ul class="grid gap-4 md:grid-cols-2">
-          {aVenir.map((e) => (
-            <li class="rounded-xl border border-beige bg-paper p-6">
-              <p class="text-xs font-semibold uppercase tracking-wide text-orange">
-                {e.date} · {e.lieu}
-              </p>
-              <h2 class="mt-2 mb-1 text-xl font-bold">{e.titre}</h2>
-              <div class="mb-3 flex flex-wrap gap-2 text-xs">
-                <span class="rounded-full bg-beige px-3 py-1">{e.public}</span>
-                {e.gratuit && <span class="rounded-full bg-vert px-3 py-1">Gratuit</span>}
-              </div>
-              <p class="text-sm leading-relaxed">{e.description}</p>
-              {e.inscription && (
-                <p class="mt-4">
-                  <a
-                    href={e.inscription}
-                    class="font-semibold text-orange hover:underline"
-                  >
-                    S'inscrire / en savoir plus →
-                  </a>
+        <Draft reason="Événements fictifs — à remplacer par les vrais via le CMS">
+          <ul class="grid gap-4 md:grid-cols-2">
+            {aVenir.map((e) => (
+              <li class="rounded-xl border border-beige bg-paper p-6">
+                <p class="text-xs font-semibold uppercase tracking-wide text-orange">
+                  {e.date} · {e.lieu}
                 </p>
-              )}
-            </li>
-          ))}
-        </ul>
+                <h2 class="mt-2 mb-1 text-xl font-bold">{e.titre}</h2>
+                <div class="mb-3 flex flex-wrap gap-2 text-xs">
+                  <span class="rounded-full bg-beige px-3 py-1">{e.public}</span>
+                  {e.gratuit && <span class="rounded-full bg-vert px-3 py-1">Gratuit</span>}
+                </div>
+                <p class="text-sm leading-relaxed">{e.description}</p>
+                {e.inscription && (
+                  <p class="mt-4">
+                    <a
+                      href={e.inscription}
+                      class="font-semibold text-orange hover:underline"
+                    >
+                      S'inscrire / en savoir plus →
+                    </a>
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </Draft>
       )
     }
   </Section>

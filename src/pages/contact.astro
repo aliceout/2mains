@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
+import Draft from '../components/Draft.astro';
 import { site } from '../config/site';
 ---
 
@@ -67,6 +68,7 @@ import { site } from '../config/site';
       </div>
 
       <div>
+      <Draft reason="Formulaire en mode mailto — backend d'envoi SMTP à brancher">
         <form
           action={`mailto:${site.contact.email}`}
           method="post"
@@ -139,10 +141,11 @@ import { site } from '../config/site';
           </button>
 
           <p class="text-xs opacity-70">
-            Ce formulaire ouvrira votre logiciel de messagerie par défaut. Nous mettrons
-            bientôt en place un envoi direct via notre serveur.
+            Ce formulaire ouvre pour l'instant votre logiciel de messagerie par défaut. Un
+            backend SMTP sera branché prochainement.
           </p>
         </form>
+      </Draft>
       </div>
     </div>
   </Section>
