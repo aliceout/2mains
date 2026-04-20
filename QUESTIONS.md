@@ -1,153 +1,129 @@
-# Questions à trancher avant de démarrer
+# Questions pour toi, Alice
 
-Questions issues de la lecture de `2mains-site-plan.md`, `ROADMAP.md`, des échanges WhatsApp et des docs annexes. Organisées par famille. Merci de répondre inline (soit ici en éditant, soit dans un message séparé — ce qui t'arrange).
+Questions que j'ai besoin de te poser avant de démarrer, pour ne pas partir dans la mauvaise direction. Toutes les décisions qui te regardent toi (dev, hébergement, workflow) + celles où j'ai besoin que tu me dises *ce qui est déjà acté avec Audrey* vs *ce qui reste ouvert*.
 
-Légende : 🔴 bloquant avant Phase 1 · 🟠 bloquant avant Phase 3 · 🟡 à trancher avant Phase 5 · 🔵 confort / v2
+Organisation : par priorité (🔴 bloquant avant que je touche du code · 🟠 à trancher avant la Phase 3 · 🟡 plus tard · 🔵 confort).
 
 ---
 
-## 1. Stratégie et périmètre
+## 1. Ton rôle et le mien
 
-**1.1** 🟠 Le point sensible de la discussion du 16/10/2025 avec Méril et moi (inclusion des trans fem, non-binaires, mecs trans socialisé·es filles) a-t-il été discuté au CA depuis ? Quelle est la position actée pour le site public ?
-- [ ] On garde « femmes » avec une note de contexte (celle du leaflet actuel)
-- [ ] On élargit le vocabulaire (« personnes concernées par les violences basées sur le genre », « personnes se reconnaissant du spectre féminin »…)
-- [ ] On ne tranche pas maintenant, j'utilise une formulation temporaire que tu valideras au cas par cas
+**1.1** 🔴 Comment tu veux qu'on bosse ensemble ?
+- [ ] Tu m'envoies des briefs, je code en autonomie, tu reviews les PRs
+- [ ] Tu pilotes, je suis un exécutant : je ne fais que ce que tu demandes, pas d'initiative
+- [ ] On co-construit : je propose, tu arbitres, on itère
 - [ ] Autre : ____
 
-**1.2** 🟠 Le projet LHM met l'accent sur les femmes en QPV. Le site doit-il communiquer ce focus territorial ou rester généraliste « métropole de Lyon » ?
+**1.2** 🔴 Quel est ton niveau d'implication côté contenu ? Le plan dit « Alice = tech, Audrey = contenu », mais en pratique Audrey avance lentement. Est-ce que tu veux que je te propose des drafts de contenu (à partir des docs LHM, fiche mémo, leaflet) qu'Audrey validera, ou tu préfères attendre qu'elle te donne tout ?
 
-**1.3** 🟠 Est-ce que le site doit afficher *l'offre de services payante* (aux structures, aux entreprises) ou rester volontairement en retrait pour éviter les grincements d'asso/financeurs (cf. ta remarque du 16/10 sur « offre de service » qui peut faire tiquer) ?
+**1.3** 🟠 Est-ce que je peux écrire directement sur `main`, ou tu veux un flow PR systématique ?
 
-**1.4** 🟡 Banderole d'urgence en haut de site (appel à don, événement fort) : on la prévoit dès le début (activable/désactivable via CMS) ou on attend un vrai besoin ?
-
----
-
-## 2. Éditorial
-
-**2.1** 🟠 Ton : tutoiement, vouvoiement, ou mix (tutoiement sur les pages « pour femmes », vouvoiement sur « structures/entreprises ») ?
-
-**2.2** 🟠 Écriture inclusive : point médian systématique, doublet (celles et ceux), neutre (personnes), ou combinaison ? (Ta `fiche memo` utilise déjà des formes variées.)
-
-**2.3** 🟠 Nom de l'asso : strict **« 2mains de femmes »** partout (confirmé WhatsApp 28/09) ?
-
-**2.4** 🟡 Témoignages : as-tu des paroles réelles (participantes, partenaires) utilisables avec accord écrit ? Ou on part sur un encart « témoignages à venir » ?
+**1.4** 🟠 Quand je bute sur un arbitrage éditorial ou politique (ex : inclusivité de genre, QPV oui/non, offre de service payante), qu'est-ce que je fais ? Je te demande à toi, je te mets un `[À DEMANDER À AUDREY]` en commentaire, ou je propose et tu tranches ?
 
 ---
 
-## 3. Contenu
+## 2. État des accords avec Audrey
 
-**3.1** 🟠 État d'avancement des pages autres que « L'association » ? Ton message du 18/03 indique qu'il n'y a que celle-là. Je propose :
-- Moi je **rédige les brouillons** des pages manquantes à partir du doc LHM, de la fiche de structure et du leaflet, avec marques `[À VALIDER]` sur les parties qui te demandent un arbitrage.
-- Tu relis et valides.
-- [ ] OK / [ ] Pas OK (tu veux garder la main sur la rédac)
+Pour chaque point, j'ai besoin de savoir si c'est **acté** (je peux partir là-dessus) ou **en discussion** (je mets en pause / workaround).
 
-**3.2** 🟠 Page « Documents » : quels PDFs à mettre en ligne *au lancement* ?
-- [ ] Fiche de structure (Annexe 1)
-- [ ] Leaflet (Annexe 5)
-- [ ] Document de projet LHM 2025
-- [ ] Projet associatif (une fois finalisé)
-- [ ] Rapport d'activité 2024-2025 ? (existe-t-il ?)
-- [ ] Autres : ____
+**2.1** 🟠 L'arborescence finale : option 1 de `arborescence-site-web-v2.xlsx` + les 6 headers que tu as listés dans le plan — **acté** avec Audrey ou encore à confirmer ?
 
-**3.3** 🟡 Agenda : as-tu **au moins 1 événement réel** à publier au lancement pour que la page ne soit pas vide ? Sinon on met en cache 2 événements « démo » signalés comme tels ?
+**2.2** 🟠 Le pivot WordPress → Astro + Sveltia : Audrey est au courant ? (Vu qu'elle a payé 60€ pour le thème Salient.) Sinon, c'est une décision que tu as prise seule et qu'il faut que je traite comme telle.
 
-**3.4** 🟠 Mentions légales : il me faut **SIREN, numéro RNA (W…), nom du directeur de publication** (toi ?), hébergeur (moi, mon adresse perso OK ou une adresse de domiciliation ?).
+**2.3** 🟠 La discussion sur l'inclusivité de genre (WhatsApp 16/10/2025) : où elle en est ? Tu avais dit à Audrey que c'était un sujet de fond stratégique. Résolu, en cours, enterré ?
+
+**2.4** 🟠 Les témoignages : tu as des sources réelles, ou je pars sur des placeholders « témoignages à venir » ?
 
 ---
 
-## 4. Fonctionnalités
+## 3. Stack et déploiement
 
-**4.1** 🟠 **Formulaire de contact** : OK pour un formulaire natif qui envoie un mail à `contact@2mainsdefemmes.org` via SMTP Ksuite ? (Alternative : juste afficher l'email en clair + lien `mailto:`.)
+**3.1** 🔴 **Repo** : Gitea self-host (cohérent avec ta philosophie) ou GitHub privé (plus rapide à mettre en place) ?
 
-**4.2** 🟠 **Formulaire bénévoles** :
-- [ ] On garde le Forms existant (`forms.office.com/r/32MgiHRm86`) — simple, zéro dev
-- [ ] On refait en natif sur le site — mieux intégré, plus de travail
-- [ ] Sur le site on met juste un CTA vers Forms, on verra plus tard
+**3.2** 🔴 **Serveur** : mêmes specs que celui où tourne le WP actuel ? Tu as déjà Docker + Nginx + Certbot + un reverse proxy configurés ? Je peux partir du principe que je pousse un `docker-compose.yml` et que ça marche ?
 
-**4.3** 🟠 **Formulaire praticien·nes solidaires** : idem que bénévoles. Forms séparé ou CTA simple « écrivez-nous » ?
+**3.3** 🔴 **WordPress existant** : je le tue quand ? Options :
+- [ ] Maintenant, je travaille sur `2mainsdefemmes.org` direct, le site est vide puis se remplit
+- [ ] Je bosse sur un sous-domaine `preview.` jusqu'à avoir un MVP, puis bascule
+- [ ] Je bosse sur un domaine à moi, puis bascule en fin de Phase 3
 
-**4.4** 🟠 **HelloAsso — page don** : cf. mon message du 09/10/2025. La page unique actuelle mélange adhésion et don. Est-ce que tu as créé / peux créer une **page don dédiée** sur HelloAsso ? Sinon on met le lien adhésion et on s'en contente.
+**3.4** 🔴 **Nom du repo** : `2mdf-site` (comme tu avais suggéré dans le plan), `2mains-site`, autre ?
 
-**4.5** 🟡 **Newsletter** : on en fait une ?
-- [ ] HelloAsso propose un outil newsletter intégré, on s'en sert
-- [ ] On met juste un lien / formulaire qui stocke les emails dans le repo (moyen mais possible)
-- [ ] Pas de newsletter au lancement
+**3.5** 🟠 **Branches** : une seule `main` = prod, ou `main` + `preview` (le CMS pousse sur `preview`, tu merge quand tu valides) ?
 
-**4.6** 🔵 « Lecture facile » (version simplifiée des pages clés) : cf. plan. Pour la v2 ?
+**3.6** 🟠 **Sveltia CMS auth** : le proxy `sveltia-cms-auth` en Docker, c'est toi qui l'as déjà tourné quelque part ou c'est neuf ? (Influence sur le temps Phase 1.)
 
----
+**3.7** 🟡 **Analytics** : rien / Plausible / Umami ? Ma préférence : rien pour la v1.
 
-## 5. Choix techniques
+**3.8** 🟡 **Monitoring uptime** : tu as déjà un Uptime Kuma ou équivalent sur ton serveur, ou je mets quelque chose de neuf ?
 
-**5.1** 🔴 **Repo git** : Gitea self-hosted sur mon serveur, ou GitHub privé ?
-- Gitea : cohérent self-host, 1 container de plus à maintenir. Le CMS marche bien avec Gitea (backend `gitea`).
-- GitHub : zéro maintenance, auth plus simple. Public ou privé ? Privé par défaut.
-- Recommandation : **GitHub privé** pour aller vite en v1, migration Gitea possible plus tard.
-
-**5.2** 🔴 **Hébergement** : confirmation que j'utilise **mon serveur perso** (comme actuellement pour le WP) avec Docker + Nginx. Si un jour tu veux reprendre l'hébergement côté asso, on migrera — mais pour l'instant c'est moi.
-
-**5.3** 🔴 **URL de preview** : pendant la construction, j'utilise un sous-domaine tant que le WP tourne encore. Tu préfères `preview.2mainsdefemmes.org` (DNS à configurer) ou un domaine à moi (`2mdf.alyss.cc` par ex.) ?
-
-**5.4** 🟡 **Analytics** :
-- [ ] Rien (recommandé pour v1 — on vit très bien sans)
-- [ ] Plausible self-hosted sur mon serveur (~1h de setup)
-- [ ] Umami self-hosted sur mon serveur (idem)
-
-**5.5** 🟡 **Monitoring uptime** : je mets un Uptime Kuma basique. OK ?
-
-**5.6** 🔵 **CMS auth** : GitHub OAuth via proxy Docker (`sveltia-cms-auth`). Je te créerai un compte GitHub si tu n'en as pas (ça prend 2 min), c'est ce qui te servira à te connecter au CMS. OK ?
+**3.9** 🔵 **Logs et backups** : tu as une stack de backup centralisée (Restic, Borg) que je dois brancher, ou je mets un simple cron `tar + rsync` ?
 
 ---
 
-## 6. Workflow et planning
+## 4. Design system et composants
 
-**6.1** 🔴 **Nouvelle date cible** pour le lancement ? L'AG du 7/03 est passée. Propositions :
-- [ ] AG d'automne / fin 2026
-- [ ] Événement de communication précis (date ?)
-- [ ] Rolling — on déploie par lots, pas de deadline dure
-- [ ] Autre : ____
+**4.1** 🟠 **Framework CSS** : Tailwind (comme dans le plan) confirmé, ou tu préfères du CSS vanilla + design tokens custom ?
 
-**6.2** 🟠 **Rythme de travail** : je suis sur Mada, il y a du décalage et parfois des semaines hors ligne. Quelle cadence tu préfères ?
-- [ ] Envois de contenus au fil de l'eau, je les intègre dès que dispo
-- [ ] Lots de contenus + points visio mensuels
-- [ ] Un gros sprint concentré (2–3 semaines pleines) + finitions
+**4.2** 🟠 **Iconographie** : on se limite au picto maison (`brand/pictos/PICTO.svg` décliné en couleurs), ou on s'autorise une librairie d'icônes (Lucide, Phosphor) pour les affordances UI (burger, flèches, chevrons) ?
 
-**6.3** 🟠 **Validation** : qui valide côté CA à part toi ? (Sylvie, Elsa, ou tu prends seule ?)
+**4.3** 🟠 **Photos** : tu as des photos droits OK pour l'asso ? Ou je me débrouille avec le picto, des formes organiques et de la typo ? (Le plan insiste sur « pas d'images stock pauvres ».)
 
-**6.4** 🟡 **Formation CMS** : tu peux bloquer 30–45 min de visio une fois le site MVP en ligne pour que je t'apprenne à ajouter événement / partenaire / modifier texte ?
+**4.4** 🟡 **Composants complexes** : tu acceptes un peu de JS côté client (Astro islands) pour l'accordéon, le menu mobile, le carrousel témoignages — ou tu veux 100 % statique sans JS ?
+
+**4.5** 🟡 **Animations** : on fait quoi ? Rien, un peu de `fade-in` discret au scroll, ou plus ?
 
 ---
 
-## 7. Décommissionnement WordPress
+## 5. Workflow de développement
 
-**7.1** 🟠 Le WP actuel sur `2mainsdefemmes.org` est vide. Tu confirmes qu'on peut **le supprimer sans sauvegarde** (je n'ai jamais rien publié dessus) ?
+**5.1** 🔴 **Typo TS** : `tsconfig` strict par défaut ? (Astro le permet.)
 
-**7.2** 🟠 Le thème Salient acheté 60€ — on le garde comme backup théorique ou on l'oublie ? (Je propose de l'oublier, il n'est pas réutilisable dans la nouvelle stack.)
+**5.2** 🟠 **Linter / formatter** : ESLint + Prettier, Biome, rien ? Tu as déjà un stack standard que tu utilises sur tes autres projets ?
 
----
+**5.3** 🟠 **Tests** : zéro test automatisé pour un site vitrine (recette manuelle) ? Ou tu veux au moins un smoke test (le site build, les routes répondent) ?
 
-## 8. Juridique et administratif
+**5.4** 🟠 **CI** : quand je push, qu'est-ce qui se passe côté CI ?
+- [ ] Rien, webhook → build local sur serveur
+- [ ] GitHub Actions / Gitea Actions qui build + tests avant le webhook
+- [ ] CI qui build et push dist/ direct sur serveur (pas de build serveur-side)
 
-**8.1** 🟠 **SIREN** et **RNA (W…)** de l'asso : tu peux me les transmettre ?
-
-**8.2** 🟠 **DPO / contact RGPD** : toi, personne d'autre ?
-
-**8.3** 🟠 **Politique de confidentialité** : tu en as une rédigée quelque part, ou j'en rédige un brouillon basé sur « pas de tracker, pas de cookie, formulaire contact = données transmises par mail » que tu valideras ?
-
-**8.4** 🔵 **Mentions légales hébergeur** : si tu ne veux pas que mon adresse perso figure publiquement, il faudra passer par une domiciliation. On peut reparler.
+**5.5** 🔵 **Conventions de commit** : Conventional Commits, ou libre ?
 
 ---
 
-## 9. Ce que je vais supposer par défaut sans ta réponse
+## 6. Contenu — ce que tu veux que je produise
 
-Pour ne pas être bloqué, voici mes valeurs par défaut si tu ne réponds pas sur ces points :
+**6.1** 🟠 Je peux me servir des docs dans `references/` pour **rédiger des drafts** des pages manquantes (Isolement corporel, Pour structures/entreprises/femmes, Agir) — OK pour toi ? Ou tu attends qu'Audrey écrive ?
 
-- Ton : **vouvoiement général**, tutoiement uniquement sur « Pour une femme concernée ».
-- Inclusif : **doublets ou neutre**, pas de point médian systématique.
-- Formulaire contact : **natif + SMTP Ksuite**.
-- Formulaire bénévoles : **lien vers Forms existant** pour la v1.
-- Analytics : **aucun**.
-- Repo : **GitHub privé**.
-- URL preview : **sous-domaine à moi** le temps de la construction.
-- Banderole : prévue dans le code, désactivée par défaut.
-- Newsletter : pas au lancement.
+**6.2** 🟠 Les **mentions légales** et la **politique de confidentialité** : je peux en rédiger un brouillon générique « pas de cookie, pas de tracker, formulaire → mail » qu'Audrey validera ?
+
+**6.3** 🟡 La **page 404** : ton message d'erreur préféré (ton léger, renvoi vers accueil) ?
+
+---
+
+## 7. Planning et dispo
+
+**7.1** 🔴 Quand tu prévois d'attaquer la Phase 1 ? (Tu disais à Audrey fin février / début mars, puis Mada cyclones + boulot.) Je veux savoir si je prépare un environnement tout de suite ou juste une spec.
+
+**7.2** 🟠 Tu veux que je te fasse une **estimation en heures** de chaque phase, pour que tu puisses planifier ta charge ?
+
+**7.3** 🟡 **Point de synchro** : tu veux un format recurring (Slack-like async chaque semaine), des visios ponctuelles, un `STATUS.md` que je tiens à jour ?
+
+---
+
+## 8. Mes défauts si tu ne réponds pas
+
+Pour que je ne sois pas bloqué si tu ne réponds pas tout de suite :
+
+- **Repo** : GitHub privé
+- **URL preview** : sous-domaine à toi (`2mdf.alyss.cc` ou équivalent)
+- **Branches** : `main` seule, pas de preview branch
+- **Tailwind** + tokens JSON, **Nunito self-host**, pas de lib icônes (je fais mes SVG maison)
+- **Linter** : Prettier + ESLint minimal
+- **CI** : Actions qui build, puis webhook → rsync. Pas de build sur serveur.
+- **Tests** : smoke test uniquement (build réussi)
+- **Analytics** : aucun
+- **Commits** : Conventional Commits (fix:, feat:, chore:, docs:)
+- **Contenu** : je te propose des drafts pour tout ce qui manque, tagués `[DRAFT-CLAUDE]` pour qu'Audrey sache que ça n'est pas toi
+- **Mentions légales / RGPD** : brouillon générique en attente des infos admin (SIREN, RNA…) d'Audrey
