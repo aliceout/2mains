@@ -10,7 +10,7 @@ Site vitrine d'une asso lyonnaise (créée 2024) qui lutte contre l'isolement co
 
 - Hébergement : serveur perso (Debian/Ubuntu, Docker OK).
 - Édition autonome par l'asso après livraison, sans toucher au code.
-- Respect strict de la charte graphique existante (cf. `identite_visuelle_2mains_de_femme.pdf`).
+- Respect strict de la charte graphique existante (cf. `brand/identite-visuelle.pdf`).
 - Pas de SaaS payant, pas de dépendance tierce critique.
 - Pas de base de données à maintenir si évitable.
 - Dons via HelloAsso (déjà en place), pas de paiement intégré.
@@ -50,7 +50,7 @@ Logo fourni : plusieurs versions (sur blanc, sur violet, sur orange, horizontal)
 
 ## Arborescence
 
-Basée sur `arborescence_site_WEB_V2.xlsx` (option 1), simplifiée.
+Basée sur `references/arborescence-site-web-v2.xlsx` (option 1), simplifiée.
 
 ```
 /                                   Accueil
@@ -268,7 +268,7 @@ Public fragilisé → accessibilité non négociable :
 
 ### Phase 3 — contenus (1 semaine)
 - [ ] Modèles de collections dans la config Sveltia.
-- [ ] Création de toutes les pages statiques avec contenu pré-rempli (récup des docs fournis : `page_Association.docx`, `fiche_memo_fondamentaux.docx`, extraits du doc projet LHM, leaflet).
+- [ ] Création de toutes les pages statiques avec contenu pré-rempli (récup des docs fournis : `references/contenu/page-association.docx`, `references/projet/fiche-memo-fondamentaux.docx`, extraits du doc projet LHM, leaflet).
 - [ ] Page Accueil avec tous les blocs (hero, mission, 3 piliers, partenaires, derniers événements, CTA don).
 - [ ] Pages "Pour structures / entreprises / femmes" : contenus à rédiger avec Audrey, chaque page doit répondre à "qu'est-ce que l'asso propose à ce public et comment entrer en contact".
 - [ ] Pages "Isolement corporel" : contenu pédagogique, valorise l'expertise de l'asso, utilise les data du doc projet (11% isolement relationnel, 40% SDF femmes, etc.).
@@ -309,15 +309,18 @@ Public fragilisé → accessibilité non négociable :
 
 ## Fichiers sources existants à exploiter
 
-- `page_Association.docx` → contenu quasi-complet de la section "L'association"
-- `fiche_memo_fondamentaux.docx` → mission, vision, problématique, piliers
-- `document_de_projet_2MainsFemmes_LHM2025.pdf` → data, diagnostic, chiffres pour la page "Isolement corporel"
-- `Annexe_1_fiche_de_structure_2mains_de_femmes.pdf` → description détaillée complète
-- `Annexe_3_derniere_composition_CA.pdf` → équipe
-- `Annexe_5_leaflet_de_comm.pdf` → version courte grand public
-- `identite_visuelle_2mains_de_femme.pdf` → charte
-- `arborescence_site_WEB_V2.xlsx` → plan de site initial (option 1 retenue)
-- `WhatsApp_Chat_with_Website_2mains.txt` → historique d'échange avec Audrey (à lire pour comprendre les inflexions et demandes)
+- `references/contenu/page-association.docx` → contenu quasi-complet de la section "L'association"
+- `references/projet/fiche-memo-fondamentaux.docx` → mission, vision, problématique, piliers
+- `references/projet/doc-projet-LHM-2025.pdf` → data, diagnostic, chiffres pour la page "Isolement corporel"
+- `references/projet/annexe-1-fiche-de-structure.pdf` → description détaillée complète
+- `references/projet/annexe-3-composition-ca.pdf` → équipe
+- `references/projet/annexe-5-leaflet-communication.pdf` → version courte grand public
+- `references/projet/leaflet-v1.pdf` / `references/projet/leaflet-v2.pdf` → leaflets courts avec axes et chiffres clés
+- `references/projet/projet-associatif-draft-1.docx` → draft du PA (contient SWOT, engagements, KPI)
+- `references/contenu/mail-reseau-benevoles.docx` → mail à la communauté bénévoles (profils, apéros, formations)
+- `brand/identite-visuelle.pdf` → charte
+- `references/arborescence-site-web-v2.xlsx` → plan de site initial (option 1 retenue)
+- `references/whatsapp-chat.txt` → historique d'échange avec Audrey (à lire pour comprendre les inflexions et demandes)
 
 ## Notes pour Claude Code
 
