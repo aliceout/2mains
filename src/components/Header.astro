@@ -1,0 +1,141 @@
+---
+import { navigation, site } from '../config/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+---
+
+<header class="sticky top-0 z-40 border-b border-beige bg-paper/95 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+    <a href="/" class="flex items-center gap-2" aria-label={`Accueil — ${site.name}`}>
+      <img src="/brand/logo.svg" alt="" class="h-10 w-auto" width="140" height="40" />
+      <span class="sr-only">{site.name}</span>
+    </a>
+
+    <nav aria-label="Navigation principale" class="hidden lg:block">
+      <ul class="flex items-center gap-6">
+        {
+          navigation.map((item) => (
+            <li class="relative group">
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
+                  isActive(item.href) ? 'text-orange' : 'text-ink',
+                ]}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <ul
+                  class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+                >
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.href}
+                        class:list={[
+                          'block rounded px-3 py-2 text-sm hover:bg-beige',
+                          isActive(child.href) ? 'text-orange font-semibold' : 'text-ink',
+                        ]}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href={site.helloasso.don}
+        target="_blank"
+        rel="noopener"
+        class="hidden rounded-full bg-orange px-4 py-2 text-sm font-bold text-paper shadow-sm transition-colors hover:bg-magenta md:inline-block"
+      >
+        Faire un don
+      </a>
+      <button
+        type="button"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-beige lg:hidden"
+        aria-controls="menu-mobile"
+        aria-expanded="false"
+        aria-label="Ouvrir le menu"
+        data-menu-toggle
+      >
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-mobile" class="hidden border-t border-beige lg:hidden" data-menu>
+    <nav aria-label="Navigation mobile" class="mx-auto max-w-6xl px-4 py-4">
+      <ul class="space-y-1">
+        {
+          navigation.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class:list={[
+                  'block rounded px-3 py-2 text-base font-semibold',
+                  isActive(item.href) ? 'bg-beige text-orange' : 'text-ink hover:bg-beige',
+                ]}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <ul class="ml-3 mt-1 space-y-1 border-l-2 border-beige pl-3">
+                  {item.children.map((child) => (
+                    <li>
+                      <a
+                        href={child.href}
+                        class:list={[
+                          'block rounded px-3 py-2 text-sm',
+                          isActive(child.href)
+                            ? 'text-orange font-semibold'
+                            : 'text-ink hover:bg-beige',
+                        ]}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+        <li class="pt-3">
+          <a
+            href={site.helloasso.don}
+            target="_blank"
+            rel="noopener"
+            class="block rounded-full bg-orange px-4 py-3 text-center font-bold text-paper"
+          >
+            Faire un don
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  if (btn && menu) {
+    btn.addEventListener('click', () => {
+      const open = menu.classList.toggle('hidden');
+      btn.setAttribute('aria-expanded', String(!open));
+      btn.setAttribute('aria-label', open ? 'Ouvrir le menu' : 'Fermer le menu');
+    });
+  }
+</script>

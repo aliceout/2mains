@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Prose from '../../components/Prose.astro';
+---
+
+<Layout title="Qui sommes-nous">
+  <Hero
+    titre="Qui sommes-nous"
+    sousTitre="L'association"
+    accroche="Notre mission, notre vision, nos valeurs."
+    variant="beige"
+  />
+  <Section>
+    <Prose>
+      <h2>Mission</h2>
+      <p>
+        Améliorer la santé, l'insertion sociale et le pouvoir d'agir des femmes en promouvant,
+        défendant et mettant en action le toucher relationnel comme réponse à l'isolement
+        corporel et social, et comme vecteur de liens sociaux, dans un contexte d'inégalités de
+        genre.
+      </p>
+
+      <h2>Vision</h2>
+      <p>
+        Un monde où le toucher et la tendresse sont créateurs de liens sociaux équilibrés, où
+        les femmes se sentent bien dans leur corps et dans leur pouvoir d'agir pour
+        faire-société.
+      </p>
+
+      <h2>Valeurs</h2>
+      <ul>
+        <li>
+          <strong>Tendresse</strong> — réhabiliter la douceur comme puissance d'action.
+        </li>
+        <li>
+          <strong>Sororité</strong> — se reconnaître, s'entraider, se relever entre femmes.
+        </li>
+        <li>
+          <strong>Souveraineté du corps</strong> — chaque femme est la première experte de son
+          corps.
+        </li>
+        <li>
+          <strong>Lien social</strong> — retisser du commun à partir des corps.
+        </li>
+      </ul>
+
+      <p class="text-sm opacity-70 italic">
+        [Contenu à compléter — placeholder automatique.]
+      </p>
+    </Prose>
+  </Section>
+</Layout>

@@ -1,0 +1,177 @@
+# Sveltia CMS — configuration.
+# Doc : https://github.com/sveltia/sveltia-cms
+#
+# Backend GitHub : authentification par OAuth via le proxy sveltia-cms-auth
+# déployé côté serveur 2mains de femmes.
+
+backend:
+  name: github
+  repo: aliceout/2mains
+  branch: main
+  # À renseigner quand le proxy OAuth est en place :
+  # auth_endpoint: https://auth.2mainsdefemmes.org/auth
+  # base_url: https://auth.2mainsdefemmes.org
+
+locale: fr
+publish_mode: simple
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  # ---- Pages statiques éditables ----
+  - name: pages
+    label: Pages
+    label_singular: Page
+    folder: content/pages
+    create: false
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    slug: '{{slug}}'
+    summary: '{{title}}'
+    fields:
+      - { name: title, label: Titre, widget: string }
+      - { name: description, label: 'Description SEO', widget: string, required: false }
+      - { name: hero_accroche, label: 'Accroche (hero)', widget: string, required: false }
+      - { name: hero_sous_accroche, label: "Sous-accroche (hero)", widget: markdown, required: false }
+      - { name: body, label: Contenu, widget: markdown }
+
+  # ---- Agenda ----
+  - name: evenements
+    label: Événements
+    label_singular: Événement
+    folder: content/evenements
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{date_debut | date("DD/MM/YYYY")}} — {{title}}'
+    fields:
+      - { name: title, label: Titre, widget: string }
+      - { name: date_debut, label: 'Début', widget: datetime, picker_utc: false }
+      - { name: date_fin, label: 'Fin', widget: datetime, picker_utc: false, required: false }
+      - { name: lieu, label: Lieu, widget: string }
+      - { name: adresse, label: Adresse, widget: string, required: false }
+      - { name: cover, label: Image, widget: image, required: false }
+      - name: public
+        label: Public
+        widget: select
+        options: ['tout public', 'professionnels', 'femmes concernées', 'adhérents']
+      - { name: gratuit, label: Gratuit, widget: boolean, default: true }
+      - { name: inscription_url, label: "URL d'inscription", widget: string, required: false }
+      - { name: description, label: Description, widget: markdown }
+
+  # ---- Partenaires / financeurs ----
+  - name: partenaires
+    label: Partenaires
+    label_singular: Partenaire
+    folder: content/partenaires
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: nom
+    slug: '{{slug}}'
+    fields:
+      - { name: nom, label: Nom, widget: string }
+      - name: type
+        label: Type
+        widget: select
+        options: ['financeur public', 'financeur privé', 'partenaire associatif', 'réseau']
+      - { name: logo, label: Logo, widget: image, required: false }
+      - { name: url, label: 'URL du site', widget: string, required: false }
+      - { name: description_courte, label: Description courte, widget: string, required: false }
+      - { name: ordre, label: 'Ordre d''affichage', widget: number, default: 0, value_type: int }
+
+  # ---- Équipe / CA ----
+  - name: equipe
+    label: Équipe
+    label_singular: Membre
+    folder: content/equipe
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: nom
+    slug: '{{slug}}'
+    fields:
+      - { name: nom, label: 'Nom complet', widget: string }
+      - { name: role, label: Rôle, widget: string }
+      - { name: photo, label: Photo, widget: image, required: false }
+      - { name: bio_courte, label: Bio courte, widget: text, required: false }
+      - { name: linkedin, label: 'URL LinkedIn', widget: string, required: false }
+      - { name: ordre, label: 'Ordre', widget: number, default: 0, value_type: int }
+
+  # ---- Documents téléchargeables ----
+  - name: documents
+    label: Documents
+    label_singular: Document
+    folder: content/documents
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: titre
+    slug: '{{slug}}'
+    fields:
+      - { name: titre, label: Titre, widget: string }
+      - name: categorie
+        label: Catégorie
+        widget: select
+        options: ['projet associatif', 'rapport d''activité', 'ressource', 'communication']
+      - { name: fichier, label: Fichier (PDF), widget: file }
+      - { name: date, label: Date, widget: date }
+      - { name: description_courte, label: Description courte, widget: text, required: false }
+
+  # ---- Témoignages ----
+  - name: temoignages
+    label: Témoignages
+    label_singular: Témoignage
+    folder: content/temoignages
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: auteur
+    slug: '{{slug}}'
+    fields:
+      - { name: auteur, label: Auteur, widget: string }
+      - { name: role, label: Rôle / contexte, widget: string, required: false }
+      - name: contexte
+        label: Type
+        widget: select
+        options: ['participante', 'partenaire', 'professionnelle']
+      - { name: photo, label: Photo, widget: image, required: false }
+      - { name: texte, label: Texte, widget: markdown }
+
+  # ---- Paramètres globaux du site ----
+  - name: site
+    label: Paramètres globaux
+    files:
+      - name: settings
+        label: Paramètres
+        file: content/site/settings.md
+        fields:
+          - { name: nom_asso, label: "Nom de l'association", widget: string }
+          - { name: accroche_globale, label: Accroche globale, widget: string }
+          - { name: email_contact, label: Email contact, widget: string }
+          - { name: telephone, label: Téléphone, widget: string }
+          - { name: adresse, label: Adresse, widget: string }
+          - { name: helloasso_url, label: URL HelloAsso don, widget: string }
+          - name: reseaux
+            label: Réseaux sociaux
+            widget: object
+            fields:
+              - { name: facebook, label: Facebook, widget: string, required: false }
+              - { name: instagram, label: Instagram, widget: string, required: false }
+              - { name: linkedin, label: LinkedIn, widget: string, required: false }
+          - name: banderole_urgence
+            label: "Banderole d'urgence (message en haut de site)"
+            widget: object
+            required: false
+            fields:
+              - { name: active, label: Active, widget: boolean, default: false }
+              - { name: message, label: Message, widget: markdown, required: false }
+              - name: couleur
+                label: Couleur
+                widget: select
+                options: ['orange', 'violet', 'magenta']
+                default: orange

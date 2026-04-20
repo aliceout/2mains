@@ -1,0 +1,29 @@
+---
+type Props = {
+  titre?: string;
+  fond?: 'paper' | 'beige' | 'violet' | 'orange';
+  taille?: 'sm' | 'md' | 'lg';
+};
+
+const { titre, fond = 'paper', taille = 'md' } = Astro.props;
+
+const bgClass = {
+  paper: 'bg-paper text-ink',
+  beige: 'bg-beige text-ink',
+  violet: 'bg-violet text-paper',
+  orange: 'bg-orange text-paper',
+}[fond];
+
+const padClass = {
+  sm: 'py-8 md:py-10',
+  md: 'py-12 md:py-16',
+  lg: 'py-16 md:py-24',
+}[taille];
+---
+
+<section class:list={[bgClass, padClass]}>
+  <div class="mx-auto max-w-6xl px-4">
+    {titre && <h2 class="mb-8 text-3xl font-bold md:text-4xl">{titre}</h2>}
+    <slot />
+  </div>
+</section>

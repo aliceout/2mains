@@ -1,0 +1,71 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
+
+type Props = {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+};
+
+const {
+  title,
+  description = site.mission,
+  image = '/brand/logo.svg',
+  noindex = false,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${site.name}` : `${site.name} — ${site.tagline}`;
+const canonical = new URL(Astro.url.pathname, site.url).toString();
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, site.url).toString()} />
+    <meta property="og:locale" content="fr_FR" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Preload fonts -->
+    <link
+      rel="preload"
+      href="/fonts/nunito-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/nunito-bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#contenu" class="skip-link">Aller au contenu principal</a>
+    <Header />
+    <main id="contenu" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

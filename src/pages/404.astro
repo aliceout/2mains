@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+---
+
+<Layout title="Page introuvable" noindex>
+  <Section taille="lg" fond="beige">
+    <div class="mx-auto max-w-xl text-center">
+      <img
+        src="/brand/picto.svg"
+        alt=""
+        aria-hidden="true"
+        class="mx-auto mb-6 h-24 w-24"
+      />
+      <p class="mb-2 text-sm font-semibold tracking-wide uppercase text-violet">
+        Erreur 404
+      </p>
+      <h1 class="mb-4 text-4xl font-bold md:text-5xl">
+        On dirait qu'on s'est perdu·es.
+      </h1>
+      <p class="mb-8 text-lg leading-relaxed">
+        Cette page n'existe pas — ou plus. Pas de panique, on vous ramène.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a
+          href="/"
+          class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+        >
+          Retour à l'accueil
+        </a>
+        <a
+          href="/contact"
+          class="rounded-full border-2 border-ink px-6 py-3 font-bold hover:bg-paper/10"
+        >
+          Nous écrire
+        </a>
+      </div>
+    </div>
+  </Section>
+</Layout>

@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import BlocCartes from '../components/BlocCartes.astro';
+import { site } from '../config/site';
+---
+
+<Layout>
+  <Hero
+    titre="Se (re)toucher pour se (re)lier"
+    accroche="2mains de femmes agit contre l'isolement corporel des femmes grâce au toucher relationnel — non médicalisé, non sexualisé, fondé sur le consentement."
+    ctaPrimaire={{ label: 'Découvrir nos actions', href: '/association/interventions' }}
+    ctaSecondaire={{ label: 'Faire un don', href: site.helloasso.don, externe: true }}
+    variant="beige"
+  />
+
+  <Section titre="Ce que nous faisons">
+    <BlocCartes
+      cartes={[
+        {
+          titre: "Accompagnement corporel",
+          description:
+            "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps et aux autres, dans un cadre sécurisé.",
+          href: '/association/interventions',
+          cta: 'En savoir plus',
+          couleur: 'orange',
+        },
+        {
+          titre: "Sensibilisation & formation",
+          description:
+            "Nous accompagnons les équipes du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques.",
+          href: '/pour/structures',
+          cta: 'Nos formats',
+          couleur: 'violet',
+        },
+        {
+          titre: "Recherche-action & plaidoyer",
+          description:
+            "Documenter, partager et porter la voix pour faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité.",
+          href: '/isolement-corporel',
+          cta: 'Comprendre',
+          couleur: 'magenta',
+        },
+      ]}
+    />
+  </Section>
+
+  <Section titre="Pour qui ?" fond="beige">
+    <BlocCartes
+      colonnes={3}
+      cartes={[
+        {
+          titre: "Vous êtes une structure d'accueil",
+          description:
+            "Enrichissez vos accompagnements en intégrant le toucher relationnel auprès des femmes que vous recevez.",
+          href: '/pour/structures',
+          cta: 'Nos offres',
+          couleur: 'bleu',
+        },
+        {
+          titre: "Vous êtes une entreprise",
+          description:
+            "Soutenez le projet via le mécénat, ou mobilisez vos équipes autour du toucher, du consentement et du lien.",
+          href: '/pour/entreprises',
+          cta: 'Mécénat',
+          couleur: 'vert',
+        },
+        {
+          titre: "Vous êtes une femme concernée",
+          description:
+            "Nos accompagnements sont gratuits, respectueux de votre rythme et de votre consentement.",
+          href: '/pour/femmes',
+          cta: 'Nous rencontrer',
+          couleur: 'magenta',
+        },
+      ]}
+    />
+  </Section>
+
+  <Section titre="Soutenir l'association" fond="violet">
+    <p class="mb-8 max-w-3xl text-lg">
+      75 adhérent·es et une centaine de soutiens individuels nous permettent déjà d'exister. Un don,
+      une adhésion ou du bénévolat font la différence.
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a
+        href={site.helloasso.don}
+        target="_blank"
+        rel="noopener"
+        class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+      >
+        Faire un don
+      </a>
+      <a
+        href="/agir/benevolat"
+        class="rounded-full border-2 border-paper px-6 py-3 font-bold text-paper hover:bg-paper/10"
+      >
+        Devenir bénévole
+      </a>
+    </div>
+  </Section>
+</Layout>

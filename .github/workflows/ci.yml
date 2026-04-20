@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Smoke test — routes render
+        run: |
+          test -f dist/index.html
+          test -f dist/association/index.html
+          test -f dist/isolement-corporel/index.html
+          test -f dist/pour/index.html
+          test -f dist/agir/index.html
+          test -f dist/soutenir/index.html
+          test -f dist/contact/index.html
+          test -f dist/mentions-legales/index.html
+          test -f dist/politique-confidentialite/index.html
+          test -f dist/404.html
+          test -f dist/sitemap-index.xml
+          echo "All expected routes present."
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7

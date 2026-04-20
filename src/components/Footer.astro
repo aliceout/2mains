@@ -1,0 +1,59 @@
+---
+import { site } from '../config/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 bg-beige">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <img src="/brand/logo.svg" alt={site.name} class="h-12 w-auto" width="160" height="48" />
+      <p class="mt-3 max-w-md text-sm leading-relaxed">{site.mission}</p>
+    </div>
+
+    <div>
+      <h2 class="mb-3 font-bold">Contact</h2>
+      <ul class="space-y-1 text-sm">
+        <li>
+          <a href={`mailto:${site.contact.email}`} class="hover:text-orange">
+            {site.contact.email}
+          </a>
+        </li>
+        <li>{site.contact.phone}</li>
+        <li>{site.contact.address}</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="mb-3 font-bold">Liens</h2>
+      <ul class="space-y-1 text-sm">
+        <li><a href="/contact" class="hover:text-orange">Nous écrire</a></li>
+        <li>
+          <a
+            href={site.helloasso.don}
+            target="_blank"
+            rel="noopener"
+            class="hover:text-orange"
+          >
+            Faire un don
+          </a>
+        </li>
+        <li><a href="/agir/benevolat" class="hover:text-orange">Devenir bénévole</a></li>
+        <li><a href="/mentions-legales" class="hover:text-orange">Mentions légales</a></li>
+        <li>
+          <a href="/politique-confidentialite" class="hover:text-orange">
+            Politique de confidentialité
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-paper/60">
+    <div
+      class="mx-auto flex max-w-6xl flex-col items-start gap-2 px-4 py-4 text-xs md:flex-row md:items-center md:justify-between"
+    >
+      <p>© {year} {site.name} — tous droits réservés.</p>
+      <p>Dons et adhésions sécurisés via HelloAsso.</p>
+    </div>
+  </div>
+</footer>
