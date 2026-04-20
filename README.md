@@ -17,6 +17,10 @@ Lutte contre l'isolement corporel des femmes par le toucher relationnel.
 3. [Stack technique](#stack-technique)
 4. [Développement local](#développement-local)
 5. [Gestion du contenu](#gestion-du-contenu)
+   - [Système `<Draft>`](#contenu-fictif--le-système-draft)
+   - [Contenu géré via CMS](#contenu-géré-via-cms)
+   - [Flux de publication](#flux-de-publication--ce-qui-se-passe-quand-audrey-clique--publier-)
+   - [Branchement des collections](#comment-brancher-une-page-à-sa-collection)
 6. [Déploiement serveur](#déploiement-serveur) ← **section install**
 7. [Accessibilité, SEO, RGPD](#accessibilité-seo-rgpd)
 8. [Charte graphique](#charte-graphique)
@@ -130,20 +134,128 @@ Trois manières de voir ce qui reste à valider :
 Pour valider un bloc : remplacer le contenu à l'intérieur, retirer le wrapper `<Draft>`,
 retirer l'import s'il n'est plus utilisé.
 
-### Contenu géré via CMS (à venir)
+### Contenu géré via CMS
 
 Le CMS Sveltia est configuré dans `public/admin/config.yml` avec 7 collections :
 
-- **pages** : pages statiques éditables
-- **evenements** : agenda
-- **partenaires** : financeurs et partenaires associatifs
-- **equipe** : membres du CA
-- **documents** : PDFs téléchargeables
-- **temoignages** : paroles recueillies
-- **site** : paramètres globaux (contact, réseaux, banderole d'urgence)
+| Collection      | Dossier cible        | À quoi ça sert                                  |
+| --------------- | -------------------- | ----------------------------------------------- |
+| `pages`         | `content/pages/`     | Pages statiques éditables (titre, accroche, corps) |
+| `evenements`    | `content/evenements/`| Agenda                                          |
+| `partenaires`   | `content/partenaires/`| Financeurs et partenaires associatifs           |
+| `equipe`        | `content/equipe/`    | Membres du CA                                   |
+| `documents`     | `content/documents/` | PDFs téléchargeables                            |
+| `temoignages`   | `content/temoignages/`| Paroles recueillies                            |
+| `site`          | `content/site/`      | Paramètres globaux (contact, réseaux, banderole) |
 
-L'admin est servie sur **`/admin/`**. Pour qu'elle fonctionne, il faut brancher
-l'authentification GitHub OAuth — voir la section déploiement.
+L'admin est servie sur **`/admin/`** et nécessite le proxy OAuth Sveltia — voir la section
+[déploiement](#5-proxy-oauth-pour-sveltia-cms).
+
+### Flux de publication — ce qui se passe quand Audrey clique « Publier »
+
+```
+┌──────────────┐        ┌──────────┐        ┌──────────────┐        ┌─────────┐
+│  Audrey      │──1────▶│ /admin/  │──2────▶│   GitHub     │──3────▶│ Actions │
+│  sur son tel │  édite │ Sveltia  │  push  │   main       │ webhook│  CI/CD  │
+└──────────────┘        └──────────┘  API   └──────────────┘        └─────┬───┘
+                                                                          │
+                                                                          │ 4. build
+                                                                          ▼
+                                                                    ┌─────────┐
+┌──────────────┐          ┌──────────────┐                          │  dist/  │
+│  visiteur·se │◀─────6───│   nginx      │◀──────────5. rsync ssh──│artefact │
+│  site live   │          │ /var/www/2mdf│                          └─────────┘
+└──────────────┘          └──────────────┘
+```
+
+En détail :
+
+1. **Audrey** ouvre `https://2mainsdefemmes.org/admin/` et se connecte via GitHub OAuth
+   (passant par le proxy `sveltia-cms-auth` sur ton serveur). Elle édite un contenu —
+   par exemple ajouter un événement à l'agenda — et clique **« Publier »**.
+2. **Sveltia CMS** traduit ça en un commit sur la branche `main` du repo GitHub, via
+   l'API GitHub (en utilisant le token OAuth qu'elle a obtenu). Un nouveau fichier
+   `content/evenements/2026-06-15-atelier.md` apparaît dans le repo.
+3. **GitHub** détecte le push, déclenche le workflow `CI & Deploy` (`.github/workflows/ci.yml`).
+4. **GitHub Actions** : install des deps → `pnpm check` → `pnpm build` → smoke test des
+   routes attendues. L'artefact `dist/` est prêt (~30–60 s).
+5. **Job deploy** : le workflow se connecte en SSH au serveur (secrets `DEPLOY_*`),
+   exécute un `rsync --delete dist/ serveur:/var/www/2mdf/`.
+6. **Nginx** sert immédiatement la nouvelle version. En cache cassé grâce aux hashs dans
+   les noms de fichiers `/_astro/*`.
+
+Total : **1 à 3 minutes** entre le clic "Publier" et la visibilité en ligne.
+
+Si le build échoue (TypeScript, smoke test rouge) : le déploiement n'a pas lieu, l'état
+précédent reste en ligne, et un mail GitHub Actions prévient Alice. **Pas de rollback à faire.**
+
+### État actuel du branchement des collections
+
+**Important** : les collections CMS sont **configurées** (l'admin sait les éditer), mais les
+pages Astro **ne les consomment pas encore** toutes — elles ont du contenu écrit en dur dans
+les `.astro`. Concrètement :
+
+- ✅ Ce qui **marche déjà** (une édition CMS apparaît sur le site sans changement de code) :
+  - `documents/` et `partenaires/` logos : les PDFs et images uploadés via le CMS sont
+    servis directement depuis `/uploads/` sans besoin de code.
+- ⚠️ Ce qui est **à brancher** (pages qui utilisent un tableau codé en dur plutôt qu'une
+  collection) :
+  - `/agenda` → collection `evenements`
+  - `/association/equipe` → collection `equipe`
+  - `/association/documents` → collection `documents`
+  - `/association/financeurs` → collection `partenaires`
+  - `/pour/temoignages` → collection `temoignages`
+  - `/pour/structures`, `/pour/femmes`, `/` : citations individuelles → `temoignages`
+  - Tous les Hero + sections texte → collection `pages` (plus structurant, à prévoir)
+  - Banderole d'urgence (home header) → `site.banderole_urgence`
+
+### Comment brancher une page à sa collection
+
+Exemple avec l'agenda. On passe d'un tableau codé en dur vers une lecture de `content/evenements/`.
+
+1. **Déclarer la collection côté Astro** dans `src/content/config.ts` (à créer) :
+
+   ```ts
+   import { defineCollection, z } from 'astro:content';
+
+   const evenements = defineCollection({
+     type: 'content',
+     schema: z.object({
+       title: z.string(),
+       date_debut: z.coerce.date(),
+       date_fin: z.coerce.date().optional(),
+       lieu: z.string(),
+       adresse: z.string().optional(),
+       cover: z.string().optional(),
+       public: z.enum(['tout public', 'professionnels', 'femmes concernées', 'adhérents']),
+       gratuit: z.boolean().default(true),
+       inscription_url: z.string().optional(),
+     }),
+   });
+
+   export const collections = { evenements };
+   ```
+
+2. **Consommer la collection** dans `src/pages/agenda.astro` :
+
+   ```astro
+   ---
+   import { getCollection } from 'astro:content';
+   const evenements = (await getCollection('evenements')).sort(
+     (a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf()
+   );
+   const now = new Date();
+   const aVenir = evenements.filter((e) => e.data.date_debut >= now);
+   ---
+   ```
+
+3. **Retirer le `<Draft>`** et le tableau codé en dur.
+
+4. **Ajouter un fichier de démo** côté repo ou via l'admin pour vérifier, puis push.
+
+La même logique s'applique à chaque collection. **C'est le gros chantier qui reste pour
+rendre le site réellement « géré par le CMS »** — à prévoir une fois qu'Audrey est
+connectable à l'admin et qu'elle a rempli au moins un élément de chaque collection.
 
 ---
 
@@ -476,6 +588,16 @@ Grand brouillon non-exhaustif, à tenir à jour :
 - [ ] Créer l'OAuth App GitHub + configurer le proxy `sveltia-cms-auth`
 - [ ] Décommissionner le WordPress existant
 - [ ] Tests d'accessibilité (axe, Lighthouse ≥ 90)
+
+**Branchement des collections CMS** (pour que les édits d'Audrey se reflètent sur le site) :
+- [ ] Créer `src/content/config.ts` avec les 7 schémas Zod
+- [ ] Brancher `/agenda` sur la collection `evenements`
+- [ ] Brancher `/association/equipe` sur la collection `equipe`
+- [ ] Brancher `/association/documents` sur `documents`
+- [ ] Brancher `/association/financeurs` sur `partenaires`
+- [ ] Brancher `/pour/temoignages` sur `temoignages`
+- [ ] Brancher la banderole d'urgence (home) sur `site.settings`
+- [ ] Voir à plus long terme : pages statiques ↔ collection `pages`
 
 **Contenu à valider / remplacer** (cf. `/status` et `DRAFTS.md`) :
 - [ ] 8 témoignages fictifs → vraies paroles
