@@ -16,7 +16,7 @@ const ca = (await getCollection('equipe')).sort(
 );
 ---
 
-<Layout title={page.data.title} description={page.data.description}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section titre="Le conseil d'administration">

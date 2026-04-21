@@ -5,6 +5,7 @@ import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
 import Draft from '../components/Draft.astro';
+import { getSiteSettings } from '../lib/site';
 
 const page = await getEntry('pages', 'agenda');
 if (!page) throw new Error('content/pages/agenda.md introuvable');
@@ -34,6 +35,34 @@ const passes = all
 
 const hasFictive = aVenir.some((e) => e.data.fictif);
 
+const settings = await getSiteSettings();
+const feedHttps = new URL('/agenda.ics', settings.url).toString();
+const feedWebcal = feedHttps.replace(/^https?:/, 'webcal:');
+
+const eventSchemas = aVenir
+  .filter((e) => !e.data.fictif)
+  .map((e) => ({
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: e.data.title,
+    startDate: e.data.date_debut.toISOString(),
+    ...(e.data.date_fin ? { endDate: e.data.date_fin.toISOString() } : {}),
+    eventStatus: 'https://schema.org/EventScheduled',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    location: {
+      '@type': 'Place',
+      name: e.data.lieu,
+      ...(e.data.adresse ? { address: e.data.adresse } : {}),
+    },
+    organizer: {
+      '@type': 'NGO',
+      name: settings.nom_asso,
+      url: settings.url,
+    },
+    isAccessibleForFree: e.data.gratuit,
+    ...(e.data.inscription_url ? { url: e.data.inscription_url } : {}),
+  }));
+
 function formatDateFull(debut: Date, fin?: Date): string {
   const dOpts: Intl.DateTimeFormatOptions = {
     day: 'numeric',
@@ -51,8 +80,37 @@ function formatDateFull(debut: Date, fin?: Date): string {
 }
 ---
 
-<Layout title={page.data.title} description={page.data.description}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id} jsonLd={eventSchemas}>
   {page.data.hero && <Hero {...page.data.hero} />}
+
+  <Section>
+    <div
+      class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6 md:flex-row md:items-center md:justify-between md:p-8"
+    >
+      <div class="max-w-2xl">
+        <h2 class="text-xl font-bold md:text-2xl">S'abonner à l'agenda</h2>
+        <p class="mt-2 text-sm leading-relaxed md:text-base">
+          Ajoutez l'agenda complet à votre calendrier (Apple, Google, Outlook,
+          Thunderbird). Les nouveaux événements apparaîtront automatiquement,
+          sans revenir sur le site.
+        </p>
+      </div>
+      <div class="flex flex-col items-start gap-2 md:items-end">
+        <a
+          href={feedWebcal}
+          class="inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 text-sm font-bold text-paper hover:bg-magenta"
+        >
+          S'abonner
+        </a>
+        <a
+          href={feedHttps}
+          class="text-xs text-ink/60 underline-offset-2 hover:text-orange hover:underline"
+        >
+          ou copier le lien direct
+        </a>
+      </div>
+    </div>
+  </Section>
 
   <Section titre="À venir">
     {
@@ -82,16 +140,23 @@ function formatDateFull(debut: Date, fin?: Date): string {
                     <div class="text-sm leading-relaxed">
                       <e.Content />
                     </div>
-                    {e.data.inscription_url && (
-                      <p class="mt-4">
+                    <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                      {e.data.inscription_url && (
                         <a
                           href={e.data.inscription_url}
                           class="font-semibold text-orange hover:underline"
                         >
                           S'inscrire / en savoir plus →
                         </a>
-                      </p>
-                    )}
+                      )}
+                      <a
+                        href={`/agenda/${e.id}.ics`}
+                        download
+                        class="text-sm text-ink/70 underline-offset-2 hover:text-orange hover:underline"
+                      >
+                        Ajouter à mon agenda
+                      </a>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -113,16 +178,23 @@ function formatDateFull(debut: Date, fin?: Date): string {
                   <div class="text-sm leading-relaxed">
                     <e.Content />
                   </div>
-                  {e.data.inscription_url && (
-                    <p class="mt-4">
+                  <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
+                    {e.data.inscription_url && (
                       <a
                         href={e.data.inscription_url}
                         class="font-semibold text-orange hover:underline"
                       >
                         S'inscrire / en savoir plus →
                       </a>
-                    </p>
-                  )}
+                    )}
+                    <a
+                      href={`/agenda/${e.id}.ics`}
+                      download
+                      class="text-sm text-ink/70 underline-offset-2 hover:text-orange hover:underline"
+                    >
+                      Ajouter à mon agenda
+                    </a>
+                  </div>
                 </li>
               ))}
             </ul>

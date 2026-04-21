@@ -59,6 +59,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+  /* Décale les ancres sous le header sticky (~72px + marge). */
+  scroll-padding-top: 5rem;
 }
 @media (prefers-reduced-motion: reduce) {
   html {

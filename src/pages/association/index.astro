@@ -7,6 +7,6 @@ const page = await getEntry('pages', 'association');
 if (!page) throw new Error("content/pages/association.md introuvable");
 ---
 
-<Layout title={page.data.title} description={page.data.description} noindex={page.data.noindex}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id} noindex={page.data.noindex}>
   <PageRenderer page={page} />
 </Layout>

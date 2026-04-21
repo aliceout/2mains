@@ -27,6 +27,38 @@ export type NavItem = {
   children?: NavItem[];
 };
 
+// Fil d'Ariane calculé depuis le pathname + l'arbre de navigation.
+// Retourne [] pour la home — pas de breadcrumb affiché sur /.
+export function getBreadcrumbs(
+  pathname: string,
+): { label: string; href: string }[] {
+  const clean = pathname.replace(/\/$/, '');
+  if (clean === '' || clean === '/') return [];
+
+  function findLabel(href: string, items: NavItem[]): string | null {
+    for (const item of items) {
+      if (item.href === href) return item.label;
+      if (item.children) {
+        const found = findLabel(href, item.children);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+
+  const segments = clean.split('/').filter(Boolean);
+  const crumbs = [{ label: 'Accueil', href: '/' }];
+  let acc = '';
+  for (const seg of segments) {
+    acc += '/' + seg;
+    const label =
+      findLabel(acc, navigation) ??
+      seg.charAt(0).toUpperCase() + seg.slice(1).replace(/-/g, ' ');
+    crumbs.push({ label, href: acc });
+  }
+  return crumbs;
+}
+
 export const navigation: NavItem[] = [
   { label: 'Accueil', href: '/' },
   {
@@ -36,6 +68,7 @@ export const navigation: NavItem[] = [
       { label: 'Qui sommes-nous', href: '/association/qui-sommes-nous' },
       { label: 'Nos interventions', href: '/association/interventions' },
       { label: 'Notre équipe', href: '/association/equipe' },
+      { label: 'Agenda', href: '/agenda' },
       { label: 'Nos documents', href: '/association/documents' },
       { label: 'Financeurs et partenaires', href: '/association/financeurs' },
     ],

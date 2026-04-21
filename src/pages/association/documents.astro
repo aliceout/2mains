@@ -20,7 +20,7 @@ function formatDate(d: Date | undefined): string {
 }
 ---
 
-<Layout title={page.data.title} description={page.data.description}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>

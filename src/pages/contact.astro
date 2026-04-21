@@ -20,7 +20,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? (import.meta.env.PRO
 const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
 ---
 
-<Layout title={page.data.title} description={page.data.description}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>

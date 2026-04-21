@@ -37,6 +37,14 @@ collections:
     fields:
       - { name: title, label: Titre, widget: string }
       - { name: description, label: 'Description SEO', widget: string, required: false }
+      - {
+          name: toc,
+          label: 'Afficher un sommaire à droite',
+          widget: boolean,
+          default: false,
+          required: false,
+          hint: "Recommandé pour les pages longues avec plusieurs sections titrées.",
+        }
 
       # Hero (bandeau du haut)
       - name: hero
@@ -408,7 +416,7 @@ collections:
           required: false,
           hint: "Optionnel si le document est à paraître.",
         }
-      - { name: date, label: Date, widget: date, required: false }
+      - { name: date, label: Date, widget: datetime, type: date, required: false }
       - { name: description_courte, label: Description courte, widget: text, required: false }
       - {
           name: a_paraitre,

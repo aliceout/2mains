@@ -17,21 +17,59 @@ import ChiffreDetail from './ChiffreDetail.astro';
 import Formats from './Formats.astro';
 import CitationLarge from './CitationLarge.astro';
 import Draft from './Draft.astro';
+import TableOfContents from './TableOfContents.astro';
 
 type Props = {
   page: CollectionEntry<'pages'>;
 };
 
 const { page } = Astro.props;
-const { hero, sections } = page.data;
+const { hero, sections, toc } = page.data;
 
 // Si la page a un corps markdown (hors sections), on le rend en zone prose
 // principale. Utile pour les pages très textuelles.
 const { Content } = await render(page);
 const hasBody = Boolean(page.body && page.body.trim().length > 0);
+
+function slugify(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// Calcule un id unique pour chaque section dotée d'un titre, puis construit
+// la table des matières.
+const sectionIds: (string | undefined)[] = [];
+const used = new Set<string>();
+for (const s of sections) {
+  const t = 'titre' in s ? s.titre : undefined;
+  if (!t) {
+    sectionIds.push(undefined);
+    continue;
+  }
+  let base = slugify(t);
+  let id = base;
+  let n = 2;
+  while (used.has(id)) id = `${base}-${n++}`;
+  used.add(id);
+  sectionIds.push(id);
+}
+const tocItems = sections
+  .map((s, i) => {
+    const t = 'titre' in s ? s.titre : undefined;
+    const id = sectionIds[i];
+    if (!t || !id) return null;
+    return { id, label: t };
+  })
+  .filter((x): x is { id: string; label: string } => x !== null);
 ---
 
 {hero && <Hero {...hero} />}
+
+{toc && tocItems.length >= 2 && <TableOfContents items={tocItems} />}
 
 {
   // Si pas de sections mais du body markdown, on le rend.
@@ -45,11 +83,12 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
 }
 
 {
-  sections.map((s) => {
+  sections.map((s, i) => {
+    const id = sectionIds[i];
     if (s.type === 'prose') {
       const html = marked.parse(s.body, { async: false }) as string;
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <Prose>
             <Fragment set:html={html} />
           </Prose>
@@ -58,21 +97,21 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
     }
     if (s.type === 'cartes') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <BlocCartes cartes={s.cartes} colonnes={s.colonnes} />
         </Section>
       );
     }
     if (s.type === 'valeurs') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <BlocValeurs valeurs={s.valeurs} />
         </Section>
       );
     }
     if (s.type === 'stats') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           {s.intro && (
             <div class="mb-8 max-w-3xl">
               <p class="text-lg leading-relaxed">{s.intro}</p>
@@ -92,7 +131,7 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
         />
       );
       return (
-        <Section fond={s.fond}>
+        <Section id={id} fond={s.fond}>
           {s.fictif ? (
             <Draft reason={`Citation fictive — ${s.auteur}`}>{inner}</Draft>
           ) : (
@@ -103,7 +142,7 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
     }
     if (s.type === 'cta') {
       return (
-        <Section fond={s.fond ?? 'violet'}>
+        <Section id={id} fond={s.fond ?? 'violet'}>
           <div class="grid gap-4">
             <h2 class="text-3xl font-bold md:text-4xl">{s.titre}</h2>
             {s.corps && <p class="max-w-3xl text-lg leading-relaxed">{s.corps}</p>}
@@ -137,14 +176,14 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
     }
     if (s.type === 'etapes') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <Etapes etapes={s.etapes} couleur={s.couleur ?? undefined} />
         </Section>
       );
     }
     if (s.type === 'deux-colonnes') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <DeuxColonnes
             texte={s.texte}
             inverse={s.inverse}
@@ -157,21 +196,21 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
     }
     if (s.type === 'faq') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <Faq questions={s.questions} />
         </Section>
       );
     }
     if (s.type === 'callout') {
       return (
-        <Section fond={s.fond}>
+        <Section id={id} fond={s.fond}>
           <Callout ton={s.ton} titre={s.titre} body={s.body} />
         </Section>
       );
     }
     if (s.type === 'chiffre-detail') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <ChiffreDetail
             chiffre={s.chiffre}
             texte={s.texte}
@@ -184,14 +223,14 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
     }
     if (s.type === 'formats') {
       return (
-        <Section titre={s.titre} fond={s.fond}>
+        <Section id={id} titre={s.titre} fond={s.fond}>
           <Formats formats={s.formats} colonnes={s.colonnes} />
         </Section>
       );
     }
     if (s.type === 'citation-large') {
       return (
-        <Section fond={s.fond}>
+        <Section id={id} fond={s.fond}>
           <CitationLarge
             citation={s.citation}
             auteur={s.auteur}

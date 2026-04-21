@@ -18,7 +18,7 @@ const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif
 const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
-<Layout title={page.data.title} description={page.data.description}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   {

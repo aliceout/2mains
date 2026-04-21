@@ -3,9 +3,10 @@ type Props = {
   titre?: string;
   fond?: 'paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu';
   taille?: 'sm' | 'md' | 'lg';
+  id?: string;
 };
 
-const { titre, fond = 'paper', taille = 'md' } = Astro.props;
+const { titre, fond = 'paper', taille = 'md', id } = Astro.props;
 
 const bgClass = {
   paper: 'bg-paper text-ink',
@@ -24,7 +25,7 @@ const padClass = {
 }[taille];
 ---
 
-<section class:list={[bgClass, padClass]}>
+<section id={id} class:list={[bgClass, padClass]}>
   <div class="mx-auto max-w-6xl px-4">
     {titre && <h2 class="mb-8 text-3xl font-bold md:text-4xl">{titre}</h2>}
     <slot />
