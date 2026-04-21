@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://2mainsdefemmes.org',
-  trailingSlash: 'never',
+  trailingSlash: 'ignore',
   build: {
     format: 'directory',
   },
