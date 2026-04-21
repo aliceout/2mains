@@ -14,7 +14,10 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/admin'),
+      filter: (page) =>
+        !page.includes('/admin') &&
+        !page.includes('/status') &&
+        !page.includes('/demo'),
       i18n: {
         defaultLocale: 'fr',
         locales: { fr: 'fr-FR' },

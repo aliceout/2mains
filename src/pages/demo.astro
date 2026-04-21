@@ -1,0 +1,20 @@
+---
+// Page /demo — catalogue visuel de tous les blocs CMS. Non indexée,
+// exclue du sitemap et de robots.txt. Sert de référence à Audrey et
+// d'aide-mémoire visuel pour vérifier le rendu des blocs.
+import { getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import PageRenderer from '../components/PageRenderer.astro';
+
+const page = await getEntry('pages', 'demo');
+if (!page) throw new Error('content/pages/demo.md introuvable');
+---
+
+<Layout
+  title={page.data.title}
+  description={page.data.description}
+  ogSlug={page.id}
+  noindex={page.data.noindex}
+>
+  <PageRenderer page={page} />
+</Layout>
