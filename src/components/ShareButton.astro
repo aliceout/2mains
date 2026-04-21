@@ -1,0 +1,202 @@
+---
+// Bouton de partage avec Web Share API native en priorité (mobile, Safari
+// desktop) et fallback vers un menu avec liens de partage explicites pour
+// les navigateurs qui ne supportent pas `navigator.share` (Firefox desktop,
+// Chrome desktop sans extension).
+//
+// Plateformes fallback : Email, WhatsApp, Facebook, LinkedIn, Copier le lien.
+// Pas de Twitter/X — choix éditorial.
+//
+// A11y : le bouton est un <button> avec aria-haspopup + aria-expanded.
+// Le menu ferme à Échap ou clic extérieur. Les liens externes ouvrent dans
+// un nouvel onglet avec rel=noopener.
+
+type Props = {
+  title?: string;
+  label?: string;
+};
+const { title, label = 'Partager' } = Astro.props;
+---
+
+<div class="share relative inline-block" data-share>
+  <button
+    type="button"
+    class="inline-flex items-center gap-2 rounded-full border-2 border-beige bg-paper px-4 py-2 text-sm font-semibold transition-colors hover:bg-beige"
+    aria-haspopup="true"
+    aria-expanded="false"
+    data-share-toggle
+    data-share-title={title}
+  >
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M18 8a3 3 0 100-6 3 3 0 000 6zM6 15a3 3 0 100-6 3 3 0 000 6zM18 22a3 3 0 100-6 3 3 0 000 6zM8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+    {label}
+  </button>
+
+  <div
+    role="menu"
+    class="share-menu invisible absolute right-0 top-full z-30 mt-2 min-w-56 rounded-lg border border-beige bg-paper p-1 opacity-0 shadow-lg transition-opacity"
+    data-share-menu
+    hidden
+  >
+    <a
+      href="#"
+      role="menuitem"
+      data-share-link="email"
+      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+    >
+      <span aria-hidden="true">✉</span>Email
+    </a>
+    <a
+      href="#"
+      role="menuitem"
+      target="_blank"
+      rel="noopener"
+      data-share-link="whatsapp"
+      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+    >
+      <span aria-hidden="true">💬</span>WhatsApp
+    </a>
+    <a
+      href="#"
+      role="menuitem"
+      target="_blank"
+      rel="noopener"
+      data-share-link="facebook"
+      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+    >
+      <span aria-hidden="true" class="font-bold">f</span>Facebook
+    </a>
+    <a
+      href="#"
+      role="menuitem"
+      target="_blank"
+      rel="noopener"
+      data-share-link="linkedin"
+      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+    >
+      <span aria-hidden="true" class="font-bold">in</span>LinkedIn
+    </a>
+    <button
+      type="button"
+      role="menuitem"
+      data-share-copy
+      class="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm hover:bg-beige"
+    >
+      <span aria-hidden="true">🔗</span>
+      <span data-share-copy-label>Copier le lien</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  type ShareLink = 'email' | 'whatsapp' | 'facebook' | 'linkedin';
+
+  function template(kind: ShareLink, title: string, url: string): string {
+    const t = encodeURIComponent(title);
+    const u = encodeURIComponent(url);
+    switch (kind) {
+      case 'email':
+        return `mailto:?subject=${t}&body=${t}%0A${u}`;
+      case 'whatsapp':
+        return `https://wa.me/?text=${t}%20${u}`;
+      case 'facebook':
+        return `https://www.facebook.com/sharer/sharer.php?u=${u}`;
+      case 'linkedin':
+        return `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-share]').forEach((root) => {
+    const toggle = root.querySelector<HTMLButtonElement>('[data-share-toggle]');
+    const menu = root.querySelector<HTMLElement>('[data-share-menu]');
+    if (!toggle || !menu) return;
+
+    const title = toggle.dataset.shareTitle || document.title;
+    const url = window.location.href;
+
+    // Prépare les liens fallback à l'avance.
+    root
+      .querySelectorAll<HTMLAnchorElement>('[data-share-link]')
+      .forEach((a) => {
+        const kind = a.dataset.shareLink as ShareLink;
+        a.href = template(kind, title, url);
+      });
+
+    const open = () => {
+      menu.hidden = false;
+      // rAF pour que la transition opacity se déclenche
+      requestAnimationFrame(() => {
+        menu.classList.remove('invisible', 'opacity-0');
+        menu.classList.add('visible', 'opacity-100');
+      });
+      toggle.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+      menu.classList.add('invisible', 'opacity-0');
+      menu.classList.remove('visible', 'opacity-100');
+      menu.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    toggle.addEventListener('click', async (e) => {
+      e.stopPropagation();
+
+      // Web Share API : mobile, Safari desktop récent. On laisse le système
+      // gérer la sélection (SMS, Messages, Mail, apps installées…).
+      if (typeof navigator.share === 'function') {
+        try {
+          await navigator.share({ title, url });
+          return;
+        } catch (err) {
+          const name = (err as DOMException).name;
+          // Annulation utilisateur = ne rien faire, ne pas rouvrir le menu.
+          if (name === 'AbortError') return;
+          // Autre erreur : on bascule sur le menu fallback.
+        }
+      }
+
+      if (menu.hidden) open();
+      else close();
+    });
+
+    const copy = root.querySelector<HTMLButtonElement>('[data-share-copy]');
+    const copyLabel = root.querySelector<HTMLElement>('[data-share-copy-label]');
+    copy?.addEventListener('click', async () => {
+      if (!copyLabel) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        copyLabel.textContent = 'Lien copié !';
+        setTimeout(() => {
+          copyLabel.textContent = 'Copier le lien';
+        }, 1800);
+      } catch {
+        copyLabel.textContent = 'Copie impossible';
+      }
+    });
+
+    // Fermer au clic extérieur.
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) close();
+    });
+    // Fermer avec Échap.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) {
+        close();
+        toggle.focus();
+      }
+    });
+  });
+</script>
