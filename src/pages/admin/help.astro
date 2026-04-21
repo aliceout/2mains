@@ -1,0 +1,275 @@
+---
+// Guide d'édition Sveltia CMS pour Audrey.
+// Page interne, non indexée. Accessible via /admin/help.
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Prose from '../../components/Prose.astro';
+import Callout from '../../components/Callout.astro';
+---
+
+<Layout
+  title="Guide d'édition du site"
+  description="Comment utiliser l'admin pour modifier le site — page interne."
+  noindex
+>
+  <Hero
+    titre="Guide d'édition du site"
+    sousTitre="Pour Audrey"
+    accroche="Comment modifier les contenus du site depuis l'admin. Pas à pas, en français, sans jargon."
+    variant="violet"
+  />
+
+  <Section>
+    <Prose>
+      <p>
+        Ce guide couvre les tâches courantes : modifier un texte, ajouter un
+        événement, publier un témoignage, mettre à jour les contacts… Si tu as
+        un doute, rien n'est jamais définitif : toute modif peut être annulée
+        (voir la dernière section).
+      </p>
+      <p>
+        <a href="/admin">→ Aller à l'admin</a>
+      </p>
+
+      <h2>Se connecter</h2>
+      <ol>
+        <li>
+          Va sur <a href="/admin"><code>2mainsdefemmes.org/admin</code></a>.
+        </li>
+        <li>
+          Clique sur <strong>« Login with GitHub »</strong>. Tu seras redirigée
+          sur GitHub pour autoriser l'accès à l'éditeur.
+        </li>
+        <li>
+          De retour sur l'admin, tu vois la liste des <strong>collections</strong> :
+          Pages, Événements, Partenaires, Équipe, Documents, Témoignages,
+          Paramètres globaux.
+        </li>
+      </ol>
+      <p>
+        Si la page « Login with GitHub » ne s'affiche pas, vide le cache du
+        navigateur (Ctrl/Cmd + Maj + R) ou essaie en navigation privée.
+      </p>
+
+      <h2>Vue d'ensemble</h2>
+      <p>
+        Chaque collection regroupe un type de contenu. Clique sur une
+        collection pour voir ses entrées ; clique sur une entrée pour l'éditer.
+      </p>
+      <ul>
+        <li>
+          <strong>Pages</strong> — les grandes pages du site (accueil, qui
+          sommes-nous, pour les femmes, etc.). Tu y modifies les textes et les
+          sections déjà en place.
+        </li>
+        <li><strong>Événements</strong> — l'agenda.</li>
+        <li>
+          <strong>Témoignages</strong> — citations affichées sur la page des
+          témoignages et sur la home.
+        </li>
+        <li>
+          <strong>Équipe</strong> — membres du CA et contributeur·ices mis en
+          avant.
+        </li>
+        <li>
+          <strong>Partenaires</strong> — financeurs, partenaires associatifs,
+          réseaux.
+        </li>
+        <li><strong>Documents</strong> — PDF téléchargeables.</li>
+        <li>
+          <strong>Paramètres globaux</strong> — infos de contact, réseaux
+          sociaux, banderole d'urgence.
+        </li>
+      </ul>
+
+      <h2>Modifier le texte d'une page</h2>
+      <ol>
+        <li>
+          Clique sur <strong>Pages</strong>, puis sur la page à modifier (ex:
+          « Pour les structures d'accueil »).
+        </li>
+        <li>
+          Les champs principaux apparaissent : <em>Titre</em>, <em>Description
+          SEO</em>, <em>Hero</em>, <em>Sections</em>.
+        </li>
+        <li>
+          Pour changer un paragraphe, déroule la section concernée dans
+          <em>Sections</em>, modifie le champ <em>Contenu</em> (ou
+          <em>Description</em> selon le type de bloc).
+        </li>
+        <li>
+          Clique sur <strong>Publier</strong> en haut à droite. La modif part
+          en production au bout de 2-3 minutes (build automatique GitHub
+          Actions).
+        </li>
+      </ol>
+      <Callout
+        ton="astuce"
+        titre="Voir tous les blocs disponibles"
+        body="La page [/demo](/demo) liste tous les types de blocs avec un exemple de chaque. Utile pour choisir le bon bloc avant de l'ajouter à une page."
+      />
+
+      <h2>Ajouter un événement à l'agenda</h2>
+      <ol>
+        <li>Clique sur <strong>Événements → Nouveau</strong>.</li>
+        <li>
+          Remplis <em>Titre</em>, <em>Date de début</em> (avec heure),
+          <em>Date de fin</em> (optionnelle), <em>Lieu</em>, <em>Adresse</em>,
+          <em>Public</em>, <em>Gratuit</em>.
+        </li>
+        <li>
+          <em>URL d'inscription</em> : un lien HelloAsso, un email, un
+          formulaire externe.
+        </li>
+        <li>
+          <em>Description</em> : quelques lignes sur l'événement (format
+          markdown, donc tu peux mettre en gras avec <code>**gras**</code>).
+        </li>
+        <li>
+          <em>Brouillon</em> : coché = l'événement reste caché le temps que tu
+          finalises. Décoche avant de publier vraiment.
+        </li>
+        <li>Clique sur <strong>Publier</strong>.</li>
+      </ol>
+      <p>
+        L'événement apparaît sur <a href="/agenda">/agenda</a>, sur la home
+        dans « Prochains rendez-vous », et dans le flux iCal
+        (<a href="/agenda.ics"><code>/agenda.ics</code></a>) auquel les
+        partenaires peuvent s'abonner.
+      </p>
+
+      <h2>Publier un témoignage</h2>
+      <ol>
+        <li>Clique sur <strong>Témoignages → Nouveau</strong>.</li>
+        <li>
+          <em>Auteur</em>, <em>Rôle / contexte</em> (ex: « Participante, 42 ans »),
+          <em>Type</em> (participante, partenaire, professionnelle).
+        </li>
+        <li>
+          <em>Ordre</em> : plus petit = affiché en premier dans sa catégorie.
+        </li>
+        <li>
+          <em>Témoignage fictif ?</em> : coché si c'est un placeholder non validé
+          par la personne. Affiche un ruban orange « À valider » sur le site —
+          visible pour tout le monde, c'est volontaire (ça nous pousse à
+          valider).
+        </li>
+        <li>
+          <em>Brouillon</em> : coché = caché en prod. Laisse coché tant que la
+          personne n'a pas validé sa citation.
+        </li>
+        <li>
+          <em>Texte</em> : la citation elle-même, en markdown.
+        </li>
+      </ol>
+
+      <h2>Ajouter un membre d'équipe ou un partenaire</h2>
+      <p>Mêmes gestes pour les deux, dans <strong>Équipe</strong> ou <strong>Partenaires</strong> :</p>
+      <ol>
+        <li>Nouveau → remplis les champs (nom, rôle, bio courte, photo…).</li>
+        <li>
+          <em>Ordre</em> : gère l'ordre d'affichage. 0 passe en premier, les
+          autres par ordre croissant.
+        </li>
+        <li>
+          <em>Brouillon</em> coché = caché en prod. Utile quand l'accord n'est
+          pas encore validé avec la personne ou la structure.
+        </li>
+      </ol>
+
+      <h2>Uploader un document PDF</h2>
+      <ol>
+        <li>Clique sur <strong>Documents → Nouveau</strong>.</li>
+        <li>
+          <em>Titre</em>, <em>Catégorie</em> (projet associatif, rapport
+          d'activité…).
+        </li>
+        <li>
+          <em>Fichier (PDF)</em> : glisse-dépose ton PDF dans le champ. Il
+          sera stocké dans <code>public/uploads/</code> et accessible via son
+          URL directe.
+        </li>
+        <li>
+          Si le document n'est pas encore prêt : coche <em>À paraître ?</em>.
+          Le document apparaît dans la liste avec la mention « À paraître »
+          et sans lien de téléchargement.
+        </li>
+        <li>
+          <em>Brouillon</em> : coché = le document n'apparaît même pas dans
+          la liste. À utiliser quand le fichier n'est pas encore décidé.
+        </li>
+      </ol>
+
+      <h2>Paramètres globaux (contact, banderole, réseaux)</h2>
+      <p>
+        Dans <strong>Paramètres globaux → Paramètres</strong>, tu peux changer :
+      </p>
+      <ul>
+        <li>Email de contact, téléphone, adresse postale</li>
+        <li>URL HelloAsso pour les dons</li>
+        <li>Liens vers les réseaux sociaux</li>
+        <li>
+          <strong>Banderole d'urgence</strong> : message court affiché en haut
+          de toutes les pages (ex: « Ateliers suspendus jusqu'au 30 juin »).
+          Coche <em>Active</em>, remplis <em>Message</em> (markdown), choisis
+          une <em>Couleur</em>. N'oublie pas de décocher <em>Active</em> quand
+          ce n'est plus nécessaire.
+        </li>
+      </ul>
+
+      <h2>Annuler une modification qui est partie en ligne</h2>
+      <p>
+        Toutes les modifs sont versionnées dans Git, donc rien n'est jamais
+        perdu. Deux options :
+      </p>
+      <ul>
+        <li>
+          <strong>Tu refais la modif en sens inverse</strong> depuis l'admin
+          (corriger un texte, décocher un événement, etc.). C'est le plus
+          simple pour un petit changement.
+        </li>
+        <li>
+          <strong>Revenir à une version précédente</strong> : demande à la
+          personne qui maintient le code (ou via l'historique GitHub si tu es
+          à l'aise). Dis-lui « je veux revenir à la version d'avant mon
+          dernier changement sur la page X » — elle peut le faire en 2 clics
+          via un <code>git revert</code>.
+        </li>
+      </ul>
+
+      <h2>Pièges courants</h2>
+      <ul>
+        <li>
+          <strong>Ma modif n'apparaît pas</strong> : attends 2-3 minutes, le
+          build automatique tourne. Si toujours rien, vérifie que tu as cliqué
+          sur <em>Publier</em> et que <em>Brouillon</em> n'est pas coché.
+        </li>
+        <li>
+          <strong>J'ai cassé quelque chose</strong> : pas de panique. Ferme
+          l'onglet sans publier si possible. Si c'est déjà publié, refais la
+          modif à l'envers ou demande un revert.
+        </li>
+        <li>
+          <strong>L'image est énorme</strong> : redimensionne avant upload
+          (1600 px de large max pour une photo pleine largeur). Les PDF,
+          compresse-les avec un outil comme <em>ILovePDF</em> ou
+          <em>Smallpdf</em> avant upload.
+        </li>
+        <li>
+          <strong>Un champ est obligatoire et je ne vois pas lequel</strong> :
+          les champs obligatoires sont indiqués par un astérisque. Le CMS
+          t'empêche de publier tant qu'ils ne sont pas remplis.
+        </li>
+      </ul>
+
+      <h2>Besoin d'aide ?</h2>
+      <p>
+        En cas de doute ou de bug, écris un message à la personne qui
+        maintient le site — décris ce que tu voulais faire et ce que tu as vu.
+        Plus c'est précis (capture d'écran, URL de la page, nom du champ),
+        plus c'est simple à corriger.
+      </p>
+    </Prose>
+  </Section>
+</Layout>
