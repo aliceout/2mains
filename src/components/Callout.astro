@@ -1,0 +1,76 @@
+---
+/**
+ * Encadré coloré pour faire sortir un point clé.
+ * Trois tons : info (bleu doux), important (magenta vif), astuce (vert).
+ */
+import { marked } from 'marked';
+
+type Props = {
+  ton?: 'info' | 'important' | 'astuce' | 'note';
+  titre?: string;
+  body: string; // markdown inline (pas de block-level)
+};
+
+const { ton = 'info', titre, body } = Astro.props;
+
+const styles = {
+  info: {
+    bg: 'bg-bleu/10 border-bleu',
+    text: 'text-bleu',
+    icon: 'ℹ',
+    label: 'Info',
+  },
+  important: {
+    bg: 'bg-magenta/10 border-magenta',
+    text: 'text-magenta',
+    icon: '⚠',
+    label: 'Important',
+  },
+  astuce: {
+    bg: 'bg-vert/40 border-vert',
+    text: 'text-ink',
+    icon: '✦',
+    label: 'À savoir',
+  },
+  note: {
+    bg: 'bg-beige border-orange',
+    text: 'text-ink',
+    icon: '●',
+    label: 'Note',
+  },
+}[ton];
+
+const html = marked.parse(body, { async: false }) as string;
+---
+
+<aside
+  role="note"
+  class:list={['rounded-xl border-l-4 p-5 md:p-6', styles.bg]}
+>
+  <p
+    class:list={['mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide', styles.text]}
+  >
+    <span aria-hidden="true">{styles.icon}</span>
+    <span>{titre ?? styles.label}</span>
+  </p>
+  <div class="callout-body text-sm leading-relaxed md:text-base">
+    <Fragment set:html={html} />
+  </div>
+</aside>
+
+<style>
+  .callout-body :global(p) {
+    margin-bottom: 0.5rem;
+  }
+  .callout-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .callout-body :global(strong) {
+    font-weight: 700;
+  }
+  .callout-body :global(a) {
+    color: var(--color-orange);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>

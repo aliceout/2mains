@@ -9,6 +9,13 @@ import BlocCartes from './BlocCartes.astro';
 import BlocValeurs from './BlocValeurs.astro';
 import BlocStat from './BlocStat.astro';
 import BlocCitation from './BlocCitation.astro';
+import Etapes from './Etapes.astro';
+import DeuxColonnes from './DeuxColonnes.astro';
+import Faq from './Faq.astro';
+import Callout from './Callout.astro';
+import ChiffreDetail from './ChiffreDetail.astro';
+import Formats from './Formats.astro';
+import CitationLarge from './CitationLarge.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -125,6 +132,72 @@ const hasBody = Boolean(page.body && page.body.trim().length > 0);
               </div>
             )}
           </div>
+        </Section>
+      );
+    }
+    if (s.type === 'etapes') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <Etapes etapes={s.etapes} couleur={s.couleur ?? undefined} />
+        </Section>
+      );
+    }
+    if (s.type === 'deux-colonnes') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <DeuxColonnes
+            texte={s.texte}
+            inverse={s.inverse}
+            picto_couleur={s.picto_couleur}
+            image={s.image}
+            image_alt={s.image_alt}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'faq') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <Faq questions={s.questions} />
+        </Section>
+      );
+    }
+    if (s.type === 'callout') {
+      return (
+        <Section fond={s.fond}>
+          <Callout ton={s.ton} titre={s.titre} body={s.body} />
+        </Section>
+      );
+    }
+    if (s.type === 'chiffre-detail') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <ChiffreDetail
+            chiffre={s.chiffre}
+            texte={s.texte}
+            source={s.source}
+            alignement={s.alignement}
+            couleur={s.couleur ?? undefined}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'formats') {
+      return (
+        <Section titre={s.titre} fond={s.fond}>
+          <Formats formats={s.formats} colonnes={s.colonnes} />
+        </Section>
+      );
+    }
+    if (s.type === 'citation-large') {
+      return (
+        <Section fond={s.fond}>
+          <CitationLarge
+            citation={s.citation}
+            auteur={s.auteur}
+            role={s.role}
+            variant={s.variant}
+          />
         </Section>
       );
     }

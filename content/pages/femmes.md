@@ -22,27 +22,56 @@ sections:
       - un moment d'enlacement ou de tendresse, si c'est ce dont vous avez besoin.
 
       **Vous choisissez.** À chaque séance. Vous pouvez changer d'avis, faire une pause, arrêter sans avoir à vous justifier.
-  - type: "prose"
-    titre: "Notre cadre"
+
+  - type: "callout"
     fond: "beige"
+    ton: "important"
+    titre: "C'est gratuit, toujours"
     body: |
-      - **C'est gratuit.** Entièrement. Toujours.
-      - **C'est votre choix.** Entrer, s'arrêter, revenir — comme vous voulez.
-      - **C'est respectueux.** Nos intervenantes sont formées et supervisées. Notre démarche est non médicalisée, non sexuelle, non religieuse.
-      - **C'est régulier.** On propose une séance par semaine, pour que vous puissiez avancer à votre rythme. Un parcours peut durer d'un mois à six mois.
-      - **C'est accueillant.** Peu importe votre histoire, votre âge, votre situation, votre corps — vous êtes la bienvenue.
-  - type: "citation"
+      Les parcours sont **entièrement gratuits** pour les femmes accompagnées par nos structures partenaires. Aucun reste à charge, jamais. Si votre situation financière est un frein, on trouve une solution.
+
+  - type: "callout"
+    ton: "astuce"
+    titre: "C'est votre choix"
+    body: |
+      Entrer, s'arrêter, revenir — comme vous voulez. Nous adaptons à votre rythme, pas l'inverse. Et vous pouvez nous dire non à tout moment, sans vous expliquer.
+
+  - type: "citation-large"
     variant: "beige"
-    fictif: true
     citation: "Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Juste être là, avec quelqu'un qui ne me demandait rien, ça m'a déjà fait du bien. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
     auteur: "Témoignage participante"
-    role: "Lyon — témoignage anonymisé"
+    role: "Lyon — à valider"
+
+  - type: "faq"
+    titre: "Questions fréquentes"
+    fond: "beige"
+    questions:
+      - question: "Qu'est-ce que le toucher relationnel, concrètement ?"
+        reponse: |
+          Un toucher **non médical, non sexuel, non violent**, qui cherche à établir un contact bienveillant et tendre. Concrètement : un massage doux, un auto-massage, des mains posées sur les épaules, un câlin consenti, parfois juste une présence physique. Pas d'objectif thérapeutique, pas de diagnostic — juste du lien.
+      - question: "Je ne connais pas l'association, est-ce qu'on me demande de m'inscrire ?"
+        reponse: |
+          Non. Vous pouvez venir à un atelier découverte pour voir, sans engagement. Si ça vous plaît, on construit ensemble la suite.
+      - question: "Je ne veux pas qu'on me touche. Est-ce que je peux quand même venir ?"
+        reponse: |
+          **Oui, complètement.** Beaucoup de femmes viennent d'abord sans toucher. C'est très bien. On peut juste parler, respirer ensemble, faire de l'automassage. Et on verra si vous en avez envie plus tard — ou jamais, c'est ok aussi.
+      - question: "Les intervenantes sont qui ?"
+        reponse: |
+          Des bénévoles formées à l'accompagnement corporel, supervisées, qui ont signé une charte éthique. Certaines sont praticiennes du corps (masseuses, socio-esthéticiennes), d'autres pas. Elles sont là pour vous, pas pour elles.
+      - question: "Est-ce que ça remplace un suivi psy ou médical ?"
+        reponse: |
+          **Non, jamais.** Nous ne remplaçons aucun accompagnement médical, psychologique ou social. On vient en complément, en intégrant la dimension corporelle que ces accompagnements prennent peu en compte.
+      - question: "Je vis à Lyon mais je ne suis suivie par aucune association. Est-ce que je peux venir ?"
+        reponse: |
+          Oui. Écrivez-nous à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org) ou appelez-nous. On vous rappelle, sans jugement, sans formalité, et on voit ce qui est possible.
+
   - type: "prose"
     titre: "Comment nous rencontrer"
     body: |
       Nous intervenons **dans ou à proximité de structures partenaires** : foyers, accueils de jour, maisons des femmes, centres sociaux. Si vous êtes déjà accompagnée par une association, demandez-leur ; elles pourront nous mettre en contact.
 
       Si vous n'êtes accompagnée par personne mais que vous vivez à Lyon et que vous souhaitez un parcours, vous pouvez nous écrire directement à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org). Nous vous recontactons, sans jugement, sans formalité.
+
   - type: "cta"
     fond: "magenta"
     titre: "Besoin d'un premier contact ?"

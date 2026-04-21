@@ -1,0 +1,64 @@
+---
+/**
+ * Un chiffre énorme (choc visuel) avec une explication sur le côté.
+ * Différent de BlocStat (grille de 3+ chiffres en petit).
+ */
+import { marked } from 'marked';
+
+type Props = {
+  chiffre: string;
+  texte: string; // markdown
+  source?: string;
+  alignement?: 'gauche' | 'droite';
+  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+};
+
+const {
+  chiffre,
+  texte,
+  source,
+  alignement = 'gauche',
+  couleur = 'orange',
+} = Astro.props;
+
+const html = marked.parse(texte, { async: false }) as string;
+
+const textCol = {
+  orange: 'text-orange',
+  violet: 'text-violet',
+  magenta: 'text-magenta',
+  vert: 'text-vert',
+  bleu: 'text-bleu',
+}[couleur];
+---
+
+<div
+  class:list={[
+    'grid items-center gap-8 md:grid-cols-2',
+    alignement === 'droite' && 'md:[&>*:first-child]:order-2',
+  ]}
+>
+  <div class="text-center">
+    <p
+      class:list={['text-7xl leading-none font-bold md:text-8xl lg:text-9xl', textCol]}
+    >
+      {chiffre}
+    </p>
+  </div>
+  <div class="chiffre-text">
+    <div class="text-lg leading-relaxed md:text-xl" set:html={html} />
+    {source && <p class="mt-3 text-xs opacity-60">{source}</p>}
+  </div>
+</div>
+
+<style>
+  .chiffre-text :global(p) {
+    margin-bottom: 0.5rem;
+  }
+  .chiffre-text :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .chiffre-text :global(strong) {
+    font-weight: 700;
+  }
+</style>

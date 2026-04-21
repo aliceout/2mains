@@ -200,6 +200,94 @@ const sectionSchema = z.discriminatedUnion('type', [
       })
       .optional(),
   }),
+  // Étapes numérotées
+  z.object({
+    type: z.literal('etapes'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    couleur: couleurEnum,
+    etapes: z.array(
+      z.object({
+        titre: z.string(),
+        description: z.string().optional(),
+      }),
+    ),
+  }),
+  // Deux colonnes (texte + picto/image)
+  z.object({
+    type: z.literal('deux-colonnes'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    inverse: z.boolean().default(false),
+    texte: z.string(),
+    picto_couleur: z
+      .enum(['orange', 'violet', 'magenta', 'vert', 'bleu', 'beige'])
+      .default('orange'),
+    image: z.string().optional(),
+    image_alt: z.string().optional(),
+  }),
+  // FAQ (accordéon)
+  z.object({
+    type: z.literal('faq'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    questions: z.array(
+      z.object({
+        question: z.string(),
+        reponse: z.string(),
+      }),
+    ),
+  }),
+  // Encadré coloré (callout)
+  z.object({
+    type: z.literal('callout'),
+    fond: fondEnum,
+    ton: z.enum(['info', 'important', 'astuce', 'note']).default('info'),
+    titre: z.string().optional(),
+    body: z.string(),
+  }),
+  // Gros chiffre + explication
+  z.object({
+    type: z.literal('chiffre-detail'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    chiffre: z.string(),
+    texte: z.string(),
+    source: z.string().optional(),
+    alignement: z.enum(['gauche', 'droite']).default('gauche'),
+    couleur: couleurEnum,
+  }),
+  // Grille de formats (cartes riches avec points)
+  z.object({
+    type: z.literal('formats'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    colonnes: z.union([z.literal(2), z.literal(3)]).default(2),
+    formats: z.array(
+      z.object({
+        titre: z.string(),
+        description: z.string().optional(),
+        points: z.array(z.string()).default([]),
+        couleur: couleurEnum,
+        cta: z
+          .object({
+            label: z.string(),
+            href: z.string(),
+            externe: z.boolean().default(false),
+          })
+          .optional(),
+      }),
+    ),
+  }),
+  // Citation pleine largeur
+  z.object({
+    type: z.literal('citation-large'),
+    fond: fondEnum,
+    citation: z.string(),
+    auteur: z.string().optional(),
+    role: z.string().optional(),
+    variant: z.enum(['orange', 'violet', 'beige', 'paper']).default('paper'),
+  }),
 ]);
 
 const pages = defineCollection({

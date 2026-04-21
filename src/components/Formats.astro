@@ -1,0 +1,90 @@
+---
+/**
+ * Cartes riches : chaque carte a un titre, une description, une liste
+ * de points-clés et éventuellement un CTA. Bandeau coloré à gauche
+ * pour marquer la catégorie.
+ */
+type Format = {
+  titre: string;
+  description?: string;
+  points?: string[];
+  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+  cta?: {
+    label: string;
+    href: string;
+    externe?: boolean;
+  };
+};
+
+type Props = {
+  formats: Format[];
+  colonnes?: 2 | 3;
+};
+
+const { formats, colonnes = 2 } = Astro.props;
+
+const gridClass = {
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-2 lg:grid-cols-3',
+}[colonnes];
+
+const barColor = {
+  orange: 'bg-orange',
+  violet: 'bg-violet',
+  magenta: 'bg-magenta',
+  vert: 'bg-vert',
+  bleu: 'bg-bleu',
+};
+
+const bulletColor = {
+  orange: 'text-orange',
+  violet: 'text-violet',
+  magenta: 'text-magenta',
+  vert: 'text-vert',
+  bleu: 'text-bleu',
+};
+---
+
+<div class:list={['grid gap-5', gridClass]}>
+  {
+    formats.map((f) => {
+      const couleur = f.couleur ?? 'orange';
+      return (
+        <article class="flex overflow-hidden rounded-xl bg-paper shadow-sm transition-shadow hover:shadow-md">
+          <div class:list={['w-1.5 shrink-0', barColor[couleur]]} aria-hidden="true" />
+          <div class="flex flex-1 flex-col p-6">
+            <h3 class="mb-2 text-xl font-bold">{f.titre}</h3>
+            {f.description && (
+              <p class="mb-4 text-sm leading-relaxed">{f.description}</p>
+            )}
+            {f.points && f.points.length > 0 && (
+              <ul class="mb-4 flex-1 space-y-1.5 text-sm">
+                {f.points.map((p) => (
+                  <li class="flex items-start gap-2">
+                    <span
+                      class:list={['mt-1 inline-block', bulletColor[couleur]]}
+                      aria-hidden="true"
+                    >
+                      ●
+                    </span>
+                    <span>{p}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {f.cta && (
+              <a
+                href={f.cta.href}
+                target={f.cta.externe ? '_blank' : undefined}
+                rel={f.cta.externe ? 'noopener' : undefined}
+                class="mt-auto w-fit font-semibold text-orange hover:underline"
+              >
+                {f.cta.label} →
+              </a>
+            )}
+          </div>
+        </article>
+      );
+    })
+  }
+</div>

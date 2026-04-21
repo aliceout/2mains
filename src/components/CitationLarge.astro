@@ -1,0 +1,51 @@
+---
+/**
+ * Citation pleine largeur, typo grande, guillemets décoratifs.
+ * Pour les moments où on veut un vrai temps de lecture sur une phrase.
+ */
+type Props = {
+  citation: string;
+  auteur?: string;
+  role?: string;
+  variant?: 'orange' | 'violet' | 'beige' | 'paper';
+};
+
+const { citation, auteur, role, variant = 'paper' } = Astro.props;
+
+const bg = {
+  paper: 'bg-paper text-ink',
+  beige: 'bg-beige text-ink',
+  orange: 'bg-orange text-paper',
+  violet: 'bg-violet text-paper',
+}[variant];
+
+const accent = variant === 'paper' || variant === 'beige' ? 'text-orange' : '';
+---
+
+<figure class:list={['relative mx-auto max-w-3xl rounded-2xl px-6 py-10 text-center md:px-12 md:py-14', bg]}>
+  <span
+    class:list={['pointer-events-none absolute top-2 left-4 text-7xl leading-none opacity-50 md:text-8xl', accent]}
+    aria-hidden="true"
+  >
+    &ldquo;
+  </span>
+  <blockquote class="relative">
+    <p class="text-2xl leading-snug font-semibold md:text-3xl">
+      {citation}
+    </p>
+  </blockquote>
+  {
+    (auteur || role) && (
+      <figcaption class="mt-6 text-sm opacity-90">
+        {auteur && <span class="font-semibold">— {auteur}</span>}
+        {role && <span class="mx-1 opacity-80">· {role}</span>}
+      </figcaption>
+    )
+  }
+  <span
+    class:list={['pointer-events-none absolute right-4 bottom-2 text-7xl leading-none opacity-50 md:text-8xl', accent]}
+    aria-hidden="true"
+  >
+    &rdquo;
+  </span>
+</figure>

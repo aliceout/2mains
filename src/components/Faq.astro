@@ -1,0 +1,84 @@
+---
+/**
+ * FAQ — accordéon basé sur <details>/<summary> HTML natif.
+ * Accessible clavier, pas de JS requis.
+ */
+import { marked } from 'marked';
+
+type Question = {
+  question: string;
+  reponse: string; // markdown
+};
+
+type Props = {
+  questions: Question[];
+};
+
+const { questions } = Astro.props;
+
+const rendered = questions.map((q) => ({
+  question: q.question,
+  html: marked.parse(q.reponse, { async: false }) as string,
+}));
+---
+
+<div class="flex flex-col gap-3">
+  {
+    rendered.map((q) => (
+      <details class="group rounded-xl border border-beige bg-paper open:shadow-sm">
+        <summary class="flex cursor-pointer items-center justify-between gap-4 rounded-xl px-5 py-4 font-semibold hover:bg-beige/50 focus-visible:outline-2 focus-visible:outline-violet">
+          <span>{q.question}</span>
+          <span
+            class="text-orange transition-transform group-open:rotate-180"
+            aria-hidden="true"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              focusable="false"
+            >
+              <polyline points="4 6 8 10 12 6" />
+            </svg>
+          </span>
+        </summary>
+        <div class="faq-body px-5 pt-1 pb-5 text-sm leading-relaxed">
+          <Fragment set:html={q.html} />
+        </div>
+      </details>
+    ))
+  }
+</div>
+
+<style>
+  .faq-body :global(p) {
+    margin-bottom: 0.75rem;
+  }
+  .faq-body :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .faq-body :global(ul),
+  .faq-body :global(ol) {
+    margin-bottom: 0.75rem;
+    padding-left: 1.25rem;
+  }
+  .faq-body :global(ul) {
+    list-style: disc;
+  }
+  .faq-body :global(ol) {
+    list-style: decimal;
+  }
+  .faq-body :global(a) {
+    color: var(--color-orange);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .faq-body :global(strong) {
+    font-weight: 700;
+  }
+</style>
