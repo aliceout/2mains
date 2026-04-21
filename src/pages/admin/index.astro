@@ -1,0 +1,30 @@
+---
+/**
+ * Shell de l'admin Sveltia CMS.
+ *
+ * Cette page est noindex et ne fait que monter le runtime Sveltia qui
+ * va ensuite lire `/admin/config.yml` (servi via `public/admin/`) et
+ * prendre toute la main sur le DOM.
+ *
+ * On la place dans `src/pages/` (plutôt que dans `public/`) pour que
+ * le dev server Astro la serve correctement sur `/admin/` sans besoin
+ * d'indexing statique.
+ */
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin — 2mains de femmes</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <h1 class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">
+      Administration — 2mains de femmes
+    </h1>
+    <script type="module" src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  </body>
+</html>
