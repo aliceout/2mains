@@ -1,0 +1,20 @@
+---
+// Badge « Brouillon » — visible en dev uniquement, sur les entrées
+// marquées `draft: true`. Signale qu'elles seraient masquées en prod.
+import { SHOW_DRAFTS } from '../lib/drafts';
+
+type Props = { draft?: boolean };
+const { draft } = Astro.props;
+const show = SHOW_DRAFTS && Boolean(draft);
+---
+
+{
+  show && (
+    <span
+      class="inline-flex items-center gap-1 rounded-full bg-violet px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-paper"
+      title="Cette entrée est un brouillon — masquée sur le site en ligne."
+    >
+      Brouillon
+    </span>
+  )
+}

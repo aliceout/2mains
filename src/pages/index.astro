@@ -5,7 +5,9 @@ import PageRenderer from '../components/PageRenderer.astro';
 import Section from '../components/Section.astro';
 import BlocCitation from '../components/BlocCitation.astro';
 import Draft from '../components/Draft.astro';
+import DraftBadge from '../components/DraftBadge.astro';
 import { getSiteSettings } from '../lib/site';
+import { filterPublished } from '../lib/drafts';
 
 const page = await getEntry('pages', 'accueil');
 if (!page) throw new Error('content/pages/accueil.md introuvable');
@@ -14,7 +16,7 @@ const settings = await getSiteSettings();
 
 // Témoignage à la une : premier témoignage avec a_la_une = true,
 // sinon premier de la liste, sinon rien.
-const allTemoignages = (await getCollection('temoignages')).sort(
+const allTemoignages = filterPublished(await getCollection('temoignages')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
 const featured = allTemoignages.find((t) => t.data.a_la_une) ?? allTemoignages[0];
@@ -22,7 +24,7 @@ const FeaturedContent = featured ? (await render(featured)).Content : null;
 
 // Prochains événements (3 max, à venir).
 const now = new Date();
-const aVenir = (await getCollection('evenements'))
+const aVenir = filterPublished(await getCollection('evenements'))
   .filter((e) => e.data.date_debut.valueOf() >= now.valueOf())
   .sort((a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf())
   .slice(0, 3);
@@ -44,6 +46,7 @@ const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
   {
     featured && FeaturedContent && (
       <Section fond="beige">
+        <DraftBadge draft={featured.data.draft} />
         {featured.data.fictif ? (
           <Draft reason={`Citation fictive — ${featured.data.auteur}`}>
             <BlocCitation
@@ -106,6 +109,7 @@ const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
                   <ul class="space-y-3 text-sm">
                     {aVenir.map((e) => (
                       <li>
+                        <DraftBadge draft={e.data.draft} />
                         <p class="font-semibold">{e.data.title}</p>
                         <p class="opacity-70">
                           {formatDate(e.data.date_debut)} · {e.data.lieu}
@@ -129,6 +133,7 @@ const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
                 <ul class="space-y-3 text-sm">
                   {aVenir.map((e) => (
                     <li>
+                      <DraftBadge draft={e.data.draft} />
                       <p class="font-semibold">{e.data.title}</p>
                       <p class="opacity-70">
                         {formatDate(e.data.date_debut)} · {e.data.lieu}

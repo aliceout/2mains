@@ -3,11 +3,13 @@ import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
+import DraftBadge from '../../components/DraftBadge.astro';
+import { filterPublished } from '../../lib/drafts';
 
 const page = await getEntry('pages', 'documents');
 if (!page) throw new Error('content/pages/documents.md introuvable');
 
-const docs = (await getCollection('documents')).sort((a, b) => {
+const docs = filterPublished(await getCollection('documents')).sort((a, b) => {
   if (a.data.a_paraitre !== b.data.a_paraitre) return a.data.a_paraitre ? 1 : -1;
   const da = a.data.date?.valueOf() ?? 0;
   const db = b.data.date?.valueOf() ?? 0;
@@ -28,6 +30,7 @@ function formatDate(d: Date | undefined): string {
       {
         docs.map((d) => (
           <li class="flex flex-col rounded-xl border border-beige bg-paper p-6">
+            <DraftBadge draft={d.data.draft} />
             <p class="text-xs font-semibold tracking-wide uppercase text-violet">
               {d.data.categorie} · {formatDate(d.data.date)}
             </p>

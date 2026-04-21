@@ -5,11 +5,13 @@ import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import BlocCitation from '../../components/BlocCitation.astro';
 import Draft from '../../components/Draft.astro';
+import DraftBadge from '../../components/DraftBadge.astro';
+import { filterPublished } from '../../lib/drafts';
 
 const page = await getEntry('pages', 'temoignages');
 if (!page) throw new Error('content/pages/temoignages.md introuvable');
 
-const all = (await getCollection('temoignages')).sort(
+const all = filterPublished(await getCollection('temoignages')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
 
@@ -57,18 +59,24 @@ const groups = [
             <Draft reason={g.draftReason}>
               <div class="grid gap-6 md:grid-cols-2">
                 {g.items.map(({ data, Content }) => (
-                  <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
-                    <Content />
-                  </BlocCitation>
+                  <div>
+                    <DraftBadge draft={data.draft} />
+                    <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
+                      <Content />
+                    </BlocCitation>
+                  </div>
                 ))}
               </div>
             </Draft>
           ) : (
             <div class="grid gap-6 md:grid-cols-2">
               {g.items.map(({ data, Content }) => (
-                <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
-                  <Content />
-                </BlocCitation>
+                <div>
+                  <DraftBadge draft={data.draft} />
+                  <BlocCitation variant="paper" auteur={data.auteur} role={data.role}>
+                    <Content />
+                  </BlocCitation>
+                </div>
               ))}
             </div>
           )}

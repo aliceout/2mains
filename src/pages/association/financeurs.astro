@@ -4,11 +4,13 @@ import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
+import DraftBadge from '../../components/DraftBadge.astro';
+import { filterPublished } from '../../lib/drafts';
 
 const page = await getEntry('pages', 'financeurs');
 if (!page) throw new Error('content/pages/financeurs.md introuvable');
 
-const all = (await getCollection('partenaires')).sort(
+const all = filterPublished(await getCollection('partenaires')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
 const financeurs = all.filter(
@@ -27,6 +29,7 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
         <ul class="grid gap-4 md:grid-cols-3">
           {financeurs.map((f) => (
             <li class="rounded-xl border-t-4 border-t-violet bg-paper p-6 shadow-sm">
+              <DraftBadge draft={f.data.draft} />
               <p class="text-xs font-semibold tracking-wide uppercase text-violet">
                 {f.data.type}
               </p>
@@ -47,6 +50,7 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
         <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           {partenairesAsso.map((p) => (
             <li class="rounded-lg bg-paper p-4">
+              <DraftBadge draft={p.data.draft} />
               <p class="text-xs font-semibold uppercase text-orange">{p.data.type}</p>
               <p class="mt-1 font-bold">{p.data.nom}</p>
               {p.data.description_courte && (
@@ -70,6 +74,7 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
         <ul class="grid gap-4 md:grid-cols-2">
           {reseaux.map((r) => (
             <li class="rounded-xl border border-beige bg-paper p-6">
+              <DraftBadge draft={r.data.draft} />
               <h3 class="text-lg font-bold">{r.data.nom}</h3>
               {r.data.description_courte && (
                 <p class="mt-1 text-sm">{r.data.description_courte}</p>

@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { buildCalendar, type IcsEvent } from '../lib/ical';
 import { getSiteSettings } from '../lib/site';
+import { filterPublished } from '../lib/drafts';
 
 function toIcsEvent(
   entry: CollectionEntry<'evenements'>,
@@ -20,7 +21,7 @@ function toIcsEvent(
 
 export const GET: APIRoute = async () => {
   const settings = await getSiteSettings();
-  const all = await getCollection('evenements');
+  const all = filterPublished(await getCollection('evenements'));
   const events = all
     .filter((e) => !e.data.fictif)
     .sort((a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf())

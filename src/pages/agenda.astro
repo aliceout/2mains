@@ -5,7 +5,9 @@ import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
 import Draft from '../components/Draft.astro';
+import DraftBadge from '../components/DraftBadge.astro';
 import { getSiteSettings } from '../lib/site';
+import { filterPublished } from '../lib/drafts';
 
 const page = await getEntry('pages', 'agenda');
 if (!page) throw new Error('content/pages/agenda.md introuvable');
@@ -21,7 +23,7 @@ async function withContent(items: Item[]) {
   );
 }
 
-const all = (await getCollection('evenements')).sort(
+const all = filterPublished(await getCollection('evenements')).sort(
   (a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf(),
 );
 
@@ -125,6 +127,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
               <ul class="grid gap-4 md:grid-cols-2">
                 {aVenir.map((e) => (
                   <li class="rounded-xl border border-beige bg-paper p-6">
+                    <DraftBadge draft={e.data.draft} />
                     <p class="text-xs font-semibold uppercase tracking-wide text-orange">
                       {formatDateFull(e.data.date_debut, e.data.date_fin)} · {e.data.lieu}
                     </p>
@@ -210,6 +213,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
         <ul class="grid gap-3 md:grid-cols-2">
           {passes.map((e) => (
             <li class="rounded-lg bg-paper p-4 opacity-80">
+              <DraftBadge draft={e.data.draft} />
               <p class="text-xs uppercase tracking-wide text-violet">
                 {formatDateFull(e.data.date_debut, e.data.date_fin)} · {e.data.lieu}
               </p>

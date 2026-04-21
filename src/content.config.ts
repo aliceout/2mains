@@ -15,6 +15,7 @@ const evenements = defineCollection({
     gratuit: z.boolean().default(true),
     inscription_url: z.string().optional(),
     fictif: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -33,6 +34,7 @@ const partenaires = defineCollection({
     url: z.string().optional(),
     description_courte: z.string().optional(),
     ordre: z.number().default(0),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -46,6 +48,7 @@ const equipe = defineCollection({
     bio_courte: z.string().optional(),
     linkedin: z.string().optional(),
     ordre: z.number().default(0),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -65,6 +68,7 @@ const documents = defineCollection({
     date: z.coerce.date().optional(),
     description_courte: z.string().optional(),
     a_paraitre: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 
@@ -81,6 +85,7 @@ const temoignages = defineCollection({
     // Ajout d'un indicateur "mise en avant home" pour choisir la citation
     // affichée en page d'accueil.
     a_la_une: z.boolean().default(false),
+    draft: z.boolean().default(false),
   }),
 });
 

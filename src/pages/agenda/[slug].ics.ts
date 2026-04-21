@@ -2,9 +2,10 @@ import type { APIRoute } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { buildCalendar, type IcsEvent } from '../../lib/ical';
 import { getSiteSettings } from '../../lib/site';
+import { filterPublished } from '../../lib/drafts';
 
 export async function getStaticPaths() {
-  const all = await getCollection('evenements');
+  const all = filterPublished(await getCollection('evenements'));
   return all.map((e) => ({
     params: { slug: e.id },
     props: { entry: e },
