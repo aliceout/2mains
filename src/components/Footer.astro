@@ -7,8 +7,8 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="mt-16 bg-beige">
-  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
-    <div class="md:col-span-2">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-3">
+    <div>
       <img
         src="/brand/logo.svg"
         alt={settings.nom_asso}
@@ -17,10 +17,8 @@ const year = new Date().getFullYear();
         height="48"
       />
       <p class="mt-3 max-w-md text-sm leading-relaxed">{settings.mission}</p>
-    </div>
 
-    <div>
-      <h2 class="mb-3 font-bold">Contact</h2>
+      <h2 class="mt-6 mb-3 font-bold">Contact</h2>
       <ul class="space-y-1 text-sm">
         <li>
           <a href={`mailto:${settings.email_contact}`} class="hover:text-orange">
@@ -33,10 +31,9 @@ const year = new Date().getFullYear();
     </div>
 
     <div>
-      <h2 class="mb-3 font-bold">Agir &amp; contact</h2>
+      <h2 class="mb-3 font-bold">Agir &amp; soutenir</h2>
       <ul class="space-y-1 text-sm">
         <li><a href="/agir" class="hover:text-orange">Agir avec nous</a></li>
-        <li><a href="/contact" class="hover:text-orange">Nous contacter</a></li>
         <li>
           <a
             href={settings.helloasso_don}
@@ -50,6 +47,7 @@ const year = new Date().getFullYear();
         <li>
           <a href="/soutenir/mecenat" class="hover:text-orange">Mécénat entreprises</a>
         </li>
+        <li><a href="/contact" class="hover:text-orange">Nous contacter</a></li>
       </ul>
 
       <h2 class="mt-6 mb-3 font-bold">Suivre</h2>
@@ -60,8 +58,10 @@ const year = new Date().getFullYear();
           <a href="/actualites.rss.xml" class="hover:text-orange">📡 Flux RSS</a>
         </li>
       </ul>
+    </div>
 
-      <h2 class="mt-6 mb-3 font-bold">Infos légales</h2>
+    <div>
+      <h2 class="mb-3 font-bold">Infos légales</h2>
       <ul class="space-y-1 text-sm">
         <li>
           <a href="/mentions-legales" class="hover:text-orange">Mentions légales</a>

@@ -19,44 +19,44 @@ export async function getSiteSettings() {
 
 export type SiteSettings = Awaited<ReturnType<typeof getSiteSettings>>;
 
-// La navigation reste en dur — elle relève de la structure du site, pas
-// du contenu. Pour la modifier, éditer ce fichier.
 export type NavItem = {
   label: string;
+  /** Si absent, l'item est un parent de dropdown non cliquable (trigger
+   *  visuel uniquement). Les enfants sont dans `children`. */
   href?: string;
   children?: NavItem[];
 };
 
-// Navigation principale — structure choisie par Audrey (cf. chat WA
-// 16/10/25 ligne 470 : 5 entrées, segmentées par type d'interlocuteur).
-// Pas de dropdown : chaque entrée navigue vers sa page de catégorie, et
-// la sous-navigation s'affiche via le composant SubNav sous le header
-// (option 1 tranchée le 17/10).
+// Navigation principale — structure inspirée de la spec d'Audrey
+// (chat WA 10/10/25 ligne 349 : segmentation par type d'interlocuteur)
+// avec parents de dropdown non cliquables. Le bouton « Faire un don » en
+// haut à droite (externe HelloAsso) est rendu séparément dans le Header.
 export const navigation: NavItem[] = [
   { label: 'Accueil', href: '/' },
   {
     label: "L'association",
-    href: '/association',
+    // Parent non cliquable : on ne navigue pas sur cette entrée, on survole
+    // pour ouvrir le dropdown.
     children: [
       { label: 'Qui sommes-nous', href: '/association/qui-sommes-nous' },
       { label: 'Nos interventions', href: '/association/interventions' },
       { label: 'Notre équipe', href: '/association/equipe' },
       { label: 'Isolement corporel', href: '/isolement-corporel' },
+      { label: 'Témoignages', href: '/pour/temoignages' },
       { label: 'Nos documents', href: '/association/documents' },
       { label: 'Financeurs et partenaires', href: '/association/financeurs' },
     ],
   },
+  { label: "Structure d'accueil", href: '/pour/structures' },
+  { label: 'Femme concernée', href: '/pour/femmes' },
+  { label: 'Entreprise', href: '/pour/entreprises' },
   {
-    label: 'Structures & femmes',
-    href: '/pour',
+    label: 'Actualités',
     children: [
-      { label: "Pour une structure d'accueil", href: '/pour/structures' },
-      { label: 'Pour une femme concernée', href: '/pour/femmes' },
-      { label: 'Ils nous ont fait confiance', href: '/pour/temoignages' },
+      { label: 'Blog', href: '/actualites' },
+      { label: 'Agenda', href: '/agenda' },
     ],
   },
-  { label: 'Entreprises', href: '/pour/entreprises' },
-  { label: 'Faire un don', href: '/soutenir/dons' },
 ];
 
 // Labels pour le fil d'Ariane sur les pages hors-top-nav (footer, contenu
@@ -67,9 +67,8 @@ const breadcrumbLabels: Record<string, string> = {
   '/agir/benevolat': 'Devenir bénévole',
   '/agir/praticiennes': 'Praticien·nes solidaires',
   '/soutenir': 'Soutenir',
+  '/soutenir/dons': 'Faire un don',
   '/soutenir/mecenat': 'Mécénat entreprises',
-  '/agenda': 'Agenda',
-  '/actualites': 'Actualités',
   '/contact': 'Nous écrire',
   '/accessibilite': 'Accessibilité',
   '/mentions-legales': 'Mentions légales',
@@ -90,9 +89,8 @@ function findNavLabel(href: string, items: NavItem[]): string | null {
   return null;
 }
 
-// Fil d'Ariane calculé depuis le pathname. Cherche d'abord dans
-// navigation, puis dans la table breadcrumbLabels, puis fallback
-// titlecase du slug.
+// Fil d'Ariane calculé depuis le pathname. Cherche d'abord dans la nav,
+// puis dans breadcrumbLabels, puis fallback titlecase du slug.
 export function getBreadcrumbs(
   pathname: string,
 ): { label: string; href: string }[] {
@@ -113,10 +111,8 @@ export function getBreadcrumbs(
   return crumbs;
 }
 
-// `true` si l'item est concerné par le pathname courant : soit son propre
-// href matche (exact ou préfixe), soit un de ses enfants matche.
-// Utilisé par le Header pour surligner l'onglet actif, et par SubNav pour
-// décider quelle sous-nav afficher.
+// true si l'item top-level doit être surligné : soit son propre href matche,
+// soit un enfant matche (route courante dans la même catégorie).
 export function matchesItem(pathname: string, item: NavItem): boolean {
   const clean = pathname.replace(/\/$/, '') || '/';
   if (item.href === '/') return clean === '/';
@@ -124,54 +120,7 @@ export function matchesItem(pathname: string, item: NavItem): boolean {
     item.href,
     ...(item.children?.map((c) => c.href) ?? []),
   ].filter((h): h is string => Boolean(h));
-  // Pour éviter que /pour aspire /pour/entreprises (H4 dédié), on vérifie
-  // qu'aucun autre item de la nav n'a un préfixe plus spécifique.
-  const match = hrefs.some(
+  return hrefs.some(
     (href) => clean === href || clean.startsWith(href + '/'),
   );
-  if (!match) return false;
-  // Vérifie qu'un autre item top-level n'a pas un match plus spécifique.
-  for (const other of navigation) {
-    if (other === item) continue;
-    const otherMatch = matchesItemShallow(clean, other);
-    if (!otherMatch) continue;
-    const thisBest = longestMatch(clean, hrefs);
-    const otherHrefs = [
-      other.href,
-      ...(other.children?.map((c) => c.href) ?? []),
-    ].filter((h): h is string => Boolean(h));
-    const otherBest = longestMatch(clean, otherHrefs);
-    if (otherBest > thisBest) return false;
-  }
-  return true;
-}
-
-function matchesItemShallow(pathname: string, item: NavItem): boolean {
-  const hrefs = [
-    item.href,
-    ...(item.children?.map((c) => c.href) ?? []),
-  ].filter((h): h is string => Boolean(h));
-  return hrefs.some(
-    (href) => pathname === href || pathname.startsWith(href + '/'),
-  );
-}
-
-function longestMatch(pathname: string, hrefs: string[]): number {
-  let best = -1;
-  for (const href of hrefs) {
-    if (pathname === href || pathname.startsWith(href + '/')) {
-      if (href.length > best) best = href.length;
-    }
-  }
-  return best;
-}
-
-// Retourne l'item top-level dont la sous-navigation doit s'afficher pour
-// le pathname courant. null si aucun (pages standalone hors catégorie).
-export function getCurrentCategory(pathname: string): NavItem | null {
-  for (const item of navigation) {
-    if (!item.children || item.children.length === 0) continue;
-    if (matchesItem(pathname, item)) return item;
-  }
-  return null;
 }

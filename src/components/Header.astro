@@ -5,6 +5,11 @@ type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
 
 const path = Astro.url.pathname;
+const isChildActive = (href: string | undefined): boolean => {
+  if (!href) return false;
+  const clean = path.replace(/\/$/, '') || '/';
+  return clean === href || clean.startsWith(href + '/');
+};
 ---
 
 <header class="sticky top-0 z-40 border-b border-beige bg-paper/95 backdrop-blur">
@@ -23,18 +28,49 @@ const path = Astro.url.pathname;
         {
           navigation.map((item) => {
             const active = matchesItem(path, item);
+            const triggerClass = [
+              'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
+              active ? 'text-orange' : 'text-ink',
+            ];
             return (
-              <li>
-                <a
-                  href={item.href}
-                  aria-current={active ? 'page' : undefined}
-                  class:list={[
-                    'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
-                    active ? 'text-orange' : 'text-ink',
-                  ]}
-                >
-                  {item.label}
-                </a>
+              <li class="relative group">
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    class:list={triggerClass}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    class:list={[...triggerClass, 'cursor-default']}
+                  >
+                    {item.label}
+                  </button>
+                )}
+                {item.children && (
+                  <ul class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class:list={[
+                            'block rounded px-3 py-2 text-sm hover:bg-beige',
+                            isChildActive(child.href)
+                              ? 'text-orange font-semibold'
+                              : 'text-ink',
+                          ]}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             );
           })
@@ -86,25 +122,41 @@ const path = Astro.url.pathname;
             const active = matchesItem(path, item);
             return (
               <li>
-                <a
-                  href={item.href}
-                  class:list={[
-                    'block rounded px-3 py-2 text-base font-semibold',
-                    active
-                      ? 'bg-beige text-orange'
-                      : 'text-ink hover:bg-beige',
-                  ]}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {item.label}
-                </a>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    class:list={[
+                      'block rounded px-3 py-2 text-base font-semibold',
+                      active
+                        ? 'bg-beige text-orange'
+                        : 'text-ink hover:bg-beige',
+                    ]}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <p
+                    class:list={[
+                      'block px-3 py-2 text-base font-semibold',
+                      active ? 'text-orange' : 'text-ink',
+                    ]}
+                  >
+                    {item.label}
+                  </p>
+                )}
                 {item.children && (
                   <ul class="ml-3 mt-1 space-y-1 border-l-2 border-beige pl-3">
                     {item.children.map((child) => (
                       <li>
                         <a
                           href={child.href}
-                          class="block rounded px-3 py-2 text-sm text-ink hover:bg-beige"
+                          class:list={[
+                            'block rounded px-3 py-2 text-sm',
+                            isChildActive(child.href)
+                              ? 'text-orange font-semibold'
+                              : 'text-ink hover:bg-beige',
+                          ]}
                         >
                           {child.label}
                         </a>
