@@ -18,7 +18,7 @@ sections:
 
       L'association **2mains de femmes**, représentée par sa présidente Audrey Relandeau, est responsable des traitements effectués sur ce site.
 
-      Contact : [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org)
+      Contact : via notre [formulaire](/contact).
 
       ## Données collectées et finalités
 
@@ -53,7 +53,7 @@ sections:
 
       ## Vos droits
 
-      Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition et de portabilité de vos données. Pour exercer ces droits, écrivez-nous à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org).
+      Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition et de portabilité de vos données. Pour exercer ces droits, écrivez-nous via le [formulaire de contact](/contact).
 
       Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL : [www.cnil.fr](https://www.cnil.fr).
 

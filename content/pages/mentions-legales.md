@@ -11,11 +11,8 @@ sections:
       **2mains de femmes**
       Association loi 1901, créée en 2024.
       Siège : Tiers-lieu La Médiane, 255 rue de Créqui, 69003 Lyon.
-      Email : [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org)
-      Téléphone : 06 07 08 57 66
 
-      SIREN : *[à compléter]*
-      Numéro RNA : *W… [à compléter]*
+      Pour toute demande, utilisez notre [formulaire de contact](/contact).
 
       ## Directrice de la publication
 
@@ -23,15 +20,15 @@ sections:
 
       ## Hébergeur
 
-      Serveur privé, hébergé en France. Les coordonnées complètes de l'hébergeur sont disponibles sur simple demande à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org).
+      Serveur privé, hébergé en France. Les coordonnées complètes de l'hébergeur sont disponibles sur simple demande via notre [formulaire de contact](/contact).
 
       ## Propriété intellectuelle
 
-      L'ensemble des contenus du site (textes, images, logo, identité visuelle) est la propriété de l'association 2mains de femmes, sauf mention contraire.
+      **Contenus éditoriaux** — l'ensemble des textes, images, logo et identité visuelle est la propriété de l'association 2mains de femmes, sauf mention contraire. Les logos, photos et éléments graphiques fournis par nos partenaires, financeurs ou pris lors d'événements restent la propriété de leurs auteur·ices. Leur utilisation hors du site requiert leur accord préalable.
 
-      Les logos, photos et éléments graphiques fournis par nos partenaires, financeurs ou pris lors d'événements restent la propriété de leurs auteur·ices. Leur utilisation hors du site requiert leur accord préalable.
+      Vous souhaitez réutiliser un contenu (citation, donnée chiffrée, extrait d'article) ? [Écrivez-nous](/contact) — nous sommes généralement favorables au partage, avec mention de la source.
 
-      Vous souhaitez réutiliser un contenu (citation, donnée chiffrée, extrait d'article) ? Écrivez-nous — nous sommes généralement favorables au partage, avec mention de la source.
+      **Code du site** — le code source du site est publié sous licence libre [GNU AGPL v3](https://www.gnu.org/licenses/agpl-3.0.html) et disponible publiquement sur GitHub : [github.com/aliceout/2mains](https://github.com/aliceout/2mains). Vous pouvez le consulter, le réutiliser et l'adapter librement, dans le respect des termes de la licence.
 
       ## Crédits
 
@@ -45,7 +42,7 @@ sections:
 
       ## Responsabilité
 
-      Les informations publiées sur ce site sont fournies à titre indicatif. Malgré tout le soin apporté à leur rédaction, des erreurs ou omissions peuvent subsister. Signalez-les-nous à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org).
+      Les informations publiées sur ce site sont fournies à titre indicatif. Malgré tout le soin apporté à leur rédaction, des erreurs ou omissions peuvent subsister. Signalez-les-nous via notre [formulaire de contact](/contact).
 
       ## Signalement de contenu
 

@@ -7,7 +7,7 @@ adresse: "255 rue de Créqui, 69003 Lyon"
 public: "femmes concernées"
 gratuit: true
 fictif: true
-inscription_url: "mailto:contact@2mainsdefemmes.org?subject=Inscription atelier 15 mai"
+inscription_url: "/contact"
 ---
 
 Un format court pour expérimenter, dans un cadre bienveillant, les bases du toucher relationnel : auto-massages, exercices de respiration et de consentement, temps d'échange.

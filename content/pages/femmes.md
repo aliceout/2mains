@@ -63,14 +63,14 @@ sections:
           **Non, jamais.** Nous ne remplaçons aucun accompagnement médical, psychologique ou social. On vient en complément, en intégrant la dimension corporelle que ces accompagnements prennent peu en compte.
       - question: "Je vis à Lyon mais je ne suis suivie par aucune association. Est-ce que je peux venir ?"
         reponse: |
-          Oui. Écrivez-nous à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org) ou appelez-nous. On vous rappelle, sans jugement, sans formalité, et on voit ce qui est possible.
+          Oui. [Écrivez-nous via le formulaire](/contact). On vous répond, sans jugement, sans formalité, et on voit ce qui est possible.
 
   - type: "prose"
     titre: "Comment nous rencontrer"
     body: |
       Nous intervenons **dans ou à proximité de structures partenaires** : foyers, accueils de jour, maisons des femmes, centres sociaux. Si vous êtes déjà accompagnée par une association, demandez-leur ; elles pourront nous mettre en contact.
 
-      Si vous n'êtes accompagnée par personne mais que vous vivez à Lyon et que vous souhaitez un parcours, vous pouvez nous écrire directement à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org). Nous vous recontactons, sans jugement, sans formalité.
+      Si vous n'êtes accompagnée par personne mais que vous vivez à Lyon et que vous souhaitez un parcours, vous pouvez nous écrire directement via notre [formulaire de contact](/contact). Nous vous recontactons, sans jugement, sans formalité.
 
   - type: "cta"
     fond: "magenta"

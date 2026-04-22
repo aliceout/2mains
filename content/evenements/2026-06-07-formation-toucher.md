@@ -6,7 +6,7 @@ lieu: "Lyon (lieu à préciser)"
 public: "professionnels"
 gratuit: true
 fictif: true
-inscription_url: "mailto:contact@2mainsdefemmes.org?subject=Inscription formation 7 juin"
+inscription_url: "/contact"
 ---
 
 Une journée animée par un·e professionnel·le extérieur·e pour se doter des repères et de la posture nécessaires pour animer nos ateliers découverte.

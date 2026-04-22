@@ -27,19 +27,9 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
     <div class="grid gap-10 md:grid-cols-[1fr_1fr]">
       <div>
         <Prose>
-          <h2>Nos coordonnées</h2>
-          <p>
-            <strong>Par email</strong><br />
-            <a href={`mailto:${settings.email_contact}`}>{settings.email_contact}</a>
-          </p>
-          <p>
-            <strong>Par téléphone</strong><br />
-            {settings.telephone}
-          </p>
-          <p>
-            <strong>Où nous trouver</strong><br />
-            {settings.adresse}
-          </p>
+          <h2>Où nous trouver</h2>
+          <p>{settings.adresse}</p>
+
           <h3>Sur les réseaux</h3>
           <ul>
             {
@@ -70,6 +60,10 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
               )
             }
           </ul>
+          <p class="text-sm opacity-80">
+            Pour nous écrire, utilisez le formulaire ci-contre — on vous répond
+            sous quelques jours.
+          </p>
         </Prose>
       </div>
 

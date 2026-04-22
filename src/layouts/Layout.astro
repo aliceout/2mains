@@ -48,14 +48,15 @@ const postalCode = postalMatch?.[1];
 const locality = postalMatch?.[2] ?? lastPart;
 const streetAddress = addressParts.slice(0, -1).join(', ') || lastPart;
 
+// Pas de `email` ni `telephone` dans le JSON-LD : exposés à tous les
+// crawlers = spam immédiat. Seul le formulaire /contact est le canal
+// public d'entrée.
 const organizationSchema: Record<string, unknown> = {
   '@context': 'https://schema.org',
   '@type': 'NGO',
   name: settings.nom_asso,
   url: settings.url,
   logo: new URL('/brand/logo.svg', settings.url).toString(),
-  email: settings.email_contact,
-  telephone: settings.telephone,
   description: settings.mission,
   address: {
     '@type': 'PostalAddress',

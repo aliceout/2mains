@@ -36,5 +36,5 @@ sections:
       - **Visibilité** dans notre annuaire du réseau (optionnelle), sur nos réseaux, lors de nos événements.
       - **Temps d'échanges entre praticien·nes** 2 à 3 fois par an.
 
-      Envie d'en discuter sans engagement ? Écrivez-nous à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org).
+      Envie d'en discuter sans engagement ? [Écrivez-nous via le formulaire de contact](/contact).
 ---

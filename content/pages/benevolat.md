@@ -46,5 +46,5 @@ sections:
       2. **Venir à un apéro bénévoles** — on se rencontre, on discute, aucun engagement à ce stade.
       3. **On construit ensemble** votre implication.
 
-      Des questions ? Écrivez à [contact@2mainsdefemmes.org](mailto:contact@2mainsdefemmes.org).
+      Des questions ? [Écrivez-nous via le formulaire de contact](/contact).
 ---

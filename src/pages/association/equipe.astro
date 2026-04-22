@@ -5,13 +5,10 @@ import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 import DraftBadge from '../../components/DraftBadge.astro';
-import { getSiteSettings } from '../../lib/site';
 import { filterPublished } from '../../lib/drafts';
 
 const page = await getEntry('pages', 'equipe');
 if (!page) throw new Error('content/pages/equipe.md introuvable');
-
-const settings = await getSiteSettings();
 
 const ca = filterPublished(await getCollection('equipe')).sort(
   (a, b) => a.data.ordre - b.data.ordre,
@@ -112,7 +109,7 @@ const ca = filterPublished(await getCollection('equipe')).sort(
       </ul>
       <p>
         Envie de contribuer à une commission ?
-        <a href={`mailto:${settings.email_contact}`}>Écrivez-nous</a>.
+        <a href="/contact">Écrivez-nous via le formulaire</a>.
       </p>
     </Prose>
   </Section>
