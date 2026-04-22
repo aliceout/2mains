@@ -3,7 +3,6 @@ import type { SiteSettings } from '../lib/site';
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
-const year = new Date().getFullYear();
 ---
 
 <footer class="mt-16 bg-beige">
@@ -72,12 +71,4 @@ const year = new Date().getFullYear();
     </div>
   </div>
 
-  <div class="border-t border-paper/60">
-    <div
-      class="mx-auto flex max-w-6xl flex-col items-start gap-2 px-4 py-4 text-xs md:flex-row md:items-center md:justify-between"
-    >
-      <p>© {year} {settings.nom_asso} — tous droits réservés.</p>
-      <p>Dons et adhésions sécurisés via HelloAsso.</p>
-    </div>
-  </div>
 </footer>
