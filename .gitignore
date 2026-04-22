@@ -20,3 +20,6 @@ pnpm-debug.log*
 # OS / editors
 .DS_Store
 .idea/
+
+# Images optimisées (régénérées par scripts/optimize-images.mjs au build)
+public/uploads/optimized/
