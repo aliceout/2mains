@@ -178,6 +178,43 @@ import Callout from '../../components/Callout.astro';
         </li>
       </ol>
 
+      <h2>Insérer une image depuis Unsplash</h2>
+      <p>
+        Sveltia intègre nativement une recherche Unsplash dans le champ
+        image. Pas besoin de télécharger manuellement une photo libre de
+        droits puis de la réuploader : tu fais tout depuis l'admin.
+      </p>
+      <ol>
+        <li>
+          Dans n'importe quel bloc avec un champ image (<em>Hero</em>, <em>Texte
+          + photo</em>, <em>Figure</em>, <em>Galerie</em>, <em>Portraits</em>…),
+          clique sur le bouton à droite du champ image → choisis <strong>« Stock
+          Photos »</strong> puis <strong>Unsplash</strong>.
+        </li>
+        <li>
+          Au premier usage, Sveltia te demande ta <strong>clé API Unsplash</strong>
+          (gratuite sur <a href="https://unsplash.com/developers" target="_blank" rel="noopener">unsplash.com/developers</a>).
+          Crée un compte développeur, récupère la « Access Key » et colle-la.
+          Elle est stockée dans ton navigateur, pas sur le site.
+        </li>
+        <li>
+          Tape un mot-clé en français ou en anglais (<em>women</em>, <em>mains</em>,
+          <em>atelier</em>…), parcours les résultats, clique pour sélectionner.
+        </li>
+        <li>
+          Une fenêtre de <strong>crédits photographe</strong> apparaît — copie le
+          texte (« Photo by X on Unsplash ») et colle-le dans le champ <em>Crédit</em>
+          du bloc. C'est demandé par Unsplash et c'est juste sympa pour la
+          photographe.
+        </li>
+        <li>Enregistre la page. C'est tout — pas d'upload manuel.</li>
+      </ol>
+      <Callout
+        ton="info"
+        titre="Ce qui se passe côté technique"
+        body="Quand tu publies, le site télécharge automatiquement la photo dans son propre dossier pour ne pas laisser fuir les IPs des visiteurs vers Unsplash. La photo est ensuite convertie en plusieurs formats (AVIF, WebP) et tailles pour s'adapter à chaque écran. Tu n'as rien à faire, c'est automatique."
+      />
+
       <h2>Uploader un document PDF</h2>
       <ol>
         <li>Clique sur <strong>Documents → Nouveau</strong>.</li>

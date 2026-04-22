@@ -18,6 +18,17 @@ publish_mode: simple
 media_folder: public/uploads
 public_folder: /uploads
 
+# Intégration stock photos — Sveltia expose nativement une recherche
+# Unsplash dans le champ image. Audrey colle sa propre clé API Unsplash
+# (gratuite sur unsplash.com/developers) au premier usage, stockée en
+# localStorage de son navigateur. Les URLs insérées sont en hotlink vers
+# le CDN Unsplash ; un script de build (scripts/fetch-unsplash.mjs) les
+# télécharge ensuite en local pour servir les visiteurs sans fuite d'IP.
+media_libraries:
+  stock_assets:
+    providers:
+      - unsplash
+
 collections:
   # ---- Pages statiques éditables ----
   # Chaque page = un hero (accroche en haut) + une liste de sections typées.

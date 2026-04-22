@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 # Images optimisées (régénérées par scripts/optimize-images.mjs au build)
 public/uploads/optimized/
+
+# Images Unsplash téléchargées (régénérées par scripts/fetch-unsplash.mjs)
+public/uploads/unsplash/

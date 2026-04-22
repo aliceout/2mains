@@ -1,10 +1,17 @@
 ---
-// Wrapper image utilisé par tous les blocs. Si le manifest d'images
-// optimisées (scripts/optimize-images.mjs) contient une entrée pour
-// le src donné, on émet un <picture> avec sources AVIF + WebP en
-// srcset + fallback <img>. Sinon on rend juste un <img> avec les
-// défauts sains (lazy, decoding async).
-import manifest from '../data/image-manifest.json';
+// Wrapper image utilisé par tous les blocs. Deux manifests pré-calculés
+// au build :
+// 1. unsplash-manifest.json — mappe les URLs hotlink Unsplash vers un
+//    fichier téléchargé localement (évite les fuites d'IP côté visiteur).
+//    On substitue l'URL AVANT toute autre logique.
+// 2. image-manifest.json — mappe chaque fichier local vers ses variantes
+//    AVIF + WebP (multi-tailles). Produit un <picture> avec srcset.
+//
+// Si aucun manifest ne matche, fallback sur un <img loading="lazy">
+// direct (images externes non-Unsplash, SVG, ou image pas encore
+// générée).
+import imageManifest from '../data/image-manifest.json';
+import unsplashManifest from '../data/unsplash-manifest.json';
 
 type Variant = { width: number; path: string };
 type ManifestEntry = {
@@ -13,7 +20,8 @@ type ManifestEntry = {
   height: number;
   variants: { avif: Variant[]; webp: Variant[] };
 };
-const manifestMap = manifest as Record<string, ManifestEntry>;
+const imageMap = imageManifest as Record<string, ManifestEntry>;
+const unsplashMap = unsplashManifest as Record<string, string>;
 
 type Props = {
   src: string;
@@ -40,9 +48,16 @@ const {
   sizes = '100vw',
 } = Astro.props;
 
-const entry = !src.startsWith('http') && !src.endsWith('.svg')
-  ? manifestMap[src] ?? null
-  : null;
+// Étape 1 : si l'URL pointe vers Unsplash et qu'on a une copie locale,
+// on bascule dessus. Sinon on garde l'URL originale.
+const effectiveSrc = unsplashMap[src] ?? src;
+
+// Étape 2 : chercher l'entrée dans le manifest d'images optimisées
+// (seulement pour les fichiers locaux, pas les SVG).
+const entry =
+  !effectiveSrc.startsWith('http') && !effectiveSrc.endsWith('.svg')
+    ? imageMap[effectiveSrc] ?? null
+    : null;
 
 function srcsetFor(variants: Variant[]): string {
   return variants.map((v) => `${v.path} ${v.width}w`).join(', ');
@@ -70,7 +85,7 @@ const h = height ?? entry?.height;
         sizes={sizes}
       />
       <img
-        src={src}
+        src={effectiveSrc}
         alt={alt}
         loading={eager ? 'eager' : 'lazy'}
         decoding="async"
