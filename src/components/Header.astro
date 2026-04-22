@@ -5,8 +5,11 @@ type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
 
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
-const isActive = (href: string) =>
-  href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+const isActive = (href: string | undefined) =>
+  !href ? false : href === '/' ? path === '/' : path === href || path.startsWith(href + '/');
+// Un parent de dropdown est « actif » si une de ses enfants l'est.
+const isParentActive = (item: { href?: string; children?: { href?: string }[] }) =>
+  isActive(item.href) || (item.children?.some((c) => isActive(c.href)) ?? false);
 ---
 
 <header class="sticky top-0 z-40 border-b border-beige bg-paper/95 backdrop-blur">
@@ -23,39 +26,54 @@ const isActive = (href: string) =>
     <nav aria-label="Navigation principale" class="hidden lg:block">
       <ul class="flex items-center gap-6">
         {
-          navigation.map((item) => (
-            <li class="relative group">
-              <a
-                href={item.href}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-                class:list={[
-                  'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
-                  isActive(item.href) ? 'text-orange' : 'text-ink',
-                ]}
-              >
-                {item.label}
-              </a>
-              {item.children && (
-                <ul class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
-                  {item.children.map((child) => (
-                    <li>
-                      <a
-                        href={child.href}
-                        class:list={[
-                          'block rounded px-3 py-2 text-sm hover:bg-beige',
-                          isActive(child.href)
-                            ? 'text-orange font-semibold'
-                            : 'text-ink',
-                        ]}
-                      >
-                        {child.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))
+          navigation.map((item) => {
+            const active = isParentActive(item);
+            const triggerClass = [
+              'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
+              active ? 'text-orange' : 'text-ink',
+            ];
+            return (
+              <li class="relative group">
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    aria-current={isActive(item.href) ? 'page' : undefined}
+                    class:list={triggerClass}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    class:list={[...triggerClass, 'cursor-default']}
+                  >
+                    {item.label}
+                  </button>
+                )}
+                {item.children && (
+                  <ul class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class:list={[
+                            'block rounded px-3 py-2 text-sm hover:bg-beige',
+                            isActive(child.href)
+                              ? 'text-orange font-semibold'
+                              : 'text-ink',
+                          ]}
+                        >
+                          {child.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })
         }
       </ul>
     </nav>
@@ -102,18 +120,29 @@ const isActive = (href: string) =>
         {
           navigation.map((item) => (
             <li>
-              <a
-                href={item.href}
-                class:list={[
-                  'block rounded px-3 py-2 text-base font-semibold',
-                  isActive(item.href)
-                    ? 'bg-beige text-orange'
-                    : 'text-ink hover:bg-beige',
-                ]}
-                aria-current={isActive(item.href) ? 'page' : undefined}
-              >
-                {item.label}
-              </a>
+              {item.href ? (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'block rounded px-3 py-2 text-base font-semibold',
+                    isActive(item.href)
+                      ? 'bg-beige text-orange'
+                      : 'text-ink hover:bg-beige',
+                  ]}
+                  aria-current={isActive(item.href) ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <p
+                  class:list={[
+                    'block px-3 py-2 text-base font-semibold',
+                    isParentActive(item) ? 'text-orange' : 'text-ink',
+                  ]}
+                >
+                  {item.label}
+                </p>
+              )}
               {item.children && (
                 <ul class="ml-3 mt-1 space-y-1 border-l-2 border-beige pl-3">
                   {item.children.map((child) => (

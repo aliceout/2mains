@@ -23,7 +23,10 @@ export type SiteSettings = Awaited<ReturnType<typeof getSiteSettings>>;
 // du contenu. Pour la modifier, éditer ce fichier.
 export type NavItem = {
   label: string;
-  href: string;
+  /** Si absent, l'élément est un « parent de dropdown » : pas de navigation,
+   *  juste un trigger visuel pour les enfants. Les enfants sont listés dans
+   *  `children`. Utilisé quand le parent ne représente pas une page en propre. */
+  href?: string;
   children?: NavItem[];
 };
 
@@ -68,7 +71,6 @@ export const navigation: NavItem[] = [
       { label: 'Qui sommes-nous', href: '/association/qui-sommes-nous' },
       { label: 'Nos interventions', href: '/association/interventions' },
       { label: 'Notre équipe', href: '/association/equipe' },
-      { label: 'Agenda', href: '/agenda' },
       { label: 'Nos documents', href: '/association/documents' },
       { label: 'Financeurs et partenaires', href: '/association/financeurs' },
     ],
@@ -108,5 +110,12 @@ export const navigation: NavItem[] = [
       { label: 'Mécénat entreprises', href: '/soutenir/mecenat' },
     ],
   },
-  { label: 'Actualités', href: '/actualites' },
+  {
+    label: 'Actualités',
+    // Parent sans href : juste un trigger de dropdown, pas une page en propre.
+    children: [
+      { label: 'Blog', href: '/actualites' },
+      { label: 'Agenda', href: '/agenda' },
+    ],
+  },
 ];
