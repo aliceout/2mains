@@ -1,26 +1,36 @@
-// OG image par entrée de la collection `pages`. Les pages sans entrée de
-// contenu (status, accessibilite, 404…) utilisent le logo par défaut.
+// OG image par article de blog. L'overline affiche « Actualité · JJ mois AAAA ».
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { buildOgPng } from '../../lib/og';
-import { getSiteSettings } from '../../lib/site';
+import { buildOgPng } from '../../../lib/og';
+import { filterPublished } from '../../../lib/drafts';
+import { getSiteSettings } from '../../../lib/site';
 
 export async function getStaticPaths() {
-  const pages = await getCollection('pages');
-  return pages.map((p) => ({
+  const posts = filterPublished(await getCollection('actualites'));
+  return posts.map((p) => ({
     params: { slug: p.id },
     props: {
       title: p.data.title,
       description: p.data.description ?? '',
+      date: p.data.date,
     },
   }));
 }
 
+function formatDate(d: Date): string {
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(d);
+}
+
 export const GET: APIRoute = async ({ props }) => {
   const settings = await getSiteSettings();
-  const { title, description } = props as {
+  const { title, description, date } = props as {
     title: string;
     description: string;
+    date: Date;
   };
 
   const png = await buildOgPng({
@@ -28,6 +38,7 @@ export const GET: APIRoute = async ({ props }) => {
     accroche: settings.accroche_globale,
     title,
     description,
+    overline: `Actualité · ${formatDate(date)}`,
   });
 
   return new Response(png as BodyInit, {

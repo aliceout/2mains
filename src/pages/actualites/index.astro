@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import DraftBadge from '../../components/DraftBadge.astro';
+import { filterPublished } from '../../lib/drafts';
+
+const posts = filterPublished(await getCollection('actualites')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+function formatDate(d: Date): string {
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(d);
+}
+---
+
+<Layout
+  title="Actualités"
+  description="Les actualités de 2mains de femmes : comptes-rendus d'actions, prises de position, relais de la revue de presse."
+>
+  <Hero
+    titre="Actualités"
+    sousTitre="Blog de l'association"
+    accroche="Comptes-rendus, prises de position et revue de presse — les nouvelles de 2mains de femmes."
+    variant="orange"
+  />
+
+  <Section>
+    {
+      posts.length === 0 ? (
+        <p class="text-sm opacity-70">
+          Aucune actualité publiée pour l'instant. Reviens bientôt, ou abonne-toi
+          au flux RSS ci-dessous.
+        </p>
+      ) : (
+        <ul class="grid gap-6 md:grid-cols-2">
+          {posts.map((p) => (
+            <li class="flex flex-col rounded-xl border border-beige bg-paper p-6">
+              <DraftBadge draft={p.data.draft} />
+              <p class="text-xs font-semibold uppercase tracking-wide text-violet">
+                {formatDate(p.data.date)}
+                {p.data.auteur && <> · {p.data.auteur}</>}
+              </p>
+              <h2 class="mt-2 mb-2 text-xl font-bold">
+                <a href={`/actualites/${p.id}`} class="hover:text-orange">
+                  {p.data.title}
+                </a>
+              </h2>
+              {p.data.description && (
+                <p class="mb-4 flex-1 text-sm leading-relaxed">
+                  {p.data.description}
+                </p>
+              )}
+              {p.data.tags.length > 0 && (
+                <div class="mt-auto flex flex-wrap gap-2 text-xs">
+                  {p.data.tags.map((t) => (
+                    <span class="rounded-full bg-beige px-2 py-0.5">#{t}</span>
+                  ))}
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+
+    <p class="mt-10 text-sm">
+      <a
+        href="/actualites.rss.xml"
+        class="inline-flex items-center gap-2 text-orange hover:underline"
+      >
+        📡 S'abonner au flux RSS
+      </a>
+    </p>
+  </Section>
+</Layout>

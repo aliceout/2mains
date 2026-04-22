@@ -1,6 +1,21 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// ---------- Actualités (blog) ----------
+const actualites = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/actualites' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    date: z.coerce.date(),
+    auteur: z.string().optional(),
+    cover: z.string().optional(),
+    cover_alt: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
 // ---------- Évènements (agenda) ----------
 const evenements = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/evenements' }),
@@ -339,6 +354,7 @@ const site = defineCollection({
 });
 
 export const collections = {
+  actualites,
   evenements,
   partenaires,
   equipe,

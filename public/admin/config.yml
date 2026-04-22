@@ -327,6 +327,50 @@ collections:
                 options: ['paper', 'beige', 'orange', 'violet']
                 default: paper
 
+  # ---- Actualités (blog) ----
+  - name: actualites
+    label: Actualités
+    label_singular: Actualité
+    folder: content/actualites
+    create: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    summary: '{{date | date("DD/MM/YYYY")}} — {{title}}'
+    fields:
+      - { name: title, label: Titre, widget: string }
+      - {
+          name: description,
+          label: 'Description / chapô',
+          widget: text,
+          required: false,
+          hint: "Une ou deux phrases affichées dans la liste et en SEO.",
+        }
+      - { name: date, label: 'Date de publication', widget: datetime, picker_utc: false }
+      - { name: auteur, label: Auteur, widget: string, required: false }
+      - { name: cover, label: 'Image principale', widget: image, required: false }
+      - {
+          name: cover_alt,
+          label: "Description de l'image (alt)",
+          widget: string,
+          required: false,
+        }
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        field: { name: tag, widget: string, label: Tag }
+      - {
+          name: draft,
+          label: 'Brouillon',
+          widget: boolean,
+          default: false,
+          required: false,
+          hint: "Si coché, l'article n'apparaît pas en ligne — utile pendant la rédaction.",
+        }
+      - { name: body, label: Contenu, widget: markdown }
+
   # ---- Agenda ----
   - name: evenements
     label: Événements

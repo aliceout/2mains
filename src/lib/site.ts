@@ -108,4 +108,5 @@ export const navigation: NavItem[] = [
       { label: 'Mécénat entreprises', href: '/soutenir/mecenat' },
     ],
   },
+  { label: 'Actualités', href: '/actualites' },
 ];

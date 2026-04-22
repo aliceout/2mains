@@ -1,0 +1,108 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Prose from '../../components/Prose.astro';
+import { filterPublished } from '../../lib/drafts';
+import { getSiteSettings } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const posts = filterPublished(await getCollection('actualites'));
+  return posts.map((p) => ({
+    params: { slug: p.id },
+    props: { post: p },
+  }));
+}
+
+type Props = { post: CollectionEntry<'actualites'> };
+const { post } = Astro.props;
+const { Content } = await render(post);
+const settings = await getSiteSettings();
+
+function formatDate(d: Date): string {
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(d);
+}
+
+// JSON-LD Article pour SEO.
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: post.data.title,
+  datePublished: post.data.date.toISOString(),
+  ...(post.data.description ? { description: post.data.description } : {}),
+  ...(post.data.cover
+    ? { image: new URL(post.data.cover, settings.url).toString() }
+    : {}),
+  ...(post.data.auteur
+    ? { author: { '@type': 'Person', name: post.data.auteur } }
+    : {}),
+  publisher: {
+    '@type': 'NGO',
+    name: settings.nom_asso,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/brand/logo.svg', settings.url).toString(),
+    },
+  },
+  mainEntityOfPage: new URL(`/actualites/${post.id}`, settings.url).toString(),
+};
+---
+
+<Layout
+  title={post.data.title}
+  description={post.data.description}
+  image={`/og/actualites/${post.id}.png`}
+  jsonLd={articleSchema}
+>
+  <Hero
+    titre={post.data.title}
+    sousTitre={formatDate(post.data.date)}
+    accroche={post.data.description}
+    variant="beige"
+  />
+
+  {
+    post.data.cover && (
+      <Section>
+        <img
+          src={post.data.cover}
+          alt={post.data.cover_alt ?? ''}
+          class="mx-auto w-full max-w-4xl rounded-xl"
+        />
+      </Section>
+    )
+  }
+
+  <Section>
+    <Prose>
+      <Content />
+    </Prose>
+
+    {
+      post.data.tags.length > 0 && (
+        <div class="mt-8 flex flex-wrap gap-2">
+          {post.data.tags.map((t) => (
+            <span class="rounded-full bg-beige px-3 py-1 text-sm">#{t}</span>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      post.data.auteur && (
+        <p class="mt-6 text-sm opacity-70">Écrit par {post.data.auteur}</p>
+      )
+    }
+
+    <p class="mt-10">
+      <a href="/actualites" class="font-semibold text-orange hover:underline">
+        ← Retour aux actualités
+      </a>
+    </p>
+  </Section>
+</Layout>
