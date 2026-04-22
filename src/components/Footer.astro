@@ -33,11 +33,10 @@ const year = new Date().getFullYear();
     </div>
 
     <div>
-      <h2 class="mb-3 font-bold">Liens</h2>
+      <h2 class="mb-3 font-bold">Agir &amp; contact</h2>
       <ul class="space-y-1 text-sm">
-        <li><a href="/actualites" class="hover:text-orange">Actualités</a></li>
-        <li><a href="/agenda" class="hover:text-orange">Agenda</a></li>
-        <li><a href="/contact" class="hover:text-orange">Nous écrire</a></li>
+        <li><a href="/agir" class="hover:text-orange">Agir avec nous</a></li>
+        <li><a href="/contact" class="hover:text-orange">Nous contacter</a></li>
         <li>
           <a
             href={settings.helloasso_don}
@@ -45,12 +44,25 @@ const year = new Date().getFullYear();
             rel="noopener"
             class="hover:text-orange"
           >
-            Faire un don
+            Faire un don (HelloAsso)
           </a>
         </li>
         <li>
-          <a href="/agir/benevolat" class="hover:text-orange">Devenir bénévole</a>
+          <a href="/soutenir/mecenat" class="hover:text-orange">Mécénat entreprises</a>
         </li>
+      </ul>
+
+      <h2 class="mt-6 mb-3 font-bold">Suivre</h2>
+      <ul class="space-y-1 text-sm">
+        <li><a href="/actualites" class="hover:text-orange">Actualités</a></li>
+        <li><a href="/agenda" class="hover:text-orange">Agenda</a></li>
+        <li>
+          <a href="/actualites.rss.xml" class="hover:text-orange">📡 Flux RSS</a>
+        </li>
+      </ul>
+
+      <h2 class="mt-6 mb-3 font-bold">Infos légales</h2>
+      <ul class="space-y-1 text-sm">
         <li>
           <a href="/mentions-legales" class="hover:text-orange">Mentions légales</a>
         </li>
@@ -62,11 +74,6 @@ const year = new Date().getFullYear();
         <li>
           <a href="/accessibilite" class="hover:text-orange">
             Accessibilité : non conforme
-          </a>
-        </li>
-        <li>
-          <a href="/actualites.rss.xml" class="hover:text-orange">
-            📡 Flux RSS
           </a>
         </li>
       </ul>
