@@ -380,7 +380,7 @@ collections:
 
           # === Galerie ===
           - name: galerie
-            label: '🖼 Galerie d\'images'
+            label: "🖼 Galerie d'images"
             widget: object
             fields:
               - { name: titre, label: 'Titre de la section', widget: string, required: false }
