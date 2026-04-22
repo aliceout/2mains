@@ -1,0 +1,80 @@
+---
+// Image pleine largeur avec titre (et sous-titre) en overlay.
+// Positionnable en horizontal (gauche/centre/droite) et vertical
+// (haut/milieu/bas). Scrim sombre par défaut pour garantir le contraste
+// du texte blanc.
+import SmartImage from './SmartImage.astro';
+
+type Props = {
+  image: string;
+  alt: string;
+  titre: string;
+  sousTitre?: string;
+  hauteur?: 'petite' | 'moyenne' | 'grande';
+  position_texte?: 'gauche' | 'centre' | 'droite';
+  position_verticale?: 'haut' | 'milieu' | 'bas';
+  scrim?: boolean;
+};
+
+const {
+  image,
+  alt,
+  titre,
+  sousTitre,
+  hauteur = 'moyenne',
+  position_texte = 'centre',
+  position_verticale = 'milieu',
+  scrim = true,
+} = Astro.props;
+
+const heightClass = {
+  petite: 'h-64 md:h-80',
+  moyenne: 'h-96 md:h-[28rem]',
+  grande: 'h-[32rem] md:h-[40rem]',
+}[hauteur];
+
+const flexH = {
+  gauche: 'items-start text-left',
+  centre: 'items-center text-center',
+  droite: 'items-end text-right',
+}[position_texte];
+
+const flexV = {
+  haut: 'justify-start pt-12',
+  milieu: 'justify-center',
+  bas: 'justify-end pb-12',
+}[position_verticale];
+---
+
+<section class:list={['relative w-full overflow-hidden', heightClass]}>
+  <SmartImage
+    src={image}
+    alt={alt}
+    class="absolute inset-0 h-full w-full"
+    eager
+  />
+  {
+    scrim && (
+      <div
+        aria-hidden="true"
+        class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/30 to-transparent"
+      />
+    )
+  }
+  <div
+    class:list={[
+      'relative z-10 mx-auto flex h-full max-w-6xl flex-col px-4 md:px-8',
+      flexH,
+      flexV,
+    ]}
+  >
+    <div class="max-w-2xl text-paper drop-shadow-md">
+      <h2 class="text-3xl font-bold leading-tight md:text-5xl">{titre}</h2>
+      {
+        sousTitre && (
+          <p class="mt-3 text-base md:text-lg opacity-95">{sousTitre}</p>
+        )
+      }
+    </div>
+  </div>
+</section>

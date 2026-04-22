@@ -308,6 +308,95 @@ const sectionSchema = z.discriminatedUnion('type', [
     role: z.string().optional(),
     variant: z.enum(['orange', 'violet', 'beige', 'paper']).default('paper'),
   }),
+  // Texte + photo côte à côte
+  z.object({
+    type: z.literal('texte-photo'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    texte: z.string(),
+    image: z.string(),
+    image_alt: z.string(),
+    image_legende: z.string().optional(),
+    image_credit: z.string().optional(),
+    position: z.enum(['gauche', 'droite']).default('droite'),
+    ratio: z
+      .enum(['50-50', '2-tiers-texte', '2-tiers-image'])
+      .default('50-50'),
+  }),
+  // Image centrée avec légende
+  z.object({
+    type: z.literal('figure'),
+    fond: fondEnum,
+    image: z.string(),
+    alt: z.string(),
+    legende: z.string().optional(),
+    credit: z.string().optional(),
+    taille: z.enum(['petite', 'moyenne', 'grande']).default('moyenne'),
+  }),
+  // Galerie (2/3/4 colonnes, lightbox optionnelle)
+  z.object({
+    type: z.literal('galerie'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    colonnes: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
+    lightbox: z.boolean().default(false),
+    images: z.array(
+      z.object({
+        image: z.string(),
+        alt: z.string(),
+        legende: z.string().optional(),
+      }),
+    ),
+  }),
+  // Bandeau pleine largeur image + titre overlay
+  z.object({
+    type: z.literal('bandeau-image'),
+    image: z.string(),
+    alt: z.string(),
+    titre: z.string(),
+    sousTitre: z.string().optional(),
+    hauteur: z.enum(['petite', 'moyenne', 'grande']).default('moyenne'),
+    position_texte: z.enum(['gauche', 'centre', 'droite']).default('centre'),
+    position_verticale: z
+      .enum(['haut', 'milieu', 'bas'])
+      .default('milieu'),
+    scrim: z.boolean().default(true),
+  }),
+  // Portraits (grille personnes)
+  z.object({
+    type: z.literal('portraits'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    colonnes: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
+    forme: z.enum(['rond', 'carre']).default('rond'),
+    personnes: z.array(
+      z.object({
+        nom: z.string(),
+        role: z.string().optional(),
+        photo: z.string().optional(),
+        photo_alt: z.string().optional(),
+        bio: z.string().optional(),
+        lien: z.string().optional(),
+        lien_label: z.string().optional(),
+      }),
+    ),
+  }),
+  // Frise chronologique
+  z.object({
+    type: z.literal('timeline'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    alignement: z.enum(['vertical', 'alterne']).default('vertical'),
+    etapes: z.array(
+      z.object({
+        date: z.string(),
+        titre: z.string(),
+        texte: z.string().optional(),
+        image: z.string().optional(),
+        image_alt: z.string().optional(),
+      }),
+    ),
+  }),
 ]);
 
 const pages = defineCollection({

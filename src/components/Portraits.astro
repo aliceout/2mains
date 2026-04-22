@@ -1,0 +1,79 @@
+---
+// Grille de personnes avec photo, nom, rôle, bio courte et lien optionnel.
+// Photo ronde ou carrée, 2/3/4 colonnes.
+import SmartImage from './SmartImage.astro';
+
+type Personne = {
+  nom: string;
+  role?: string;
+  photo?: string;
+  photo_alt?: string;
+  bio?: string;
+  lien?: string;
+  lien_label?: string;
+};
+
+type Props = {
+  personnes: Personne[];
+  colonnes?: 2 | 3 | 4;
+  forme?: 'rond' | 'carre';
+};
+
+const { personnes, colonnes = 3, forme = 'rond' } = Astro.props;
+
+const colClass = {
+  2: 'sm:grid-cols-2',
+  3: 'sm:grid-cols-2 md:grid-cols-3',
+  4: 'sm:grid-cols-2 md:grid-cols-4',
+}[colonnes];
+
+const photoClass = forme === 'rond' ? 'rounded-full aspect-square' : 'rounded-xl aspect-[4/5]';
+---
+
+<ul class:list={['grid gap-6', colClass]}>
+  {
+    personnes.map((p) => (
+      <li class="flex flex-col items-center text-center">
+        {p.photo ? (
+          <SmartImage
+            src={p.photo}
+            alt={p.photo_alt ?? `Portrait de ${p.nom}`}
+            class:list={['w-40 md:w-44', photoClass]}
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            class:list={[
+              'flex w-40 md:w-44 items-center justify-center bg-beige text-ink/40 text-3xl font-bold',
+              photoClass,
+            ]}
+          >
+            {p.nom
+              .split(' ')
+              .map((w) => w[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase()}
+          </div>
+        )}
+        <p class="mt-4 text-lg font-bold">{p.nom}</p>
+        {p.role && <p class="text-sm text-violet">{p.role}</p>}
+        {p.bio && (
+          <p class="mt-2 max-w-xs text-sm leading-relaxed">{p.bio}</p>
+        )}
+        {p.lien && (
+          <p class="mt-3 text-sm">
+            <a
+              href={p.lien}
+              target="_blank"
+              rel="noopener"
+              class="text-orange hover:underline"
+            >
+              {p.lien_label ?? 'En savoir plus'} →
+            </a>
+          </p>
+        )}
+      </li>
+    ))
+  }
+</ul>

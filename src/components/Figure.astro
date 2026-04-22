@@ -1,0 +1,35 @@
+---
+// Image centrée avec légende et crédit optionnels. Trois tailles
+// prédéfinies pour garder une cohérence visuelle.
+import SmartImage from './SmartImage.astro';
+
+type Props = {
+  image: string;
+  alt: string;
+  legende?: string;
+  credit?: string;
+  taille?: 'petite' | 'moyenne' | 'grande';
+};
+
+const { image, alt, legende, credit, taille = 'moyenne' } = Astro.props;
+
+const maxWidth = {
+  petite: 'max-w-md',
+  moyenne: 'max-w-2xl',
+  grande: 'max-w-4xl',
+}[taille];
+---
+
+<figure class:list={['mx-auto', maxWidth]}>
+  <SmartImage src={image} alt={alt} class="w-full rounded-xl" />
+  {
+    (legende || credit) && (
+      <figcaption class="mt-2 text-center text-sm italic opacity-80">
+        {legende}
+        {credit && (
+          <span class="ml-2 text-xs not-italic opacity-70">© {credit}</span>
+        )}
+      </figcaption>
+    )
+  }
+</figure>

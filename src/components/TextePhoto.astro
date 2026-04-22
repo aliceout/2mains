@@ -1,0 +1,85 @@
+---
+// Bloc texte (markdown) + photo côte à côte. Position et ratio ajustables.
+import { marked } from 'marked';
+import SmartImage from './SmartImage.astro';
+
+type Props = {
+  texte: string;
+  image: string;
+  image_alt: string;
+  image_legende?: string;
+  image_credit?: string;
+  position?: 'gauche' | 'droite';
+  ratio?: '50-50' | '2-tiers-texte' | '2-tiers-image';
+};
+
+const {
+  texte,
+  image,
+  image_alt,
+  image_legende,
+  image_credit,
+  position = 'droite',
+  ratio = '50-50',
+} = Astro.props;
+
+const html = marked.parse(texte, { async: false }) as string;
+
+const gridClass = {
+  '50-50': 'md:grid-cols-2',
+  '2-tiers-texte': 'md:grid-cols-[2fr_1fr]',
+  '2-tiers-image': 'md:grid-cols-[1fr_2fr]',
+}[ratio];
+
+// Avec position=gauche, on inverse via CSS order plutôt que le markup
+// pour garder l'ordre de lecture texte → image pour les lecteurs d'écran.
+const imageOrder = position === 'gauche' ? 'md:order-first' : '';
+---
+
+<div class:list={['grid gap-8 items-center', gridClass]}>
+  <div class="texte-photo-prose max-w-prose">
+    <Fragment set:html={html} />
+  </div>
+  <figure class:list={['m-0', imageOrder]}>
+    <SmartImage
+      src={image}
+      alt={image_alt}
+      class="w-full rounded-xl"
+    />
+    {
+      (image_legende || image_credit) && (
+        <figcaption class="mt-2 text-sm opacity-70">
+          {image_legende}
+          {image_credit && (
+            <span class="block text-xs opacity-80">© {image_credit}</span>
+          )}
+        </figcaption>
+      )
+    }
+  </figure>
+</div>
+
+<style>
+  .texte-photo-prose :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .texte-photo-prose :global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+  .texte-photo-prose :global(ul) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    list-style: disc;
+  }
+  .texte-photo-prose :global(strong) {
+    font-weight: 700;
+  }
+  .texte-photo-prose :global(a) {
+    color: var(--color-orange);
+    text-decoration: underline;
+  }
+</style>

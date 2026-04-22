@@ -1,0 +1,45 @@
+---
+// Wrapper <img> unique réutilisé par tous les blocs image. Applique des
+// défauts sains : lazy loading, decoding async, object-fit cover. Laisse
+// la place pour une optimisation WebP/AVIF côté build (voir commit
+// suivant — ce composant cherchera un manifest d'images optimisées).
+
+type Props = {
+  src: string;
+  alt: string;
+  /** Position/cadrage via object-fit (défaut cover). */
+  fit?: 'cover' | 'contain';
+  /** Largeur/hauteur pour préserver le ratio côté CSS et éviter CLS.
+   *  Si non fournies, l'image prend sa taille naturelle après chargement
+   *  (risque de layout shift). */
+  width?: number;
+  height?: number;
+  /** classes additionnelles */
+  class?: string;
+  /** eager loading quand l'image est above-the-fold (hero, premier bloc) */
+  eager?: boolean;
+};
+
+const {
+  src,
+  alt,
+  fit = 'cover',
+  width,
+  height,
+  class: className,
+  eager = false,
+} = Astro.props;
+---
+
+<img
+  src={src}
+  alt={alt}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  width={width}
+  height={height}
+  class:list={[
+    fit === 'cover' ? 'object-cover' : 'object-contain',
+    className,
+  ]}
+/>

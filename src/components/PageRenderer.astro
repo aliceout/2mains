@@ -16,6 +16,12 @@ import Callout from './Callout.astro';
 import ChiffreDetail from './ChiffreDetail.astro';
 import Formats from './Formats.astro';
 import CitationLarge from './CitationLarge.astro';
+import TextePhoto from './TextePhoto.astro';
+import Figure from './Figure.astro';
+import Galerie from './Galerie.astro';
+import BandeauImage from './BandeauImage.astro';
+import Portraits from './Portraits.astro';
+import Timeline from './Timeline.astro';
 import Draft from './Draft.astro';
 import TableOfContents from './TableOfContents.astro';
 
@@ -237,6 +243,78 @@ const tocItems = sections
             role={s.role}
             variant={s.variant}
           />
+        </Section>
+      );
+    }
+    if (s.type === 'texte-photo') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <TextePhoto
+            texte={s.texte}
+            image={s.image}
+            image_alt={s.image_alt}
+            image_legende={s.image_legende}
+            image_credit={s.image_credit}
+            position={s.position}
+            ratio={s.ratio}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'figure') {
+      return (
+        <Section id={id} fond={s.fond}>
+          <Figure
+            image={s.image}
+            alt={s.alt}
+            legende={s.legende}
+            credit={s.credit}
+            taille={s.taille}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'galerie') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Galerie
+            images={s.images}
+            colonnes={s.colonnes}
+            lightbox={s.lightbox}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'bandeau-image') {
+      // Rendu hors <Section> pour que l'image soit vraiment pleine largeur.
+      return (
+        <BandeauImage
+          image={s.image}
+          alt={s.alt}
+          titre={s.titre}
+          sousTitre={s.sousTitre}
+          hauteur={s.hauteur}
+          position_texte={s.position_texte}
+          position_verticale={s.position_verticale}
+          scrim={s.scrim}
+        />
+      );
+    }
+    if (s.type === 'portraits') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Portraits
+            personnes={s.personnes}
+            colonnes={s.colonnes}
+            forme={s.forme}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'timeline') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Timeline etapes={s.etapes} alignement={s.alignement} />
         </Section>
       );
     }

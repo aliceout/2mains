@@ -1,0 +1,67 @@
+---
+// Frise chronologique verticale. Alignement vertical (tout à gauche) ou
+// alterné (zig-zag gauche/droite sur desktop).
+import SmartImage from './SmartImage.astro';
+
+type Etape = {
+  date: string;
+  titre: string;
+  texte?: string;
+  image?: string;
+  image_alt?: string;
+};
+
+type Props = {
+  etapes: Etape[];
+  alignement?: 'vertical' | 'alterne';
+};
+
+const { etapes, alignement = 'vertical' } = Astro.props;
+const alterne = alignement === 'alterne';
+---
+
+<ol class="relative mx-auto max-w-4xl border-l-2 border-violet pl-6 md:border-l-0 md:pl-0">
+  {
+    etapes.map((e, i) => {
+      const right = alterne && i % 2 === 1;
+      return (
+        <li
+          class:list={[
+            'relative pb-10 last:pb-0',
+            alterne ? 'md:grid md:grid-cols-2 md:gap-8' : '',
+          ]}
+        >
+          <span
+            aria-hidden="true"
+            class:list={[
+              'absolute -left-[2.2rem] top-1 h-4 w-4 rounded-full bg-violet ring-4 ring-paper',
+              alterne
+                ? 'md:left-1/2 md:-translate-x-1/2'
+                : '',
+            ]}
+          />
+          <div
+            class:list={[
+              alterne && right ? 'md:col-start-2 md:pl-8' : '',
+              alterne && !right ? 'md:col-start-1 md:pr-8 md:text-right' : '',
+              !alterne ? 'md:pl-8 md:border-l-2 md:border-violet md:ml-0' : '',
+            ]}
+          >
+            <p class="text-xs font-bold uppercase tracking-wide text-orange">{e.date}</p>
+            <h3 class="mt-1 text-lg font-bold">{e.titre}</h3>
+            {e.texte && (
+              <p class="mt-1 text-sm leading-relaxed">{e.texte}</p>
+            )}
+            {e.image && (
+              <SmartImage
+                src={e.image}
+                alt={e.image_alt ?? ''}
+                class="mt-3 w-full max-w-sm rounded-lg"
+              />
+            )}
+          </div>
+        </li>
+      );
+    })
+  }
+</ol>

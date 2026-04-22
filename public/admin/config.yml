@@ -327,6 +327,156 @@ collections:
                 options: ['paper', 'beige', 'orange', 'violet']
                 default: paper
 
+          # === Texte + photo ===
+          - name: texte-photo
+            label: '🖼 Texte + photo'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - { name: texte, label: Texte, widget: markdown }
+              - { name: image, label: 'Image', widget: image }
+              - { name: image_alt, label: "Description de l'image (alt)", widget: string }
+              - { name: image_legende, label: "Légende (optionnel)", widget: string, required: false }
+              - { name: image_credit, label: 'Crédit photo (optionnel)', widget: string, required: false }
+              - name: position
+                label: "Position de l'image"
+                widget: select
+                options: ['gauche', 'droite']
+                default: droite
+              - name: ratio
+                label: "Répartition texte / image"
+                widget: select
+                options: ['50-50', '2-tiers-texte', '2-tiers-image']
+                default: '50-50'
+                hint: "50-50 : moitié-moitié · 2-tiers-texte : plus de place pour le texte · 2-tiers-image : plus de place pour l'image."
+
+          # === Figure (image seule centrée) ===
+          - name: figure
+            label: '🖼 Figure (image seule centrée)'
+            widget: object
+            fields:
+              - *fondField
+              - { name: image, label: Image, widget: image }
+              - { name: alt, label: "Description de l'image (alt)", widget: string }
+              - { name: legende, label: 'Légende (optionnel)', widget: string, required: false }
+              - { name: credit, label: 'Crédit photo (optionnel)', widget: string, required: false }
+              - name: taille
+                label: Taille
+                widget: select
+                options: ['petite', 'moyenne', 'grande']
+                default: moyenne
+
+          # === Galerie ===
+          - name: galerie
+            label: '🖼 Galerie d\'images'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - name: colonnes
+                label: Colonnes
+                widget: select
+                options: ['2', '3', '4']
+                default: '3'
+              - {
+                  name: lightbox,
+                  label: "Activer l'ouverture en grand (lightbox)",
+                  widget: boolean,
+                  default: false,
+                }
+              - name: images
+                label: Images
+                widget: list
+                fields:
+                  - { name: image, label: Image, widget: image }
+                  - { name: alt, label: 'Description (alt)', widget: string }
+                  - { name: legende, label: 'Légende (optionnel)', widget: string, required: false }
+
+          # === Bandeau image pleine largeur ===
+          - name: bandeau-image
+            label: '🖼 Bandeau image pleine largeur'
+            widget: object
+            fields:
+              - { name: image, label: Image, widget: image }
+              - { name: alt, label: "Description de l'image (alt)", widget: string }
+              - { name: titre, label: Titre, widget: string }
+              - { name: sousTitre, label: 'Sous-titre (optionnel)', widget: string, required: false }
+              - name: hauteur
+                label: Hauteur
+                widget: select
+                options: ['petite', 'moyenne', 'grande']
+                default: moyenne
+              - name: position_texte
+                label: 'Position du texte (horizontal)'
+                widget: select
+                options: ['gauche', 'centre', 'droite']
+                default: centre
+              - name: position_verticale
+                label: 'Position du texte (vertical)'
+                widget: select
+                options: ['haut', 'milieu', 'bas']
+                default: milieu
+              - {
+                  name: scrim,
+                  label: 'Assombrir le bas pour lisibilité',
+                  widget: boolean,
+                  default: true,
+                  hint: 'Recommandé pour garantir la lisibilité du texte blanc sur image claire.',
+                }
+
+          # === Portraits (grille personnes) ===
+          - name: portraits
+            label: '👤 Portraits (grille de personnes)'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - name: colonnes
+                label: Colonnes
+                widget: select
+                options: ['2', '3', '4']
+                default: '3'
+              - name: forme
+                label: 'Forme des photos'
+                widget: select
+                options: ['rond', 'carre']
+                default: rond
+              - name: personnes
+                label: Personnes
+                widget: list
+                fields:
+                  - { name: nom, label: 'Nom', widget: string }
+                  - { name: role, label: 'Rôle / fonction', widget: string, required: false }
+                  - { name: photo, label: Photo, widget: image, required: false }
+                  - { name: photo_alt, label: "Description photo (alt)", widget: string, required: false }
+                  - { name: bio, label: 'Bio courte (optionnel)', widget: text, required: false }
+                  - { name: lien, label: 'Lien externe (optionnel)', widget: string, required: false }
+                  - { name: lien_label, label: 'Libellé du lien', widget: string, required: false }
+
+          # === Timeline (frise chronologique) ===
+          - name: timeline
+            label: '📅 Timeline (frise chronologique)'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - name: alignement
+                label: Alignement
+                widget: select
+                options: ['vertical', 'alterne']
+                default: vertical
+                hint: "Vertical : toutes les étapes à gauche. Alterné : zig-zag gauche/droite (desktop)."
+              - name: etapes
+                label: Étapes
+                widget: list
+                fields:
+                  - { name: date, label: Date, widget: string, hint: "Ex: 2024, Mars 2025, 15 juin…" }
+                  - { name: titre, label: Titre, widget: string }
+                  - { name: texte, label: 'Texte (optionnel)', widget: text, required: false }
+                  - { name: image, label: 'Image (optionnel)', widget: image, required: false }
+                  - { name: image_alt, label: "Description image (alt)", widget: string, required: false }
+
   # ---- Actualités (blog) ----
   - name: actualites
     label: Actualités

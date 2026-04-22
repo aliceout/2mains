@@ -172,6 +172,119 @@ sections:
       label: "Plus d'infos"
       href: "/pour"
 
+  - type: "texte-photo"
+    titre: "🖼 Texte + photo"
+    texte: |
+      Bloc **texte + photo** côte à côte. Par défaut la photo est à droite, mais peut être placée à gauche via l'option « Position ».
+
+      Le **ratio** est configurable : 50-50, 2/3 texte + 1/3 photo, ou 1/3 texte + 2/3 photo — selon que le texte porte l'info ou que la photo doit dominer.
+
+      Une **légende** et un **crédit** peuvent être ajoutés sous l'image.
+    image: "https://picsum.photos/seed/mains1/800/600"
+    image_alt: "Photo placeholder illustrant le bloc texte + photo."
+    image_legende: "Exemple de légende"
+    image_credit: "Lorem Picsum"
+    position: "droite"
+    ratio: "50-50"
+
+  - type: "figure"
+    image: "https://picsum.photos/seed/mains2/900/600"
+    alt: "Photo placeholder centrée."
+    legende: "Figure centrée — idéal pour illustrer un point précis dans un article."
+    credit: "Lorem Picsum"
+    taille: "moyenne"
+
+  - type: "galerie"
+    titre: "🖼 Galerie (3 colonnes)"
+    fond: "beige"
+    colonnes: 3
+    lightbox: false
+    images:
+      - image: "https://picsum.photos/seed/mains3/600/450"
+        alt: "Photo de groupe placeholder 1"
+        legende: "Atelier découverte — 15 mai"
+      - image: "https://picsum.photos/seed/mains4/600/450"
+        alt: "Photo de groupe placeholder 2"
+        legende: "Apéro bénévoles"
+      - image: "https://picsum.photos/seed/mains5/600/450"
+        alt: "Photo de groupe placeholder 3"
+        legende: "Formation"
+      - image: "https://picsum.photos/seed/mains6/600/450"
+        alt: "Photo de groupe placeholder 4"
+      - image: "https://picsum.photos/seed/mains7/600/450"
+        alt: "Photo de groupe placeholder 5"
+      - image: "https://picsum.photos/seed/mains8/600/450"
+        alt: "Photo de groupe placeholder 6"
+
+  - type: "galerie"
+    titre: "🖼 Galerie avec lightbox (clic ouvre une modale)"
+    colonnes: 4
+    lightbox: true
+    images:
+      - image: "https://picsum.photos/seed/lb1/800/600"
+        alt: "Photo lightbox 1"
+        legende: "Vue 1"
+      - image: "https://picsum.photos/seed/lb2/800/600"
+        alt: "Photo lightbox 2"
+        legende: "Vue 2"
+      - image: "https://picsum.photos/seed/lb3/800/600"
+        alt: "Photo lightbox 3"
+        legende: "Vue 3"
+      - image: "https://picsum.photos/seed/lb4/800/600"
+        alt: "Photo lightbox 4"
+        legende: "Vue 4"
+
+  - type: "bandeau-image"
+    image: "https://picsum.photos/seed/bandeau/1920/800"
+    alt: "Bandeau pleine largeur placeholder."
+    titre: "Bandeau image pleine largeur"
+    sousTitre: "Pour ouvrir une section fortement ou servir de transition visuelle."
+    hauteur: "moyenne"
+    position_texte: "centre"
+    position_verticale: "milieu"
+    scrim: true
+
+  - type: "portraits"
+    titre: "👤 Portraits (3 colonnes, photos rondes)"
+    fond: "beige"
+    colonnes: 3
+    forme: "rond"
+    personnes:
+      - nom: "Leïla Martin"
+        role: "Présidente du CA"
+        photo: "https://picsum.photos/seed/portrait1/400/400"
+        photo_alt: "Portrait placeholder de Leïla Martin"
+        bio: "Accompagne l'association depuis 2024. Formée en sciences sociales et travail social."
+      - nom: "Claire Duval"
+        role: "Trésorière"
+        photo: "https://picsum.photos/seed/portrait2/400/400"
+        photo_alt: "Portrait placeholder de Claire Duval"
+        bio: "Praticienne du toucher, bénévole active dans le réseau des structures partenaires."
+        lien: "https://example.com"
+        lien_label: "Son site"
+      - nom: "Soraya B."
+        role: "Secrétaire"
+        bio: "Sans photo — fallback avec initiales."
+
+  - type: "timeline"
+    titre: "📅 Timeline (frise chronologique)"
+    alignement: "vertical"
+    etapes:
+      - date: "Printemps 2024"
+        titre: "Fondation de l'association"
+        texte: "Premier noyau de bénévoles, rédaction des statuts et dépôt en préfecture."
+      - date: "Septembre 2024"
+        titre: "Premier atelier découverte"
+        texte: "5 femmes accueillies, en partenariat avec un foyer d'accueil de Lyon 3."
+        image: "https://picsum.photos/seed/timeline1/600/400"
+        image_alt: "Photo placeholder du premier atelier"
+      - date: "Janvier 2025"
+        titre: "Publication du projet associatif"
+        texte: "Document de référence présenté à l'AG."
+      - date: "Avril 2026"
+        titre: "Mise en ligne du site"
+        texte: "Nouveau canal public — blog, agenda, contact formulaire."
+
   - type: "prose"
     titre: "🧩 Composants hors blocs"
     body: |
