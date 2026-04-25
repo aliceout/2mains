@@ -1,0 +1,49 @@
+# docker-compose.yml pour le VPS — site statique + backend mail.
+#
+# Tournés derrière le reverse proxy nginx du VPS qui termine TLS et
+# route :
+#   2mainsdefemmes.org/api/* → 127.0.0.1:8065 (mail)
+#   2mainsdefemmes.org/*     → 127.0.0.1:8064 (site)
+#
+# Les ports sont bind sur 127.0.0.1 uniquement, pas exposés au monde.
+# Aucun volume persistant — Sveltia CMS commit directement dans le repo
+# Git, donc les uploads d'Audrey sont déjà dans l'image.
+
+services:
+  site:
+    image: ghcr.io/aliceout/2mains-site:latest
+    container_name: 2mains-site
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8064:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mail:
+    image: ghcr.io/aliceout/2mains-mail:latest
+    container_name: 2mains-mail
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8065:3000"
+    env_file:
+      - /etc/secrets/2mains.env
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

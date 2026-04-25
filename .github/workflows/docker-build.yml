@@ -1,0 +1,135 @@
+name: Docker build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  test:
+    name: Type check + a11y
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check
+
+      - name: Build (fetch-unsplash + optimize-images + astro build)
+        run: pnpm build
+
+      - name: Accessibility audit (static)
+        run: pnpm a11y
+
+      - name: Smoke test — routes render
+        run: |
+          test -f dist/index.html
+          test -f dist/association/index.html
+          test -f dist/isolement-corporel/index.html
+          test -f dist/pour/index.html
+          test -f dist/agir/index.html
+          test -f dist/soutenir/index.html
+          test -f dist/contact/index.html
+          test -f dist/mentions-legales/index.html
+          test -f dist/politique-confidentialite/index.html
+          test -f dist/404.html
+          test -f dist/sitemap-index.xml
+          echo "All expected routes present."
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start preview server
+        run: pnpm preview --host 127.0.0.1 --port 4322 &
+
+      - name: Wait for preview server
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://127.0.0.1:4322/ && exit 0
+            sleep 1
+          done
+          echo "preview server did not start in time" >&2
+          exit 1
+
+      - name: Accessibility audit (deep, axe-core)
+        run: pnpm a11y:deep
+        env:
+          BASE_URL: http://127.0.0.1:4322
+
+  build-site:
+    name: Build & push site image
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push site
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.site
+          push: true
+          tags: |
+            ghcr.io/aliceout/2mains-site:latest
+            ghcr.io/aliceout/2mains-site:${{ github.sha }}
+          cache-from: type=gha,scope=site
+          cache-to: type=gha,scope=site,mode=max
+
+  build-mail:
+    name: Build & push mail image
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push mail
+        uses: docker/build-push-action@v6
+        with:
+          context: services/mail
+          file: services/mail/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/aliceout/2mains-mail:latest
+            ghcr.io/aliceout/2mains-mail:${{ github.sha }}
+          cache-from: type=gha,scope=mail
+          cache-to: type=gha,scope=mail,mode=max

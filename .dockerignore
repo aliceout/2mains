@@ -1,0 +1,33 @@
+# Dépendances et builds locaux : on les régénère dans le container.
+node_modules
+dist
+.astro
+.output
+
+# Git et CI
+.git
+.gitignore
+.github
+.husky
+
+# Outillage local
+.vscode
+.idea
+.DS_Store
+
+# Caches d'artefacts générés par les scripts de build
+public/uploads/optimized
+public/uploads/unsplash
+
+# Environnement
+.env
+.env.*
+
+# Tests / docs locaux
+references
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Service mail (build context séparé via services/mail/Dockerfile)
+services
