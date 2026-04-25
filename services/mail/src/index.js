@@ -27,23 +27,52 @@ const RATE_LIMIT_PER_HOUR = parseInt(
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 const HOUR_MS = 60 * 60 * 1000;
 
-function requireEnv(name) {
+// Mode dégradé : si les env SMTP manquent, on démarre quand même mais
+// POST /api/contact renvoie 503 avec un message lisible. Évite les
+// boucles de crash quand le compose est lancé avant que Infisical n'ait
+// synchronisé /etc/secrets/2mains.env, et reste résilient si un mot de
+// passe SMTP expire en prod (pas de redémarrage en cascade, juste un
+// service en dégradé qu'on peut diagnostiquer via le health check).
+function getEnv(name) {
   const v = process.env[name];
-  if (!v) throw new Error(`Variable d'environnement manquante : ${name}`);
-  return v;
+  return v && v.length > 0 ? v : null;
 }
 
-const transport = nodemailer.createTransport({
-  host: requireEnv('SMTP_HOST'),
-  port: parseInt(process.env.SMTP_PORT || '465', 10),
-  secure: (process.env.SMTP_SECURE ?? 'true') === 'true',
-  auth: {
-    user: requireEnv('SMTP_USER'),
-    pass: requireEnv('SMTP_PASS'),
-  },
-});
-const SMTP_FROM = requireEnv('SMTP_FROM');
-const MAIL_TO = requireEnv('MAIL_TO');
+const SMTP_HOST = getEnv('SMTP_HOST');
+const SMTP_USER = getEnv('SMTP_USER');
+const SMTP_PASS = getEnv('SMTP_PASS');
+const SMTP_FROM = getEnv('SMTP_FROM');
+const MAIL_TO = getEnv('MAIL_TO');
+const isConfigured = !!(SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_FROM && MAIL_TO);
+
+let transport = null;
+if (isConfigured) {
+  transport = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '465', 10),
+    secure: (process.env.SMTP_SECURE ?? 'true') === 'true',
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+  });
+} else {
+  const missing = [
+    ['SMTP_HOST', SMTP_HOST],
+    ['SMTP_USER', SMTP_USER],
+    ['SMTP_PASS', SMTP_PASS],
+    ['SMTP_FROM', SMTP_FROM],
+    ['MAIL_TO', MAIL_TO],
+  ]
+    .filter(([, v]) => !v)
+    .map(([k]) => k);
+  console.warn(
+    JSON.stringify({
+      level: 'warn',
+      event: 'degraded_mode',
+      message:
+        'Service démarré sans configuration SMTP — POST /api/contact répondra 503.',
+      missing,
+    }),
+  );
+}
 
 // Rate limit en mémoire : ip → { count, windowStart }
 // Reset automatique après 1h. Pas de persistance (acceptable pour ce volume).
@@ -98,13 +127,26 @@ function logEvent(event, fields = {}) {
 
 const app = new Hono();
 
-app.get('/', (c) => c.json({ ok: true, service: '2mains-mail' }));
+app.get('/', (c) =>
+  c.json({ ok: true, service: '2mains-mail', configured: isConfigured }),
+);
 
 app.post('/api/contact', async (c) => {
   const ip =
     c.req.header('x-real-ip') ||
     c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ||
     'unknown';
+
+  if (!isConfigured) {
+    logEvent('mail_unconfigured', { ip });
+    return c.json(
+      {
+        error:
+          'Service mail temporairement indisponible. Réessayez dans quelques minutes.',
+      },
+      503,
+    );
+  }
 
   if (!withinRateLimit(ip)) {
     logEvent('rate_limited', { ip });
