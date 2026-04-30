@@ -83,6 +83,11 @@ const imageOrder = position === 'gauche' ? 'md:order-first' : '';
     margin: 1.5rem 0 0.5rem;
     color: var(--color-ink);
   }
+  @media (min-width: 768px) {
+    .texte-photo-prose :global(h3) {
+      font-size: 24px;
+    }
+  }
   .texte-photo-prose :global(p) {
     font-size: 16px;
     line-height: 1.65;
