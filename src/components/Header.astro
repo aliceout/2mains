@@ -1,5 +1,16 @@
 ---
+// Header sticky inspiré du design handoff (NavBar dans final-home.jsx).
+// VLogo à gauche, navigation au centre (avec dropdowns hover/focus pour
+// les parents non cliquables), bouton primaire « Faire un don » à droite.
+//
+// On garde l'arborescence complète (15+ pages, navigation existante avec
+// dropdowns) — c'est uniquement la couche visuelle qui bascule sur le
+// nouveau design : couleurs chaudes, fonts éditoriales, lien actif
+// souligné de 1.5px orange.
 import { navigation, matchesItem, type SiteSettings } from '../lib/site';
+import VLogo from './atoms/VLogo.astro';
+import Btn from './atoms/Btn.astro';
+import Arrow from './atoms/Arrow.astro';
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
@@ -12,25 +23,26 @@ const isChildActive = (href: string | undefined): boolean => {
 };
 ---
 
-<header class="sticky top-0 z-40 border-b border-beige bg-paper/95 backdrop-blur">
-  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-    <a
-      href="/"
-      class="flex items-center gap-2"
-      aria-label={`Accueil — ${settings.nom_asso}`}
-    >
-      <img src="/brand/logo.svg" alt="" class="h-10 w-auto" width="140" height="40" />
-      <span class="sr-only">{settings.nom_asso}</span>
+<header
+  class="sticky top-0 z-40 border-b border-line bg-paper-white/95 backdrop-blur"
+>
+  <div
+    class="mx-auto flex max-w-310 items-center gap-10 px-6 py-5 md:px-10"
+  >
+    <a href="/" class="shrink-0" aria-label={`Accueil — ${settings.nom_asso}`}>
+      <VLogo />
     </a>
 
     <nav aria-label="Navigation principale" class="hidden lg:block">
-      <ul class="flex items-center gap-6">
+      <ul class="flex items-center gap-7 font-sans text-sm">
         {
           navigation.map((item) => {
             const active = matchesItem(path, item);
             const triggerClass = [
-              'px-1 py-2 text-sm font-semibold transition-colors hover:text-orange',
-              active ? 'text-orange' : 'text-ink',
+              'inline-block py-1 transition-colors hover:text-orange',
+              active
+                ? 'text-orange border-b-[1.5px] border-orange pb-0.5'
+                : 'text-ink border-b-[1.5px] border-transparent pb-0.5',
             ];
             return (
               <li class="relative group">
@@ -47,21 +59,21 @@ const isChildActive = (href: string | undefined): boolean => {
                     type="button"
                     aria-haspopup="true"
                     aria-expanded="false"
-                    class:list={[...triggerClass, 'cursor-default']}
+                    class:list={[...triggerClass, 'cursor-default bg-transparent']}
                   >
                     {item.label}
                   </button>
                 )}
                 {item.children && (
-                  <ul class="invisible absolute top-full left-0 mt-1 min-w-56 rounded-md border border-beige bg-paper p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                  <ul class="invisible absolute top-full left-0 mt-2 min-w-56 rounded-md border border-line bg-paper-white p-2 opacity-0 transition-all group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
                     {item.children.map((child) => (
                       <li>
                         <a
                           href={child.href}
                           class:list={[
-                            'block rounded px-3 py-2 text-sm hover:bg-beige',
+                            'block rounded px-3 py-2 text-sm transition-colors hover:bg-paper-cream',
                             isChildActive(child.href)
-                              ? 'text-orange font-semibold'
+                              ? 'text-orange'
                               : 'text-ink',
                           ]}
                         >
@@ -78,18 +90,15 @@ const isChildActive = (href: string | undefined): boolean => {
       </ul>
     </nav>
 
-    <div class="flex items-center gap-3">
-      <a
-        href={settings.helloasso_don}
-        target="_blank"
-        rel="noopener"
-        class="hidden rounded-full bg-orange px-4 py-2 text-sm font-bold text-paper shadow-sm transition-colors hover:bg-magenta md:inline-block"
-      >
-        Faire un don
-      </a>
+    <div class="ml-auto flex items-center gap-3">
+      <span class="hidden md:inline-block">
+        <Btn href={settings.helloasso_don} external>
+          Faire un don <Arrow color="white" />
+        </Btn>
+      </span>
       <button
         type="button"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-beige lg:hidden"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-line text-ink lg:hidden"
         aria-controls="menu-mobile"
         aria-expanded="false"
         aria-label="Ouvrir le menu"
@@ -106,17 +115,21 @@ const isChildActive = (href: string | undefined): boolean => {
           aria-hidden="true"
           focusable="false"
         >
-          <line x1="4" y1="7" x2="20" y2="7" />
-          <line x1="4" y1="12" x2="20" y2="12" />
-          <line x1="4" y1="17" x2="20" y2="17" />
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
         </svg>
       </button>
     </div>
   </div>
 
-  <div id="menu-mobile" class="hidden border-t border-beige lg:hidden" data-menu>
-    <nav aria-label="Navigation mobile" class="mx-auto max-w-6xl px-4 py-4">
-      <ul class="space-y-1">
+  <div
+    id="menu-mobile"
+    class="hidden border-t border-line bg-paper-white lg:hidden"
+    data-menu
+  >
+    <nav aria-label="Navigation mobile" class="mx-auto max-w-310 px-6 py-4">
+      <ul class="space-y-1 font-sans">
         {
           navigation.map((item) => {
             const active = matchesItem(path, item);
@@ -126,10 +139,10 @@ const isChildActive = (href: string | undefined): boolean => {
                   <a
                     href={item.href}
                     class:list={[
-                      'block rounded px-3 py-2 text-base font-semibold',
+                      'block rounded px-3 py-2 text-base',
                       active
-                        ? 'bg-beige text-orange'
-                        : 'text-ink hover:bg-beige',
+                        ? 'bg-paper-cream text-orange'
+                        : 'text-ink hover:bg-paper-cream',
                     ]}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -138,7 +151,7 @@ const isChildActive = (href: string | undefined): boolean => {
                 ) : (
                   <p
                     class:list={[
-                      'block px-3 py-2 text-base font-semibold',
+                      'block px-3 py-2 text-base',
                       active ? 'text-orange' : 'text-ink',
                     ]}
                   >
@@ -146,7 +159,7 @@ const isChildActive = (href: string | undefined): boolean => {
                   </p>
                 )}
                 {item.children && (
-                  <ul class="ml-3 mt-1 space-y-1 border-l-2 border-beige pl-3">
+                  <ul class="ml-3 mt-1 space-y-1 border-l border-line pl-3">
                     {item.children.map((child) => (
                       <li>
                         <a
@@ -154,8 +167,8 @@ const isChildActive = (href: string | undefined): boolean => {
                           class:list={[
                             'block rounded px-3 py-2 text-sm',
                             isChildActive(child.href)
-                              ? 'text-orange font-semibold'
-                              : 'text-ink hover:bg-beige',
+                              ? 'text-orange'
+                              : 'text-ink-2 hover:bg-paper-cream',
                           ]}
                         >
                           {child.label}
@@ -169,14 +182,9 @@ const isChildActive = (href: string | undefined): boolean => {
           })
         }
         <li class="pt-3">
-          <a
-            href={settings.helloasso_don}
-            target="_blank"
-            rel="noopener"
-            class="block rounded-full bg-orange px-4 py-3 text-center font-bold text-paper"
-          >
-            Faire un don
-          </a>
+          <Btn href={settings.helloasso_don} external>
+            Faire un don <Arrow color="white" />
+          </Btn>
         </li>
       </ul>
     </nav>
@@ -190,7 +198,10 @@ const isChildActive = (href: string | undefined): boolean => {
     btn.addEventListener('click', () => {
       const open = menu.classList.toggle('hidden');
       btn.setAttribute('aria-expanded', String(!open));
-      btn.setAttribute('aria-label', open ? 'Ouvrir le menu' : 'Fermer le menu');
+      btn.setAttribute(
+        'aria-label',
+        open ? 'Ouvrir le menu' : 'Fermer le menu',
+      );
     });
   }
 </script>

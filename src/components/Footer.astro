@@ -1,63 +1,145 @@
 ---
+// Footer fond sombre #2B2419 inspiré du design handoff. Wordmark
+// teinté + mission + 2 colonnes de liens. Pas de barre basse de
+// copyright (retirée par décision utilisateur précédente). Pas de
+// contact email/tel rendu (anti-spam).
+//
+// Couleurs propres au footer (codées en dur car spécifiques à cette
+// surface foncée, pas réutilisées ailleurs) :
+//   bg :    #2B2419 (encre profonde, plus chaude que ink)
+//   text :  #D8CFBF (paper-cream-ish, contraste AA sur le fond)
+//   meta :  #9C9080 (méta-infos plus sourdes)
 import type { SiteSettings } from '../lib/site';
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
 ---
 
-<footer class="mt-16 bg-beige">
-  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
+<footer class="mt-16 bg-[#2B2419]">
+  <div
+    class="mx-auto grid max-w-310 gap-12 px-6 py-20 md:grid-cols-4 md:gap-16 md:px-10"
+  >
     <div class="md:col-span-2">
-      <img
-        src="/brand/logo.svg"
-        alt={settings.nom_asso}
-        class="h-12 w-auto"
-        width="160"
-        height="48"
-      />
-      <p class="mt-3 max-w-md text-sm leading-relaxed">{settings.mission}</p>
+      <div class="flex items-center gap-2.5">
+        <svg
+          width="36"
+          height="36"
+          viewBox="0 0 32 32"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M22 8 a8 8 0 1 0 0 16"
+            stroke="var(--color-orange-soft)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"></path>
+          <path
+            d="M10 24 a8 8 0 1 0 0 -16"
+            stroke="var(--color-violet-soft)"
+            stroke-width="2.5"
+            fill="none"
+            stroke-linecap="round"></path>
+        </svg>
+        <span class="flex flex-col font-serif" style="line-height: 1;">
+          <span
+            style="font-size: 22px; color: var(--color-orange-soft); font-weight: 500;"
+          >
+            2mains
+          </span>
+          <span
+            style="font-size: 16px; color: #A39DBF; font-style: italic; margin-top: 2px;"
+          >
+            de femmes
+          </span>
+        </span>
+      </div>
+      <p
+        class="mt-5 max-w-[32ch] font-sans text-sm leading-relaxed text-[#9C9080]"
+      >
+        {settings.mission}
+      </p>
     </div>
 
     <div>
-      <h2 class="mb-3 font-bold">Agir &amp; soutenir</h2>
-      <ul class="space-y-1 text-sm">
-        <li><a href="/agir" class="hover:text-orange">Agir avec nous</a></li>
+      <h2
+        class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
+        style="letter-spacing: 0.1em;"
+      >
+        Agir &amp; soutenir
+      </h2>
+      <ul class="grid gap-2.5 font-sans text-sm">
+        <li>
+          <a
+            href="/agir"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
+            Agir avec nous
+          </a>
+        </li>
         <li>
           <a
             href={settings.helloasso_don}
             target="_blank"
             rel="noopener"
-            class="hover:text-orange"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
             Faire un don (HelloAsso)
           </a>
         </li>
         <li>
-          <a href="/soutenir/mecenat" class="hover:text-orange">Mécénat entreprises</a>
+          <a
+            href="/soutenir/mecenat"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
+            Mécénat entreprises
+          </a>
         </li>
-        <li><a href="/contact" class="hover:text-orange">Nous contacter</a></li>
+        <li>
+          <a
+            href="/contact"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
+            Nous contacter
+          </a>
+        </li>
       </ul>
-
     </div>
 
     <div>
-      <h2 class="mb-3 font-bold">Infos légales</h2>
-      <ul class="space-y-1 text-sm">
+      <h2
+        class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
+        style="letter-spacing: 0.1em;"
+      >
+        Infos légales
+      </h2>
+      <ul class="grid gap-2.5 font-sans text-sm">
         <li>
-          <a href="/mentions-legales" class="hover:text-orange">Mentions légales</a>
+          <a
+            href="/mentions-legales"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
+            Mentions légales
+          </a>
         </li>
         <li>
-          <a href="/politique-confidentialite" class="hover:text-orange">
+          <a
+            href="/politique-confidentialite"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
             Politique de confidentialité
           </a>
         </li>
         <li>
-          <a href="/accessibilite" class="hover:text-orange">
+          <a
+            href="/accessibilite"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
             Accessibilité : non conforme
           </a>
         </li>
       </ul>
     </div>
   </div>
-
 </footer>

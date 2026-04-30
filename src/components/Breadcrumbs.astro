@@ -1,4 +1,9 @@
 ---
+// Fil d'Ariane refondu sur le design handoff (Crumbs dans pages.jsx) :
+// mono uppercase 12px letter-spacing 0.06em, séparateur slash en
+// couleur line, dernier item en orange.
+//
+// Le BreadcrumbList JSON-LD est conservé pour le SEO.
 import { getBreadcrumbs, getSiteSettings } from '../lib/site';
 
 const settings = await getSiteSettings();
@@ -30,23 +35,29 @@ const breadcrumbSchema =
 }
 {
   crumbs.length > 0 && (
-    <nav aria-label="Fil d'Ariane" class="border-b border-beige bg-paper">
-      <ol class="mx-auto flex max-w-6xl flex-wrap items-center gap-1 px-4 py-2 text-sm text-ink/70">
+    <nav aria-label="Fil d'Ariane" class="border-b border-line bg-paper">
+      <ol
+        class="mx-auto flex max-w-310 flex-wrap items-center gap-2 px-6 py-3 font-mono text-[11px] uppercase text-ink-3 md:px-10"
+        style="letter-spacing: 0.06em;"
+      >
         {crumbs.map((c, i) => {
           const isLast = i === crumbs.length - 1;
           return (
-            <li class="flex items-center gap-1">
+            <li class="flex items-center gap-2">
               {i > 0 && (
-                <span aria-hidden="true" class="text-ink/40">
-                  ›
+                <span aria-hidden="true" class="text-line">
+                  /
                 </span>
               )}
               {isLast ? (
-                <span aria-current="page" class="font-semibold text-ink">
+                <span aria-current="page" class="text-orange">
                   {c.label}
                 </span>
               ) : (
-                <a href={c.href} class="hover:text-orange hover:underline">
+                <a
+                  href={c.href}
+                  class="text-ink-3 transition-colors hover:text-orange"
+                >
                   {c.label}
                 </a>
               )}

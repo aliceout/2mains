@@ -1,7 +1,6 @@
 ---
 title: "Un impensé social"
 description: "Comprendre pourquoi l'isolement corporel reste absent des politiques sociales et sanitaires."
-toc: true
 hero:
   titre: "Un impensé social"
   sousTitre: "L'isolement corporel"

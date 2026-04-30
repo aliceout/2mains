@@ -1,35 +1,87 @@
 ---
+// Quatre valeurs / repères en grille 2-cols. Chaque valeur a un
+// numéro italique, un nom Newsreader, une description Inter Tight.
+// Inspiré du « Quatre repères pour vous » dans FemmePage du proto.
+import Blob from './atoms/Blob.astro';
+
+type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+
 type Valeur = {
   nom: string;
   description: string;
-  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+  couleur?: Couleur;
 };
 
 type Props = { valeurs: Valeur[] };
 const { valeurs } = Astro.props;
 
-const dotClass = {
-  orange: 'bg-orange',
-  violet: 'bg-violet',
-  magenta: 'bg-magenta',
-  vert: 'bg-vert',
-  bleu: 'bg-bleu',
+type ValeurConfig = {
+  accent: 'orange' | 'violet' | 'rose' | 'moss' | 'mauve';
+  bgClass: string;
+};
+
+const couleurMap: Record<Couleur, ValeurConfig> = {
+  orange: { accent: 'orange', bgClass: 'bg-peach' },
+  violet: { accent: 'violet', bgClass: 'bg-lav' },
+  magenta: { accent: 'rose', bgClass: 'bg-rose/50' },
+  vert: { accent: 'moss', bgClass: 'bg-honey/50' },
+  bleu: { accent: 'mauve', bgClass: 'bg-lav' },
+};
+
+const accentText: Record<string, string> = {
+  orange: 'text-orange',
+  violet: 'text-violet',
+  rose: 'text-rose',
+  moss: 'text-moss',
+  mauve: 'text-mauve',
+};
+
+const blobByAccent: Record<string, 'orange' | 'violet' | 'rose' | 'moss' | 'mauve'> = {
+  orange: 'rose',
+  violet: 'mauve',
+  rose: 'orange',
+  moss: 'moss',
+  mauve: 'mauve',
 };
 ---
 
-<div class="grid gap-6 md:grid-cols-2">
+<div class="grid gap-4 md:grid-cols-2">
   {
-    valeurs.map((v) => (
-      <div class="flex gap-4 rounded-xl bg-paper p-6 shadow-sm">
-        <span
-          class:list={['mt-2 h-4 w-4 shrink-0 rounded-full', dotClass[v.couleur ?? 'orange']]}
-          aria-hidden="true"
-        />
-        <div>
-          <h3 class="mb-2 text-xl font-bold">{v.nom}</h3>
-          <p class="text-sm leading-relaxed">{v.description}</p>
+    valeurs.map((v, i) => {
+      const config = couleurMap[v.couleur ?? 'orange'];
+      const numero = String(i + 1).padStart(2, '0');
+      return (
+        <div
+          class:list={[
+            'relative overflow-hidden rounded-xl px-7 pb-7 pt-7',
+            config.bgClass,
+          ]}
+        >
+          <Blob
+            size={100}
+            color={blobByAccent[config.accent]}
+            seed={i + 1}
+            opacity={0.18}
+            class="pointer-events-none absolute -bottom-5 -right-5"
+          />
+          <div class="relative mb-3 flex items-baseline gap-3">
+            <span
+              class:list={[
+                'font-serif italic font-medium text-[36px] leading-none tracking-tight',
+                accentText[config.accent],
+              ]}
+            >
+              {numero}
+            </span>
+            <h3 class="font-serif text-2xl font-medium tracking-tight text-ink">
+              {v.nom}
+            </h3>
+          </div>
+          <p class="relative font-sans text-[15px] leading-relaxed text-ink-2">
+            {v.description}
+          </p>
         </div>
-      </div>
-    ))
+      );
+    })
   }
 </div>

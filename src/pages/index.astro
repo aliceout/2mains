@@ -6,6 +6,9 @@ import Section from '../components/Section.astro';
 import BlocCitation from '../components/BlocCitation.astro';
 import Draft from '../components/Draft.astro';
 import DraftBadge from '../components/DraftBadge.astro';
+import Btn from '../components/atoms/Btn.astro';
+import Eyebrow from '../components/atoms/Eyebrow.astro';
+import LinkArrow from '../components/atoms/LinkArrow.astro';
 import { getSiteSettings } from '../lib/site';
 import { filterPublished } from '../lib/drafts';
 
@@ -70,90 +73,77 @@ const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
     )
   }
 
-  <Section titre="Soutenir l'association" fond="violet">
-    <div class="grid gap-8 md:grid-cols-2">
-      <div>
-        <p class="mb-4 text-lg leading-relaxed">
-          75 adhérent·es et une centaine de soutiens individuels nous permettent déjà
-          d'exister. Un don, une adhésion, du temps bénévole, un partenariat : chaque
-          engagement compte.
-        </p>
-        <p class="mb-6 text-sm opacity-90">
-          Montant libre, paiement 100 % sécurisé via HelloAsso. Reçu fiscal envoyé
-          automatiquement (déduction à 66 %).
-        </p>
+  <section class="border-t border-line">
+    <div class="grid md:grid-cols-2">
+      <div class="relative flex flex-col justify-between gap-8 bg-peach px-6 py-20 md:min-h-120 md:px-15 md:py-25">
+        <div>
+          <Eyebrow>— Soutenir</Eyebrow>
+          <h2 class="font-serif text-4xl font-normal leading-tight tracking-tight text-ink md:text-5xl mt-4 mb-5 max-w-[14ch]">
+            L'association tient debout grâce à <em class="font-medium not-italic text-orange">vous</em>.
+          </h2>
+          <p class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch] mb-8">
+            Adhérer, donner ou devenir bénévole — chaque engagement compte. Un don de
+            50 € permet à une femme de bénéficier d'une séance.
+          </p>
+        </div>
         <div class="flex flex-wrap gap-3">
-          <a
-            href={settings.helloasso_don}
-            target="_blank"
-            rel="noopener"
-            class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
-          >
-            Faire un don
-          </a>
-          <a
-            href="/agir/benevolat"
-            class="rounded-full border-2 border-paper px-6 py-3 font-bold hover:bg-paper/10"
-          >
-            Devenir bénévole
-          </a>
+          <Btn href={settings.helloasso_don} external arrow>Faire un don</Btn>
+          <Btn variant="ghost" href="/agir/benevolat">Devenir bénévole</Btn>
         </div>
       </div>
-      {
-        aVenir.length > 0 && (
-          <div>
-            {hasFictiveEvents ? (
-              <Draft reason="Événements fictifs — à remplacer via le CMS">
-                <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
-                  <h2 class="mb-3 text-xl font-bold">Prochains rendez-vous</h2>
-                  <ul class="space-y-3 text-sm">
-                    {aVenir.map((e) => (
+      <div class="relative flex flex-col justify-between gap-8 bg-lav px-6 py-20 md:min-h-120 md:px-15 md:py-25">
+        {aVenir.length > 0 ? (
+          <>
+            <div>
+              <Eyebrow color="violet">— Prochain rendez-vous</Eyebrow>
+              {hasFictiveEvents ? (
+                <Draft reason="Événements fictifs — à remplacer via le CMS">
+                  <ul class="mt-4 grid gap-5">
+                    {aVenir.slice(0, 2).map((e) => (
                       <li>
                         <DraftBadge draft={e.data.draft} />
-                        <p class="font-semibold">{e.data.title}</p>
-                        <p class="opacity-70">
-                          {formatDate(e.data.date_debut)} · {e.data.lieu}
-                        </p>
+                        <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
+                          {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
+                        </div>
+                        <h3 class="font-serif text-2xl font-medium leading-tight tracking-tight text-ink max-w-[20ch]">
+                          {e.data.title}
+                        </h3>
                       </li>
                     ))}
                   </ul>
-                  <p class="mt-4">
-                    <a
-                      href="/agenda"
-                      class="text-sm font-semibold text-orange hover:underline"
-                    >
-                      Voir l'agenda →
-                    </a>
-                  </p>
-                </div>
-              </Draft>
-            ) : (
-              <div class="rounded-2xl bg-paper p-6 text-ink md:p-8">
-                <h2 class="mb-3 text-xl font-bold">Prochains rendez-vous</h2>
-                <ul class="space-y-3 text-sm">
-                  {aVenir.map((e) => (
+                </Draft>
+              ) : (
+                <ul class="mt-4 grid gap-5">
+                  {aVenir.slice(0, 2).map((e) => (
                     <li>
-                      <DraftBadge draft={e.data.draft} />
-                      <p class="font-semibold">{e.data.title}</p>
-                      <p class="opacity-70">
-                        {formatDate(e.data.date_debut)} · {e.data.lieu}
-                      </p>
+                      <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
+                        {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
+                      </div>
+                      <h3 class="font-serif text-2xl font-medium leading-tight tracking-tight text-ink max-w-[20ch]">
+                        {e.data.title}
+                      </h3>
                     </li>
                   ))}
                 </ul>
-                <p class="mt-4">
-                  <a
-                    href="/agenda"
-                    class="text-sm font-semibold text-orange hover:underline"
-                  >
-                    Voir l'agenda →
-                  </a>
-                </p>
-              </div>
-            )}
-          </div>
-        )
-      }
+              )}
+            </div>
+            <LinkArrow href="/agenda" color="violet">Voir l'agenda</LinkArrow>
+          </>
+        ) : (
+          <>
+            <div>
+              <Eyebrow color="violet">— Newsletter saisonnière</Eyebrow>
+              <h2 class="font-serif text-3xl font-normal leading-tight tracking-tight text-ink mt-4 mb-4 max-w-[16ch] md:text-4xl">
+                Une <em class="font-medium not-italic text-violet">lettre</em> par saison.
+              </h2>
+              <p class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch]">
+                Une lettre par saison — actualités, ateliers à venir, lectures et ressources.
+              </p>
+            </div>
+            <LinkArrow href="/contact" color="violet">Nous écrire</LinkArrow>
+          </>
+        )}
+      </div>
     </div>
-  </Section>
+  </section>
 </Layout>

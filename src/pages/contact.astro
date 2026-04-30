@@ -75,7 +75,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                 action={`mailto:${settings.email_contact}`}
                 method="post"
                 enctype="text/plain"
-                class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
+                class="flex flex-col gap-4 rounded-2xl border border-line bg-paper p-6"
               >
                 <h2 class="text-2xl font-bold">Nous écrire</h2>
                 <label class="flex flex-col gap-1">
@@ -84,7 +84,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                     name="nom"
                     type="text"
                     required
-                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                    class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                   />
                 </label>
                 <label class="flex flex-col gap-1">
@@ -93,14 +93,14 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                     name="email"
                     type="email"
                     required
-                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                    class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                   />
                 </label>
                 <label class="flex flex-col gap-1">
                   <span class="text-sm font-semibold">Vous êtes</span>
                   <select
                     name="type"
-                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                    class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                   >
                     <option>Une femme qui souhaite en savoir plus</option>
                     <option>Une structure d'accueil</option>
@@ -117,7 +117,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                     name="message"
                     rows="6"
                     required
-                    class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                    class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                   />
                 </label>
                 <input
@@ -130,7 +130,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                 />
                 <button
                   type="submit"
-                  class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+                  class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:opacity-85"
                 >
                   Envoyer le message
                 </button>
@@ -147,7 +147,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
             <form
               method="POST"
               action={endpoint}
-              class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6"
+              class="flex flex-col gap-4 rounded-2xl border border-line bg-paper p-6"
               data-contact-form
             >
               <h2 class="text-2xl font-bold">Nous écrire</h2>
@@ -161,7 +161,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                   type="text"
                   required
                   autocomplete="name"
-                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                 />
               </label>
 
@@ -174,7 +174,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                   type="email"
                   required
                   autocomplete="email"
-                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                 />
               </label>
 
@@ -182,7 +182,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                 <span class="text-sm font-semibold">Vous êtes</span>
                 <select
                   name="type"
-                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                 >
                   <option>Une femme qui souhaite en savoir plus</option>
                   <option>Une structure d'accueil</option>
@@ -202,7 +202,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
                   name="message"
                   rows="6"
                   required
-                  class="rounded-md border border-beige px-3 py-2 focus:border-violet focus:outline-none"
+                  class="rounded-md border border-line px-3 py-2 focus:border-violet focus:outline-none"
                 />
               </label>
 
@@ -218,7 +218,7 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
 
               <button
                 type="submit"
-                class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
+                class="mt-2 rounded-full bg-orange px-6 py-3 font-bold text-paper hover:opacity-85"
               >
                 Envoyer le message
               </button>
@@ -262,13 +262,13 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
               const err = await res.json().catch(() => ({}));
               status.textContent =
                 'Erreur : ' + (err.error || 'envoi impossible, réessayez plus tard.');
-              status.className = 'text-sm text-magenta';
+              status.className = 'text-sm text-rose';
               btn?.removeAttribute('disabled');
             }
           } catch (err) {
             status.textContent =
               'Erreur réseau. Vérifiez votre connexion et réessayez.';
-            status.className = 'text-sm text-magenta';
+            status.className = 'text-sm text-rose';
             btn?.removeAttribute('disabled');
           }
         });

@@ -2,11 +2,25 @@
 title: "Pour une femme concernée"
 description: "Nos parcours d'accompagnement corporel sont gratuits, à votre rythme, fondés sur votre consentement."
 hero:
-  titre: "Vous êtes une femme concernée"
-  sousTitre: "Nos activités"
-  accroche: "Vous vous sentez en isolement dans votre corps, ou en difficulté avec le toucher — le vôtre ou celui des autres. Nos parcours sont gratuits, respectueux de votre rythme, de vos limites, de votre histoire."
-  variant: "magenta"
+  titre: "Ce qu'on vous *propose*,\nsi ça vous parle."
+  sousTitre: "Pour vous"
+  accroche: "Un espace pour vous. Sans rendez-vous médical, sans dossier à monter, sans avoir à expliquer. Juste un endroit où votre corps peut être, autrement."
+  variant: "orange"
+  cta_primaire:
+    label: "Premier contact"
+    href: "/contact"
 sections:
+  - type: "lettre"
+    variant: "orange"
+    ouverture: "Bonjour,"
+    signature: "— l'équipe."
+    corps: |
+      Si vous lisez ces lignes, peut-être que quelque chose dans votre vie vous a amenée jusqu'ici. Peut-être que vous ne savez pas trop. Peut-être que vous cherchez juste à comprendre ce qu'on fait, sans rien décider.
+
+      On vous propose un endroit. Pas un soin. Pas un programme. Un endroit où votre corps peut *exister* sans devoir performer, sans devoir expliquer, sans devoir guérir.
+
+      On commence par un appel — ou un mail, si parler vous demande trop. On y va à votre rythme. Vous décidez de tout, à chaque pas.
+
   - type: "prose"
     titre: "Ce qu'on vous propose"
     body: |

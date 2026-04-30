@@ -1,0 +1,65 @@
+---
+// Souligné manuscrit ondulé sous les italiques d'emphase. Path qui
+// bouge légèrement pour évoquer le geste à la main. Toujours en
+// position absolute, calé sous le mot souligné.
+//
+// Usage :
+//   <em class="relative inline-block text-violet font-medium">
+//     (re)toucher
+//     <HandUnderline width={420} color="mauve"
+//                    class="absolute -bottom-2.5 left-0" />
+//   </em>
+type Props = {
+  /** Largeur en pixels (number) ou en pourcentage du parent ("100%" par défaut).
+   *  Avec "100%", l'ondulation s'étire pour matcher la largeur de l'élément
+   *  englobant (typiquement un `<em>`). */
+  width?: number | string;
+  color?:
+    | 'orange'
+    | 'orange-soft'
+    | 'violet'
+    | 'violet-soft'
+    | 'rose'
+    | 'mauve'
+    | 'moss'
+    | 'honey'
+    | 'ink';
+  class?: string;
+  style?: string;
+};
+
+const colorVar = {
+  orange: 'var(--color-orange)',
+  'orange-soft': 'var(--color-orange-soft)',
+  violet: 'var(--color-violet)',
+  'violet-soft': 'var(--color-violet-soft)',
+  rose: 'var(--color-rose)',
+  mauve: 'var(--color-mauve)',
+  moss: 'var(--color-moss)',
+  honey: 'var(--color-honey)',
+  ink: 'var(--color-ink)',
+};
+
+const { width = '100%', color = 'orange', class: className, style: styleProp } = Astro.props;
+const stroke = colorVar[color];
+---
+
+<svg
+  width={width}
+  height="14"
+  viewBox="0 0 200 14"
+  preserveAspectRatio="none"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class:list={[className]}
+  style={styleProp ? `display: block; ${styleProp}` : 'display: block;'}
+>
+  <path
+    d="M2 9 C 30 4, 55 12, 80 7 S 130 11, 160 6 S 195 9, 198 8"
+    stroke={stroke}
+    stroke-width="2.5"
+    stroke-linecap="round"
+    fill="none"
+    vector-effect="non-scaling-stroke"></path>
+</svg>

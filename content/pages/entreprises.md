@@ -2,10 +2,10 @@
 title: "Pour les entreprises"
 description: "Mécénat, ateliers de sensibilisation, engagements solidaires : plusieurs manières pour votre entreprise de soutenir 2mains de femmes."
 hero:
-  titre: "Vous êtes une entreprise"
-  sousTitre: "Nos activités"
+  titre: "*Soutenir* ce qui répare\nle lien social."
+  sousTitre: "Engagement structurel"
   accroche: "Soutenir un projet d'innovation sociale qui touche à la santé mentale, au lien social et à l'égalité de genre — c'est affirmer des engagements concrets, bien au-delà de la RSE de surface."
-  variant: "vert"
+  variant: "violet"
   cta_primaire:
     label: "Devenir mécène"
     href: "/soutenir/mecenat"

@@ -1,12 +1,9 @@
 ---
-/**
- * <Draft reason="..."> — marque visuellement un contenu inventé / provisoire.
- *
- * - Bordure orange pointillée + ruban "À VALIDER" en haut à droite
- * - Attribut `data-draft="reason"` exposé pour l'audit (page /status)
- * - Toujours visible (en prod comme en dev) : Audrey voit donc directement
- *   ce qui reste à valider. Pour cacher en prod, passer `hide` à true.
- */
+// <Draft reason="..."> — marque visuellement un contenu inventé /
+// provisoire. Bordure orange pointillée + ruban "À VALIDER" mono
+// uppercase en haut à droite. Toujours visible (prod comme dev) pour
+// qu'Audrey voie ce qui reste à valider. `hide` true masque le ruban
+// (utile pour wrapper tout en gardant le contenu).
 type Props = {
   reason: string;
   hide?: boolean;
@@ -32,22 +29,23 @@ const { reason, hide = false } = Astro.props;
   .draft-marker {
     position: relative;
     border: 2px dashed var(--color-orange);
-    border-radius: 0.75rem;
-    padding: 0.75rem;
-    margin: 0.25rem 0;
+    border-radius: 14px;
+    padding: 1rem;
+    margin: 0.5rem 0;
   }
 
   .draft-marker__tag {
     position: absolute;
-    top: -0.75rem;
+    top: -0.7rem;
     right: 1rem;
     background: var(--color-orange);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    color: var(--color-paper);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.25rem 0.625rem;
+    padding: 0.3rem 0.7rem;
     border-radius: 9999px;
     z-index: 1;
     pointer-events: none;

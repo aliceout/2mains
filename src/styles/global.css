@@ -1,58 +1,89 @@
 @import 'tailwindcss';
 
+/* ============================================================
+   Polices self-hostées via @fontsource — pas de fuite vers
+   Google Fonts côté visiteur. Trois familles :
+   - Newsreader (serif éditorial) : titres, citations, italiques
+     d'emphase. Toujours en weight 400 ou 500.
+   - Inter Tight (sans contemporain) : corps, boutons, nav.
+   - JetBrains Mono : eyebrows, méta-infos en majuscules.
+   ============================================================ */
+@import '@fontsource/newsreader/400.css';
+@import '@fontsource/newsreader/500.css';
+@import '@fontsource/newsreader/400-italic.css';
+@import '@fontsource/newsreader/500-italic.css';
+
+@import '@fontsource/inter-tight/400.css';
+@import '@fontsource/inter-tight/500.css';
+@import '@fontsource/inter-tight/600.css';
+@import '@fontsource/inter-tight/700.css';
+
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
 @theme {
-  /* Couleurs charte 2mains de femmes */
-  --color-orange: #ec6a2c;
-  --color-violet: #695ea3;
-  --color-beige: #f9e8d8;
-  --color-magenta: #dd057e;
-  --color-vert: #a2d1b0;
-  --color-bleu: #00607e;
-  --color-ink: #1a1a1a;
-  --color-paper: #ffffff;
+  /* ============================================================
+     Tokens issus du design handoff (Design/design_handoff_2mains).
+     Les noms historiques (orange, violet, beige, magenta, vert,
+     bleu) sont conservés pour rester compatibles avec le contenu
+     CMS d'Audrey, mais leurs valeurs basculent sur la nouvelle
+     palette. magenta/vert/bleu sont remappés sur les teintes les
+     plus proches de la nouvelle identité (rose terreux, vert
+     mousse, mauve poussiéreux).
+     ============================================================ */
+
+  /* Encres */
+  --color-ink: #1f1a14;
+  --color-ink-2: #3d362a;
+  --color-ink-3: #6b6256;
+
+  /* Papiers / fonds */
+  --color-paper: #fbf7ee; /* fond global (PAPER_V) */
+  --color-paper-white: #fbfaf6;
+  --color-paper-cream: #f5efe3;
+  --color-paper-cream-light: #f8efe0;
+  --color-paper-peach: #f4d9c4;
+  --color-paper-lav: #dbd4eb;
+  --color-paper-lav-light: #f1eef7;
+
+  /* Accents — alias des noms historiques vers la nouvelle palette */
+  --color-orange: #c84a21; /* terracotta principal */
+  --color-orange-soft: #e8a574;
+  --color-violet: #4a3d85; /* violet profond */
+  --color-violet-soft: #a8a0cc;
+  --color-beige: #f5efe3; /* alias de paper-cream */
+  --color-magenta: #e8a99d; /* remappé sur rose terreux */
+  --color-vert: #8a9a7b; /* remappé sur vert mousse */
+  --color-bleu: #b49dc9; /* remappé sur mauve poussiéreux */
+
+  /* Nouveaux accents (palette élargie) — utilisables comme
+     bg-rose, bg-mauve, bg-moss, bg-honey, bg-peach, bg-lav, bg-cream. */
+  --color-rose: #e8a99d;
+  --color-mauve: #b49dc9;
+  --color-moss: #8a9a7b;
+  --color-honey: #e8b85b;
+  --color-peach: #f4d9c4;
+  --color-lav: #dbd4eb;
+  --color-cream: #f5efe3;
+
+  /* Lignes */
+  --color-line: #d8cfbf;
+  --color-line-lav: #c7bce0;
 
   /* Typographie */
-  --font-sans:
-    'Nunito', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --font-weight-regular: 400;
+  --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Rayons — on privilégie la douceur */
-  --radius-sm: 0.5rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
-}
-
-/* Nunito self-host */
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/nunito-regular.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Nunito';
-  font-style: italic;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/nunito-italic.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/nunito-semibold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/nunito-bold.woff2') format('woff2');
+  /* Rayons — radius progressifs selon la nature du composant */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 22px;
 }
 
 /* Base */
@@ -78,6 +109,8 @@ body {
   font-family: var(--font-sans);
   color: var(--color-ink);
   background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Focus visible accessibilité */

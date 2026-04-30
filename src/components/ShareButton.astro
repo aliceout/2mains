@@ -21,7 +21,7 @@ const { title, label = 'Partager' } = Astro.props;
 <div class="share relative inline-block" data-share>
   <button
     type="button"
-    class="inline-flex items-center gap-2 rounded-full border-2 border-beige bg-paper px-4 py-2 text-sm font-semibold transition-colors hover:bg-beige"
+    class="inline-flex items-center gap-2 rounded-md border border-line bg-paper-white px-4 py-2 font-sans text-sm text-ink transition-colors hover:bg-cream"
     aria-haspopup="true"
     aria-expanded="false"
     data-share-toggle
@@ -47,7 +47,7 @@ const { title, label = 'Partager' } = Astro.props;
 
   <div
     role="menu"
-    class="share-menu invisible absolute right-0 top-full z-30 mt-2 min-w-56 rounded-lg border border-beige bg-paper p-1 opacity-0 shadow-lg transition-opacity"
+    class="share-menu invisible absolute right-0 top-full z-30 mt-2 min-w-56 rounded-md border border-line bg-paper-white p-1 opacity-0 transition-opacity"
     data-share-menu
     hidden
   >
@@ -55,7 +55,7 @@ const { title, label = 'Partager' } = Astro.props;
       href="#"
       role="menuitem"
       data-share-link="email"
-      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+      class="flex items-center gap-2 rounded px-3 py-2 font-sans text-sm text-ink transition-colors hover:bg-cream"
     >
       <span aria-hidden="true">✉</span>Email
     </a>
@@ -65,7 +65,7 @@ const { title, label = 'Partager' } = Astro.props;
       target="_blank"
       rel="noopener"
       data-share-link="whatsapp"
-      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+      class="flex items-center gap-2 rounded px-3 py-2 font-sans text-sm text-ink transition-colors hover:bg-cream"
     >
       <span aria-hidden="true">💬</span>WhatsApp
     </a>
@@ -75,7 +75,7 @@ const { title, label = 'Partager' } = Astro.props;
       target="_blank"
       rel="noopener"
       data-share-link="facebook"
-      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+      class="flex items-center gap-2 rounded px-3 py-2 font-sans text-sm text-ink transition-colors hover:bg-cream"
     >
       <span aria-hidden="true" class="font-bold">f</span>Facebook
     </a>
@@ -85,7 +85,7 @@ const { title, label = 'Partager' } = Astro.props;
       target="_blank"
       rel="noopener"
       data-share-link="linkedin"
-      class="flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-beige"
+      class="flex items-center gap-2 rounded px-3 py-2 font-sans text-sm text-ink transition-colors hover:bg-cream"
     >
       <span aria-hidden="true" class="font-bold">in</span>LinkedIn
     </a>
@@ -93,7 +93,7 @@ const { title, label = 'Partager' } = Astro.props;
       type="button"
       role="menuitem"
       data-share-copy
-      class="flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm hover:bg-beige"
+      class="flex w-full items-center gap-2 rounded px-3 py-2 text-left font-sans text-sm text-ink transition-colors hover:bg-cream"
     >
       <span aria-hidden="true">🔗</span>
       <span data-share-copy-label>Copier le lien</span>

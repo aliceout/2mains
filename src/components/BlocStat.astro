@@ -1,4 +1,6 @@
 ---
+// Grille de chiffres-clés. Inspiré de l'ImpenseSocial du proto :
+// chiffre italique 60-64px orange, légende sans + source mono.
 type Stat = {
   valeur: string;
   legende: string;
@@ -9,13 +11,24 @@ type Props = { stats: Stat[] };
 const { stats } = Astro.props;
 ---
 
-<div class="grid gap-4 md:grid-cols-3">
+<div class="grid gap-8 md:grid-cols-3">
   {
     stats.map((s) => (
-      <div class="rounded-xl border border-beige bg-paper p-6">
-        <p class="text-4xl font-bold text-orange">{s.valeur}</p>
-        <p class="mt-2 leading-snug">{s.legende}</p>
-        {s.source && <p class="mt-3 text-xs opacity-70">{s.source}</p>}
+      <div class="border-t border-line pt-6">
+        <p class="font-serif italic font-medium text-[60px] leading-none tracking-tight text-orange md:text-[64px]">
+          {s.valeur}
+        </p>
+        <p class="mt-4 max-w-[28ch] font-sans text-[15px] leading-snug text-ink-2">
+          {s.legende}
+        </p>
+        {s.source && (
+          <p
+            class="mt-3 font-mono text-[11px] uppercase text-ink-3"
+            style="letter-spacing: 0.04em;"
+          >
+            — {s.source}
+          </p>
+        )}
       </div>
     ))
   }

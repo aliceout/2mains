@@ -1,0 +1,108 @@
+---
+// Statistique en majesté — un chiffre seul, italique géant (180px desktop),
+// posé à gauche d'un bloc de texte explicatif Newsreader 22px. Réservé aux
+// faits marquants : un constat qui ouvre une page, pas une grille de stats.
+import Eyebrow from './atoms/Eyebrow.astro';
+
+type Variant = 'orange' | 'violet';
+
+type Props = {
+  chiffre: string;
+  texte: string;
+  source?: string;
+  eyebrow?: string;
+  variant?: Variant;
+};
+
+const {
+  chiffre,
+  texte,
+  source,
+  eyebrow = '— constat',
+  variant = 'orange',
+} = Astro.props;
+
+const chiffreColor = variant === 'violet' ? 'text-violet' : 'text-orange';
+
+function parseTexte(s: string): string {
+  let out = s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  out = out.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  out = out.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  return out;
+}
+const html = parseTexte(texte);
+---
+
+<div class="stat-majeste">
+  <div class={`stat-majeste__chiffre font-serif italic ${chiffreColor}`}>{chiffre}</div>
+  <div class="stat-majeste__body">
+    {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+    <p class="stat-majeste__texte font-serif" set:html={html} />
+    {source && (
+      <div class="stat-majeste__source font-mono">— {source}</div>
+    )}
+  </div>
+</div>
+
+<style>
+  .stat-majeste {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .stat-majeste {
+      grid-template-columns: auto 1fr;
+      gap: 56px;
+    }
+  }
+  .stat-majeste__chiffre {
+    font-size: 96px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    font-weight: 500;
+  }
+  @media (min-width: 768px) {
+    .stat-majeste__chiffre {
+      font-size: 140px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .stat-majeste__chiffre {
+      font-size: 180px;
+    }
+  }
+  .stat-majeste__texte {
+    font-size: 20px;
+    line-height: 1.4;
+    color: var(--color-ink);
+    max-width: 44ch;
+    margin: 12px 0 16px;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  @media (min-width: 768px) {
+    .stat-majeste__texte {
+      font-size: 22px;
+    }
+  }
+  .stat-majeste__texte :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-violet);
+  }
+  .stat-majeste__texte :global(strong) {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .stat-majeste__source {
+    font-size: 12px;
+    color: var(--color-ink-3);
+    letter-spacing: 0.04em;
+  }
+</style>

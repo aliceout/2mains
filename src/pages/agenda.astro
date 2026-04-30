@@ -87,7 +87,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
 
   <Section>
     <div
-      class="flex flex-col gap-4 rounded-2xl border border-beige bg-paper p-6 md:flex-row md:items-center md:justify-between md:p-8"
+      class="flex flex-col gap-4 rounded-2xl border border-line bg-paper p-6 md:flex-row md:items-center md:justify-between md:p-8"
     >
       <div class="max-w-2xl">
         <h2 class="text-xl font-bold md:text-2xl">S'abonner à l'agenda</h2>
@@ -100,7 +100,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
       <div class="flex flex-col items-start gap-2 md:items-end">
         <a
           href={feedWebcal}
-          class="inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 text-sm font-bold text-paper hover:bg-magenta"
+          class="inline-flex items-center gap-2 rounded-full bg-orange px-5 py-2 text-sm font-bold text-paper hover:opacity-85"
         >
           S'abonner
         </a>
@@ -126,18 +126,18 @@ function formatDateFull(debut: Date, fin?: Date): string {
             <Draft reason="Événements fictifs — à remplacer par les vrais via le CMS">
               <ul class="grid gap-4 md:grid-cols-2">
                 {aVenir.map((e) => (
-                  <li class="rounded-xl border border-beige bg-paper p-6">
+                  <li class="rounded-xl border border-line bg-paper p-6">
                     <DraftBadge draft={e.data.draft} />
                     <p class="text-xs font-semibold uppercase tracking-wide text-orange">
                       {formatDateFull(e.data.date_debut, e.data.date_fin)} · {e.data.lieu}
                     </p>
                     <h2 class="mt-2 mb-1 text-xl font-bold">{e.data.title}</h2>
                     <div class="mb-3 flex flex-wrap gap-2 text-xs">
-                      <span class="rounded-full bg-beige px-3 py-1">
+                      <span class="rounded-full bg-cream px-3 py-1">
                         {e.data.public}
                       </span>
                       {e.data.gratuit && (
-                        <span class="rounded-full bg-vert px-3 py-1">Gratuit</span>
+                        <span class="rounded-full bg-moss text-paper px-3 py-1">Gratuit</span>
                       )}
                     </div>
                     <div class="text-sm leading-relaxed">
@@ -167,15 +167,15 @@ function formatDateFull(debut: Date, fin?: Date): string {
           ) : (
             <ul class="grid gap-4 md:grid-cols-2">
               {aVenir.map((e) => (
-                <li class="rounded-xl border border-beige bg-paper p-6">
+                <li class="rounded-xl border border-line bg-paper p-6">
                   <p class="text-xs font-semibold uppercase tracking-wide text-orange">
                     {formatDateFull(e.data.date_debut, e.data.date_fin)} · {e.data.lieu}
                   </p>
                   <h2 class="mt-2 mb-1 text-xl font-bold">{e.data.title}</h2>
                   <div class="mb-3 flex flex-wrap gap-2 text-xs">
-                    <span class="rounded-full bg-beige px-3 py-1">{e.data.public}</span>
+                    <span class="rounded-full bg-cream px-3 py-1">{e.data.public}</span>
                     {e.data.gratuit && (
-                      <span class="rounded-full bg-vert px-3 py-1">Gratuit</span>
+                      <span class="rounded-full bg-moss text-paper px-3 py-1">Gratuit</span>
                     )}
                   </div>
                   <div class="text-sm leading-relaxed">

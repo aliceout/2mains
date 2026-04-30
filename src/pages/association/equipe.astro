@@ -31,7 +31,7 @@ const ca = filterPublished(await getCollection('equipe')).sort(
     <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {
         ca.map((membre) => (
-          <li class="rounded-xl border border-beige bg-paper p-5">
+          <li class="rounded-xl border border-line bg-paper p-5">
             <DraftBadge draft={membre.data.draft} />
             <p class="text-lg font-bold">{membre.data.nom}</p>
             <p class="text-sm text-violet">{membre.data.role}</p>

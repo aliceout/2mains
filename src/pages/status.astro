@@ -64,7 +64,7 @@ const routes = Object.keys(byRoute).sort();
 
   <Section>
     <Prose>
-      <p class="mb-6 rounded-lg border border-beige bg-paper p-4 text-sm">
+      <p class="mb-6 rounded-lg border border-line bg-paper p-4 text-sm">
         <strong>Pages internes utiles :</strong>
         <br />
         <a href="/demo">/demo</a> — catalogue visuel de tous les blocs CMS.
@@ -89,12 +89,12 @@ const routes = Object.keys(byRoute).sort();
     <div class="mt-8 space-y-6">
       {
         routes.length === 0 ? (
-          <p class="rounded-xl bg-vert p-6 font-semibold">
+          <p class="rounded-xl bg-moss text-paper p-6 font-semibold">
             ✓ Aucun contenu marqué comme fictif. Bravo.
           </p>
         ) : (
           routes.map((route) => (
-            <div class="rounded-xl border border-beige bg-paper p-5">
+            <div class="rounded-xl border border-line bg-paper p-5">
               <h2 class="mb-3 text-lg font-bold">
                 <a href={route} class="text-orange hover:underline">
                   {route}

@@ -1,5 +1,7 @@
 ---
-// Bloc texte (markdown) + photo côte à côte. Position et ratio ajustables.
+// Bloc texte + photo côte à côte. Position et ratio ajustables.
+// Visuel refondu : photo sans bordure, légende mono italique fine,
+// crédit en italique discret en dessous.
 import { marked } from 'marked';
 import SmartImage from './SmartImage.astro';
 
@@ -31,44 +33,60 @@ const gridClass = {
   '2-tiers-image': 'md:grid-cols-[1fr_2fr]',
 }[ratio];
 
-// Avec position=gauche, on inverse via CSS order plutôt que le markup
-// pour garder l'ordre de lecture texte → image pour les lecteurs d'écran.
+// Avec position=gauche, on inverse via CSS order plutôt que dans le
+// markup pour préserver l'ordre de lecture texte → image pour les
+// lecteurs d'écran.
 const imageOrder = position === 'gauche' ? 'md:order-first' : '';
 ---
 
-<div class:list={['grid gap-8 items-center', gridClass]}>
-  <div class="texte-photo-prose max-w-prose">
+<div class:list={['grid items-center gap-12 md:gap-16', gridClass]}>
+  <div class="texte-photo-prose max-w-[55ch]">
     <Fragment set:html={html} />
   </div>
   <figure class:list={['m-0', imageOrder]}>
-    <SmartImage
-      src={image}
-      alt={image_alt}
-      class="w-full rounded-xl"
-    />
-    {
-      (image_legende || image_credit) && (
-        <figcaption class="mt-2 text-sm opacity-70">
-          {image_legende}
-          {image_credit && (
-            <span class="block text-xs opacity-80">© {image_credit}</span>
-          )}
-        </figcaption>
-      )
-    }
+    <SmartImage src={image} alt={image_alt} class="w-full rounded-2xl" />
+    {(image_legende || image_credit) && (
+      <figcaption class="mt-3 font-mono text-[11px] uppercase text-ink-3" style="letter-spacing: 0.06em;">
+        {image_legende && <span>— {image_legende}</span>}
+        {image_credit && (
+          <span class="ml-2 normal-case">© {image_credit}</span>
+        )}
+      </figcaption>
+    )}
   </figure>
 </div>
 
 <style>
+  .texte-photo-prose {
+    font-family: var(--font-sans);
+    color: var(--color-ink-2);
+    line-height: 1.65;
+  }
+  .texte-photo-prose :global(h2) {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+    color: var(--color-ink);
+  }
+  @media (min-width: 768px) {
+    .texte-photo-prose :global(h2) {
+      font-size: 40px;
+    }
+  }
   .texte-photo-prose :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--color-ink);
   }
   .texte-photo-prose :global(p) {
+    font-size: 16px;
+    line-height: 1.65;
     margin-bottom: 1rem;
-    line-height: 1.7;
   }
   .texte-photo-prose :global(ul) {
     margin-bottom: 1rem;
@@ -76,10 +94,18 @@ const imageOrder = position === 'gauche' ? 'md:order-first' : '';
     list-style: disc;
   }
   .texte-photo-prose :global(strong) {
-    font-weight: 700;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .texte-photo-prose :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-orange);
   }
   .texte-photo-prose :global(a) {
     color: var(--color-orange);
     text-decoration: underline;
+    text-underline-offset: 2px;
   }
 </style>

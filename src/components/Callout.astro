@@ -1,41 +1,41 @@
 ---
-/**
- * Encadré coloré pour faire sortir un point clé.
- * Trois tons : info (bleu doux), important (magenta vif), astuce (vert).
- */
+// Encadré coloré pour faire ressortir un point clé. Inspiré des
+// callouts éthiques de la page Structure du proto : border-left 3px,
+// fond tinté, eyebrow mono uppercase coloré, body Inter Tight.
 import { marked } from 'marked';
 
 type Props = {
   ton?: 'info' | 'important' | 'astuce' | 'note';
   titre?: string;
-  body: string; // markdown inline (pas de block-level)
+  body: string; // markdown inline
 };
 
 const { ton = 'info', titre, body } = Astro.props;
 
+// Mapping des tons sur les nouvelles teintes du design.
 const styles = {
   info: {
-    bg: 'bg-bleu/10 border-bleu',
-    text: 'text-bleu',
-    icon: 'ℹ',
+    bg: 'bg-lav',
+    border: 'border-violet',
+    text: 'text-violet',
     label: 'Info',
   },
   important: {
-    bg: 'bg-magenta/10 border-magenta',
-    text: 'text-magenta',
-    icon: '⚠',
+    bg: 'bg-peach',
+    border: 'border-orange',
+    text: 'text-orange',
     label: 'Important',
   },
   astuce: {
-    bg: 'bg-vert/40 border-vert',
-    text: 'text-ink',
-    icon: '✦',
+    bg: 'bg-honey/60',
+    border: 'border-honey',
+    text: 'text-orange',
     label: 'À savoir',
   },
   note: {
-    bg: 'bg-beige border-orange',
-    text: 'text-ink',
-    icon: '●',
+    bg: 'bg-cream',
+    border: 'border-ink-3',
+    text: 'text-ink-3',
     label: 'Note',
   },
 }[ton];
@@ -45,15 +45,17 @@ const html = marked.parse(body, { async: false }) as string;
 
 <aside
   role="note"
-  class:list={['rounded-xl border-l-4 p-5 md:p-6', styles.bg]}
+  class:list={['rounded-md border-l-[3px] px-7 py-6', styles.bg, styles.border]}
 >
   <p
-    class:list={['mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide', styles.text]}
+    class:list={['mb-2 font-mono text-[11px] uppercase', styles.text]}
+    style="letter-spacing: 0.12em;"
   >
-    <span aria-hidden="true">{styles.icon}</span>
-    <span>{titre ?? styles.label}</span>
+    — {titre ?? styles.label}
   </p>
-  <div class="callout-body text-sm leading-relaxed md:text-base">
+  <div
+    class="callout-body font-sans text-[15.5px] leading-relaxed text-ink-2"
+  >
     <Fragment set:html={html} />
   </div>
 </aside>
@@ -66,7 +68,14 @@ const html = marked.parse(body, { async: false }) as string;
     margin-bottom: 0;
   }
   .callout-body :global(strong) {
-    font-weight: 700;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .callout-body :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-orange);
   }
   .callout-body :global(a) {
     color: var(--color-orange);

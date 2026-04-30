@@ -1,14 +1,17 @@
 ---
-/**
- * Cartes riches : chaque carte a un titre, une description, une liste
- * de points-clés et éventuellement un CTA. Bandeau coloré à gauche
- * pour marquer la catégorie.
- */
+// Cartes riches type "triptyque" : numéro 01/02/03 italique, titre,
+// description, points-clés en liste, CTA optionnel. Inspiré du
+// triptyque "Trois formats" dans la page Structure du proto.
+import Blob from './atoms/Blob.astro';
+import LinkArrow from './atoms/LinkArrow.astro';
+
+type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+
 type Format = {
   titre: string;
   description?: string;
   points?: string[];
-  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+  couleur?: Couleur;
   cta?: {
     label: string;
     href: string;
@@ -28,61 +31,118 @@ const gridClass = {
   3: 'md:grid-cols-2 lg:grid-cols-3',
 }[colonnes];
 
-const barColor = {
-  orange: 'bg-orange',
-  violet: 'bg-violet',
-  magenta: 'bg-magenta',
-  vert: 'bg-vert',
-  bleu: 'bg-bleu',
+type FormatConfig = {
+  accent: 'orange' | 'violet' | 'rose' | 'moss' | 'mauve';
+  bgClass: string;
+  blob: 'orange' | 'violet' | 'rose' | 'moss' | 'mauve' | 'honey' | 'peach';
 };
 
-const bulletColor = {
+const couleurMap: Record<Couleur, FormatConfig> = {
+  orange: { accent: 'orange', bgClass: 'bg-peach', blob: 'rose' },
+  violet: { accent: 'violet', bgClass: 'bg-lav', blob: 'mauve' },
+  magenta: { accent: 'rose', bgClass: 'bg-rose/40', blob: 'orange' },
+  vert: { accent: 'moss', bgClass: 'bg-honey/50', blob: 'moss' },
+  bleu: { accent: 'mauve', bgClass: 'bg-lav', blob: 'mauve' },
+};
+
+const accentText: Record<string, string> = {
   orange: 'text-orange',
   violet: 'text-violet',
-  magenta: 'text-magenta',
-  vert: 'text-vert',
-  bleu: 'text-bleu',
+  rose: 'text-rose',
+  moss: 'text-moss',
+  mauve: 'text-mauve',
+};
+
+const accentBg: Record<string, string> = {
+  orange: 'bg-orange',
+  violet: 'bg-violet',
+  rose: 'bg-rose',
+  moss: 'bg-moss',
+  mauve: 'bg-mauve',
+};
+
+const accentBorder: Record<string, string> = {
+  orange: 'border-orange/20',
+  violet: 'border-violet/20',
+  rose: 'border-rose/30',
+  moss: 'border-moss/25',
+  mauve: 'border-mauve/30',
 };
 ---
 
-<div class:list={['grid gap-5', gridClass]}>
+<div class:list={['grid gap-6', gridClass]}>
   {
-    formats.map((f) => {
-      const couleur = f.couleur ?? 'orange';
+    formats.map((f, i) => {
+      const config = couleurMap[f.couleur ?? 'orange'];
+      const numero = String(i + 1).padStart(2, '0');
       return (
-        <article class="flex overflow-hidden rounded-xl bg-paper shadow-sm transition-shadow hover:shadow-md">
-          <div class:list={['w-1.5 shrink-0', barColor[couleur]]} aria-hidden="true" />
-          <div class="flex flex-1 flex-col p-6">
-            <h3 class="mb-2 text-xl font-bold">{f.titre}</h3>
-            {f.description && (
-              <p class="mb-4 text-sm leading-relaxed">{f.description}</p>
-            )}
-            {f.points && f.points.length > 0 && (
-              <ul class="mb-4 flex-1 space-y-1.5 text-sm">
-                {f.points.map((p) => (
-                  <li class="flex items-start gap-2">
-                    <span
-                      class:list={['mt-1 inline-block', bulletColor[couleur]]}
-                      aria-hidden="true"
-                    >
-                      ●
-                    </span>
-                    <span>{p}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            {f.cta && (
-              <a
-                href={f.cta.href}
-                target={f.cta.externe ? '_blank' : undefined}
-                rel={f.cta.externe ? 'noopener' : undefined}
-                class="mt-auto w-fit font-semibold text-orange hover:underline"
-              >
-                {f.cta.label} →
-              </a>
-            )}
+        <article
+          class:list={[
+            'relative flex min-h-95 flex-col overflow-hidden rounded-2xl p-8',
+            config.bgClass,
+          ]}
+        >
+          <Blob
+            size={140}
+            color={config.blob}
+            seed={i + 2}
+            opacity={0.25}
+            class="pointer-events-none absolute -bottom-10 -right-10"
+          />
+          <div class="relative mb-5 flex items-baseline gap-3">
+            <span
+              class:list={[
+                'font-serif italic font-medium text-[56px] leading-none tracking-tight',
+                accentText[config.accent],
+              ]}
+            >
+              {numero}
+            </span>
+            <span
+              class:list={['h-px flex-1 opacity-30', accentBg[config.accent]]}
+              aria-hidden="true"
+            />
           </div>
+          <h3 class="relative mb-3 font-serif text-[26px] font-medium leading-tight tracking-tight text-ink">
+            {f.titre}
+          </h3>
+          {f.description && (
+            <p class="relative mb-5 font-sans text-sm leading-relaxed text-ink-2">
+              {f.description}
+            </p>
+          )}
+          {f.points && f.points.length > 0 && (
+            <ul class="relative mb-6 flex-1 space-y-2 font-sans text-sm text-ink-2">
+              {f.points.map((p) => (
+                <li class="flex items-start gap-2.5">
+                  <span
+                    class:list={[
+                      'mt-2 inline-block h-1 w-1 shrink-0 rounded-full',
+                      accentBg[config.accent],
+                    ]}
+                    aria-hidden="true"
+                  />
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {f.cta && (
+            <div
+              class:list={[
+                'relative mt-auto border-t pt-4',
+                accentBorder[config.accent],
+              ]}
+            >
+              <LinkArrow
+                href={f.cta.href}
+                color={config.accent}
+                external={f.cta.externe}
+              >
+                {f.cta.label}
+              </LinkArrow>
+            </div>
+          )}
         </article>
       );
     })

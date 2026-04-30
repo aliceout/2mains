@@ -1,51 +1,61 @@
 ---
-/**
- * Citation pleine largeur, typo grande, guillemets décoratifs.
- * Pour les moments où on veut un vrai temps de lecture sur une phrase.
- */
+// Citation pleine largeur — moment de lecture suspendu. Guillemets
+// décoratifs en italique 200px Newsreader, citation en italique
+// 32-36px sur fond cream / paper / lav / orange / violet.
+type Variant = 'orange' | 'violet' | 'beige' | 'paper';
+
 type Props = {
   citation: string;
   auteur?: string;
   role?: string;
-  variant?: 'orange' | 'violet' | 'beige' | 'paper';
+  variant?: Variant;
 };
 
 const { citation, auteur, role, variant = 'paper' } = Astro.props;
 
-const bg = {
-  paper: 'bg-paper text-ink',
-  beige: 'bg-beige text-ink',
-  orange: 'bg-orange text-paper',
-  violet: 'bg-violet text-paper',
-}[variant];
+const variantMap: Record<Variant, { bg: string; text: string; quote: string }> = {
+  paper: { bg: 'bg-cream', text: 'text-ink', quote: 'text-orange' },
+  beige: { bg: 'bg-cream', text: 'text-ink', quote: 'text-orange' },
+  orange: { bg: 'bg-orange', text: 'text-paper', quote: 'text-honey' },
+  violet: { bg: 'bg-violet', text: 'text-paper', quote: 'text-honey' },
+};
 
-const accent = variant === 'paper' || variant === 'beige' ? 'text-orange' : '';
+const v = variantMap[variant];
 ---
 
-<figure class:list={['relative mx-auto max-w-3xl rounded-2xl px-6 py-10 text-center md:px-12 md:py-14', bg]}>
-  <span
-    class:list={['pointer-events-none absolute top-2 left-4 text-7xl leading-none opacity-50 md:text-8xl', accent]}
-    aria-hidden="true"
-  >
-    &ldquo;
-  </span>
-  <blockquote class="relative">
-    <p class="text-2xl leading-snug font-semibold md:text-3xl">
-      {citation}
-    </p>
-  </blockquote>
-  {
-    (auteur || role) && (
-      <figcaption class="mt-6 text-sm opacity-90">
-        {auteur && <span class="font-semibold">— {auteur}</span>}
-        {role && <span class="mx-1 opacity-80">· {role}</span>}
-      </figcaption>
-    )
-  }
-  <span
-    class:list={['pointer-events-none absolute right-4 bottom-2 text-7xl leading-none opacity-50 md:text-8xl', accent]}
-    aria-hidden="true"
-  >
-    &rdquo;
-  </span>
+<figure
+  class:list={[
+    'relative mx-auto max-w-235 overflow-hidden rounded-2xl px-12 py-16 md:px-20 md:py-20',
+    v.bg,
+    v.text,
+  ]}
+>
+  <div class="grid items-start gap-12 md:grid-cols-[auto_1fr]">
+    <div
+      class:list={[
+        'pointer-events-none font-serif italic font-medium leading-[0.7]',
+        v.quote,
+      ]}
+      style="font-size: 200px;"
+      aria-hidden="true"
+    >
+      “
+    </div>
+    <div>
+      <blockquote
+        class="font-serif italic font-normal text-[28px] leading-snug tracking-tight max-w-[32ch] md:text-[36px]"
+      >
+        {citation}
+      </blockquote>
+      {(auteur || role) && (
+        <figcaption
+          class="mt-6 font-mono text-[12px] uppercase opacity-90"
+          style="letter-spacing: 0.06em;"
+        >
+          {auteur && <span>— {auteur}</span>}
+          {role && <span class="opacity-80"> · {role}</span>}
+        </figcaption>
+      )}
+    </div>
+  </div>
 </figure>

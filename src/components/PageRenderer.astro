@@ -22,15 +22,16 @@ import Galerie from './Galerie.astro';
 import BandeauImage from './BandeauImage.astro';
 import Portraits from './Portraits.astro';
 import Timeline from './Timeline.astro';
+import Lettre from './Lettre.astro';
+import StatMajeste from './StatMajeste.astro';
 import Draft from './Draft.astro';
-import TableOfContents from './TableOfContents.astro';
 
 type Props = {
   page: CollectionEntry<'pages'>;
 };
 
 const { page } = Astro.props;
-const { hero, sections, toc } = page.data;
+const { hero, sections } = page.data;
 
 // Si la page a un corps markdown (hors sections), on le rend en zone prose
 // principale. Utile pour les pages très textuelles.
@@ -46,8 +47,6 @@ function slugify(s: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-// Calcule un id unique pour chaque section dotée d'un titre, puis construit
-// la table des matières.
 const sectionIds: (string | undefined)[] = [];
 const used = new Set<string>();
 for (const s of sections) {
@@ -63,19 +62,9 @@ for (const s of sections) {
   used.add(id);
   sectionIds.push(id);
 }
-const tocItems = sections
-  .map((s, i) => {
-    const t = 'titre' in s ? s.titre : undefined;
-    const id = sectionIds[i];
-    if (!t || !id) return null;
-    return { id, label: t };
-  })
-  .filter((x): x is { id: string; label: string } => x !== null);
 ---
 
 {hero && <Hero {...hero} />}
-
-{toc && tocItems.length >= 2 && <TableOfContents items={tocItems} />}
 
 {
   // Si pas de sections mais du body markdown, on le rend.
@@ -147,29 +136,50 @@ const tocItems = sections
       );
     }
     if (s.type === 'cta') {
+      const isDark = (s.fond ?? 'violet') === 'violet' || (s.fond ?? 'violet') === 'orange' || s.fond === 'vert';
+      const titreColor = isDark ? 'text-paper' : 'text-ink';
+      const corpsColor = isDark ? 'text-paper/85' : 'text-ink-2';
       return (
         <Section id={id} fond={s.fond ?? 'violet'}>
-          <div class="grid gap-4">
-            <h2 class="text-3xl font-bold md:text-4xl">{s.titre}</h2>
-            {s.corps && <p class="max-w-3xl text-lg leading-relaxed">{s.corps}</p>}
+          <div class="grid gap-6 max-w-225">
+            <h2 class:list={['font-serif text-4xl font-normal leading-tight tracking-tight md:text-5xl', titreColor]}>
+              {s.titre}
+            </h2>
+            {s.corps && (
+              <p class:list={['font-sans text-lg leading-relaxed max-w-220', corpsColor]}>{s.corps}</p>
+            )}
             {(s.cta_primaire || s.cta_secondaire) && (
-              <div class="mt-2 flex flex-wrap gap-3">
+              <div class="mt-2 flex flex-wrap items-center gap-3">
                 {s.cta_primaire && (
-                  <a
-                    href={s.cta_primaire.href}
-                    target={s.cta_primaire.externe ? '_blank' : undefined}
-                    rel={s.cta_primaire.externe ? 'noopener' : undefined}
-                    class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:bg-magenta"
-                  >
-                    {s.cta_primaire.label}
-                  </a>
+                  isDark ? (
+                    <a
+                      href={s.cta_primaire.href}
+                      target={s.cta_primaire.externe ? '_blank' : undefined}
+                      rel={s.cta_primaire.externe ? 'noopener' : undefined}
+                      class="inline-flex items-center gap-1.5 rounded-md bg-paper px-5.5 py-3 font-sans text-sm font-medium text-ink no-underline transition-opacity hover:opacity-85"
+                    >
+                      {s.cta_primaire.label} <span aria-hidden="true">→</span>
+                    </a>
+                  ) : (
+                    <a
+                      href={s.cta_primaire.href}
+                      target={s.cta_primaire.externe ? '_blank' : undefined}
+                      rel={s.cta_primaire.externe ? 'noopener' : undefined}
+                      class="inline-flex items-center gap-1.5 rounded-md bg-orange px-5.5 py-3 font-sans text-sm font-medium text-paper no-underline transition-opacity hover:opacity-85"
+                    >
+                      {s.cta_primaire.label} <span aria-hidden="true">→</span>
+                    </a>
+                  )
                 )}
                 {s.cta_secondaire && (
                   <a
                     href={s.cta_secondaire.href}
                     target={s.cta_secondaire.externe ? '_blank' : undefined}
                     rel={s.cta_secondaire.externe ? 'noopener' : undefined}
-                    class="rounded-full border-2 border-current px-6 py-3 font-bold hover:bg-paper/10"
+                    class:list={[
+                      'inline-flex items-center gap-1.5 rounded-md border px-5.5 py-3 font-sans text-sm font-medium no-underline transition-opacity hover:opacity-85',
+                      isDark ? 'border-paper text-paper bg-transparent' : 'border-ink text-ink bg-transparent',
+                    ]}
                   >
                     {s.cta_secondaire.label}
                   </a>
@@ -315,6 +325,31 @@ const tocItems = sections
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Timeline etapes={s.etapes} alignement={s.alignement} />
+        </Section>
+      );
+    }
+    if (s.type === 'lettre') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Lettre
+            corps={s.corps}
+            ouverture={s.ouverture}
+            signature={s.signature}
+            variant={s.variant}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'stat-majeste') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <StatMajeste
+            chiffre={s.chiffre}
+            texte={s.texte}
+            source={s.source}
+            eyebrow={s.eyebrow}
+            variant={s.variant}
+          />
         </Section>
       );
     }
