@@ -54,11 +54,13 @@ const fondMap: Record<Fond, FondConfig> = {
 
 const f = fondMap[fond];
 
-// Padding vertical : 80 / 120 / 140px selon taille (responsive).
+// Padding vertical par section (top + bottom). Deux sections
+// adjacentes cumulent leurs paddings, donc on reste mesuré pour
+// éviter les vides à 240px entre deux blocs.
 const padClass = {
-  sm: 'py-12 md:py-20',
-  md: 'py-20 md:py-30',
-  lg: 'py-25 md:py-35',
+  sm: 'py-6 md:py-8',
+  md: 'py-8 md:py-14',
+  lg: 'py-12 md:py-20',
 }[taille];
 
 // Couleur d'accent par défaut, choisie pour garantir le contraste

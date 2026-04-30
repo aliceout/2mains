@@ -1,7 +1,6 @@
 ---
 title: "Pour les structures d'accueil"
 description: "Enrichissez vos accompagnements en intégrant le toucher relationnel : parcours, ateliers collectifs et formations pour vos équipes."
-toc: true
 hero:
   titre: "On *intervient*\nchez vous, avec vous."
   sousTitre: "Pour les structures qui accompagnent"

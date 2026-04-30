@@ -25,14 +25,13 @@ import Timeline from './Timeline.astro';
 import Lettre from './Lettre.astro';
 import StatMajeste from './StatMajeste.astro';
 import Draft from './Draft.astro';
-import TableOfContents from './TableOfContents.astro';
 
 type Props = {
   page: CollectionEntry<'pages'>;
 };
 
 const { page } = Astro.props;
-const { hero, sections, toc } = page.data;
+const { hero, sections } = page.data;
 
 // Si la page a un corps markdown (hors sections), on le rend en zone prose
 // principale. Utile pour les pages très textuelles.
@@ -48,8 +47,6 @@ function slugify(s: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-// Calcule un id unique pour chaque section dotée d'un titre, puis construit
-// la table des matières.
 const sectionIds: (string | undefined)[] = [];
 const used = new Set<string>();
 for (const s of sections) {
@@ -65,19 +62,9 @@ for (const s of sections) {
   used.add(id);
   sectionIds.push(id);
 }
-const tocItems = sections
-  .map((s, i) => {
-    const t = 'titre' in s ? s.titre : undefined;
-    const id = sectionIds[i];
-    if (!t || !id) return null;
-    return { id, label: t };
-  })
-  .filter((x): x is { id: string; label: string } => x !== null);
 ---
 
 {hero && <Hero {...hero} />}
-
-{toc && tocItems.length >= 2 && <TableOfContents items={tocItems} />}
 
 {
   // Si pas de sections mais du body markdown, on le rend.

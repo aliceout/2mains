@@ -428,7 +428,6 @@ const pages = defineCollection({
     hero: heroSchema.optional(),
     sections: z.array(sectionSchema).default([]),
     noindex: z.boolean().default(false),
-    toc: z.boolean().default(false),
   }),
 });
 
