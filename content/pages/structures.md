@@ -3,10 +3,10 @@ title: "Pour les structures d'accueil"
 description: "Enrichissez vos accompagnements en intégrant le toucher relationnel : parcours, ateliers collectifs et formations pour vos équipes."
 toc: true
 hero:
-  titre: "Vous êtes une structure d'accueil"
-  sousTitre: "Nos activités"
-  accroche: "Foyer, CHRS, maison des femmes, EHPAD, centre social, maison relais… Nous intervenons là où les femmes sont déjà accueillies, en coopération étroite avec vos équipes."
-  variant: "bleu"
+  titre: "On *intervient*\nchez vous, avec vous."
+  sousTitre: "Pour les structures qui accompagnent"
+  accroche: "Foyer d'hébergement, EHPAD, maison des femmes, accueil de jour, association, hôpital — nous montons un parcours de toucher relationnel adapté aux femmes que vous accueillez, en complément de votre travail."
+  variant: "violet"
   cta_primaire:
     label: "Organiser une rencontre"
     href: "/contact"
