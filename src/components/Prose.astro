@@ -1,64 +1,110 @@
 ---
-// Wrapper pour du markdown / HTML riche avec styles lisibles par défaut.
+// Wrapper pour du markdown / HTML riche avec styles éditoriaux du
+// nouveau design : Newsreader pour les titres, Inter Tight pour le
+// corps, italiques orange pour les emphases, blockquotes avec barre
+// violette à gauche.
 ---
 
-<div class="prose-custom max-w-3xl">
+<div class="prose-custom max-w-[65ch]">
   <slot />
 </div>
 
 <style>
+  .prose-custom {
+    font-family: var(--font-sans);
+    color: var(--color-ink-2);
+    line-height: 1.65;
+  }
   .prose-custom :global(h2) {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-top: 2.5rem;
+    font-family: var(--font-serif);
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-top: 3rem;
     margin-bottom: 1rem;
   }
   @media (min-width: 768px) {
     .prose-custom :global(h2) {
-      font-size: 1.875rem;
+      font-size: 44px;
     }
   }
   .prose-custom :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-top: 2rem;
+    font-family: var(--font-serif);
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+    margin-top: 2.25rem;
     margin-bottom: 0.75rem;
   }
+  @media (min-width: 768px) {
+    .prose-custom :global(h3) {
+      font-size: 28px;
+    }
+  }
   .prose-custom :global(p) {
-    margin-bottom: 1rem;
-    line-height: 1.7;
+    font-size: 17px;
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
   }
   .prose-custom :global(ul) {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     padding-left: 1.5rem;
     list-style: disc;
   }
-  .prose-custom :global(ul li),
-  .prose-custom :global(ol li) {
-    margin-top: 0.25rem;
-  }
   .prose-custom :global(ol) {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
     padding-left: 1.5rem;
     list-style: decimal;
+  }
+  .prose-custom :global(li) {
+    margin-top: 0.35rem;
+    line-height: 1.6;
+  }
+  .prose-custom :global(strong) {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .prose-custom :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-orange);
   }
   .prose-custom :global(a) {
     color: var(--color-orange);
     text-decoration: underline;
     text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+    transition: color 150ms;
   }
   .prose-custom :global(a:hover) {
-    color: var(--color-magenta);
+    color: var(--color-rose);
   }
   .prose-custom :global(blockquote) {
-    border-left: 4px solid var(--color-violet);
-    padding-left: 1rem;
-    margin: 1.5rem 0;
+    border-left: 3px solid var(--color-violet);
+    padding-left: 1.25rem;
+    margin: 1.75rem 0;
+    font-family: var(--font-serif);
     font-style: italic;
-    opacity: 0.9;
+    font-size: 21px;
+    line-height: 1.4;
+    color: var(--color-ink);
   }
-  .prose-custom :global(strong) {
-    font-weight: 700;
+  .prose-custom :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--color-paper-cream);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    color: var(--color-ink);
+  }
+  .prose-custom :global(hr) {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin: 2.5rem 0;
   }
 </style>

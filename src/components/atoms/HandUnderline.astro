@@ -10,7 +10,10 @@
 //                    class="absolute -bottom-2.5 left-0" />
 //   </em>
 type Props = {
-  width?: number;
+  /** Largeur en pixels (number) ou en pourcentage du parent ("100%" par défaut).
+   *  Avec "100%", l'ondulation s'étire pour matcher la largeur de l'élément
+   *  englobant (typiquement un `<em>`). */
+  width?: number | string;
   color?:
     | 'orange'
     | 'orange-soft'
@@ -37,7 +40,7 @@ const colorVar = {
   ink: 'var(--color-ink)',
 };
 
-const { width = 200, color = 'orange', class: className, style: styleProp } = Astro.props;
+const { width = '100%', color = 'orange', class: className, style: styleProp } = Astro.props;
 const stroke = colorVar[color];
 ---
 
@@ -45,6 +48,7 @@ const stroke = colorVar[color];
   width={width}
   height="14"
   viewBox="0 0 200 14"
+  preserveAspectRatio="none"
   fill="none"
   aria-hidden="true"
   focusable="false"
@@ -56,5 +60,6 @@ const stroke = colorVar[color];
     stroke={stroke}
     stroke-width="2.5"
     stroke-linecap="round"
-    fill="none"></path>
+    fill="none"
+    vector-effect="non-scaling-stroke"></path>
 </svg>

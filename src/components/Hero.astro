@@ -1,64 +1,172 @@
 ---
+// Hero refondu sur le design handoff (cf. final-vivant-v2.jsx,
+// pages.jsx). Grand titre Newsreader, mots-clés en italique colorés
+// avec souligné manuscrit, eyebrow mono dessus, lede sans-serif,
+// 2 CTAs facultatifs.
+//
+// Le `variant` ne pilote plus une couleur de fond pleine — toutes les
+// pages partagent désormais le même fond paper (#FBF7EE) et le variant
+// définit uniquement la couleur d'accent (italiques + soulignés +
+// blobs en fond). Cohérent avec l'identité éditoriale du brief.
+//
+// Pour mettre un mot en emphase dans le titre, l'entourer de `*` :
+//   titre: "Se *(re)toucher* pour se *(re)lier*"
+//
+// Les sauts de ligne dans le frontmatter YAML (avec `|`) sont
+// préservés et rendus comme `<br>`.
+import Eyebrow from './atoms/Eyebrow.astro';
+import HandUnderline from './atoms/HandUnderline.astro';
+import Btn from './atoms/Btn.astro';
+import Arrow from './atoms/Arrow.astro';
+import Blob from './atoms/Blob.astro';
+
+type Variant = 'orange' | 'violet' | 'beige' | 'magenta' | 'vert' | 'bleu';
+
+type Cta = { label: string; href: string; externe?: boolean };
+
 type Props = {
   titre: string;
   sousTitre?: string;
   accroche?: string;
-  ctaPrimaire?: { label: string; href: string; externe?: boolean };
-  ctaSecondaire?: { label: string; href: string; externe?: boolean };
-  variant?: 'orange' | 'violet' | 'beige' | 'magenta' | 'vert' | 'bleu';
+  variant?: Variant;
+  cta_primaire?: Cta;
+  cta_secondaire?: Cta;
 };
 
 const {
   titre,
   sousTitre,
   accroche,
-  ctaPrimaire,
-  ctaSecondaire,
-  variant = 'beige',
+  variant = 'orange',
+  cta_primaire,
+  cta_secondaire,
 } = Astro.props;
 
-const bg = {
-  orange: 'bg-orange text-paper',
-  violet: 'bg-violet text-paper',
-  beige: 'bg-beige text-ink',
-  magenta: 'bg-magenta text-paper',
-  vert: 'bg-vert text-ink',
-  bleu: 'bg-bleu text-paper',
-}[variant];
+// Mapping variant historique → couleur accent (italique + souligné).
+// `beige` est un legacy : on le neutralise sur orange (couleur d'accent
+// principale par défaut). magenta/vert/bleu remappés sur les nouvelles
+// teintes équivalentes.
+type AccentColor = 'orange' | 'violet' | 'rose' | 'moss' | 'mauve';
+type UnderlineColor = 'orange' | 'violet' | 'rose' | 'moss' | 'mauve';
+
+const accent: Record<
+  Variant,
+  { color: AccentColor; underline: UnderlineColor; blob1: AccentColor; blob2: AccentColor }
+> = {
+  orange: { color: 'orange', underline: 'rose', blob1: 'orange', blob2: 'rose' },
+  violet: { color: 'violet', underline: 'mauve', blob1: 'violet', blob2: 'mauve' },
+  beige: { color: 'orange', underline: 'rose', blob1: 'orange', blob2: 'rose' },
+  magenta: { color: 'rose', underline: 'rose', blob1: 'rose', blob2: 'orange' },
+  vert: { color: 'moss', underline: 'moss', blob1: 'moss', blob2: 'rose' },
+  bleu: { color: 'mauve', underline: 'mauve', blob1: 'violet', blob2: 'mauve' },
+};
+
+const a = accent[variant];
+
+// Parser titre : split sur \n + sur les groupes `*…*` pour les italiques.
+type TitleToken =
+  | { type: 'text'; text: string }
+  | { type: 'em'; text: string }
+  | { type: 'br' };
+
+function parseTitle(s: string): TitleToken[] {
+  const tokens: TitleToken[] = [];
+  const lines = s.split(/\r?\n/);
+  lines.forEach((line, lineIdx) => {
+    if (lineIdx > 0) tokens.push({ type: 'br' });
+    const parts = line.split(/(\*[^*]+\*)/);
+    for (const part of parts) {
+      if (!part) continue;
+      if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+        tokens.push({ type: 'em', text: part.slice(1, -1) });
+      } else {
+        tokens.push({ type: 'text', text: part });
+      }
+    }
+  });
+  return tokens;
+}
+
+const titleTokens = parseTitle(titre);
+
+// CTA primaire en violet quand l'accent est violet (cf. page Structure
+// dans le proto), sinon orange.
+const primaryBtnVariant = a.color === 'violet' ? 'violet' : 'primary';
+
+const colorClass: Record<AccentColor, string> = {
+  orange: 'text-orange',
+  violet: 'text-violet',
+  rose: 'text-rose',
+  moss: 'text-moss',
+  mauve: 'text-mauve',
+};
 ---
 
-<section class:list={['relative overflow-hidden', bg]}>
-  <img
-    src="/brand/filigrane.svg"
-    alt=""
-    aria-hidden="true"
-    class="pointer-events-none absolute -top-10 -right-10 h-80 w-80 opacity-20"
+<section
+  class="relative overflow-hidden border-b border-line bg-paper"
+>
+  <Blob
+    size={460}
+    color={a.blob1}
+    seed={0}
+    opacity={0.45}
+    class="pointer-events-none absolute -top-30 -right-25"
   />
-  <div class="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
-    {sousTitre && <p class="mb-3 text-sm font-semibold tracking-wide uppercase opacity-80">{sousTitre}</p>}
-    <h1 class="max-w-3xl text-4xl leading-tight font-bold md:text-5xl lg:text-6xl">{titre}</h1>
-    {accroche && <p class="mt-5 max-w-2xl text-lg leading-relaxed opacity-95">{accroche}</p>}
-    {(ctaPrimaire || ctaSecondaire) && (
-      <div class="mt-8 flex flex-wrap gap-3">
-        {ctaPrimaire && (
-          <a
-            href={ctaPrimaire.href}
-            target={ctaPrimaire.externe ? '_blank' : undefined}
-            rel={ctaPrimaire.externe ? 'noopener' : undefined}
-            class="rounded-full bg-ink px-6 py-3 font-bold text-paper transition-colors hover:bg-magenta"
+  <Blob
+    size={300}
+    color={a.blob2}
+    seed={2}
+    opacity={0.4}
+    class="pointer-events-none absolute -bottom-20 -left-12"
+  />
+
+  <div class="relative mx-auto max-w-310 px-6 py-25 md:px-10 md:py-30">
+    {sousTitre && (
+      <Eyebrow color={a.color}>— {sousTitre}</Eyebrow>
+    )}
+    <h1
+      class="mt-4 mb-7 max-w-[16ch] font-serif font-normal leading-[0.96] tracking-tight text-ink text-[64px] md:text-[88px] lg:text-[96px]"
+    >
+      {titleTokens.map((token) => {
+        if (token.type === 'br') return <br />;
+        if (token.type === 'em') {
+          return (
+            <em class:list={['relative inline-block font-medium not-italic', colorClass[a.color]]}>
+              <span class="italic">{token.text}</span>
+              <HandUnderline
+                color={a.underline}
+                class="pointer-events-none absolute -bottom-2 left-0 right-0 w-full"
+              />
+            </em>
+          );
+        }
+        return <Fragment>{token.text}</Fragment>;
+      })}
+    </h1>
+    {accroche && (
+      <p class="mb-9 max-w-[55ch] font-sans text-lg leading-snug text-ink-2 md:text-xl">
+        {accroche}
+      </p>
+    )}
+    {(cta_primaire || cta_secondaire) && (
+      <div class="flex flex-wrap items-center gap-3">
+        {cta_primaire && (
+          <Btn
+            href={cta_primaire.href}
+            variant={primaryBtnVariant}
+            external={cta_primaire.externe}
           >
-            {ctaPrimaire.label}
-          </a>
+            {cta_primaire.label} <Arrow color="white" />
+          </Btn>
         )}
-        {ctaSecondaire && (
-          <a
-            href={ctaSecondaire.href}
-            target={ctaSecondaire.externe ? '_blank' : undefined}
-            rel={ctaSecondaire.externe ? 'noopener' : undefined}
-            class="rounded-full border-2 border-current px-6 py-3 font-bold transition-colors hover:bg-paper/10"
+        {cta_secondaire && (
+          <Btn
+            href={cta_secondaire.href}
+            variant="ghost"
+            external={cta_secondaire.externe}
           >
-            {ctaSecondaire.label}
-          </a>
+            {cta_secondaire.label}
+          </Btn>
         )}
       </div>
     )}
