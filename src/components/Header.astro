@@ -1,14 +1,14 @@
 ---
 // Header sticky inspiré du design handoff (NavBar dans final-home.jsx).
-// VLogo à gauche, navigation au centre (avec dropdowns hover/focus pour
-// les parents non cliquables), bouton primaire « Faire un don » à droite.
+// Logo SVG (brand/logo.svg) à gauche, navigation au centre (avec
+// dropdowns hover/focus pour les parents non cliquables), bouton
+// primaire « Faire un don » à droite.
 //
 // On garde l'arborescence complète (15+ pages, navigation existante avec
 // dropdowns) — c'est uniquement la couche visuelle qui bascule sur le
 // nouveau design : couleurs chaudes, fonts éditoriales, lien actif
 // souligné de 1.5px orange.
 import { navigation, matchesItem, type SiteSettings } from '../lib/site';
-import VLogo from './atoms/VLogo.astro';
 import Btn from './atoms/Btn.astro';
 import Arrow from './atoms/Arrow.astro';
 
@@ -29,8 +29,9 @@ const isChildActive = (href: string | undefined): boolean => {
   <div
     class="mx-auto flex max-w-310 items-center gap-10 px-6 py-5 md:px-10"
   >
-    <a href="/" class="shrink-0" aria-label={`Accueil — ${settings.nom_asso}`}>
-      <VLogo />
+    <a href="/" class="shrink-0 flex items-center gap-2" aria-label={`Accueil — ${settings.nom_asso}`}>
+      <img src="/brand/logo.svg" alt="" class="h-10 w-auto" width="140" height="40" />
+      <span class="sr-only">{settings.nom_asso}</span>
     </a>
 
     <nav aria-label="Navigation principale" class="hidden lg:block">
