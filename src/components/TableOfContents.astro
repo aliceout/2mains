@@ -1,4 +1,7 @@
 ---
+// Sommaire ancré pour pages longues. Sticky sur écran XL, IntersectionObserver
+// pour marquer la section visible. Visuel refondu : eyebrow mono uppercase,
+// liens en italique serif fine, item actif orange + bg cream.
 type Item = { id: string; label: string };
 type Props = { items: Item[] };
 
@@ -10,10 +13,13 @@ const { items } = Astro.props;
     <aside
       data-toc
       aria-label="Sommaire"
-      class="hidden xl:block fixed right-6 top-24 z-30 w-56 max-h-[calc(100vh-8rem)] overflow-auto rounded-lg border border-beige bg-paper/95 p-4 text-sm shadow-sm backdrop-blur"
+      class="hidden xl:block fixed right-6 top-28 z-30 w-60 max-h-[calc(100vh-9rem)] overflow-auto rounded-xl border border-line bg-paper/95 p-5 backdrop-blur"
     >
-      <p class="mb-2 text-xs font-bold uppercase tracking-wide text-ink/60">
-        Sur cette page
+      <p
+        class="mb-3 font-mono text-[11px] uppercase text-ink-3"
+        style="letter-spacing: 0.12em;"
+      >
+        — Sur cette page
       </p>
       <nav>
         <ul class="space-y-1">
@@ -21,7 +27,7 @@ const { items } = Astro.props;
             <li>
               <a
                 href={`#${i.id}`}
-                class="block rounded px-2 py-1 text-ink/80 transition-colors hover:bg-beige hover:text-orange"
+                class="block rounded px-2 py-1.5 font-serif text-[15px] italic text-ink-2 transition-colors hover:bg-cream hover:text-orange"
                 data-toc-link={i.id}
               >
                 {i.label}
@@ -50,9 +56,9 @@ const { items } = Astro.props;
           if (!link) return;
           if (entry.isIntersecting) {
             links.forEach((a) =>
-              a.classList.remove('bg-beige', 'font-semibold', 'text-orange'),
+              a.classList.remove('bg-cream', 'text-orange', 'font-medium'),
             );
-            link.classList.add('bg-beige', 'font-semibold', 'text-orange');
+            link.classList.add('bg-cream', 'text-orange', 'font-medium');
           }
         });
       },

@@ -1,8 +1,8 @@
 ---
-/**
- * Banderole en haut de page — pilotée par le CMS (site.banderole_urgence).
- * Rend un message markdown léger (inline) dans une bande pleine largeur.
- */
+// Banderole en haut de page — pilotée par site.banderole_urgence.
+// Bande pleine largeur sur fond orange/violet/rose selon la couleur,
+// texte sans-serif simple. Markdown inline minimal (gras / italique /
+// liens) pour ne pas dépendre d'une lib lourde sur ce mini composant.
 type Props = {
   message: string;
   couleur?: 'orange' | 'violet' | 'magenta';
@@ -10,14 +10,13 @@ type Props = {
 
 const { message, couleur = 'orange' } = Astro.props;
 
+// magenta de l'ancienne API mappé sur rose dans la nouvelle palette.
 const bg = {
   orange: 'bg-orange text-paper',
   violet: 'bg-violet text-paper',
-  magenta: 'bg-magenta text-paper',
+  magenta: 'bg-rose text-ink',
 }[couleur];
 
-// Rendu markdown inline minimal : gras, italique, liens.
-// On évite une dépendance lourde pour 1 composant.
 function renderInline(md: string): string {
   let s = md
     .replace(/&/g, '&amp;')
@@ -36,7 +35,7 @@ function renderInline(md: string): string {
 <div
   role="region"
   aria-label="Annonce"
-  class:list={['px-4 py-2.5 text-center text-sm font-semibold', bg]}
+  class:list={['px-6 py-3 text-center font-sans text-sm md:px-10', bg]}
 >
   <p set:html={renderInline(message)} class="mx-auto max-w-4xl" />
 </div>

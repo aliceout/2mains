@@ -1,6 +1,7 @@
 ---
 // Badge « Brouillon » — visible en dev uniquement, sur les entrées
-// marquées `draft: true`. Signale qu'elles seraient masquées en prod.
+// marquées `draft: true`. Signale à Audrey qu'elles seraient masquées
+// en prod. Style mono uppercase pour rester sobre.
 import { SHOW_DRAFTS } from '../lib/drafts';
 
 type Props = { draft?: boolean };
@@ -11,7 +12,8 @@ const show = SHOW_DRAFTS && Boolean(draft);
 {
   show && (
     <span
-      class="inline-flex items-center gap-1 rounded-full bg-violet px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-paper"
+      class="inline-flex items-center rounded-full bg-violet px-2.5 py-0.5 font-mono text-[10px] font-medium uppercase text-paper"
+      style="letter-spacing: 0.1em;"
       title="Cette entrée est un brouillon — masquée sur le site en ligne."
     >
       Brouillon
