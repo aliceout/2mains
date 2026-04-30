@@ -73,7 +73,7 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
       <Section titre="Nos réseaux d'accompagnement">
         <ul class="grid gap-4 md:grid-cols-2">
           {reseaux.map((r) => (
-            <li class="rounded-xl border border-beige bg-paper p-6">
+            <li class="rounded-xl border border-line bg-paper p-6">
               <DraftBadge draft={r.data.draft} />
               <h3 class="text-lg font-bold">{r.data.nom}</h3>
               {r.data.description_courte && (
