@@ -1,8 +1,9 @@
 ---
-/**
- * FAQ — accordéon basé sur <details>/<summary> HTML natif.
- * Accessible clavier, pas de JS requis.
- */
+// FAQ — accordéon basé sur <details>/<summary> HTML natif.
+// Accessible clavier, pas de JS requis.
+//
+// Design refondu : pas de fond carte, juste des lignes fines entre
+// questions. Titre Newsreader 22px medium, plus orange à droite.
 import { marked } from 'marked';
 
 type Question = {
@@ -22,32 +23,38 @@ const rendered = questions.map((q) => ({
 }));
 ---
 
-<div class="flex flex-col gap-3">
+<div class="mx-auto max-w-215">
   {
-    rendered.map((q) => (
-      <details class="group rounded-xl border border-beige bg-paper open:shadow-sm">
-        <summary class="flex cursor-pointer items-center justify-between gap-4 rounded-xl px-5 py-4 font-semibold hover:bg-beige/50 focus-visible:outline-2 focus-visible:outline-violet">
+    rendered.map((q, i) => (
+      <details
+        class:list={[
+          'group border-t border-line',
+          i === rendered.length - 1 ? 'border-b' : '',
+        ]}
+      >
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-serif text-[22px] font-medium tracking-tight text-ink hover:text-orange focus-visible:outline-2 focus-visible:outline-violet">
           <span>{q.question}</span>
           <span
-            class="text-orange transition-transform group-open:rotate-180"
+            class="text-ink-3 transition-all group-open:text-orange group-open:rotate-45"
             aria-hidden="true"
           >
             <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
               focusable="false"
             >
-              <polyline points="4 6 8 10 12 6" />
+              <path
+                d="M7 1v12M1 7h12"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
             </svg>
           </span>
         </summary>
-        <div class="faq-body px-5 pt-1 pb-5 text-sm leading-relaxed">
+        <div class="faq-body pb-6 font-sans text-[16px] leading-relaxed text-ink-2 max-w-[65ch]">
           <Fragment set:html={q.html} />
         </div>
       </details>
@@ -56,6 +63,8 @@ const rendered = questions.map((q) => ({
 </div>
 
 <style>
+  details summary::-webkit-details-marker { display: none; }
+  details summary::marker { content: ''; }
   .faq-body :global(p) {
     margin-bottom: 0.75rem;
   }
@@ -79,6 +88,12 @@ const rendered = questions.map((q) => ({
     text-underline-offset: 2px;
   }
   .faq-body :global(strong) {
-    font-weight: 700;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .faq-body :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--color-orange);
   }
 </style>

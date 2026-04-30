@@ -1,7 +1,9 @@
 ---
-// Grille de personnes avec photo, nom, rôle, bio courte et lien optionnel.
-// Photo ronde ou carrée, 2/3/4 colonnes.
+// Grille de personnes avec photo ronde/carrée, nom, rôle, bio. Le
+// proto ne montre pas explicitement de portraits — on s'inspire de
+// la structure des cards (mêmes radius, même typo) mais centré.
 import SmartImage from './SmartImage.astro';
+import LinkArrow from './atoms/LinkArrow.astro';
 
 type Personne = {
   nom: string;
@@ -27,10 +29,13 @@ const colClass = {
   4: 'sm:grid-cols-2 md:grid-cols-4',
 }[colonnes];
 
-const photoClass = forme === 'rond' ? 'rounded-full aspect-square' : 'rounded-xl aspect-[4/5]';
+const photoClass =
+  forme === 'rond'
+    ? 'rounded-full aspect-square'
+    : 'rounded-2xl aspect-[4/5]';
 ---
 
-<ul class:list={['grid gap-6', colClass]}>
+<ul class:list={['grid gap-10', colClass]}>
   {
     personnes.map((p) => (
       <li class="flex flex-col items-center text-center">
@@ -44,7 +49,7 @@ const photoClass = forme === 'rond' ? 'rounded-full aspect-square' : 'rounded-xl
           <div
             aria-hidden="true"
             class:list={[
-              'flex w-40 md:w-44 items-center justify-center bg-beige text-ink/40 text-3xl font-bold',
+              'flex w-40 md:w-44 items-center justify-center bg-cream font-serif italic text-3xl font-medium text-violet/50',
               photoClass,
             ]}
           >
@@ -56,21 +61,24 @@ const photoClass = forme === 'rond' ? 'rounded-full aspect-square' : 'rounded-xl
               .toUpperCase()}
           </div>
         )}
-        <p class="mt-4 text-lg font-bold">{p.nom}</p>
-        {p.role && <p class="text-sm text-violet">{p.role}</p>}
+        <p class="mt-5 font-serif text-xl font-medium tracking-tight text-ink">
+          {p.nom}
+        </p>
+        {p.role && (
+          <p class="mt-1 font-mono text-[11px] uppercase text-violet" style="letter-spacing: 0.06em;">
+            {p.role}
+          </p>
+        )}
         {p.bio && (
-          <p class="mt-2 max-w-xs text-sm leading-relaxed">{p.bio}</p>
+          <p class="mt-3 max-w-xs font-sans text-sm leading-relaxed text-ink-2">
+            {p.bio}
+          </p>
         )}
         {p.lien && (
-          <p class="mt-3 text-sm">
-            <a
-              href={p.lien}
-              target="_blank"
-              rel="noopener"
-              class="text-orange hover:underline"
-            >
-              {p.lien_label ?? 'En savoir plus'} →
-            </a>
+          <p class="mt-3">
+            <LinkArrow href={p.lien} color="orange" external>
+              {p.lien_label ?? 'En savoir plus'}
+            </LinkArrow>
           </p>
         )}
       </li>

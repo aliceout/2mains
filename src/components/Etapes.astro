@@ -1,9 +1,8 @@
 ---
-/**
- * Étapes numérotées avec bulle colorée + trait de liaison.
- * Remplace les <ol> visuellement pauvres sur les pages "Comment on
- * travaille ensemble" / "Comment commencer" / "Un parcours type".
- */
+// Étapes numérotées en colonnes (5 max idéalement) avec border-top
+// colorée et numéro italique. Inspiré de Parcours dans final-home.jsx.
+type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+
 type Etape = {
   titre: string;
   description?: string;
@@ -11,57 +10,52 @@ type Etape = {
 
 type Props = {
   etapes: Etape[];
-  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+  couleur?: Couleur;
 };
 
 const { etapes, couleur = 'orange' } = Astro.props;
 
-const bulletBg = {
-  orange: 'bg-orange text-paper',
-  violet: 'bg-violet text-paper',
-  magenta: 'bg-magenta text-paper',
-  vert: 'bg-vert text-ink',
-  bleu: 'bg-bleu text-paper',
-}[couleur];
+const accentMap: Record<Couleur, { border: string; numero: string }> = {
+  orange: { border: 'border-orange', numero: 'text-orange' },
+  violet: { border: 'border-violet', numero: 'text-violet' },
+  magenta: { border: 'border-rose', numero: 'text-rose' },
+  vert: { border: 'border-moss', numero: 'text-moss' },
+  bleu: { border: 'border-mauve', numero: 'text-mauve' },
+};
 
-const lineBg = {
-  orange: 'bg-orange',
-  violet: 'bg-violet',
-  magenta: 'bg-magenta',
-  vert: 'bg-vert',
-  bleu: 'bg-bleu',
-}[couleur];
+const a = accentMap[couleur];
+
+// Grid responsive : 1 col mobile → 2 col sm → autant que d'étapes
+// (max 5) en desktop.
+const colsClass = etapes.length >= 5
+  ? 'sm:grid-cols-2 lg:grid-cols-5'
+  : etapes.length === 4
+    ? 'sm:grid-cols-2 lg:grid-cols-4'
+    : etapes.length === 3
+      ? 'sm:grid-cols-2 lg:grid-cols-3'
+      : 'sm:grid-cols-2';
 ---
 
-<ol class="relative flex flex-col gap-6 md:flex-row md:gap-4" aria-label="Étapes">
+<ol class:list={['grid gap-6', colsClass]} aria-label="Étapes">
   {
     etapes.map((e, i) => (
-      <li class="relative flex items-start gap-4 md:flex-1 md:flex-col md:items-center md:text-center">
-        <span
+      <li class:list={['border-t-2 pt-4', a.border]}>
+        <div
           class:list={[
-            'relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full text-lg font-bold shadow-sm',
-            bulletBg,
+            'mb-3 font-serif italic font-medium text-[32px] leading-none tracking-tight',
+            a.numero,
           ]}
-          aria-hidden="true"
         >
-          {i + 1}
-        </span>
-        {/* Trait de liaison horizontal (md+) */}
-        {i < etapes.length - 1 && (
-          <span
-            class:list={[
-              'absolute top-6 left-12 hidden h-0.5 -translate-y-1/2 opacity-40 md:block md:w-[calc(100%-3rem)]',
-              lineBg,
-            ]}
-            aria-hidden="true"
-          />
-        )}
-        <div class="flex-1 md:mt-4">
-          <h3 class="mb-1 text-base font-bold">{e.titre}</h3>
-          {e.description && (
-            <p class="text-sm leading-relaxed opacity-90">{e.description}</p>
-          )}
+          0{i + 1}.
         </div>
+        <h3 class="mb-2 font-serif text-[19px] font-medium leading-tight tracking-tight text-ink">
+          {e.titre}
+        </h3>
+        {e.description && (
+          <p class="font-sans text-[13.5px] leading-relaxed text-ink-2">
+            {e.description}
+          </p>
+        )}
       </li>
     ))
   }

@@ -1,10 +1,19 @@
 ---
+// Grille de cartes 2/3/4 colonnes inspirée de NosActionsVivantV2 et
+// du proto pages.jsx. Chaque carte : numéro italique 56-64px, ligne
+// horizontale colorée, titre Newsreader, description, blob déco
+// optionnel, LinkArrow en pied.
+import Blob from './atoms/Blob.astro';
+import LinkArrow from './atoms/LinkArrow.astro';
+
+type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+
 type Carte = {
   titre: string;
   description: string;
   href?: string;
   cta?: string;
-  couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
+  couleur?: Couleur;
 };
 
 type Props = {
@@ -17,35 +26,92 @@ const { cartes, colonnes = 3 } = Astro.props;
 const gridClass = {
   2: 'md:grid-cols-2',
   3: 'md:grid-cols-2 lg:grid-cols-3',
-  4: 'md:grid-cols-2 lg:grid-cols-4',
+  4: 'sm:grid-cols-2 lg:grid-cols-4',
 }[colonnes];
 
-const accentMap = {
-  orange: 'border-t-orange',
-  violet: 'border-t-violet',
-  magenta: 'border-t-magenta',
-  vert: 'border-t-vert',
-  bleu: 'border-t-bleu',
+// Mapping couleur historique → (couleur d'accent + fond tinté + blob).
+type CarteConfig = {
+  accent: 'orange' | 'violet' | 'rose' | 'moss' | 'mauve';
+  bgClass: string;
+  blob: 'orange' | 'violet' | 'rose' | 'moss' | 'mauve' | 'honey' | 'peach';
+};
+
+const couleurMap: Record<Couleur, CarteConfig> = {
+  orange: { accent: 'orange', bgClass: 'bg-peach', blob: 'rose' },
+  violet: { accent: 'violet', bgClass: 'bg-lav', blob: 'mauve' },
+  magenta: { accent: 'rose', bgClass: 'bg-rose/40', blob: 'orange' },
+  vert: { accent: 'moss', bgClass: 'bg-honey/50', blob: 'moss' },
+  bleu: { accent: 'mauve', bgClass: 'bg-lav', blob: 'mauve' },
+};
+
+const accentText: Record<string, string> = {
+  orange: 'text-orange',
+  violet: 'text-violet',
+  rose: 'text-rose',
+  moss: 'text-moss',
+  mauve: 'text-mauve',
+};
+
+const accentBg: Record<string, string> = {
+  orange: 'bg-orange',
+  violet: 'bg-violet',
+  rose: 'bg-rose',
+  moss: 'bg-moss',
+  mauve: 'bg-mauve',
 };
 ---
 
 <div class:list={['grid gap-6', gridClass]}>
   {
-    cartes.map((c) => (
-      <article
-        class:list={[
-          'flex flex-col rounded-xl border-t-4 bg-paper p-6 shadow-sm transition-shadow hover:shadow-md',
-          accentMap[c.couleur ?? 'orange'],
-        ]}
-      >
-        <h3 class="mb-2 text-xl font-bold">{c.titre}</h3>
-        <p class="mb-4 flex-1 text-sm leading-relaxed">{c.description}</p>
-        {c.href && c.cta && (
-          <a href={c.href} class="font-semibold text-orange hover:underline">
-            {c.cta} →
-          </a>
-        )}
-      </article>
-    ))
+    cartes.map((c, i) => {
+      const config = couleurMap[c.couleur ?? 'orange'];
+      const numero = String(i + 1).padStart(2, '0');
+      return (
+        <article
+          class:list={[
+            'relative flex flex-col overflow-hidden rounded-2xl p-9 min-h-90',
+            config.bgClass,
+          ]}
+        >
+          <Blob
+            size={150}
+            color={config.blob}
+            seed={i + 1}
+            opacity={0.35}
+            class="pointer-events-none absolute -bottom-10 -right-10"
+          />
+          <div class="relative mb-6 flex items-baseline gap-3">
+            <span
+              class:list={[
+                'font-serif italic font-medium text-[56px] leading-none tracking-tight',
+                accentText[config.accent],
+              ]}
+            >
+              {numero}
+            </span>
+            <span
+              class:list={[
+                'h-px flex-1 opacity-30',
+                accentBg[config.accent],
+              ]}
+              aria-hidden="true"
+            />
+          </div>
+          <h3 class="relative mb-3 font-serif text-[26px] font-medium leading-tight tracking-tight text-ink">
+            {c.titre}
+          </h3>
+          <p class="relative mb-6 flex-1 font-sans text-sm leading-relaxed text-ink-2">
+            {c.description}
+          </p>
+          {c.href && c.cta && (
+            <div class="relative">
+              <LinkArrow href={c.href} color={config.accent}>
+                {c.cta}
+              </LinkArrow>
+            </div>
+          )}
+        </article>
+      );
+    })
   }
 </div>

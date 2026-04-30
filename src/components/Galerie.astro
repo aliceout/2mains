@@ -1,7 +1,7 @@
 ---
-// Mosaïque responsive. 2, 3 ou 4 colonnes. Mode lightbox optionnel
-// (JS minimal : click = ouvre une modale, Échap ferme, flèches
-// naviguent).
+// Mosaïque responsive 2/3/4 colonnes. Mode lightbox optionnel —
+// modale accessible (Échap ferme, flèches naviguent, focus trap).
+// Visuel refondu : radius 12px, légende mono petite italique.
 import SmartImage from './SmartImage.astro';
 
 type Image = {
@@ -25,7 +25,10 @@ const colClass = {
 }[colonnes];
 ---
 
-<ul class:list={['grid gap-3', colClass]} data-galerie-lightbox={lightbox || undefined}>
+<ul
+  class:list={['grid gap-4', colClass]}
+  data-galerie-lightbox={lightbox || undefined}
+>
   {
     images.map((img, i) => (
       <li>
@@ -33,14 +36,14 @@ const colClass = {
           {lightbox ? (
             <button
               type="button"
-              class="block w-full"
+              class="block w-full overflow-hidden rounded-xl border border-line transition-opacity hover:opacity-90"
               data-galerie-open={i}
               aria-label={`Ouvrir l'image : ${img.alt}`}
             >
               <SmartImage
                 src={img.image}
                 alt={img.alt}
-                class="aspect-[4/3] w-full rounded-lg"
+                class="aspect-4/3 w-full"
               />
             </button>
           ) : (
@@ -48,17 +51,23 @@ const colClass = {
               href={img.image}
               target="_blank"
               rel="noopener"
+              class="block overflow-hidden rounded-xl border border-line transition-opacity hover:opacity-90"
               aria-label={`Ouvrir l'image en grand : ${img.alt}`}
             >
               <SmartImage
                 src={img.image}
                 alt={img.alt}
-                class="aspect-[4/3] w-full rounded-lg"
+                class="aspect-4/3 w-full"
               />
             </a>
           )}
           {img.legende && (
-            <figcaption class="mt-1 text-xs opacity-70">{img.legende}</figcaption>
+            <figcaption
+              class="mt-2 font-mono text-[11px] uppercase text-ink-3"
+              style="letter-spacing: 0.06em;"
+            >
+              — {img.legende}
+            </figcaption>
           )}
         </figure>
       </li>
@@ -81,7 +90,15 @@ const colClass = {
         aria-label="Fermer"
         data-galerie-close
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
           <line x1="6" y1="6" x2="18" y2="18" />
           <line x1="6" y1="18" x2="18" y2="6" />
         </svg>
@@ -92,7 +109,15 @@ const colClass = {
         aria-label="Image précédente"
         data-galerie-prev
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
       </button>
@@ -102,7 +127,15 @@ const colClass = {
         aria-label="Image suivante"
         data-galerie-next
       >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </button>
@@ -114,7 +147,8 @@ const colClass = {
           data-galerie-img
         />
         <figcaption
-          class="mt-2 text-center text-sm text-paper/90"
+          class="mt-3 text-center font-mono text-[11px] uppercase text-paper/80"
+          style="letter-spacing: 0.06em;"
           data-galerie-caption
         />
       </figure>
@@ -126,7 +160,13 @@ const colClass = {
   lightbox && (
     <script
       is:inline
-      define:vars={{ items: images.map((i) => ({ src: i.image, alt: i.alt, legende: i.legende ?? '' })) }}
+      define:vars={{
+        items: images.map((i) => ({
+          src: i.image,
+          alt: i.alt,
+          legende: i.legende ?? '',
+        })),
+      }}
     >
       (function () {
         const modal = document.querySelector('[data-galerie-modal]');
@@ -145,7 +185,7 @@ const colClass = {
           const it = items[current];
           img.src = it.src;
           img.alt = it.alt;
-          caption.textContent = it.legende;
+          caption.textContent = it.legende ? '— ' + it.legende : '';
         }
         function open(i) {
           lastFocus = document.activeElement;
