@@ -142,11 +142,11 @@ for (const s of sections) {
       return (
         <Section id={id} fond={s.fond ?? 'violet'}>
           <div class="grid gap-6 max-w-225">
-            <h2 class:list={['font-serif text-4xl font-normal leading-tight tracking-tight md:text-5xl', titreColor]}>
+            <h2 class:list={['font-serif text-[26px] font-normal leading-tight tracking-tight md:text-[32px]', titreColor]}>
               {s.titre}
             </h2>
             {s.corps && (
-              <p class:list={['font-sans text-lg leading-relaxed max-w-220', corpsColor]}>{s.corps}</p>
+              <p class:list={['font-sans text-base leading-relaxed max-w-220', corpsColor]}>{s.corps}</p>
             )}
             {(s.cta_primaire || s.cta_secondaire) && (
               <div class="mt-2 flex flex-wrap items-center gap-3">

@@ -35,36 +35,36 @@ const html = marked.parse(corps, { async: false }) as string;
 
 <style>
   .lettre__open {
-    font-size: 19px;
-    line-height: 1.6;
-    margin: 0 0 20px;
+    font-size: 17px;
+    line-height: 1.65;
+    margin: 0 0 18px;
     font-weight: 400;
     letter-spacing: -0.005em;
   }
   .lettre__sign {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.55;
-    margin: 28px 0 0;
+    margin: 24px 0 0;
     font-weight: 400;
   }
   .lettre__body :global(p) {
     font-family: var(--font-serif);
-    font-size: 19px;
-    line-height: 1.6;
+    font-size: 17px;
+    line-height: 1.65;
     color: var(--color-ink);
-    margin: 0 0 20px;
+    margin: 0 0 18px;
     font-weight: 400;
     letter-spacing: -0.005em;
   }
   @media (min-width: 768px) {
     .lettre__open {
-      font-size: 21px;
+      font-size: 18px;
     }
     .lettre__sign {
-      font-size: 19px;
+      font-size: 17px;
     }
     .lettre__body :global(p) {
-      font-size: 21px;
+      font-size: 18px;
     }
   }
   .lettre__body :global(em) {
