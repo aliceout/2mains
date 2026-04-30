@@ -1,0 +1,44 @@
+---
+// Lien italique serif avec une flèche. Border-bottom de 1px sur la
+// couleur du texte. Idiomatique du design pour les "en savoir plus".
+//
+// Usage : <LinkArrow href="/structures" color="violet">Pour les structures</LinkArrow>
+type Props = {
+  href: string;
+  color?:
+    | 'orange'
+    | 'violet'
+    | 'rose'
+    | 'mauve'
+    | 'moss'
+    | 'honey'
+    | 'paper'
+    | 'ink';
+  external?: boolean;
+};
+
+const { href, color = 'orange', external = false } = Astro.props;
+
+const colorClass = {
+  orange: 'text-orange border-orange',
+  violet: 'text-violet border-violet',
+  rose: 'text-rose border-rose',
+  mauve: 'text-mauve border-mauve',
+  moss: 'text-moss border-moss',
+  honey: 'text-honey border-honey',
+  paper: 'text-paper border-paper',
+  ink: 'text-ink border-ink',
+}[color];
+---
+
+<a
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+  class:list={[
+    'inline-flex items-center gap-1.5 self-start font-serif italic text-base no-underline border-b pb-0.5 hover:opacity-85 transition-opacity',
+    colorClass,
+  ]}
+>
+  <slot /> →
+</a>

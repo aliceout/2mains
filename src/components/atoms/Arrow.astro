@@ -1,0 +1,28 @@
+---
+// Flèche fine SVG inline dessinée à la main (légèrement ondulée pour
+// l'identité « manuelle » du site). Utilisée dans LinkArrow et dans
+// les BtnPrimary / BtnGhost.
+type Props = {
+  size?: number;
+  color?: string;
+  class?: string;
+};
+const { size = 14, color = 'currentColor', class: className } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 16 16"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class:list={['inline-block align-[-1px]', className]}
+>
+  <path
+    d="M3 8h10m0 0L9 4m4 4l-4 4"
+    stroke={color}
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"></path>
+</svg>

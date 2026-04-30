@@ -1,0 +1,39 @@
+---
+// Petit label monospace majuscule au-dessus des titres.
+// Le tiret en début est toujours présent dans le children.
+//
+// Usage : <Eyebrow color="violet">— Notre réponse</Eyebrow>
+type Props = {
+  color?:
+    | 'ink'
+    | 'ink-3'
+    | 'orange'
+    | 'violet'
+    | 'rose'
+    | 'mauve'
+    | 'moss'
+    | 'honey'
+    | 'paper';
+};
+const { color = 'ink-3' } = Astro.props;
+---
+
+<span
+  class:list={[
+    'inline-block font-mono text-[11px] font-normal uppercase',
+    {
+      'text-ink': color === 'ink',
+      'text-ink-3': color === 'ink-3',
+      'text-orange': color === 'orange',
+      'text-violet': color === 'violet',
+      'text-rose': color === 'rose',
+      'text-mauve': color === 'mauve',
+      'text-moss': color === 'moss',
+      'text-honey': color === 'honey',
+      'text-paper': color === 'paper',
+    },
+  ]}
+  style="letter-spacing: 0.16em;"
+>
+  <slot />
+</span>

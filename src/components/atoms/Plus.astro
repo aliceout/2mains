@@ -1,0 +1,25 @@
+---
+// Icône +/− pour les FAQ ouvrantes. Animation rotation 200ms quand
+// `open` change.
+type Props = {
+  open?: boolean;
+  size?: number;
+};
+const { open = false, size = 14 } = Astro.props;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 14 14"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  style={`transition: transform 200ms; transform: rotate(${open ? '45deg' : '0deg'});`}
+>
+  <path
+    d="M7 1v12M1 7h12"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"></path>
+</svg>

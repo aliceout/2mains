@@ -1,0 +1,80 @@
+---
+// Forme organique SVG pseudo-aléatoire. La forme est déterministe
+// (5 paths au choix via `seed`), garantissant une cohérence d'identité
+// tout en permettant de varier les motifs entre sections.
+//
+// Position toujours absolue avec overflow:hidden sur le parent.
+//
+// Usage :
+//   <div class="relative overflow-hidden">
+//     <Blob size={460} color="peach" seed={0} opacity={0.55}
+//           class="absolute -top-30 -right-25" />
+//     ...
+//   </div>
+type Props = {
+  size?: number;
+  color?:
+    | 'orange'
+    | 'orange-soft'
+    | 'violet'
+    | 'violet-soft'
+    | 'rose'
+    | 'mauve'
+    | 'moss'
+    | 'honey'
+    | 'peach'
+    | 'lav'
+    | 'cream';
+  seed?: number;
+  opacity?: number;
+  class?: string;
+  style?: string;
+};
+
+const PATHS = [
+  'M50,15 C75,10 95,30 92,55 C90,80 70,95 45,90 C20,85 5,65 10,40 C15,20 30,18 50,15 Z',
+  'M52,8 C80,12 90,40 85,65 C78,90 50,95 25,85 C5,78 5,50 18,30 C28,15 40,5 52,8 Z',
+  'M45,12 C72,5 92,25 90,52 C88,80 60,92 35,82 C12,72 5,45 18,25 C28,15 35,15 45,12 Z',
+  'M50,18 C78,15 88,35 90,60 C92,82 65,95 38,88 C15,82 5,55 12,32 C20,18 35,20 50,18 Z',
+  'M55,10 C82,18 95,42 88,68 C80,92 50,98 28,85 C8,73 4,42 18,25 C30,12 42,8 55,10 Z',
+];
+
+const colorVar = {
+  orange: 'var(--color-orange)',
+  'orange-soft': 'var(--color-orange-soft)',
+  violet: 'var(--color-violet)',
+  'violet-soft': 'var(--color-violet-soft)',
+  rose: 'var(--color-rose)',
+  mauve: 'var(--color-mauve)',
+  moss: 'var(--color-moss)',
+  honey: 'var(--color-honey)',
+  peach: 'var(--color-peach)',
+  lav: 'var(--color-lav)',
+  cream: 'var(--color-cream)',
+};
+
+const {
+  size = 200,
+  color = 'orange',
+  seed = 0,
+  opacity = 1,
+  class: className,
+  style: styleProp,
+} = Astro.props;
+
+const path = PATHS[seed % PATHS.length];
+const fillColor = colorVar[color];
+const inlineStyle = `display: block; opacity: ${opacity};${styleProp ? ' ' + styleProp : ''}`;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  aria-hidden="true"
+  focusable="false"
+  class:list={[className]}
+  style={inlineStyle}
+>
+  <path d={path} fill={fillColor}></path>
+</svg>

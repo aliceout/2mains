@@ -1,0 +1,48 @@
+---
+// Bouton primaire / violet / ghost — variants définis dans le design
+// handoff. Le contenu est libre (le slot peut contenir une flèche
+// `<Arrow />` ou tout autre suffixe).
+//
+// Usage :
+//   <Btn href="/contact">Premier contact <Arrow color="white" /></Btn>
+//   <Btn variant="violet" href="/structures">Demander un rendez-vous</Btn>
+//   <Btn variant="ghost" href="/dossier">Télécharger le dossier</Btn>
+import Arrow from './Arrow.astro';
+
+type Props = {
+  variant?: 'primary' | 'violet' | 'ghost';
+  href?: string;
+  external?: boolean;
+  /** Si true, ajoute une flèche par défaut. Par défaut false (le slot
+   *  peut déjà contenir la sienne). */
+  arrow?: boolean;
+};
+
+const {
+  variant = 'primary',
+  href = '#',
+  external = false,
+  arrow = false,
+} = Astro.props;
+
+const baseClass =
+  'inline-flex items-center gap-1.5 rounded-md px-[22px] py-3 text-sm font-sans font-medium transition-opacity hover:opacity-85 no-underline';
+
+const variantClass = {
+  primary: 'bg-orange text-paper',
+  violet: 'bg-violet text-paper',
+  ghost: 'border border-ink text-ink bg-transparent',
+}[variant];
+
+const arrowColor = variant === 'ghost' ? 'currentColor' : 'white';
+---
+
+<a
+  href={href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+  class:list={[baseClass, variantClass]}
+>
+  <slot />
+  {arrow && <Arrow color={arrowColor} />}
+</a>
