@@ -381,6 +381,27 @@ const sectionSchema = z.discriminatedUnion('type', [
       }),
     ),
   }),
+  // Lettre adressée — adresse directe, ton épistolaire
+  z.object({
+    type: z.literal('lettre'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    ouverture: z.string().optional(),
+    signature: z.string().optional(),
+    corps: z.string(),
+    variant: z.enum(['orange', 'violet']).default('orange'),
+  }),
+  // Statistique en majesté — un chiffre géant + texte explicatif
+  z.object({
+    type: z.literal('stat-majeste'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    chiffre: z.string(),
+    texte: z.string(),
+    source: z.string().optional(),
+    eyebrow: z.string().optional(),
+    variant: z.enum(['orange', 'violet']).default('orange'),
+  }),
   // Frise chronologique
   z.object({
     type: z.literal('timeline'),

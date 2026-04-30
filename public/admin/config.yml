@@ -465,6 +465,39 @@ collections:
                   - { name: lien, label: 'Lien externe (optionnel)', widget: string, required: false }
                   - { name: lien_label, label: 'Libellé du lien', widget: string, required: false }
 
+          # === Lettre adressée ===
+          - name: lettre
+            label: '✉ Lettre adressée'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - { name: ouverture, label: 'Ouverture', widget: string, required: false, default: 'Bonjour,', hint: "Première ligne, en italique." }
+              - { name: corps, label: 'Corps de la lettre', widget: markdown, hint: "Plusieurs paragraphes. *italique* pour l'accent." }
+              - { name: signature, label: 'Signature', widget: string, required: false, default: '— l''équipe.' }
+              - name: variant
+                label: 'Couleur d''accent'
+                widget: select
+                options: ['orange', 'violet']
+                default: orange
+
+          # === Statistique en majesté ===
+          - name: stat-majeste
+            label: '📊 Statistique en majesté'
+            widget: object
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false }
+              - *fondField
+              - { name: chiffre, label: 'Chiffre', widget: string, hint: "Court : 90 %, 1/3, ×4…" }
+              - { name: texte, label: 'Texte explicatif', widget: text, hint: "Une à deux phrases. *italique* pour mettre en valeur un chiffre secondaire." }
+              - { name: source, label: 'Source', widget: string, required: false }
+              - { name: eyebrow, label: 'Eyebrow', widget: string, required: false, default: '— constat' }
+              - name: variant
+                label: 'Couleur du chiffre'
+                widget: select
+                options: ['orange', 'violet']
+                default: orange
+
           # === Timeline (frise chronologique) ===
           - name: timeline
             label: '📅 Timeline (frise chronologique)'

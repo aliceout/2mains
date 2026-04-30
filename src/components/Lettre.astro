@@ -1,0 +1,83 @@
+---
+// Lettre adressée — bloc d'adresse directe à la lectrice. Ton chaleureux,
+// rythme épistolaire. Newsreader 26px italique sur l'ouverture/clôture,
+// roman pour les paragraphes intermédiaires. Markdown inline minimal :
+// *italique* devient l'accent (variant), **gras** mis en valeur.
+import { marked } from 'marked';
+
+type Variant = 'orange' | 'violet';
+
+type Props = {
+  ouverture?: string;
+  signature?: string;
+  corps: string;
+  variant?: Variant;
+};
+
+const {
+  ouverture = 'Bonjour,',
+  signature = '— l\'équipe.',
+  corps,
+  variant = 'orange',
+} = Astro.props;
+
+const accent = variant === 'violet' ? 'text-violet' : 'text-orange';
+
+// Markdown du corps : on autorise <em>/<strong> + paragraphes.
+const html = marked.parse(corps, { async: false }) as string;
+---
+
+<div class="lettre mx-auto max-w-220 relative">
+  <p class={`lettre__open font-serif italic ${accent}`}>{ouverture}</p>
+  <div class="lettre__body" set:html={html} />
+  <p class="lettre__sign font-serif italic text-ink-3">{signature}</p>
+</div>
+
+<style>
+  .lettre__open {
+    font-size: 26px;
+    line-height: 1.55;
+    margin: 0 0 24px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  .lettre__sign {
+    font-size: 22px;
+    line-height: 1.55;
+    margin: 32px 0 0;
+    font-weight: 400;
+  }
+  .lettre__body :global(p) {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--color-ink);
+    margin: 0 0 24px;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+  @media (min-width: 768px) {
+    .lettre__open,
+    .lettre__sign {
+      font-size: 26px;
+    }
+    .lettre__body :global(p) {
+      font-size: 26px;
+    }
+  }
+  .lettre__body :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-violet);
+  }
+  .lettre__body :global(strong) {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .lettre__body :global(a) {
+    color: var(--color-orange);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

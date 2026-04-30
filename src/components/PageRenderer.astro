@@ -22,6 +22,8 @@ import Galerie from './Galerie.astro';
 import BandeauImage from './BandeauImage.astro';
 import Portraits from './Portraits.astro';
 import Timeline from './Timeline.astro';
+import Lettre from './Lettre.astro';
+import StatMajeste from './StatMajeste.astro';
 import Draft from './Draft.astro';
 import TableOfContents from './TableOfContents.astro';
 
@@ -315,6 +317,31 @@ const tocItems = sections
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Timeline etapes={s.etapes} alignement={s.alignement} />
+        </Section>
+      );
+    }
+    if (s.type === 'lettre') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Lettre
+            corps={s.corps}
+            ouverture={s.ouverture}
+            signature={s.signature}
+            variant={s.variant}
+          />
+        </Section>
+      );
+    }
+    if (s.type === 'stat-majeste') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <StatMajeste
+            chiffre={s.chiffre}
+            texte={s.texte}
+            source={s.source}
+            eyebrow={s.eyebrow}
+            variant={s.variant}
+          />
         </Section>
       );
     }
