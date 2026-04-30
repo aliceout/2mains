@@ -1,13 +1,16 @@
 ---
-/**
- * Deux colonnes : un côté texte markdown, l'autre un picto / illustration.
- * Inversable via `inverse=true` pour alterner quand on en empile plusieurs.
- */
+// Deux colonnes : texte markdown d'un côté + picto/illustration de
+// l'autre. Le picto est un blob organique coloré (signature visuelle
+// du design) qu'on peut remplacer par une image réelle si fournie.
+// Inversable via `inverse=true`.
 import { marked } from 'marked';
+import Blob from './atoms/Blob.astro';
+
+type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu' | 'beige';
 
 type Props = {
   texte: string;
-  picto_couleur?: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu' | 'beige';
+  picto_couleur?: Couleur;
   inverse?: boolean;
   image?: string; // chemin public (ex: /uploads/…)
   image_alt?: string;
@@ -23,90 +26,104 @@ const {
 
 const html = marked.parse(texte, { async: false }) as string;
 
-const pictoFill = {
-  orange: '#EC6A2C',
-  violet: '#695EA3',
-  magenta: '#DD057E',
-  vert: '#A2D1B0',
-  bleu: '#00607E',
-  beige: '#F9E8D8',
-}[picto_couleur];
+// Mapping couleur historique → couleur de blob (palette élargie).
+const blobColor: Record<Couleur, 'orange' | 'violet' | 'rose' | 'moss' | 'mauve' | 'peach'> = {
+  orange: 'orange',
+  violet: 'violet',
+  magenta: 'rose',
+  vert: 'moss',
+  bleu: 'mauve',
+  beige: 'peach',
+};
 ---
 
 <div
   class:list={[
-    'grid items-center gap-8 md:grid-cols-2',
+    'grid items-center gap-10 md:grid-cols-2 md:gap-16',
     inverse && 'md:[&>*:first-child]:order-2',
   ]}
 >
   <div class="flex justify-center">
-    {
-      image ? (
-        <img
-          src={image}
-          alt={image_alt ?? ''}
-          class="max-h-80 w-auto rounded-xl object-contain"
+    {image ? (
+      <img
+        src={image}
+        alt={image_alt ?? ''}
+        class="max-h-100 w-auto rounded-2xl object-cover"
+      />
+    ) : (
+      <div class="relative aspect-square w-full max-w-90">
+        <Blob
+          size={360}
+          color={blobColor[picto_couleur]}
+          seed={picto_couleur.length}
+          opacity={0.55}
+          class="absolute inset-0 h-full w-full"
         />
-      ) : (
-        <div
-          class="flex h-48 w-48 items-center justify-center rounded-full md:h-64 md:w-64"
-          style={`background: ${pictoFill}22`}
-          aria-hidden="true"
-        >
-          <img
-            src="/brand/picto.svg"
-            alt=""
-            class="h-32 w-32 md:h-40 md:w-40"
-            style={`filter: drop-shadow(0 0 0 ${pictoFill})`}
-          />
-        </div>
-      )
-    }
+        <Blob
+          size={120}
+          color={blobColor[picto_couleur]}
+          seed={(picto_couleur.length + 2) % 5}
+          opacity={0.85}
+          class="absolute right-8 bottom-8 h-30 w-30"
+        />
+      </div>
+    )}
   </div>
-  <div class="prose-custom max-w-none">
+  <div class="deux-col-prose max-w-[55ch]">
     <Fragment set:html={html} />
   </div>
 </div>
 
 <style>
-  .prose-custom :global(h2) {
-    font-size: 1.5rem;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-top: 0;
-    margin-bottom: 1rem;
+  .deux-col-prose {
+    font-family: var(--font-sans);
+    color: var(--color-ink-2);
+    line-height: 1.65;
+  }
+  .deux-col-prose :global(h2) {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+    color: var(--color-ink);
   }
   @media (min-width: 768px) {
-    .prose-custom :global(h2) {
-      font-size: 1.875rem;
+    .deux-col-prose :global(h2) {
+      font-size: 40px;
     }
   }
-  .prose-custom :global(h3) {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
+  .deux-col-prose :global(h3) {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 500;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--color-ink);
   }
-  .prose-custom :global(p) {
+  .deux-col-prose :global(p) {
+    font-size: 16px;
+    line-height: 1.65;
     margin-bottom: 1rem;
-    line-height: 1.7;
   }
-  .prose-custom :global(ul) {
+  .deux-col-prose :global(ul) {
     margin-bottom: 1rem;
     padding-left: 1.5rem;
     list-style: disc;
   }
-  .prose-custom :global(ol) {
-    margin-bottom: 1rem;
-    padding-left: 1.5rem;
-    list-style: decimal;
+  .deux-col-prose :global(strong) {
+    font-weight: 500;
+    color: var(--color-ink);
   }
-  .prose-custom :global(a) {
+  .deux-col-prose :global(em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--color-orange);
+  }
+  .deux-col-prose :global(a) {
     color: var(--color-orange);
     text-decoration: underline;
     text-underline-offset: 2px;
-  }
-  .prose-custom :global(strong) {
-    font-weight: 700;
   }
 </style>

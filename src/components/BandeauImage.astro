@@ -1,8 +1,7 @@
 ---
-// Image pleine largeur avec titre (et sous-titre) en overlay.
-// Positionnable en horizontal (gauche/centre/droite) et vertical
-// (haut/milieu/bas). Scrim sombre par défaut pour garantir le contraste
-// du texte blanc.
+// Image pleine largeur avec titre Newsreader en overlay. Position
+// horizontale (gauche/centre/droite) × verticale (haut/milieu/bas).
+// Scrim sombre par défaut pour assurer le contraste du texte clair.
 import SmartImage from './SmartImage.astro';
 
 type Props = {
@@ -28,9 +27,9 @@ const {
 } = Astro.props;
 
 const heightClass = {
-  petite: 'h-64 md:h-80',
-  moyenne: 'h-96 md:h-[28rem]',
-  grande: 'h-[32rem] md:h-[40rem]',
+  petite: 'h-72 md:h-90',
+  moyenne: 'h-100 md:h-115',
+  grande: 'h-128 md:h-160',
 }[hauteur];
 
 const flexH = {
@@ -40,41 +39,36 @@ const flexH = {
 }[position_texte];
 
 const flexV = {
-  haut: 'justify-start pt-12',
+  haut: 'justify-start pt-16',
   milieu: 'justify-center',
-  bas: 'justify-end pb-12',
+  bas: 'justify-end pb-16',
 }[position_verticale];
 ---
 
 <section class:list={['relative w-full overflow-hidden', heightClass]}>
-  <SmartImage
-    src={image}
-    alt={alt}
-    class="absolute inset-0 h-full w-full"
-    eager
-  />
-  {
-    scrim && (
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/30 to-transparent"
-      />
-    )
-  }
+  <SmartImage src={image} alt={alt} class="absolute inset-0 h-full w-full" eager />
+  {scrim && (
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 bg-linear-to-t from-ink/70 via-ink/30 to-transparent"
+    />
+  )}
   <div
     class:list={[
-      'relative z-10 mx-auto flex h-full max-w-6xl flex-col px-4 md:px-8',
+      'relative z-10 mx-auto flex h-full max-w-310 flex-col px-6 md:px-10',
       flexH,
       flexV,
     ]}
   >
-    <div class="max-w-2xl text-paper drop-shadow-md">
-      <h2 class="text-3xl font-bold leading-tight md:text-5xl">{titre}</h2>
-      {
-        sousTitre && (
-          <p class="mt-3 text-base md:text-lg opacity-95">{sousTitre}</p>
-        )
-      }
+    <div class="max-w-3xl text-paper drop-shadow-md">
+      <h2 class="font-serif text-[40px] font-normal leading-[1.05] tracking-tight md:text-[64px]">
+        {titre}
+      </h2>
+      {sousTitre && (
+        <p class="mt-4 font-sans text-base leading-relaxed opacity-95 md:text-lg">
+          {sousTitre}
+        </p>
+      )}
     </div>
   </div>
 </section>

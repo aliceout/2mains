@@ -1,4 +1,7 @@
 ---
+// Citation simple en carte. Variant pilote la couleur de fond.
+// Guillemet décoratif géant à gauche, citation en italique
+// Newsreader, attribution en mono uppercase.
 type Props = {
   citation?: string;
   auteur: string;
@@ -8,38 +11,39 @@ type Props = {
 
 const { citation, auteur, role, variant = 'beige' } = Astro.props;
 
-const bg = {
-  beige: 'bg-beige text-ink',
-  violet: 'bg-violet text-paper',
-  paper: 'bg-paper text-ink border border-beige',
+const variantMap = {
+  paper: { bg: 'bg-paper border border-line', text: 'text-ink', quote: 'text-orange' },
+  beige: { bg: 'bg-cream', text: 'text-ink', quote: 'text-orange' },
+  violet: { bg: 'bg-violet', text: 'text-paper', quote: 'text-honey' },
 }[variant];
 ---
 
-<figure class:list={['relative rounded-2xl p-6 md:p-8', bg]}>
-  <svg
+<figure
+  class:list={[
+    'relative overflow-hidden rounded-2xl px-8 pt-8 pb-7',
+    variantMap.bg,
+    variantMap.text,
+  ]}
+>
+  <div
+    class:list={[
+      'pointer-events-none mb-2 font-serif italic font-medium leading-none',
+      variantMap.quote,
+    ]}
+    style="font-size: 64px;"
     aria-hidden="true"
-    class="absolute -top-2 -left-2 h-10 w-10 opacity-30"
-    viewBox="0 0 24 24"
-    fill="currentColor"
   >
-    <path
-      d="M7 7h4v4H9c0 2 2 3 3 3v2c-3 0-5-2-5-5V7zm8 0h4v4h-2c0 2 2 3 3 3v2c-3 0-5-2-5-5V7z"
-    ></path>
-  </svg>
-  <blockquote class="citation-body text-lg leading-relaxed italic">
+    “
+  </div>
+  <blockquote
+    class="font-serif italic font-normal text-[22px] leading-snug tracking-tight max-w-[40ch]"
+  >
     {citation ? <p>{citation}</p> : <slot />}
   </blockquote>
-  <figcaption class="mt-4 text-sm font-semibold">
-    — {auteur}
-    {role && <span class="block font-normal opacity-80">{role}</span>}
+  <figcaption
+    class="mt-5 font-mono text-[11px] uppercase opacity-90"
+    style="letter-spacing: 0.06em;"
+  >
+    — {auteur}{role && <span class="opacity-80"> · {role}</span>}
   </figcaption>
 </figure>
-
-<style>
-  .citation-body :global(p) {
-    margin-bottom: 0.75rem;
-  }
-  .citation-body :global(p:last-child) {
-    margin-bottom: 0;
-  }
-</style>
