@@ -791,7 +791,9 @@ collections:
           - { name: email_contact, label: Email contact, widget: string }
           - { name: telephone, label: Téléphone, widget: string }
           - { name: adresse, label: Adresse, widget: string }
-          - { name: helloasso_url, label: URL HelloAsso don, widget: string }
+          - { name: helloasso_don, label: URL HelloAsso don, widget: string }
+          - { name: helloasso_adhesion, label: URL HelloAsso adhésion (optionnel), widget: string, required: false }
+          - { name: helloasso_newsletter, label: "URL HelloAsso newsletter (optionnel — sinon utilise l'URL don)", widget: string, required: false }
           - name: reseaux
             label: Réseaux sociaux
             widget: object

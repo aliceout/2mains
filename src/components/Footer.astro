@@ -67,33 +67,31 @@ const { settings } = Astro.props;
         class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
         style="letter-spacing: 0.1em;"
       >
-        Agir &amp; soutenir
+        Actualités
       </h2>
       <ul class="grid gap-2.5 font-sans text-sm">
         <li>
           <a
-            href="/agir"
+            href="/actualites"
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
-            Agir avec nous
+            Blog
           </a>
         </li>
         <li>
           <a
-            href={settings.helloasso_don}
-            target="_blank"
-            rel="noopener"
+            href="/agenda"
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
-            Faire un don (HelloAsso)
+            Agenda
           </a>
         </li>
         <li>
           <a
-            href="/soutenir/mecenat"
+            href="/documents"
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
-            Mécénat entreprises
+            Nos documents cadres
           </a>
         </li>
         <li>
@@ -102,6 +100,16 @@ const { settings } = Astro.props;
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
             Nous contacter
+          </a>
+        </li>
+        <li>
+          <a
+            href={settings.helloasso_don}
+            target="_blank"
+            rel="noopener"
+            class="text-orange-soft transition-colors hover:text-orange"
+          >
+            Faire un don →
           </a>
         </li>
       </ul>
@@ -125,10 +133,10 @@ const { settings } = Astro.props;
         </li>
         <li>
           <a
-            href="/politique-confidentialite"
+            href="/rgpd"
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
-            Politique de confidentialité
+            RGPD et confidentialité
           </a>
         </li>
         <li>
@@ -137,6 +145,16 @@ const { settings } = Astro.props;
             class="text-[#9C9080] transition-colors hover:text-orange-soft"
           >
             Accessibilité : non conforme
+          </a>
+        </li>
+        <li>
+          <a
+            href={settings.helloasso_newsletter ?? settings.helloasso_don}
+            target="_blank"
+            rel="noopener"
+            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+          >
+            S'inscrire à la newsletter →
           </a>
         </li>
       </ul>

@@ -469,6 +469,7 @@ const site = defineCollection({
     adresse: z.string(),
     helloasso_don: z.string(),
     helloasso_adhesion: z.string().optional(),
+    helloasso_newsletter: z.string().optional(),
     directeur_publication: z.string(),
     siren: z.string().optional(),
     rna: z.string().optional(),
