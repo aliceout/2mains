@@ -15,24 +15,29 @@ const dirname = path.dirname(filename);
 
 export default buildConfig({
   // ─── Routing ────────────────────────────────────────────────
-  // Les `routes` ci-dessous sont *relatives au basePath Next.js*
-  // (`/cms` cf. next.config.mjs). Donc URLs publiques :
-  //   admin        → /cms/admin
-  //   api REST     → /cms/api
-  //   graphQL      → /cms/graphql
-  // Pas besoin de préfixer ici, Next.js s'en occupe via basePath.
+  // Chemins ABSOLUS — l'admin et l'API vivent sous /cms/ via la
+  // structure de fichiers `src/app/cms/(payload)/{admin,api}/...`.
+  // Pas de basePath Next.js (cf. next.config.mjs) car ça casse les
+  // assets Payload (issue #10534).
   routes: {
-    admin: '/admin',
-    api: '/api',
-    graphQL: '/graphql',
-    graphQLPlayground: '/graphql-playground',
+    admin: '/cms/admin',
+    api: '/cms/api',
+    graphQL: '/cms/graphql',
+    graphQLPlayground: '/cms/graphql-playground',
   },
 
   // ─── Admin UI ──────────────────────────────────────────────
   admin: {
     user: 'users',
     importMap: {
-      baseDir: path.resolve(dirname),
+      // Pointe vers le route group `(payload)` réel, pas vers la
+      // racine du projet. Nécessaire depuis Payload 3.x quand
+      // l'admin n'est pas à la racine.
+      baseDir: path.resolve(dirname, 'src/app/cms/(payload)'),
+      importMapFile: path.resolve(
+        dirname,
+        'src/app/cms/(payload)/admin/importMap.js',
+      ),
     },
   },
 
@@ -40,11 +45,16 @@ export default buildConfig({
   editor: lexicalEditor(),
 
   // ─── DB ────────────────────────────────────────────────────
+  // On passe les fields séparément (pas de connectionString) pour
+  // éviter tout problème d'URL-encoding si le password contient
+  // des caractères spéciaux (@, :, /, $, etc.).
   db: postgresAdapter({
     pool: {
-      connectionString:
-        process.env.DATABASE_URI ||
-        `postgres://${process.env.POSTGRES_USER}:${process.env.POSTGRES_PASSWORD}@${process.env.POSTGRES_HOST ?? 'localhost'}:${process.env.POSTGRES_PORT ?? 5432}/${process.env.POSTGRES_DB}`,
+      user: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      host: process.env.POSTGRES_HOST ?? 'localhost',
+      port: Number.parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
+      database: process.env.POSTGRES_DB,
     },
   }),
 
