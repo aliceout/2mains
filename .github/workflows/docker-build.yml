@@ -42,14 +42,28 @@ jobs:
       - name: Smoke test — routes render
         run: |
           test -f dist/index.html
-          test -f dist/association/index.html
+          # L'association (dropdown, 4 SH)
+          test -f dist/qui-sommes-nous/index.html
+          test -f dist/publics-cible/index.html
+          test -f dist/interventions/index.html
+          test -f dist/financeurs/index.html
+          # L'isolement corporel (page unique)
           test -f dist/isolement-corporel/index.html
-          test -f dist/pour/index.html
-          test -f dist/agir/index.html
-          test -f dist/soutenir/index.html
+          # Audiences
+          test -f dist/structures/index.html
+          test -f dist/femmes/index.html
+          test -f dist/entreprises/index.html
+          # Agir et soutenir (4 SH)
+          test -f dist/benevolat/index.html
+          test -f dist/praticiennes/index.html
+          test -f dist/dons/index.html
+          test -f dist/mecenat/index.html
+          # Footer + utilitaires
+          test -f dist/documents/index.html
           test -f dist/contact/index.html
           test -f dist/mentions-legales/index.html
-          test -f dist/politique-confidentialite/index.html
+          test -f dist/rgpd/index.html
+          test -f dist/accessibilite/index.html
           test -f dist/404.html
           test -f dist/sitemap-index.xml
           echo "All expected routes present."
