@@ -1,38 +1,54 @@
 {
   "name": "2mains-payload",
   "version": "0.1.0",
+  "description": "Backend Payload CMS pour 2mainsdefemmes.org",
+  "license": "AGPL-3.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
   "scripts": {
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
     "dev": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation next dev -p 3001",
-    "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001",
-    "lint": "next lint",
+    "devsafe": "rm -rf .next && dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation next dev -p 3001",
+    "generate:importmap": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate"
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.84.0",
-    "@payloadcms/next": "^3.84.0",
-    "@payloadcms/richtext-lexical": "^3.84.0",
-    "@payloadcms/ui": "^3.84.0",
+    "@payloadcms/next": "3.84.1",
+    "@payloadcms/richtext-lexical": "3.84.1",
+    "@payloadcms/ui": "3.84.1",
     "cross-env": "^7.0.3",
-    "graphql": "^16.9.0",
-    "next": "^16.2.2",
-    "payload": "^3.84.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "sharp": "^0.34.0"
+    "dotenv": "16.4.7",
+    "graphql": "^16.8.1",
+    "next": "16.2.3",
+    "payload": "3.84.1",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sharp": "0.34.2",
+    "@payloadcms/db-postgres": "3.84.1"
   },
   "devDependencies": {
-    "@types/node": "^22.10.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
+    "@types/node": "22.19.9",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "dotenv-cli": "^8.0.0",
-    "sass": "^1.99.0",
-    "typescript": "^5.7.0"
+    "eslint": "^9.16.0",
+    "eslint-config-next": "16.2.3",
+    "prettier": "^3.4.2",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^9 || ^10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp",
+      "esbuild",
+      "unrs-resolver"
+    ]
   }
 }
