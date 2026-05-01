@@ -1,10 +1,10 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import Hero from '../../components/Hero.astro';
-import Section from '../../components/Section.astro';
-import DraftBadge from '../../components/DraftBadge.astro';
-import { filterPublished } from '../../lib/drafts';
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import DraftBadge from '../components/DraftBadge.astro';
+import { filterPublished } from '../lib/drafts';
 
 const page = await getEntry('pages', 'documents');
 if (!page) throw new Error('content/pages/documents.md introuvable');
