@@ -26,3 +26,11 @@ public/uploads/optimized/
 
 # Images Unsplash téléchargées (régénérées par scripts/fetch-unsplash.mjs)
 public/uploads/unsplash/
+
+# Payload — Postgres local (dev) + uploads, jamais commiter
+data/
+services/payload/.next/
+services/payload/dist/
+
+# Astro Node SSR — output adapter Node
+.vercel/
