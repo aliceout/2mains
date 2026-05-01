@@ -7,10 +7,12 @@ import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts';
 import type { ServerFunctionClient } from 'payload';
 import React from 'react';
 
-// CSS pré-compilée de @payloadcms/ui — sans cet import, les styles
-// de l'admin ne se chargent pas (Turbopack ne peut pas résoudre
-// les imports SCSS internes au package).
-import '@payloadcms/ui/css';
+// SCSS racine de @payloadcms/ui — contient les définitions des
+// variables CSS du thème (--theme-bg, --theme-elevation-*, etc.)
+// PLUS les styles des composants. Le fichier `dist/styles.css`
+// pré-compilé ne contient QUE les composants ; sans app.scss les
+// variables n'existent pas et tout le rendu est invisible.
+import '@payloadcms/ui/scss/app.scss';
 import './custom.scss';
 import { importMap } from './admin/importMap.js';
 
