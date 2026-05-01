@@ -1,7 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { marked } from 'marked';
+import { filterPublished } from '../lib/drafts';
 import Hero from './Hero.astro';
 import Section from './Section.astro';
 import Prose from './Prose.astro';
@@ -32,6 +33,15 @@ type Props = {
 
 const { page } = Astro.props;
 const { hero, sections } = page.data;
+
+// Si l'une des sections est de type `equipe`, on charge la collection
+// pour la rendre en portraits.
+const needsEquipe = sections.some((s) => s.type === 'equipe');
+const equipeMembres = needsEquipe
+  ? filterPublished(await getCollection('equipe')).sort(
+      (a, b) => a.data.ordre - b.data.ordre,
+    )
+  : [];
 
 // Si la page a un corps markdown (hors sections), on le rend en zone prose
 // principale. Utile pour les pages très textuelles.
@@ -325,6 +335,34 @@ for (const s of sections) {
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Timeline etapes={s.etapes} alignement={s.alignement} />
+        </Section>
+      );
+    }
+    if (s.type === 'equipe') {
+      const subset = s.ids
+        ? equipeMembres.filter((m) => s.ids!.includes(m.id))
+        : equipeMembres;
+      const personnes = subset.map((m) => ({
+        nom: m.data.nom,
+        role: m.data.role,
+        photo: m.data.photo,
+        photo_alt: `Portrait de ${m.data.nom}`,
+        bio: m.data.bio_courte,
+        lien: m.data.linkedin,
+        lien_label: m.data.linkedin ? 'LinkedIn' : undefined,
+      }));
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          {s.intro && (
+            <p class="mb-8 max-w-220 font-sans text-base leading-relaxed text-ink-2">
+              {s.intro}
+            </p>
+          )}
+          <Portraits
+            personnes={personnes}
+            colonnes={s.colonnes}
+            forme={s.forme}
+          />
         </Section>
       );
     }

@@ -381,6 +381,17 @@ const sectionSchema = z.discriminatedUnion('type', [
       }),
     ),
   }),
+  // Équipe / CA — pioche dans la collection `equipe`, rend en portraits
+  z.object({
+    type: z.literal('equipe'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    intro: z.string().optional(),
+    forme: z.enum(['rond', 'carre']).default('rond'),
+    colonnes: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(4),
+    /** Si fourni, ne montre que les membres dont l'id est dans la liste. */
+    ids: z.array(z.string()).optional(),
+  }),
   // Lettre adressée — adresse directe, ton épistolaire
   z.object({
     type: z.literal('lettre'),
