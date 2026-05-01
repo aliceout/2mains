@@ -381,6 +381,20 @@ const sectionSchema = z.discriminatedUnion('type', [
       }),
     ),
   }),
+  // Témoignages — mosaïque depuis la collection `temoignages`
+  z.object({
+    type: z.literal('temoignages'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    /** Filtre par contexte. Si absent, prend tous les contextes. */
+    contexte: z
+      .enum(['participante', 'partenaire', 'professionnelle'])
+      .optional(),
+    /** Liste de slugs spécifiques. Prioritaire sur `contexte` si fourni. */
+    ids: z.array(z.string()).optional(),
+    /** Nombre max à afficher (défaut 3). */
+    limite: z.number().int().min(1).max(9).default(3),
+  }),
   // Équipe / CA — pioche dans la collection `equipe`, rend en portraits
   z.object({
     type: z.literal('equipe'),

@@ -75,11 +75,11 @@ sections:
       - titre: "Évaluation"
         description: "3 temps minimum (avant, pendant, après), avec des outils coconstruits."
 
-  - type: "citation-large"
-    variant: "beige"
-    citation: "Nous cherchions depuis longtemps à intégrer la dimension corporelle dans nos accompagnements, sans savoir par où commencer. 2mains de femmes nous a apporté un cadre, une méthode, et surtout des intervenantes formées qui respectent nos bénéficiaires."
-    auteur: "Témoignage partenaire"
-    role: "Association d'hébergement, Lyon (à valider)"
+  - type: "temoignages"
+    titre: "Ce qu'*elles* en disent"
+    fond: "beige"
+    contexte: "partenaire"
+    limite: 3
 
   - type: "cta"
     fond: "bleu"

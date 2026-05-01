@@ -25,6 +25,7 @@ import Portraits from './Portraits.astro';
 import Timeline from './Timeline.astro';
 import Lettre from './Lettre.astro';
 import StatMajeste from './StatMajeste.astro';
+import Temoignages from './Temoignages.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -39,6 +40,14 @@ const { hero, sections } = page.data;
 const needsEquipe = sections.some((s) => s.type === 'equipe');
 const equipeMembres = needsEquipe
   ? filterPublished(await getCollection('equipe')).sort(
+      (a, b) => a.data.ordre - b.data.ordre,
+    )
+  : [];
+
+// Idem pour les témoignages.
+const needsTemoignages = sections.some((s) => s.type === 'temoignages');
+const tousTemoignages = needsTemoignages
+  ? filterPublished(await getCollection('temoignages')).sort(
       (a, b) => a.data.ordre - b.data.ordre,
     )
   : [];
@@ -335,6 +344,21 @@ for (const s of sections) {
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Timeline etapes={s.etapes} alignement={s.alignement} />
+        </Section>
+      );
+    }
+    if (s.type === 'temoignages') {
+      let subset = s.ids
+        ? tousTemoignages.filter((t) => s.ids!.includes(t.id))
+        : tousTemoignages;
+      if (s.contexte && !s.ids) {
+        subset = subset.filter((t) => t.data.contexte === s.contexte);
+      }
+      subset = subset.slice(0, s.limite);
+      if (subset.length === 0) return null;
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Temoignages temoignages={subset} />
         </Section>
       );
     }

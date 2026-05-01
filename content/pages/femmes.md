@@ -50,11 +50,11 @@ sections:
     body: |
       Entrer, s'arrêter, revenir — comme vous voulez. Nous adaptons à votre rythme, pas l'inverse. Et vous pouvez nous dire non à tout moment, sans vous expliquer.
 
-  - type: "citation-large"
-    variant: "beige"
-    citation: "Au début j'y suis allée en me disant que je ne me laisserais pas toucher. Et c'était ok. Juste être là, avec quelqu'un qui ne me demandait rien, ça m'a déjà fait du bien. Semaine après semaine, j'ai senti que je pouvais choisir — et c'est ça qui a tout changé."
-    auteur: "Témoignage participante"
-    role: "Lyon — à valider"
+  - type: "temoignages"
+    titre: "Ce qu'*elles* en disent"
+    fond: "beige"
+    contexte: "participante"
+    limite: 3
 
   - type: "faq"
     titre: "Questions fréquentes"

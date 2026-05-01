@@ -8,7 +8,7 @@ hero:
   variant: "violet"
   cta_primaire:
     label: "Devenir mécène"
-    href: "/soutenir/mecenat"
+    href: "/mecenat"
   cta_secondaire:
     label: "Nous contacter"
     href: "/contact"
@@ -29,7 +29,7 @@ sections:
     cartes:
       - titre: "Mécénat financier"
         description: "Un don ponctuel ou récurrent, défiscalisable à 60 % dans la limite de 0,5 % du CA. Les fonds soutiennent directement les parcours d'accompagnement des femmes."
-        href: "/soutenir/mecenat"
+        href: "/mecenat"
         cta: "Mécénat"
         couleur: "orange"
       - titre: "Mécénat en nature"
@@ -49,6 +49,13 @@ sections:
       - **Visibilité** (selon souhait) : logo, témoignage, événements communs.
       - **Lien direct** avec les équipes et les actions : visites de terrain, rencontres avec des participantes volontaires.
       - **Reçu fiscal** transmis automatiquement.
+
+  - type: "temoignages"
+    titre: "Ce qu'*ils* en disent"
+    fond: "beige"
+    contexte: "professionnelle"
+    limite: 3
+
   - type: "cta"
     fond: "vert"
     titre: "Envie d'un premier échange ?"

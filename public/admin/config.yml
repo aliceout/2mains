@@ -457,6 +457,34 @@ collections:
                   - { name: lien, label: 'Lien externe (optionnel)', widget: string, required: false }
                   - { name: lien_label, label: 'Libellé du lien', widget: string, required: false }
 
+          # === Témoignages (depuis la collection) ===
+          - name: temoignages
+            label: '🗣 Témoignages (mosaïque)'
+            widget: object
+            hint: "Pioche dans la collection « Témoignages ». Pour gérer les entrées, voir la section Témoignages."
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false, default: "Ce qu'elles en disent" }
+              - *fondField
+              - name: contexte
+                label: 'Filtrer par contexte (optionnel)'
+                widget: select
+                options: ['', 'participante', 'partenaire', 'professionnelle']
+                default: ''
+                hint: "Vide = tous les contextes."
+              - name: limite
+                label: "Nombre à afficher"
+                widget: number
+                default: 3
+                value_type: int
+                min: 1
+                max: 9
+              - name: ids
+                label: 'Filtrer par entrées spécifiques (optionnel)'
+                widget: list
+                required: false
+                hint: "Laisse vide pour tirer automatiquement. Sinon liste les slugs (ex: claire)."
+                field: { name: id, widget: string, label: 'Slug témoignage' }
+
           # === Équipe / CA (depuis la collection) ===
           - name: equipe
             label: '👥 Notre équipe (trombi CA)'
