@@ -32,6 +32,7 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "dotenv-cli": "^8.0.0",
+    "sass": "^1.99.0",
     "typescript": "^5.7.0"
   }
 }

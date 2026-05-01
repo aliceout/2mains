@@ -1,5 +1,6 @@
-// Map d'imports pour les composants custom Payload (champs custom,
-// vues custom, etc.). Régénéré par `payload generate:importmap`.
-// Vide tant qu'on n'a pas de composant custom — Payload utilise
-// alors uniquement les composants built-in.
-export const importMap = {};
+import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
+
+/** @type import('payload').ImportMap */
+export const importMap = {
+  "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
+}

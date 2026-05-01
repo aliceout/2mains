@@ -7,6 +7,10 @@ import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts';
 import type { ServerFunctionClient } from 'payload';
 import React from 'react';
 
+// CSS pré-compilée de @payloadcms/ui — sans cet import, les styles
+// de l'admin ne se chargent pas (Turbopack ne peut pas résoudre
+// les imports SCSS internes au package).
+import '@payloadcms/ui/css';
 import './custom.scss';
 import { importMap } from './admin/importMap.js';
 
