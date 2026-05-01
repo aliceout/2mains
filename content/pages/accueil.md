@@ -2,7 +2,7 @@
 title: "Accueil"
 description: "2mains de femmes — se (re)toucher pour se (re)lier. Association lyonnaise contre l'isolement corporel des femmes par le toucher relationnel."
 hero:
-  titre: "Se *(re)toucher*\npour se *(re)lier*."
+  titre: "Le *toucher*\npour se *(re)lier*."
   sousTitre: "Association · Lyon"
   accroche: "Nous luttons contre l'isolement corporel des femmes par le toucher relationnel — une innovation sociale pour faire revenir le lien là où il manque."
   variant: "violet"
