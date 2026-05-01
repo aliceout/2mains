@@ -27,34 +27,39 @@ export type NavItem = {
   children?: NavItem[];
 };
 
-// Navigation principale — structure inspirée de la spec d'Audrey
-// (chat WA 10/10/25 ligne 349 : segmentation par type d'interlocuteur)
-// avec parents de dropdown non cliquables. Le bouton « Faire un don » en
-// haut à droite (externe HelloAsso) est rendu séparément dans le Header.
+// Navigation principale — refonte arborescence V2 (demande Audrey,
+// PDF « Nouvelle orga »). « Accueil » sort du header (le clic sur le
+// logo ramène à la home). « Agir et soutenir » remonte du footer
+// vers le header. Documents descend dans le footer. Le bouton
+// « Faire un don » (externe HelloAsso) est rendu séparément dans le
+// Header.
 export const navigation: NavItem[] = [
-  { label: 'Accueil', href: '/' },
   {
     label: "L'association",
-    // Parent non cliquable : on ne navigue pas sur cette entrée, on survole
-    // pour ouvrir le dropdown.
     children: [
-      { label: 'Qui sommes-nous', href: '/association/qui-sommes-nous' },
-      { label: 'Nos interventions', href: '/association/interventions' },
-      { label: 'Notre équipe', href: '/association/equipe' },
-      { label: 'Isolement corporel', href: '/isolement-corporel' },
-      { label: 'Témoignages', href: '/pour/temoignages' },
-      { label: 'Nos documents', href: '/association/documents' },
-      { label: 'Financeurs et partenaires', href: '/association/financeurs' },
+      { label: 'Qui sommes-nous', href: '/qui-sommes-nous' },
+      { label: 'Nos publics cible', href: '/publics-cible' },
+      { label: 'Nos interventions', href: '/interventions' },
+      { label: 'Nos financeurs et réseaux', href: '/financeurs' },
     ],
   },
-  { label: "Structure d'accueil", href: '/pour/structures' },
-  { label: 'Femme concernée', href: '/pour/femmes' },
-  { label: 'Entreprise', href: '/pour/entreprises' },
+  { label: "L'isolement corporel", href: '/isolement-corporel' },
+  { label: 'Structure santé/social', href: '/structures' },
+  { label: 'Femme concernée', href: '/femmes' },
   {
-    label: 'Actualités',
+    label: 'Entreprise',
     children: [
-      { label: 'Blog', href: '/actualites' },
-      { label: 'Agenda', href: '/agenda' },
+      { label: 'Nos offres', href: '/entreprises' },
+      { label: 'Mécénat entreprise', href: '/mecenat' },
+    ],
+  },
+  {
+    label: 'Agir et soutenir',
+    children: [
+      { label: 'Devenir bénévole', href: '/benevolat' },
+      { label: 'Réseau des praticien·ne·s', href: '/praticiennes' },
+      { label: 'Faire un don', href: '/dons' },
+      { label: 'Mécénat entreprise', href: '/mecenat' },
     ],
   },
 ];
@@ -63,19 +68,23 @@ export const navigation: NavItem[] = [
 // standalone). Évite le fallback moche « Benevolat » au lieu de
 // « Devenir bénévole ».
 const breadcrumbLabels: Record<string, string> = {
-  '/agir': 'Agir avec nous',
-  '/agir/benevolat': 'Devenir bénévole',
-  '/agir/praticiennes': 'Praticien·nes solidaires',
-  '/soutenir': 'Soutenir',
-  '/soutenir/dons': 'Faire un don',
-  '/soutenir/mecenat': 'Mécénat entreprises',
+  '/qui-sommes-nous': 'Qui sommes-nous',
+  '/publics-cible': 'Nos publics cible',
+  '/interventions': 'Nos interventions',
+  '/financeurs': 'Nos financeurs et réseaux',
+  '/historique': 'Notre historique',
+  '/structures': 'Structure santé/social',
+  '/femmes': 'Femme concernée',
+  '/entreprises': 'Nos offres entreprises',
+  '/benevolat': 'Devenir bénévole',
+  '/praticiennes': 'Réseau des praticien·ne·s',
+  '/dons': 'Faire un don',
+  '/mecenat': 'Mécénat entreprise',
+  '/documents': 'Nos documents cadres',
   '/contact': 'Nous écrire',
   '/accessibilite': 'Accessibilité',
   '/mentions-legales': 'Mentions légales',
-  '/politique-confidentialite': 'Politique de confidentialité',
-  '/isolement-corporel/impense': 'Un impensé social',
-  '/isolement-corporel/toucher': 'Le toucher relationnel',
-  '/isolement-corporel/ressources': 'Ressources',
+  '/rgpd': 'RGPD et confidentialité',
 };
 
 function findNavLabel(href: string, items: NavItem[]): string | null {
