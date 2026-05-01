@@ -41,7 +41,13 @@ sections:
   - type: "prose"
     titre: "Notre historique"
     body: |
-      *Contenu à venir — l'historique de l'association sera ajouté ici par Audrey.*
+      L'idée de **2mains de femmes** est née d'un constat répété sur le terrain : dans les accompagnements sociaux, médico-sociaux et associatifs lyonnais, le **corps** des femmes accompagnées est largement absent. On parle de logement, de droits, de santé psychique, de protection — rarement du toucher, du lien sensoriel, de la place du corps dans le rétablissement.
+
+      Pendant plusieurs années, l'envie de combler ce manque s'est construite au fil de rencontres avec des intervenant·es du toucher, des professionnel·les du social, et des femmes concernées qui exprimaient cet impensé. Une **première phase de structuration** a permis de poser les fondations : projet associatif, charte éthique, premiers partenariats avec des structures lyonnaises (foyers, accueils de jour, maisons des femmes).
+
+      L'**association est officiellement constituée** autour d'un noyau de bénévoles intervenant·es et d'un conseil d'administration ouvert aux personnes concernées. Aujourd'hui, **2mains de femmes** rassemble une **soixantaine d'adhérent·es** et un **réseau de praticien·nes solidaires** en croissance, et déploie un plan d'action sur la période **2025–2028**.
+
+      *Cet historique est volontairement court — il sera enrichi au fil des étapes clés de l'association.*
 
   - type: "equipe"
     titre: "Notre équipe — le conseil d'administration"

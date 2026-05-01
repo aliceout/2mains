@@ -72,7 +72,6 @@ const breadcrumbLabels: Record<string, string> = {
   '/publics-cible': 'Nos publics cible',
   '/interventions': 'Nos interventions',
   '/financeurs': 'Nos financeurs et réseaux',
-  '/historique': 'Notre historique',
   '/structures': 'Structure santé/social',
   '/femmes': 'Femme concernée',
   '/entreprises': 'Nos offres entreprises',

@@ -1,10 +1,10 @@
 ---
-title: "Devenir bénévole"
-description: "Trois profils de bénévolat à 2mains de femmes : intervenant·e, appui développement, ponctuel·le. Rejoignez les Mains de 2mains."
+title: "Agir avec nous"
+description: "Trois voies pour soutenir 2mains de femmes : devenir bénévole, intégrer le réseau de praticien·nes solidaires, ou adhérer à l'association."
 hero:
-  titre: "Devenir bénévole"
-  sousTitre: "Agir avec nous"
-  accroche: "Les bénévoles — les Mains de 2mains — sont l'ossature de l'association. Trois profils cohabitent, cumulables, à adapter à vos envies, vos compétences et vos disponibilités."
+  titre: "Agir avec nous"
+  sousTitre: "Trois voies d'engagement"
+  accroche: "Bénévole, praticien·ne solidaire, adhérent·e — chaque engagement compte. Choisissez celui qui vous correspond, ou cumulez-les."
   variant: "violet"
   cta_primaire:
     label: "Répondre au questionnaire bénévoles"
@@ -15,7 +15,32 @@ hero:
     href: "/contact"
 sections:
   - type: "cartes"
-    titre: "Les trois profils"
+    titre: "Trois manières de nous rejoindre"
+    colonnes: 3
+    cartes:
+      - titre: "Devenir bénévole"
+        description: "Animer des séances, contribuer à une commission technique ou prêter main-forte sur des chantiers ponctuels. Trois profils cumulables, à adapter à vos disponibilités."
+        href: "#les-profils-de-benevolat"
+        cta: "Voir les profils"
+        couleur: "orange"
+      - titre: "Devenir praticien·ne solidaire"
+        description: "Vous êtes praticien·ne du toucher ou du corps ? Rejoignez le réseau qui ouvre l'accès au soin pour les femmes accompagnées par l'association."
+        href: "/praticiennes"
+        cta: "Le réseau praticien·nes"
+        couleur: "violet"
+      - titre: "Devenir adhérent·e"
+        description: "Soutenir l'association, recevoir nos invitations à l'AG, peser sur la gouvernance. L'adhésion est libre, à partir de 10 €."
+        href: "https://www.helloasso.com/associations/2mains-de-femmes/adhesions/adhesion-a-l-association-2mains-de-femmes"
+        cta: "Adhérer (HelloAsso)"
+        couleur: "magenta"
+
+  - type: "prose"
+    titre: "Les profils de bénévolat"
+    body: |
+      Les bénévoles — les *Mains de 2mains* — sont l'ossature de l'association. Trois profils cohabitent, **cumulables**, à adapter à vos envies, vos compétences et vos disponibilités.
+
+  - type: "cartes"
+    fond: "beige"
     colonnes: 3
     cartes:
       - titre: "1. Intervenant·e"
@@ -27,9 +52,11 @@ sections:
       - titre: "3. Ponctuel·le"
         description: "Vous êtes mobilisable sur des chantiers courts : logistique d'un événement, création d'un outil, campagne de com, graphisme, relecture, traduction…"
         couleur: "magenta"
+
   - type: "prose"
     body: |
       Les profils sont **cumulables** : on peut parfaitement être intervenante le mardi et membre d'une commission en parallèle.
+
   - type: "prose"
     titre: "Ce qu'on propose en retour"
     fond: "beige"
@@ -39,6 +66,7 @@ sections:
       - **Un cadre de supervision** pour les bénévoles intervenant·es.
       - **Une vraie participation aux décisions** — l'association est gouvernée de manière participative, pas hiérarchique.
       - **Une communauté** de femmes et d'allié·es engagé·es sur un sujet politique, intime et puissant.
+
   - type: "prose"
     titre: "Comment commencer ?"
     body: |
