@@ -11,16 +11,18 @@ Backend Payload CMS pour `2mainsdefemmes.org`. Sert l'admin sous
 
 ## Lancement en dev
 
-Depuis la **racine du repo** :
+Le `.env` consommé par le service est celui à la **racine du repo**
+(unique pour toute la stack), peuplé par DvSetup depuis Infisical.
+Le `npm run dev` ci-dessous le charge automatiquement via
+`dotenv-cli`.
 
 ```bash
-# 1. Lancer Postgres dev (port 5432 host)
+# 1. À la racine du repo : lancer Postgres dev (port 5432 host)
 docker compose -f docker-compose.dev.yml up -d
 
-# 2. Installer les deps + démarrer le serveur Payload (port 3001)
+# 2. Dans services/payload : installer les deps puis lancer
 cd services/payload
 npm install
-cp .env.example .env  # ajuster si besoin
 npm run dev
 ```
 

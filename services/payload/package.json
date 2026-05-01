@@ -7,12 +7,12 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev -p 3001",
+    "dev": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation next dev -p 3001",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001",
     "lint": "next lint",
-    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate"
+    "generate:types": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "^3.32.0",
@@ -31,6 +31,7 @@
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "dotenv-cli": "^8.0.0",
     "typescript": "^5.7.0"
   }
 }
