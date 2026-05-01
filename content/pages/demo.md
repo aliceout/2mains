@@ -153,7 +153,7 @@ sections:
         couleur: "orange"
         cta:
           label: "En savoir plus"
-          href: "/pour/femmes"
+          href: "/femmes"
       - titre: "Parcours complet"
         description: "5 séances en immersion sur 3 mois pour installer un vrai changement."
         points:

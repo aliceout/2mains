@@ -42,6 +42,6 @@ sections:
     titre: "Autres manières de soutenir"
     body: |
       - **Adhérer** à prix libre — [sur HelloAsso](https://www.helloasso.com/associations/2mains-de-femmes/adhesions/adhesion-a-l-association-2mains-de-femmes).
-      - **Mécénat entreprise** — [en savoir plus](/soutenir/mecenat).
-      - **Donner du temps** — [devenir bénévole](/agir/benevolat).
+      - **Mécénat entreprise** — [en savoir plus](/mecenat).
+      - **Donner du temps** — [devenir bénévole](/benevolat).
 ---
