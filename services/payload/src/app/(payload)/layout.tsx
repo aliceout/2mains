@@ -3,8 +3,7 @@
 // Ce fichier est importé par le runtime Next.js de Payload — on
 // délègue au RootLayout de @payloadcms/next.
 import config from '@payload-config';
-import { RootLayout } from '@payloadcms/next/layouts';
-import { handleServerFunctions } from '@payloadcms/next/utilities';
+import { handleServerFunctions, RootLayout } from '@payloadcms/next/layouts';
 import type { ServerFunctionClient } from 'payload';
 import React from 'react';
 
