@@ -1,0 +1,35 @@
+# Dev Setup VS Code extension config for 2mains de femmes.
+#
+# Fetches secrets from Infisical (self-hosted env.backlice.dev) and
+# writes them to the repo-root `.env` when the workspace opens (or
+# on the `Dev Setup: Fetch Secrets` command). Docker compose, the
+# deploy.sh script and the dev servers (Astro + Payload) all
+# consume that file — it is the single canonical place for local
+# secrets.
+#
+# Pre-requisites:
+#   1. Install the "Dev Setup" VS Code extension.
+#   2. Run `Dev Setup: Login to Infisical` and paste the Universal
+#      Auth Client ID / Client Secret of a Machine Identity that
+#      has read access to the project below.
+#
+# In production, this file is unused — secrets come from
+# `infra/scripts/deploy.sh` which calls `infisical export` directly
+# with the VPS-level Universal Auth credentials.
+
+secrets:
+  provider: infisical
+  loader: dotenv
+  # TODO: remplacer par le slug exact du projet sur env.backlice.dev
+  # (visible dans l'URL de l'admin Infisical quand tu ouvres le projet).
+  project: 2mains-de-femmes
+  batches:
+    # Env Production. Ordre = priorité sur les doublons (first wins).
+    - prod/payload
+    - prod/postgres
+    - prod/smtp
+    # Vars à la racine de l'env (ALLOWED_ORIGIN, ASTRO_PUBLIC_PAYLOAD_URL,
+    # RATE_LIMIT_PER_HOUR). Si DvSetup ne gère pas le path racine
+    # vide, déplacer ces 3 vars dans un dossier dédié (ex: prod/web)
+    # et ajouter le batch correspondant.
+    - prod
