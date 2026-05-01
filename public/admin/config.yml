@@ -457,6 +457,60 @@ collections:
                   - { name: lien, label: 'Lien externe (optionnel)', widget: string, required: false }
                   - { name: lien_label, label: 'Libellé du lien', widget: string, required: false }
 
+          # === Témoignages (depuis la collection) ===
+          - name: temoignages
+            label: '🗣 Témoignages (mosaïque)'
+            widget: object
+            hint: "Pioche dans la collection « Témoignages ». Pour gérer les entrées, voir la section Témoignages."
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false, default: "Ce qu'elles en disent" }
+              - *fondField
+              - name: contexte
+                label: 'Filtrer par contexte (optionnel)'
+                widget: select
+                options: ['', 'participante', 'partenaire', 'professionnelle']
+                default: ''
+                hint: "Vide = tous les contextes."
+              - name: limite
+                label: "Nombre à afficher"
+                widget: number
+                default: 3
+                value_type: int
+                min: 1
+                max: 9
+              - name: ids
+                label: 'Filtrer par entrées spécifiques (optionnel)'
+                widget: list
+                required: false
+                hint: "Laisse vide pour tirer automatiquement. Sinon liste les slugs (ex: claire)."
+                field: { name: id, widget: string, label: 'Slug témoignage' }
+
+          # === Équipe / CA (depuis la collection) ===
+          - name: equipe
+            label: '👥 Notre équipe (trombi CA)'
+            widget: object
+            hint: "Pioche automatiquement dans la collection « Équipe / CA ». Pour gérer les membres, voir la section Équipe / CA."
+            fields:
+              - { name: titre, label: 'Titre de la section', widget: string, required: false, default: "Notre équipe" }
+              - *fondField
+              - { name: intro, label: 'Texte introductif (optionnel)', widget: text, required: false }
+              - name: forme
+                label: 'Forme des photos'
+                widget: select
+                options: ['rond', 'carre']
+                default: rond
+              - name: colonnes
+                label: 'Colonnes'
+                widget: select
+                options: ['2', '3', '4']
+                default: '4'
+              - name: ids
+                label: 'Filtrer par membres (optionnel)'
+                widget: list
+                required: false
+                hint: "Laisse vide pour afficher tous les membres. Sinon liste les slugs (ex: audrey-relandeau)."
+                field: { name: id, widget: string, label: 'Slug membre' }
+
           # === Lettre adressée ===
           - name: lettre
             label: '✉ Lettre adressée'
@@ -737,7 +791,9 @@ collections:
           - { name: email_contact, label: Email contact, widget: string }
           - { name: telephone, label: Téléphone, widget: string }
           - { name: adresse, label: Adresse, widget: string }
-          - { name: helloasso_url, label: URL HelloAsso don, widget: string }
+          - { name: helloasso_don, label: URL HelloAsso don, widget: string }
+          - { name: helloasso_adhesion, label: URL HelloAsso adhésion (optionnel), widget: string, required: false }
+          - { name: helloasso_newsletter, label: "URL HelloAsso newsletter (optionnel — sinon utilise l'URL don)", widget: string, required: false }
           - name: reseaux
             label: Réseaux sociaux
             widget: object

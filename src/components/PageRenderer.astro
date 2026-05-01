@@ -1,7 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { render } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import { marked } from 'marked';
+import { filterPublished } from '../lib/drafts';
 import Hero from './Hero.astro';
 import Section from './Section.astro';
 import Prose from './Prose.astro';
@@ -24,6 +25,7 @@ import Portraits from './Portraits.astro';
 import Timeline from './Timeline.astro';
 import Lettre from './Lettre.astro';
 import StatMajeste from './StatMajeste.astro';
+import Temoignages from './Temoignages.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -32,6 +34,23 @@ type Props = {
 
 const { page } = Astro.props;
 const { hero, sections } = page.data;
+
+// Si l'une des sections est de type `equipe`, on charge la collection
+// pour la rendre en portraits.
+const needsEquipe = sections.some((s) => s.type === 'equipe');
+const equipeMembres = needsEquipe
+  ? filterPublished(await getCollection('equipe')).sort(
+      (a, b) => a.data.ordre - b.data.ordre,
+    )
+  : [];
+
+// Idem pour les témoignages.
+const needsTemoignages = sections.some((s) => s.type === 'temoignages');
+const tousTemoignages = needsTemoignages
+  ? filterPublished(await getCollection('temoignages')).sort(
+      (a, b) => a.data.ordre - b.data.ordre,
+    )
+  : [];
 
 // Si la page a un corps markdown (hors sections), on le rend en zone prose
 // principale. Utile pour les pages très textuelles.
@@ -325,6 +344,49 @@ for (const s of sections) {
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Timeline etapes={s.etapes} alignement={s.alignement} />
+        </Section>
+      );
+    }
+    if (s.type === 'temoignages') {
+      let subset = s.ids
+        ? tousTemoignages.filter((t) => s.ids!.includes(t.id))
+        : tousTemoignages;
+      if (s.contexte && !s.ids) {
+        subset = subset.filter((t) => t.data.contexte === s.contexte);
+      }
+      subset = subset.slice(0, s.limite);
+      if (subset.length === 0) return null;
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Temoignages temoignages={subset} />
+        </Section>
+      );
+    }
+    if (s.type === 'equipe') {
+      const subset = s.ids
+        ? equipeMembres.filter((m) => s.ids!.includes(m.id))
+        : equipeMembres;
+      const personnes = subset.map((m) => ({
+        nom: m.data.nom,
+        role: m.data.role,
+        photo: m.data.photo,
+        photo_alt: `Portrait de ${m.data.nom}`,
+        bio: m.data.bio_courte,
+        lien: m.data.linkedin,
+        lien_label: m.data.linkedin ? 'LinkedIn' : undefined,
+      }));
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          {s.intro && (
+            <p class="mb-8 max-w-220 font-sans text-base leading-relaxed text-ink-2">
+              {s.intro}
+            </p>
+          )}
+          <Portraits
+            personnes={personnes}
+            colonnes={s.colonnes}
+            forme={s.forme}
+          />
         </Section>
       );
     }

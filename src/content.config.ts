@@ -381,6 +381,31 @@ const sectionSchema = z.discriminatedUnion('type', [
       }),
     ),
   }),
+  // Témoignages — mosaïque depuis la collection `temoignages`
+  z.object({
+    type: z.literal('temoignages'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    /** Filtre par contexte. Si absent, prend tous les contextes. */
+    contexte: z
+      .enum(['participante', 'partenaire', 'professionnelle'])
+      .optional(),
+    /** Liste de slugs spécifiques. Prioritaire sur `contexte` si fourni. */
+    ids: z.array(z.string()).optional(),
+    /** Nombre max à afficher (défaut 3). */
+    limite: z.number().int().min(1).max(9).default(3),
+  }),
+  // Équipe / CA — pioche dans la collection `equipe`, rend en portraits
+  z.object({
+    type: z.literal('equipe'),
+    titre: z.string().optional(),
+    fond: fondEnum,
+    intro: z.string().optional(),
+    forme: z.enum(['rond', 'carre']).default('rond'),
+    colonnes: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(4),
+    /** Si fourni, ne montre que les membres dont l'id est dans la liste. */
+    ids: z.array(z.string()).optional(),
+  }),
   // Lettre adressée — adresse directe, ton épistolaire
   z.object({
     type: z.literal('lettre'),
@@ -444,6 +469,7 @@ const site = defineCollection({
     adresse: z.string(),
     helloasso_don: z.string(),
     helloasso_adhesion: z.string().optional(),
+    helloasso_newsletter: z.string().optional(),
     directeur_publication: z.string(),
     siren: z.string().optional(),
     rna: z.string().optional(),

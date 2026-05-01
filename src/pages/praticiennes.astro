@@ -1,7 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import PageRenderer from '../../components/PageRenderer.astro';
+import Layout from '../layouts/Layout.astro';
+import PageRenderer from '../components/PageRenderer.astro';
 
 const page = await getEntry('pages', 'praticiennes');
 if (!page) throw new Error("content/pages/praticiennes.md introuvable");

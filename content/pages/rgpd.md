@@ -1,8 +1,9 @@
 ---
-title: "Politique de confidentialité"
+title: "RGPD et confidentialité"
+description: "Comment 2mains de femmes traite vos données personnelles, dans le respect du RGPD."
 hero:
-  titre: "Politique de confidentialité"
-  accroche: "Nous collectons le minimum. Nous ne suivons pas. Nous ne partageons pas."
+  titre: "RGPD et confidentialité"
+  accroche: "Nous collectons le minimum. Nous ne suivons pas. Nous ne partageons pas. Voici comment et pourquoi — et quels sont vos droits."
   variant: "beige"
 sections:
   - type: "prose"

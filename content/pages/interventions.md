@@ -12,17 +12,17 @@ sections:
     colonnes: 3
     cartes:
       - titre: "Axe 1 — Accompagnement corporel"
-        description: "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps, retrouver des repères de sécurité relationnelle et réinvestir le lien aux autres."
-        href: "/pour/femmes"
-        cta: "En savoir plus"
+        description: "Parcours individuels (4 à 24 séances) et ateliers collectifs (auto-massage, jeux tactiles, respiration) pour les femmes accompagnées par nos structures partenaires. Toujours gratuit, toujours consenti, toujours à leur rythme."
+        href: "/femmes"
+        cta: "Pour les femmes concernées"
         couleur: "orange"
       - titre: "Axe 2 — Sensibilisation & formation"
-        description: "Nous accompagnons les équipes professionnelles et bénévoles du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques."
-        href: "/pour/structures"
-        cta: "Organiser une intervention"
+        description: "Formations d'équipes (1/2 à 1 jour), ateliers de sensibilisation, groupes de parole pro et conférences pour les structures du social, médico-social et de la santé qui veulent intégrer le toucher relationnel à leurs pratiques."
+        href: "/structures"
+        cta: "Pour les structures"
         couleur: "violet"
       - titre: "Axe 3 — Recherche-action & plaidoyer"
-        description: "Nous contribuons à faire reconnaître l'isolement corporel comme enjeu de santé mentale, de lien social et d'égalité."
+        description: "Nous documentons l'isolement corporel comme impensé social, contribuons à le faire reconnaître comme enjeu de santé publique, et partageons nos outils méthodologiques avec les acteurs du terrain."
         href: "/isolement-corporel"
         cta: "Comprendre l'isolement corporel"
         couleur: "magenta"
@@ -57,20 +57,18 @@ sections:
       - titre: "Sortie choisie"
         description: "Jusqu'à 24 séances sur 6 mois. Passage éventuel au réseau praticiennes solidaires."
 
-  - type: "deux-colonnes"
-    titre: "Nos publics prioritaires"
-    picto_couleur: "magenta"
-    inverse: true
-    texte: |
-      L'association s'adresse à toute femme vivant sur la métropole de Lyon et se sentant en isolement corporel. Sur **2025–2028**, nous priorisons l'accès :
+  - type: "prose"
+    titre: "Nos principes d'action"
+    body: |
+      - **Rendre actrice** — les femmes concernées décident du contenu des séances, coconstruisent les ateliers, siègent dans nos instances.
+      - **Aller vers** — nous nous déplaçons au plus près des lieux où les femmes sont déjà accueillies, plutôt que d'attendre qu'elles viennent.
+      - **Innover** — penser et documenter une approche encore marginale en France : le toucher relationnel comme outil de lien social.
+      - **Coopérer** — avec les associations, les professionnel·les du soin et du social, les institutions, les chercheur·ses, les praticien·nes du corps.
 
-      - aux femmes **sans domicile fixe** ou mal logées
-      - aux **survivantes de violences** corporelles (sexuelles et autres)
-      - aux femmes **handicapées** ou en rémission de maladies chroniques
-      - aux **travailleuses du sexe**
-      - aux femmes **en prison**
-      - aux femmes **âgées** isolées
-      - aux femmes **en transition**
-
-      Nous travaillons à partir d'une **approche intersectionnelle** des fragilités, centrée sur chaque personne.
+  - type: "callout"
+    fond: "beige"
+    ton: "important"
+    titre: "Cadre éthique"
+    body: |
+      Nos interventions s'inscrivent dans un cadre **non médicalisé**, **non sexualisé**, **fondé sur le consentement explicite**. Nos intervenantes sont formées et supervisées. Les femmes peuvent arrêter, modifier ou refuser à tout moment sans se justifier.
 ---

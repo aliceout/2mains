@@ -12,7 +12,7 @@ hero:
     externe: true
   cta_secondaire:
     label: "Découvrir l'association"
-    href: "/association"
+    href: "/qui-sommes-nous"
 sections:
   - type: "cartes"
     titre: "Ce que nous faisons"
@@ -20,12 +20,12 @@ sections:
     cartes:
       - titre: "Accompagnement corporel"
         description: "Parcours individuels et ateliers collectifs pour permettre aux femmes de se reconnecter à leur corps et aux autres, dans un cadre sécurisé."
-        href: "/association/interventions"
+        href: "/interventions"
         cta: "En savoir plus"
         couleur: "orange"
       - titre: "Sensibilisation & formation"
         description: "Nous accompagnons les équipes du social, de la santé et du médico-social à intégrer la dimension corporelle et relationnelle dans leurs pratiques."
-        href: "/pour/structures"
+        href: "/structures"
         cta: "Nos formats"
         couleur: "violet"
       - titre: "Recherche-action & plaidoyer"
@@ -53,17 +53,17 @@ sections:
     cartes:
       - titre: "Vous accompagnez des femmes isolées."
         description: "Nous intervenons dans votre structure pour proposer des ateliers collectifs et un accompagnement individuel, en complément de votre travail."
-        href: "/pour/structures"
+        href: "/structures"
         cta: "Pour les structures"
         couleur: "violet"
       - titre: "Vous voulez agir contre l'isolement."
         description: "Mécénat financier, mécénat de compétences, ou mise à disposition de locaux — plusieurs formes d'engagement possibles."
-        href: "/pour/entreprises"
+        href: "/entreprises"
         cta: "Devenir mécène"
         couleur: "violet"
       - titre: "Vous souhaitez être accompagnée."
         description: "Vous pouvez nous contacter directement, sans passer par une structure. L'accompagnement est gratuit et confidentiel."
-        href: "/pour/femmes"
+        href: "/femmes"
         cta: "Premier contact"
         couleur: "orange"
 ---

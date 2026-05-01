@@ -3,8 +3,8 @@ import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
 
-const page = await getEntry('pages', 'politique-confidentialite');
-if (!page) throw new Error("content/pages/politique-confidentialite.md introuvable");
+const page = await getEntry('pages', 'publics-cible');
+if (!page) throw new Error('content/pages/publics-cible.md introuvable');
 ---
 
 <Layout title={page.data.title} description={page.data.description} ogSlug={page.id} noindex={page.data.noindex}>
