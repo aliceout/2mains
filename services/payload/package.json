@@ -13,6 +13,7 @@
     "generate:types": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate",
+    "import:content": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation tsx scripts/migrate-to-payload.ts",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001"
   },
@@ -37,7 +38,9 @@
     "dotenv-cli": "^8.0.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "16.2.3",
+    "gray-matter": "^4.0.3",
     "prettier": "^3.4.2",
+    "tsx": "^4.21.0",
     "typescript": "5.7.3"
   },
   "engines": {
