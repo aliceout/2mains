@@ -38,6 +38,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 COPY --from=builder --chown=nextjs:nodejs /app/next.config.ts ./next.config.ts
 COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+# scripts/ inclut migrate-to-payload.ts qu'on lance ad-hoc via
+# `docker exec ... npx tsx scripts/migrate-to-payload.ts` pour
+# (ré)importer du contenu Sveltia depuis content/.
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 USER nextjs
 EXPOSE 3001
