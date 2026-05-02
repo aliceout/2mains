@@ -50,17 +50,36 @@ TOKEN=$(infisical login --method=universal-auth \
 
 # 3. Export tous les secrets app vers .env racine. Chmod AVANT d'écrire pour
 #    qu'aucun process tiers ne puisse lire le fichier en 644 même brièvement.
+#
+#    Le projet Infisical 2mains a ses secrets organisés en 4 sous-dossiers
+#    (payload/, postgres/, smtp/, web/) — `--path=/` ne recurse pas, on
+#    itère explicitement. `set -euo pipefail` au top fait aborter le
+#    script si l'un des fetch foire (.env partiel = silent broken deploy).
 ENV_FILE="$DEPLOY_DIR/.env"
 : > "$ENV_FILE"
 chmod 600 "$ENV_FILE"
-infisical export \
-  --domain="$INFISICAL_API_URL" \
-  --projectId="$INFISICAL_PROJECT_ID" \
-  --env="$INFISICAL_ENV" \
-  --path="/" \
-  --format=dotenv \
-  --token="$TOKEN" \
-  > "$ENV_FILE"
+
+for subpath in payload postgres smtp web; do
+  echo "[deploy] fetching /$subpath"
+  infisical export \
+    --domain="$INFISICAL_API_URL" \
+    --projectId="$INFISICAL_PROJECT_ID" \
+    --env="$INFISICAL_ENV" \
+    --path="/$subpath" \
+    --format=dotenv \
+    --token="$TOKEN" >> "$ENV_FILE"
+done
+
+# Sanity check — si l'un de ces 2 secrets est absent, le deploy partirait
+# en vrille (Postgres refuse la connexion / Payload refuse de booter).
+grep -q '^POSTGRES_PASSWORD=' "$ENV_FILE" || {
+  echo "ERR: POSTGRES_PASSWORD manquant dans $ENV_FILE" >&2
+  exit 1
+}
+grep -q '^PAYLOAD_SECRET=' "$ENV_FILE" || {
+  echo "ERR: PAYLOAD_SECRET manquant dans $ENV_FILE" >&2
+  exit 1
+}
 
 # 4. Bind mounts data (Postgres + médias Payload). DATA_DIR est exporté
 #    pour que `docker compose` puisse l'interpoler dans compose.yml.
