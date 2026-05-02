@@ -58,6 +58,13 @@ export default buildConfig({
   },
   // Postgres via fields séparés (évite les problèmes d'URL-encoding
   // quand POSTGRES_PASSWORD a des caractères spéciaux).
+  //
+  // push: true force la synchro schéma → DB à chaque boot, en dev ET
+  // en prod. Pas de migrations à générer/maintenir. Trade-off conscient
+  // pour ce projet : data peu critique (contenus éditoriaux), schéma
+  // sous code review (changements structurés via PR), petite asso →
+  // simplicité l'emporte sur l'historique formel des migrations.
+  // À reconsidérer si on prend de la data sensible (commandes, paiements).
   db: postgresAdapter({
     pool: {
       user: process.env.POSTGRES_USER,
@@ -66,6 +73,7 @@ export default buildConfig({
       port: Number.parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
       database: process.env.POSTGRES_DB,
     },
+    push: true,
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
   sharp,
