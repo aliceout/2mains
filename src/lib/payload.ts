@@ -124,6 +124,198 @@ export async function fetchSite<T = unknown>(depth = 1): Promise<T> {
   return fetchPayload<T>(`/globals/site?depth=${depth}`);
 }
 
+// ─── Transformations shape Payload → shape Astro legacy ─────────
+//
+// Pour minimiser les changements dans les composants Astro, on
+// expose des helpers qui retournent la même shape qu'astro:content
+// avant migration : { id, slug, data: {...} } pour les entries,
+// data.sections[].type au lieu de blockType, etc.
+
+/**
+ * Extrait l'URL publique d'un champ upload Payload populated.
+ * Accepte `null`, `undefined`, ou un objet `{filename}`.
+ */
+function imgUrl(
+  field: { filename?: string } | string | number | null | undefined,
+): string | undefined {
+  if (!field) return undefined;
+  if (typeof field === 'string' || typeof field === 'number') return undefined;
+  return mediaUrl(field.filename) ?? undefined;
+}
+
+/** Désimbriquer [{field: 'val'}, ...] → ['val', ...]. */
+function unwrapArray<T extends string>(
+  arr: Array<Record<string, T>> | undefined,
+  key: string,
+): T[] | undefined {
+  if (!arr) return undefined;
+  return arr.map((o) => o[key]).filter((v): v is T => Boolean(v));
+}
+
+/**
+ * Transforme un block Payload (sections[]) pour qu'il ait la shape
+ * de l'ancienne section astro:content (discriminated union avec
+ * `type` au lieu de `blockType`).
+ */
+function transformBlock(b: Record<string, unknown>): Record<string, unknown> {
+  const { blockType, blockName: _bn, id: _id, ...rest } = b;
+  const out: Record<string, unknown> = { ...rest, type: blockType };
+
+  // Numérique : `colonnes` est un string Payload (select), on
+  // remet en number pour matcher le schéma Astro original.
+  if (typeof out.colonnes === 'string') {
+    out.colonnes = Number.parseInt(out.colonnes, 10);
+  }
+  if (typeof out.limite === 'string') {
+    out.limite = Number.parseInt(out.limite, 10);
+  }
+
+  // Image directe (figure, texte-photo, deux-colonnes, bandeau-image)
+  if (out.image && typeof out.image === 'object') {
+    out.image = imgUrl(out.image as { filename?: string });
+  }
+
+  // Galerie.images[].image
+  if (blockType === 'galerie' && Array.isArray(out.images)) {
+    out.images = (out.images as Array<Record<string, unknown>>).map((img) => ({
+      ...img,
+      image: imgUrl(img.image as { filename?: string }),
+    }));
+  }
+
+  // Portraits.personnes[].photo
+  if (blockType === 'portraits' && Array.isArray(out.personnes)) {
+    out.personnes = (out.personnes as Array<Record<string, unknown>>).map(
+      (p) => ({
+        ...p,
+        photo: imgUrl(p.photo as { filename?: string }),
+      }),
+    );
+  }
+
+  // Timeline.etapes[].image
+  if (blockType === 'timeline' && Array.isArray(out.etapes)) {
+    out.etapes = (out.etapes as Array<Record<string, unknown>>).map((e) => ({
+      ...e,
+      image: imgUrl(e.image as { filename?: string }),
+    }));
+  }
+
+  // Formats.formats[].points : [{point}] → string[]
+  if (blockType === 'formats' && Array.isArray(out.formats)) {
+    out.formats = (out.formats as Array<Record<string, unknown>>).map((f) => ({
+      ...f,
+      points: unwrapArray(
+        f.points as Array<Record<string, string>> | undefined,
+        'point',
+      ) ?? [],
+    }));
+  }
+
+  // temoignages/equipe.ids : [{slug}] → string[]
+  if (
+    (blockType === 'temoignages' || blockType === 'equipe') &&
+    Array.isArray(out.ids)
+  ) {
+    out.ids = unwrapArray(
+      out.ids as Array<Record<string, string>>,
+      'slug',
+    );
+  }
+
+  return out;
+}
+
+/** Forme legacy d'une page (équivalent CollectionEntry<'pages'>). */
+export type LegacyPage = {
+  id: string;
+  slug: string;
+  data: {
+    title: string;
+    description?: string;
+    noindex?: boolean;
+    hero?: Record<string, unknown>;
+    sections: Array<Record<string, unknown>>;
+  };
+  body: string;
+};
+
+/**
+ * Récupère une page Payload par slug et la transforme dans la
+ * shape qu'astro:content rendait avant migration. Permet aux
+ * composants Astro existants (PageRenderer notamment) de fonctionner
+ * sans refactor profond.
+ */
+export async function fetchPageLegacy(slug: string): Promise<LegacyPage | null> {
+  const page = await fetchPage<{
+    slug: string;
+    title: string;
+    description?: string;
+    noindex?: boolean;
+    hero?: Record<string, unknown>;
+    sections?: Array<Record<string, unknown>>;
+  }>(slug, 2);
+  if (!page) return null;
+  return {
+    id: page.slug,
+    slug: page.slug,
+    data: {
+      title: page.title,
+      description: page.description,
+      noindex: page.noindex,
+      hero: page.hero?.enabled === false ? undefined : page.hero,
+      sections: (page.sections ?? []).map(transformBlock),
+    },
+    body: '',
+  };
+}
+
+/**
+ * Forme legacy d'un membre / témoignage / partenaire / etc. Avec la
+ * data nested comme avant astro:content.
+ */
+export type LegacyEntry<T = Record<string, unknown>> = {
+  id: string;
+  slug: string;
+  data: T;
+  body: string;
+};
+
+/**
+ * Récupère une collection Payload + transforme chaque doc en shape
+ * legacy `{id, slug, data: {...}}`. Les uploads sont convertis en
+ * URLs string (champs photo, cover, logo).
+ */
+export async function fetchCollectionLegacy<T = Record<string, unknown>>(
+  collection: string,
+  options: {
+    sort?: string;
+    limit?: number;
+    where?: string;
+  } = {},
+): Promise<LegacyEntry<T>[]> {
+  const docs = await fetchCollection<Record<string, unknown>>(
+    collection,
+    { ...options, depth: 2 },
+  );
+  return docs.map((d) => {
+    const { id, slug, body, ...rest } = d;
+    // Convertit les uploads en URLs.
+    const data: Record<string, unknown> = { ...rest };
+    for (const key of ['photo', 'cover', 'logo', 'fichier']) {
+      if (data[key] && typeof data[key] === 'object') {
+        data[key] = imgUrl(data[key] as { filename?: string });
+      }
+    }
+    return {
+      id: String(id),
+      slug: (slug as string) ?? String(id),
+      data: data as T,
+      body: typeof body === 'string' ? body : '',
+    };
+  });
+}
+
 /**
  * Filtre les drafts pour les rendus publics. À appliquer après
  * fetchCollection sur les collections qui ont un champ `draft`.

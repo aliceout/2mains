@@ -1,8 +1,7 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { getCollection, render } from 'astro:content';
 import { marked } from 'marked';
 import { filterPublished } from '../lib/drafts';
+import { fetchCollectionLegacy, type LegacyPage } from '../lib/payload';
 import Hero from './Hero.astro';
 import Section from './Section.astro';
 import Prose from './Prose.astro';
@@ -29,7 +28,7 @@ import Temoignages from './Temoignages.astro';
 import Draft from './Draft.astro';
 
 type Props = {
-  page: CollectionEntry<'pages'>;
+  page: LegacyPage;
 };
 
 const { page } = Astro.props;
@@ -39,23 +38,36 @@ const { hero, sections } = page.data;
 // pour la rendre en portraits.
 const needsEquipe = sections.some((s) => s.type === 'equipe');
 const equipeMembres = needsEquipe
-  ? filterPublished(await getCollection('equipe')).sort(
-      (a, b) => a.data.ordre - b.data.ordre,
+  ? filterPublished(
+      await fetchCollectionLegacy<{
+        nom: string;
+        role: string;
+        photo?: string;
+        bio_courte?: string;
+        linkedin?: string;
+        ordre?: number;
+        draft?: boolean;
+      }>('equipe', { sort: 'ordre' }),
     )
   : [];
 
 // Idem pour les témoignages.
 const needsTemoignages = sections.some((s) => s.type === 'temoignages');
 const tousTemoignages = needsTemoignages
-  ? filterPublished(await getCollection('temoignages')).sort(
-      (a, b) => a.data.ordre - b.data.ordre,
+  ? filterPublished(
+      await fetchCollectionLegacy<{
+        auteur: string;
+        role?: string;
+        contexte: string;
+        photo?: string;
+        citation: string;
+        ordre?: number;
+        a_la_une?: boolean;
+        fictif?: boolean;
+        draft?: boolean;
+      }>('temoignages', { sort: 'ordre' }),
     )
   : [];
-
-// Si la page a un corps markdown (hors sections), on le rend en zone prose
-// principale. Utile pour les pages très textuelles.
-const { Content } = await render(page);
-const hasBody = Boolean(page.body && page.body.trim().length > 0);
 
 function slugify(s: string): string {
   return s
@@ -84,17 +96,6 @@ for (const s of sections) {
 ---
 
 {hero && <Hero {...hero} />}
-
-{
-  // Si pas de sections mais du body markdown, on le rend.
-  sections.length === 0 && hasBody && (
-    <Section>
-      <Prose>
-        <Content />
-      </Prose>
-    </Section>
-  )
-}
 
 {
   sections.map((s, i) => {
