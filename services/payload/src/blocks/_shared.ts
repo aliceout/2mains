@@ -4,9 +4,14 @@
 // (les noms de fond et couleurs « historiques »), pour que le
 // script de migration Phase 2 puisse copier les valeurs YAML sans
 // transformation.
+//
+// `satisfies Field` (vs `: Field`) préserve les types littéraux —
+// nécessaire pour que les blocs qui spread (`{ ...titreField, label }`)
+// gardent le narrowing sur `type: 'text'` et trouvent `label` dans
+// TextField au lieu de tomber sur RowField (sans label).
 import type { Field } from 'payload';
 
-export const fondField: Field = {
+export const fondField = {
   name: 'fond',
   type: 'select',
   required: false,
@@ -19,9 +24,9 @@ export const fondField: Field = {
     { label: 'Vert (moss)', value: 'vert' },
     { label: 'Bleu (mauve)', value: 'bleu' },
   ],
-};
+} satisfies Field;
 
-export const couleurField: Field = {
+export const couleurField = {
   name: 'couleur',
   type: 'select',
   required: false,
@@ -32,23 +37,23 @@ export const couleurField: Field = {
     { label: 'Vert', value: 'vert' },
     { label: 'Bleu', value: 'bleu' },
   ],
-};
+} satisfies Field;
 
 /** Eyebrow / sous-titre court avec un tiret. */
-export const titreField: Field = {
+export const titreField = {
   name: 'titre',
   type: 'text',
   label: 'Titre de la section',
   required: false,
-};
+} satisfies Field;
 
 /** Lien / CTA — sous-objet réutilisé dans cta, formats, etc.
  *  Label et href sont en required:false côté schéma car Payload
  *  n'a pas de "tout-ou-rien" sur les groups optionnels : si on les
  *  marquait required, un format SANS cta serait quand même rejeté.
  *  La cohérence (label+href ensemble) est validée côté UI/UX. */
-export const ctaFields: Field[] = [
+export const ctaFields = [
   { name: 'label', type: 'text', required: false },
   { name: 'href', type: 'text', required: false },
   { name: 'externe', type: 'checkbox', defaultValue: false },
-];
+] satisfies Field[];
