@@ -14,6 +14,7 @@ import { Equipe } from './collections/Equipe'
 import { Temoignages } from './collections/Temoignages'
 import { Partenaires } from './collections/Partenaires'
 import { Documents } from './collections/Documents'
+import { Site } from './globals/Site'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,6 +50,7 @@ export default buildConfig({
     Users,
     Media,
   ],
+  globals: [Site],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

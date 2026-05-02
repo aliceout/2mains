@@ -101,8 +101,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    site: Site;
+  };
+  globalsSelect: {
+    site: SiteSelect<false> | SiteSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -1425,6 +1429,72 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Identité, mission, contact, réseaux. Pas de credentials ici — voir Infisical pour les SMTP, HelloAsso, etc.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site".
+ */
+export interface Site {
+  id: number;
+  nom_asso: string;
+  url: string;
+  accroche_globale: string;
+  mission: string;
+  directeur_publication: string;
+  siren?: string | null;
+  rna?: string | null;
+  adresse?: string | null;
+  reseaux?: {
+    facebook?: string | null;
+    instagram?: string | null;
+    linkedin?: string | null;
+  };
+  banderole_urgence?: {
+    /**
+     * Active la banderole sur toutes les pages.
+     */
+    active?: boolean | null;
+    /**
+     * Markdown inline supporté (**gras**, *italique*, [lien](url)).
+     */
+    message?: string | null;
+    couleur?: ('orange' | 'violet' | 'magenta') | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site_select".
+ */
+export interface SiteSelect<T extends boolean = true> {
+  nom_asso?: T;
+  url?: T;
+  accroche_globale?: T;
+  mission?: T;
+  directeur_publication?: T;
+  siren?: T;
+  rna?: T;
+  adresse?: T;
+  reseaux?:
+    | T
+    | {
+        facebook?: T;
+        instagram?: T;
+        linkedin?: T;
+      };
+  banderole_urgence?:
+    | T
+    | {
+        active?: T;
+        message?: T;
+        couleur?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
