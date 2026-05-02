@@ -6,6 +6,9 @@ import { buildOgPng } from '../../lib/og';
 import { getSiteSettings } from '../../lib/site';
 import { fetchBySlug } from '../../lib/payload';
 
+// SSR : route dynamique opt-in.
+export const prerender = false;
+
 export const GET: APIRoute = async ({ params }) => {
   const slug = params.slug;
   if (!slug) return new Response('Slug manquant', { status: 400 });

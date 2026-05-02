@@ -4,6 +4,9 @@ import { buildOgPng } from '../../../lib/og';
 import { getSiteSettings } from '../../../lib/site';
 import { fetchBySlug } from '../../../lib/payload';
 
+// SSR : route dynamique opt-in.
+export const prerender = false;
+
 function formatDate(s: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
     day: 'numeric',

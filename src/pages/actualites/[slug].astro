@@ -7,6 +7,10 @@ import Prose from '../../components/Prose.astro';
 import { getSiteSettings } from '../../lib/site';
 import { fetchBySlug } from '../../lib/payload';
 
+// SSR : opt-in explicite (sinon Astro 6 demande un getStaticPaths,
+// or les slugs viennent de Payload à l'exécution).
+export const prerender = false;
+
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect('/actualites', 302);
 

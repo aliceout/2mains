@@ -3,6 +3,9 @@ import { buildCalendar, type IcsEvent } from '../../lib/ical';
 import { getSiteSettings } from '../../lib/site';
 import { fetchBySlug } from '../../lib/payload';
 
+// SSR : route dynamique opt-in.
+export const prerender = false;
+
 type Evt = {
   slug: string;
   title: string;
