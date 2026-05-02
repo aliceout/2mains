@@ -3,9 +3,9 @@
 Site vitrine de l'association lyonnaise [2mains de femmes](https://2mainsdefemmes.org).
 Lutte contre l'isolement corporel des femmes par le toucher relationnel.
 
-- **Stack** : Astro + Tailwind + Sveltia CMS, 100 % statique
-- **Hébergement** : self-host Docker + Nginx
-- **Contenu** : édité via Sveltia CMS (backend GitHub), commité dans le repo
+- **Stack** : Astro 6 SSR (Node) + Tailwind + Payload CMS 3 (Postgres)
+- **Hébergement** : self-host Docker (4 containers : `db`, `payload`, `site`, `mail`)
+- **Contenu** : édité via Payload sous `/cms/admin`, persisté en Postgres
 - **Dons** : externalisés sur HelloAsso, pas de paiement intégré
 
 ---
@@ -17,11 +17,7 @@ Lutte contre l'isolement corporel des femmes par le toucher relationnel.
 3. [Stack technique](#stack-technique)
 4. [Développement local](#développement-local)
 5. [Gestion du contenu](#gestion-du-contenu)
-   - [Système `<Draft>`](#contenu-fictif--le-système-draft)
-   - [Contenu géré via CMS](#contenu-géré-via-cms)
-   - [Flux de publication](#flux-de-publication--ce-qui-se-passe-quand-audrey-clique--publier-)
-   - [Pages branchées aux collections](#quelles-pages-sont-branchées-à-quelle-collection)
-6. [Déploiement serveur](#déploiement-serveur) ← **section install**
+6. [Déploiement serveur](#déploiement-serveur)
 7. [Accessibilité, SEO, RGPD](#accessibilité-seo-rgpd)
 8. [Charte graphique](#charte-graphique)
 9. [Conventions](#conventions)
@@ -45,51 +41,51 @@ Pour la prod : voir [Déploiement serveur](#déploiement-serveur).
 
 ```
 2mains/
-├── src/
-│   ├── pages/              # Routes (1 fichier = 1 URL)
-│   ├── layouts/            # Layout global (head, header, footer)
-│   ├── components/         # Composants Astro réutilisables
-│   ├── config/site.ts      # Nav + infos globales (contact, HelloAsso, légal)
-│   ├── content.config.ts   # Schémas Zod des 5 collections CMS
-│   └── styles/global.css   # Tailwind + tokens couleurs charte + @font-face
-├── content/                # Contenu éditorial (édité par Sveltia, commité dans le repo)
-│   ├── equipe/             # 1 .md par membre du CA
-│   ├── evenements/         # 1 .md par événement
-│   ├── partenaires/        # 1 .md par financeur/partenaire
-│   ├── documents/          # 1 .md par document à télécharger
-│   └── temoignages/        # 1 .md par parole recueillie
-├── public/
-│   ├── admin/              # Sveltia CMS (config.yml + shell html)
-│   ├── brand/              # Logos et pictos SVG servis sur le site
-│   ├── fonts/              # Nunito self-hostée (4 fichiers .woff2)
-│   └── uploads/            # Médias uploadés via le CMS (en runtime)
+├── src/                       # App Astro SSR
+│   ├── pages/                 # Routes (1 fichier = 1 URL)
+│   ├── layouts/               # Layout global (head, header, footer)
+│   ├── components/            # Composants Astro réutilisables (blocs CMS)
+│   ├── lib/payload.ts         # Client REST Payload + helpers legacy
+│   ├── lib/site.ts            # Nav + paramètres site (consomme global Site Payload)
+│   └── styles/global.css      # Tailwind + tokens charte + @font-face
 ├── services/
-│   └── contact-mail/       # Mini-service Docker : HTTP form → SMTP
-├── brand/                  # Sources brand (PNG/SVG/PDF) — référence interne
-├── references/             # Docs sources de l'asso (PDF, DOCX) — référence
-├── .github/workflows/      # CI GitHub Actions (build + deploy SSH)
-├── 2mains-site-plan.md     # Spec historique
-├── ROADMAP.md              # Roadmap des phases
-├── QUESTIONS.md            # Arbitrages (mes questions → tes réponses)
-├── DRAFTS.md               # Audit des contenus fictifs
-└── README.md               # Ce fichier
+│   ├── payload/               # Service Payload CMS (Next.js + Postgres)
+│   │   ├── src/collections/   # 8 collections + 1 global Site
+│   │   ├── src/blocks/        # 23 blocs Payload (miroir des sections Astro)
+│   │   ├── src/migrations/    # Migrations SQL générées (payload migrate:create)
+│   │   └── scripts/migrate-to-payload.ts  # Import one-shot d'un dump markdown
+│   └── mail/                  # Backend formulaire de contact (Node + nodemailer)
+├── public/                    # Assets statiques servis par Astro
+│   ├── brand/                 # Logos et pictos SVG
+│   └── fonts/                 # Nunito self-hostée
+├── infra/scripts/deploy.sh    # Déploiement VPS (Infisical → .env → compose up)
+├── compose.yml                # Compose prod (4 services sur réseau Docker interne)
+├── docker-compose.dev.yml     # Compose dev (juste Postgres pour Payload local)
+├── Dockerfile.site            # Image Astro Node SSR
+├── .github/workflows/         # CI : check + build des 3 images GHCR
+├── brand/, references/        # Sources brand + docs asso
+├── 2mains-site-plan.md, ROADMAP.md, DRAFTS.md
+└── README.md
 ```
 
 ---
 
 ## Stack technique
 
-| Outil                                                 | Rôle                                  |
-| ----------------------------------------------------- | ------------------------------------- |
-| [Astro 6](https://astro.build/)                       | Site statique + îlots JS si besoin    |
-| [Tailwind CSS v4](https://tailwindcss.com/)           | Styling via `@theme` tokens           |
-| [Sveltia CMS](https://github.com/sveltia/sveltia-cms) | Édition de contenu sur `/admin/`      |
-| [Nunito](https://fonts.google.com/specimen/Nunito)    | Typo unique, self-hostée              |
-| TypeScript strict                                     | Types sur toute la codebase           |
-| pnpm 10 + Node 22                                     | Package manager + runtime             |
-| GitHub Actions                                        | CI : check + build + smoke test       |
+| Outil                                                  | Rôle                                       |
+| ------------------------------------------------------ | ------------------------------------------ |
+| [Astro 6](https://astro.build/)                        | Front SSR Node, fetch Payload server-side  |
+| [@astrojs/node](https://docs.astro.build/en/guides/integrations-guide/node/) | Adapter Node standalone (compose `site`) |
+| [Tailwind CSS v4](https://tailwindcss.com/)            | Styling via `@theme` tokens                |
+| [Payload CMS 3](https://payloadcms.com/)               | Admin + REST API sous `/cms/*` (Next.js)   |
+| [Postgres 16](https://www.postgresql.org/)             | DB Payload, alpine + bind mount            |
+| [Nunito](https://fonts.google.com/specimen/Nunito)     | Typo unique, self-hostée                   |
+| TypeScript strict                                      | Types sur toute la codebase                |
+| pnpm 10 + Node 22                                      | Package manager + runtime                  |
+| GitHub Actions + GHCR                                  | CI : check + build des 3 images Docker     |
+| [Infisical](https://infisical.com/)                    | Secrets management (creds DB, SMTP, etc.)  |
 
-Aucune base de données. Aucun Google Fonts. Aucun tracker. Aucun cookie de suivi.
+Aucun Google Fonts. Aucun tracker. Aucun cookie de suivi.
 
 ---
 
@@ -144,380 +140,160 @@ retirer l'import s'il n'est plus utilisé.
 
 ### Contenu géré via CMS
 
-Le CMS Sveltia est configuré dans `public/admin/config.yml` avec 7 collections :
+Payload est configuré dans [`services/payload/src/payload.config.ts`](services/payload/src/payload.config.ts)
+avec **8 collections + 1 global** :
 
-| Collection      | Dossier cible        | À quoi ça sert                                  |
-| --------------- | -------------------- | ----------------------------------------------- |
-| `pages`         | `content/pages/`     | Pages statiques éditables (titre, accroche, corps) |
-| `evenements`    | `content/evenements/`| Agenda                                          |
-| `partenaires`   | `content/partenaires/`| Financeurs et partenaires associatifs           |
-| `equipe`        | `content/equipe/`    | Membres du CA                                   |
-| `documents`     | `content/documents/` | PDFs téléchargeables                            |
-| `temoignages`   | `content/temoignages/`| Paroles recueillies                            |
-| `site`          | `content/site/`      | Paramètres globaux (contact, réseaux, banderole) |
+| Collection / Global | À quoi ça sert                                          |
+| ------------------- | ------------------------------------------------------- |
+| `pages`             | Pages éditoriales (composées de blocs)                  |
+| `actualites`        | Articles de blog                                        |
+| `evenements`        | Agenda                                                  |
+| `equipe`            | Membres du CA                                           |
+| `temoignages`       | Paroles recueillies                                     |
+| `partenaires`       | Financeurs et partenaires associatifs                   |
+| `documents`         | PDFs téléchargeables                                    |
+| `media`             | Uploads (images, fichiers) — bind mount payload-media/  |
+| `users`             | Comptes admin                                           |
+| Global `site`       | Paramètres globaux (identité, réseaux, HelloAsso…)      |
 
-L'admin est servie sur **`/admin/`** et nécessite le proxy OAuth Sveltia — voir la section
-[déploiement](#5-proxy-oauth-pour-sveltia-cms).
+L'admin est servie sur **`/cms/admin`**. Audrey crée un compte au premier accès,
+puis édite le contenu — pas de commit GitHub, pas d'OAuth proxy, pas de rebuild
+CI. Tout est en Postgres, le site Astro SSR consulte Payload à chaque requête
+via le réseau Docker interne.
 
-### Flux de publication — ce qui se passe quand Audrey clique « Publier »
+### Blocs Payload
+
+Les pages sont composées en empilant des **blocs** (équivalents des sections
+Astro). 23 types disponibles dans
+[`services/payload/src/blocks/`](services/payload/src/blocks/) — Prose, Cartes,
+Valeurs, Stats, Citation, CTA, Étapes, FAQ, Galerie, Portraits, Timeline,
+Témoignages, etc. Chaque bloc Payload a son composant Astro miroir dans
+[`src/components/`](src/components/), et
+[`src/components/PageRenderer.astro`](src/components/PageRenderer.astro) fait
+le dispatch.
+
+Pour ajouter un nouveau type de bloc :
+1. Créer le bloc Payload (`services/payload/src/blocks/MonBloc.ts`)
+2. L'ajouter à `allBlocks` dans `services/payload/src/blocks/index.ts`
+3. Régénérer les migrations : `cd services/payload && pnpm payload migrate:create`
+4. Créer le composant Astro (`src/components/MonBloc.astro`)
+5. Ajouter le case dans `PageRenderer.astro`
+
+### Flux de publication
 
 ```
-┌──────────────┐        ┌──────────┐        ┌──────────────┐        ┌─────────┐
-│  Audrey      │──1────▶│ /admin/  │──2────▶│   GitHub     │──3────▶│ Actions │
-│  sur son tel │  édite │ Sveltia  │  push  │   main       │ webhook│  CI/CD  │
-└──────────────┘        └──────────┘  API   └──────────────┘        └─────┬───┘
-                                                                          │
-                                                                          │ 4. build
-                                                                          ▼
-                                                                    ┌─────────┐
-┌──────────────┐          ┌──────────────┐                          │  dist/  │
-│  visiteur·se │◀─────6───│   nginx      │◀──────────5. rsync ssh──│artefact │
-│  site live   │          │ /var/www/2mdf│                          └─────────┘
-└──────────────┘          └──────────────┘
+┌──────────────┐        ┌────────────────┐        ┌──────────────┐
+│  Audrey      │──édite│ /cms/admin     │──save▶│  Postgres    │
+│  navigateur  │  ───── │ (Payload)      │        │  (DB)        │
+└──────────────┘        └────────────────┘        └──────┬───────┘
+                                                         │
+                                                         │ fetch SSR
+                                                         ▼
+┌──────────────┐                                  ┌──────────────┐
+│  visiteur·se │◀──── HTML rendu à la demande────│ Astro SSR    │
+│  site live   │                                  │ (Node)       │
+└──────────────┘                                  └──────────────┘
 ```
 
-En détail :
-
-1. **Audrey** ouvre `https://2mainsdefemmes.org/admin/` et se connecte via GitHub OAuth
-   (passant par le proxy `sveltia-cms-auth` sur ton serveur). Elle édite un contenu —
-   par exemple ajouter un événement à l'agenda — et clique **« Publier »**.
-2. **Sveltia CMS** traduit ça en un commit sur la branche `main` du repo GitHub, via
-   l'API GitHub (en utilisant le token OAuth qu'elle a obtenu). Un nouveau fichier
-   `content/evenements/2026-06-15-atelier.md` apparaît dans le repo.
-3. **GitHub** détecte le push, déclenche le workflow `CI & Deploy` (`.github/workflows/ci.yml`).
-4. **GitHub Actions** : install des deps → `pnpm check` → `pnpm build` → smoke test des
-   routes attendues. L'artefact `dist/` est prêt (~30–60 s).
-5. **Job deploy** : le workflow se connecte en SSH au serveur (secrets `DEPLOY_*`),
-   exécute un `rsync --delete dist/ serveur:/var/www/2mdf/`.
-6. **Nginx** sert immédiatement la nouvelle version. En cache cassé grâce aux hashs dans
-   les noms de fichiers `/_astro/*`.
-
-Total : **1 à 3 minutes** entre le clic "Publier" et la visibilité en ligne.
-
-Si le build échoue (TypeScript, smoke test rouge) : le déploiement n'a pas lieu, l'état
-précédent reste en ligne, et un mail GitHub Actions prévient Alice. **Pas de rollback à faire.**
+Pas de cache statique. Les modifs Audrey sont visibles **immédiatement**
+après un Save — pas de rebuild, pas de délai CI. Trade-off : chaque requête
+visiteur tape Payload (latence ~50ms via réseau Docker interne, négligeable).
 
 ### Quelles pages sont branchées à quelle collection
 
-Les 5 collections éditoriales sont déjà consommées par les pages Astro — les édits
-CMS d'Audrey apparaissent directement après un commit sans changement de code :
+| Collection    | Pages qui l'affichent                       |
+| ------------- | ------------------------------------------- |
+| `pages`       | `/`, `/qui-sommes-nous`, `/structures`, etc. (consommées par PageRenderer) |
+| `actualites`  | `/actualites`, `/actualites/<slug>`         |
+| `evenements`  | `/agenda`, `/agenda/<slug>.ics`             |
+| `equipe`      | bloc `equipe` dans n'importe quelle page    |
+| `documents`   | `/documents`                                |
+| `partenaires` | `/financeurs`                               |
+| `temoignages` | bloc `temoignages` dans n'importe quelle page |
 
-| Collection    | Pages qui l'affichent                                           |
-| ------------- | --------------------------------------------------------------- |
-| `evenements`  | `/agenda`                                                       |
-| `equipe`      | `/association/equipe`                                           |
-| `documents`   | `/association/documents`                                        |
-| `partenaires` | `/association/financeurs`                                       |
-| `temoignages` | `/pour/temoignages`                                             |
-
-Le schéma des collections est déclaré dans `src/content.config.ts` (Zod). Les fichiers
-markdown sont dans `content/<collection>/*.md`. Audrey n'a pas besoin de connaître tout
-ça — elle utilise l'admin, Sveltia écrit les fichiers pour elle.
-
-Ce qui reste écrit en dur dans les `.astro` (et qui devra passer par un changement de
-code pour bouger) :
-- les **textes des pages statiques** (accueil, qui-sommes-nous, interventions, isolement
-  corporel, pour structures/entreprises/femmes, agir, soutenir, mentions légales…) ;
-- la **bannière d'urgence** (pas encore implémentée) ;
-- les **citations isolées** sur `/`, `/pour/structures`, `/pour/femmes`.
-
-Pour brancher une nouvelle page à une collection, le patron est :
-
-```astro
----
-import { getCollection, render } from 'astro:content';
-const items = await getCollection('ma_collection');
----
-{items.map(async (item) => {
-  const { Content } = await render(item);
-  return <article><h2>{item.data.titre}</h2><Content /></article>;
-})}
-```
+Côté code, le client REST Payload est dans
+[`src/lib/payload.ts`](src/lib/payload.ts) avec des helpers `fetchPageLegacy`,
+`fetchCollectionLegacy`, `fetchSite`, etc.
 
 ---
 
 ## Déploiement serveur
 
-**Principe retenu** : GitHub Actions construit le site, puis pousse le dossier `dist/`
-sur le serveur via SSH/rsync. Le serveur ne fait que **servir du HTML statique** — pas de
-Node, pas de pnpm, pas de git à installer, pas de build à tourner dessus.
+**Principe** : push sur `main` → CI build les 3 images Docker → push sur GHCR
+→ webhook côté VPS → `infra/scripts/deploy.sh` qui pull + up -d. Aucune source
+sur le serveur, aucun build dessus.
 
-### Prérequis sur le serveur
+### Topologie prod
 
-- **Debian 12** ou **Ubuntu 22.04+**
-- **Nginx** installé
-- **Certbot** pour le TLS Let's Encrypt
-- **SSH** accessible depuis GitHub (port 22 ou alternatif)
-- **DNS** : l'enregistrement A de `2mainsdefemmes.org` pointe vers l'IP du serveur
-- **Docker + Docker Compose** (uniquement si on active le CMS et le formulaire SMTP plus tard)
+4 containers sur réseau Docker interne, port-forwardés sur 127.0.0.1 ; reverse
+proxy nginx du VPS (hors compose) termine TLS et dispatche par préfixe :
 
-### 1. Créer le dossier qui sera servi
+| Service   | Image                                       | Port host       | Route nginx     |
+| --------- | ------------------------------------------- | --------------- | --------------- |
+| `db`      | `postgres:16-alpine`                        | (interne)       | —               |
+| `payload` | `ghcr.io/aliceout/2mains-payload:latest`    | `127.0.0.1:8066`| `/cms/*`        |
+| `site`    | `ghcr.io/aliceout/2mains-site:latest`       | `127.0.0.1:8064`| `/*` (catch-all)|
+| `mail`    | `ghcr.io/aliceout/2mains-mail:latest`       | `127.0.0.1:8065`| `/api/*`        |
 
-```bash
-sudo mkdir -p /var/www/2mdf
-sudo chown deploy:deploy /var/www/2mdf
-```
-
-### 2. Créer un user SSH dédié au déploiement
-
-```bash
-sudo adduser --disabled-password --gecos "" deploy
-sudo mkdir -p /home/deploy/.ssh
-sudo chmod 700 /home/deploy/.ssh
-sudo touch /home/deploy/.ssh/authorized_keys
-sudo chmod 600 /home/deploy/.ssh/authorized_keys
-sudo chown -R deploy:deploy /home/deploy/.ssh
-```
-
-Générer une paire de clés dédiée (en local) :
-
-```bash
-ssh-keygen -t ed25519 -f ~/.ssh/2mdf-deploy -C "github-actions-2mdf" -N ""
-```
-
-- La **clé publique** (`~/.ssh/2mdf-deploy.pub`) va dans `/home/deploy/.ssh/authorized_keys` sur le serveur.
-- La **clé privée** (`~/.ssh/2mdf-deploy`) sera stockée comme secret GitHub (voir étape 5).
-
-Vérifier qu'on peut se connecter :
-
-```bash
-ssh -i ~/.ssh/2mdf-deploy deploy@2mainsdefemmes.org "echo OK"
-```
-
-Pour plus de sécurité, on peut restreindre la clé dans `authorized_keys` :
+Bind mounts data sous `$HOME/data/2mains/` (fixé par `deploy.sh`) :
 
 ```
-command="rsync --server --delete -logDtpre.iLsfxCIvu . /var/www/2mdf/",no-pty,no-port-forwarding ssh-ed25519 AAAA… github-actions-2mdf
+$HOME/data/2mains/postgres/      ← /var/lib/postgresql/data (Postgres)
+$HOME/data/2mains/payload-media/ ← /app/media (uploads Payload)
 ```
 
-(ajuste la ligne `rsync --server` selon ce que renvoie `rsync -e "ssh -v" …` la première fois).
+### Configuration côté VPS
 
-### 3. Nginx — vhost du site statique
+Le script [`infra/scripts/deploy.sh`](infra/scripts/deploy.sh) attend :
+- Le repo cloné sur le VPS (par convention `/var/www/2mains/`)
+- Un fichier `~/.config/infisical/2mains.env` avec les creds Universal Auth
+  Machine Identity de l'instance Infisical self-hosted (5 vars :
+  `INFISICAL_API_URL`, `INFISICAL_PROJECT_ID`, `INFISICAL_CLIENT_ID`,
+  `INFISICAL_CLIENT_SECRET`, `INFISICAL_ENV`)
+- Docker + Docker Compose v2 installés
 
-Créer `/etc/nginx/sites-available/2mainsdefemmes.org` :
+Le script :
+1. Source les creds bootstrap
+2. Login Infisical → token éphémère
+3. Export les secrets app (POSTGRES_*, PAYLOAD_*, SMTP_*, etc.) depuis les
+   4 sous-paths `/payload`, `/postgres`, `/smtp`, `/web` vers `.env` racine
+   (chmod 600)
+4. `docker compose pull && down && up -d`
+5. Attend que les 4 containers soient healthy (timeout 90s)
+
+### Webhook GitHub → VPS
+
+Un GitHub Webhook sur `https://webhooks.backlice.dev/webhooks` déclenche
+`deploy.sh` à chaque `workflow_run` complété en succès sur la branche `main`.
+Le secret HMAC est partagé entre GitHub Settings → Webhooks et la conf
+Infisical `/services/webhooks/2mains/` côté cloud.
+
+### Reverse proxy nginx (côté VPS, hors compose)
+
+Le vhost `2mainsdefemmes.org` côté VPS dispatche en proxy_pass :
 
 ```nginx
-server {
-    listen 80;
-    listen [::]:80;
-    server_name 2mainsdefemmes.org www.2mainsdefemmes.org;
-    return 301 https://2mainsdefemmes.org$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name 2mainsdefemmes.org;
-
-    root /var/www/2mdf;
-    index index.html;
-
-    # TLS (géré par certbot)
-    ssl_certificate     /etc/letsencrypt/live/2mainsdefemmes.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/2mainsdefemmes.org/privkey.pem;
-
-    # Sécurité
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header Permissions-Policy "interest-cohort=(), camera=(), microphone=()" always;
-
-    # Cache agressif sur les assets versionnés
-    location /_astro/ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-    location /fonts/ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-
-    # HTML sans cache agressif
-    location / {
-        try_files $uri $uri/ $uri.html =404;
-    }
-
-    error_page 404 /404.html;
-
-    gzip on;
-    gzip_types text/plain text/css application/json application/javascript
-               application/xml text/xml text/javascript image/svg+xml;
-    gzip_min_length 512;
-}
+location /cms/  { proxy_pass http://127.0.0.1:8066; ... }
+location /api/  { proxy_pass http://127.0.0.1:8065; ... }
+location /      { proxy_pass http://127.0.0.1:8064; ... }
 ```
 
-Activer et obtenir le cert :
+Plus TLS Let's Encrypt via certbot, headers de sécu standards. La conf est
+maintenue côté repo `vps-install` (out-of-scope ici).
 
-```bash
-sudo ln -s /etc/nginx/sites-available/2mainsdefemmes.org /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
+### Premier déploiement / cold start
 
-sudo certbot --nginx -d 2mainsdefemmes.org -d www.2mainsdefemmes.org
-```
+Au premier `up -d`, la DB est vide. Au boot du container `payload`, le CMD
+applique d'abord les migrations (`payload migrate`) puis lance `next start` —
+les tables sont créées d'elles-mêmes. Pour peupler avec du contenu existant,
+voir le script
+[`services/payload/scripts/migrate-to-payload.ts`](services/payload/scripts/migrate-to-payload.ts).
 
-### 4. Configurer le déploiement GitHub Actions
+### Backups
 
-Le workflow `.github/workflows/ci.yml` contient un job `deploy` qui se déclenche à chaque
-push sur `main`. Il :
-
-1. Récupère l'artefact `dist/` produit par le job `build`,
-2. Installe la clé SSH,
-3. Rsync le contenu sur le serveur.
-
-Dans **Settings → Secrets and variables → Actions** du repo GitHub, créer 4 secrets :
-
-| Secret            | Valeur                                                   |
-| ----------------- | -------------------------------------------------------- |
-| `DEPLOY_SSH_KEY`  | Contenu complet de `~/.ssh/2mdf-deploy` (clé privée)     |
-| `DEPLOY_HOST`     | `2mainsdefemmes.org` (ou l'IP du serveur)                |
-| `DEPLOY_USER`     | `deploy`                                                 |
-| `DEPLOY_PATH`     | `/var/www/2mdf`                                          |
-
-Pour tester : push sur `main`, puis regarder l'onglet **Actions** du repo. Le workflow doit
-passer vert, et le site doit être à jour.
-
-Pour déployer manuellement sans push : onglet Actions → "CI & Deploy" → Run workflow.
-
-### 5. Proxy OAuth pour Sveltia CMS
-
-Pour que `/admin/` s'authentifie auprès de GitHub, il faut un proxy OAuth.
-[`sveltia-cms-auth`](https://github.com/sveltia/sveltia-cms-auth) — une image
-Docker officielle.
-
-1. Créer une **OAuth App GitHub** : Settings → Developer settings → OAuth Apps → New.
-   - Homepage URL : `https://2mainsdefemmes.org`
-   - Authorization callback : `https://auth.2mainsdefemmes.org/callback`
-   - Récupérer le **Client ID** et générer un **Client Secret**.
-
-2. Ajouter au `docker-compose.yml` serveur :
-
-```yaml
-services:
-  sveltia-auth:
-    image: sveltia/sveltia-cms-auth:latest
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:3001:80"
-    environment:
-      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
-      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
-      ALLOWED_DOMAINS: 2mainsdefemmes.org
-```
-
-3. Nginx vhost dédié pour `auth.2mainsdefemmes.org` :
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name auth.2mainsdefemmes.org;
-
-    ssl_certificate     /etc/letsencrypt/live/auth.2mainsdefemmes.org/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/auth.2mainsdefemmes.org/privkey.pem;
-
-    location / {
-        proxy_pass http://127.0.0.1:3001;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-    }
-}
-```
-
-4. Décommenter dans `public/admin/config.yml` :
-
-```yaml
-backend:
-  name: github
-  repo: aliceout/2mains
-  branch: main
-  auth_endpoint: https://auth.2mainsdefemmes.org/auth
-  base_url: https://auth.2mainsdefemmes.org
-```
-
-Push, build, déploiement — et `/admin/` devient fonctionnel.
-
-### 6. Backend du formulaire de contact
-
-Le service est prêt, livré dans `services/contact-mail/` — un petit conteneur Node qui
-reçoit le `POST /send` du formulaire et relaie par SMTP.
-
-Sur le serveur :
-
-```yaml
-# À ajouter dans ton docker-compose.yml
-services:
-  contact-mail:
-    build: ./services/contact-mail
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:3002:3000"
-    environment:
-      SMTP_HOST: mail.infomaniak.com
-      SMTP_PORT: 587
-      SMTP_USER: contact@2mainsdefemmes.org
-      SMTP_PASS: ${SMTP_PASS}
-      CONTACT_TO: contact@2mainsdefemmes.org
-      ALLOWED_ORIGIN: https://2mainsdefemmes.org
-      RATE_LIMIT_PER_HOUR: "5"
-```
-
-Côté nginx, on proxy `/api/contact` vers ce service :
-
-```nginx
-# Dans le server block de 2mainsdefemmes.org
-location = /api/contact {
-    limit_except POST OPTIONS { deny all; }
-    proxy_pass http://127.0.0.1:3002/send;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto https;
-}
-```
-
-Le formulaire `/contact` envoie déjà du JSON sur `/api/contact` — rien à changer côté
-front. Détails : [`services/contact-mail/README.md`](./services/contact-mail/README.md).
-
-### 7. Backups
-
-Le repo git est déjà un backup des contenus. Pour `public/uploads/` (médias uploadés via
-le CMS) :
-
-```bash
-# /etc/cron.daily/2mdf-backup
-#!/usr/bin/env bash
-set -euo pipefail
-BACKUP_DIR=/var/backups/2mdf
-DATE=$(date +%F)
-mkdir -p "$BACKUP_DIR"
-tar -czf "$BACKUP_DIR/uploads-$DATE.tar.gz" -C /var/www/2mdf/uploads .
-find "$BACKUP_DIR" -name "uploads-*.tar.gz" -mtime +30 -delete
-```
-
-```bash
-chmod +x /etc/cron.daily/2mdf-backup
-```
-
-### 8. Vérifications post-install
-
-```bash
-# Le site répond
-curl -I https://2mainsdefemmes.org | head -5
-
-# Le TLS est propre (grade A+ attendu)
-# → tester sur https://www.ssllabs.com/ssltest/
-
-# /admin/ répond
-curl -I https://2mainsdefemmes.org/admin/
-
-# Le webhook répond
-curl -I https://webhook.2mainsdefemmes.org/hooks/deploy-2mdf
-
-# Le sitemap existe
-curl https://2mainsdefemmes.org/sitemap-index.xml
-```
-
----
+Les bind mounts sous `$HOME/data/2mains/` sont snapshottés via `restic` côté
+infra VPS (cron). Le repo git est lui-même un backup du code/config — pas du
+contenu, qui vit en Postgres.
 
 ## Accessibilité, SEO, RGPD
 
@@ -577,18 +353,13 @@ Grand brouillon non-exhaustif, à tenir à jour :
 **Bloquant pour mise en ligne** :
 - [ ] Récupérer SIREN et numéro RNA de l'asso (mentions légales)
 - [ ] Décider identité hébergeur affichée publiquement
-- [ ] Créer le user `deploy` + clé SSH + configurer les 4 secrets GitHub Actions
-- [ ] Créer le vhost nginx + certbot pour `2mainsdefemmes.org`
-- [ ] Créer l'OAuth App GitHub + configurer le proxy `sveltia-cms-auth`
-- [ ] Déployer le service `contact-mail` + location nginx
-- [ ] Décommissionner le WordPress existant
 - [ ] Tests d'accessibilité (axe, Lighthouse ≥ 90)
+- [ ] Décommissionner le WordPress existant
 
 **Contenu à valider / remplacer** (cf. `/status` et `DRAFTS.md`) :
-- [ ] 8 témoignages fictifs → vraies paroles (via CMS)
-- [ ] 4 événements agenda à valider ou remplacer (via CMS)
-- [ ] Encart "Prochains RDV" sur la home (actuellement en dur)
-- [ ] Remplacer ou retirer les 2 citations isolées (home + `/pour/femmes`)
+- [ ] 8 témoignages fictifs → vraies paroles (via `/cms/admin`)
+- [ ] 4 événements agenda à valider ou remplacer
+- [ ] Remplacer ou retirer les citations isolées (home + `/femmes`)
 
 **Confort / plus tard** :
 - [ ] Page `/demo` listant tous les blocs (pour revue visuelle)
