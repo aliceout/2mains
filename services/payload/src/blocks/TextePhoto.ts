@@ -1,0 +1,58 @@
+import type { Block } from 'payload';
+
+import { fondField, titreField } from './_shared';
+
+export const TextePhoto: Block = {
+  slug: 'texte-photo',
+  labels: { singular: 'Texte + photo', plural: 'Blocs texte + photo' },
+  fields: [
+    titreField,
+    fondField,
+    { name: 'texte', type: 'textarea', required: true, label: 'Texte (Markdown)' },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+    },
+    {
+      name: 'image_alt',
+      type: 'text',
+      required: true,
+      label: 'Description image (alt)',
+    },
+    {
+      name: 'image_legende',
+      type: 'text',
+      required: false,
+      label: 'Légende',
+    },
+    {
+      name: 'image_credit',
+      type: 'text',
+      required: false,
+      label: 'Crédit photo',
+    },
+    {
+      name: 'position',
+      type: 'select',
+      required: true,
+      defaultValue: 'droite',
+      options: [
+        { label: 'Image à droite', value: 'droite' },
+        { label: 'Image à gauche', value: 'gauche' },
+      ],
+    },
+    {
+      name: 'ratio',
+      type: 'select',
+      required: true,
+      defaultValue: '50-50',
+      options: [
+        { label: '50/50', value: '50-50' },
+        { label: '2/3 texte', value: '2-tiers-texte' },
+        { label: '2/3 image', value: '2-tiers-image' },
+      ],
+    },
+  ],
+};
