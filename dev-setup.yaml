@@ -22,14 +22,10 @@ secrets:
   loader: dotenv
   # TODO: remplacer par le slug exact du projet sur env.backlice.dev
   # (visible dans l'URL de l'admin Infisical quand tu ouvres le projet).
-  project: 2mains-de-femmes
+  project: 2mains-rnu5
   batches:
     # Env Production. Ordre = priorité sur les doublons (first wins).
     - prod/payload
     - prod/postgres
     - prod/smtp
-    # Vars à la racine de l'env (ALLOWED_ORIGIN, ASTRO_PUBLIC_PAYLOAD_URL,
-    # RATE_LIMIT_PER_HOUR). Si DvSetup ne gère pas le path racine
-    # vide, déplacer ces 3 vars dans un dossier dédié (ex: prod/web)
-    # et ajouter le batch correspondant.
-    - prod
+    - prod/web

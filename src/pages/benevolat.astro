@@ -1,12 +1,12 @@
 ---
-import { getEntry } from 'astro:content';
+import { fetchPageLegacy } from '../lib/payload';
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
 
-const page = await getEntry('pages', 'benevolat');
-if (!page) throw new Error("content/pages/benevolat.md introuvable");
+const page = await fetchPageLegacy('benevolat');
+if (!page) throw new Error("Page introuvable dans Payload");
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.id} noindex={page.data.noindex}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
   <PageRenderer page={page} />
 </Layout>

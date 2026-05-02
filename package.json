@@ -20,6 +20,7 @@
     "lint": "eslint \"src/**/*.{astro,ts,tsx,js}\""
   },
   "dependencies": {
+    "@astrojs/node": "^10.0.6",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.2.1",
     "@fontsource/inter-tight": "^5.2.7",

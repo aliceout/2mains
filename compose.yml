@@ -1,0 +1,147 @@
+# Compose PROD — 4 services sur réseau Docker interne.
+#
+# Topologie :
+#   db      (postgres:16-alpine)        non exposé, accessible uniquement par `payload`
+#   payload (ghcr.io/.../2mains-payload) 127.0.0.1:8066  → /cms/admin + /cms/api
+#   site    (ghcr.io/.../2mains-site)    127.0.0.1:8064  → / (Astro SSR)
+#   mail    (ghcr.io/.../2mains-mail)    127.0.0.1:8065  → /api/contact
+#
+# Le reverse proxy nginx du VPS (hors compose) termine TLS et route :
+#   2mainsdefemmes.org/cms/* → 127.0.0.1:8066
+#   2mainsdefemmes.org/api/* → 127.0.0.1:8065
+#   2mainsdefemmes.org/*     → 127.0.0.1:8064
+#
+# Data persistante = bind mounts sous $DATA_DIR (= $HOME/data/2mains,
+# injecté par infra/scripts/deploy.sh) :
+#   $DATA_DIR/postgres/      → /var/lib/postgresql/data
+#   $DATA_DIR/payload-media/ → /app/media
+#
+# Secrets = .env racine, généré à chaque deploy par infra/scripts/deploy.sh
+# depuis Infisical. Jamais commité.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: 2mains-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  payload:
+    image: ghcr.io/aliceout/2mains-payload:latest
+    container_name: 2mains-payload
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+    volumes:
+      - ${DATA_DIR}/payload-media:/app/media
+    ports:
+      - "127.0.0.1:8066:3001"
+    networks:
+      - internal
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3001/cms/api/access"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  site:
+    image: ghcr.io/aliceout/2mains-site:latest
+    container_name: 2mains-site
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      NODE_ENV: production
+      HOST: "0.0.0.0"
+      PORT: "4321"
+      PAYLOAD_INTERNAL_URL: http://payload:3001
+      ASTRO_PUBLIC_PAYLOAD_URL: ${ASTRO_PUBLIC_PAYLOAD_URL}
+      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+      MAIL_TO: ${MAIL_TO}
+    ports:
+      - "127.0.0.1:8064:4321"
+    networks:
+      - internal
+    depends_on:
+      payload:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4321/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mail:
+    image: ghcr.io/aliceout/2mains-mail:latest
+    container_name: 2mains-mail
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_FROM: ${SMTP_FROM}
+      MAIL_TO: ${MAIL_TO}
+      RATE_LIMIT_PER_HOUR: ${RATE_LIMIT_PER_HOUR}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+    ports:
+      - "127.0.0.1:8065:3000"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  internal:
+    driver: bridge

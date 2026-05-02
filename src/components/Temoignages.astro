@@ -2,9 +2,14 @@
 // Mosaïque de témoignages — pioche dans la collection `temoignages`.
 // Filtrage optionnel par contexte (participante / partenaire /
 // professionnelle), limite par défaut 3, fond tinté tournant.
-import type { CollectionEntry } from 'astro:content';
+import type { LegacyEntry } from '../lib/payload';
 
-type Temoignage = CollectionEntry<'temoignages'>;
+type Temoignage = LegacyEntry<{
+  auteur: string;
+  role?: string;
+  contexte: string;
+  citation: string;
+}>;
 
 type Props = {
   temoignages: Temoignage[];
@@ -43,7 +48,7 @@ const tones: { bg: string; quote: string }[] = [
             “
           </span>
           <blockquote class="font-serif italic text-[17px] leading-snug tracking-tight text-ink md:text-[18px]">
-            {t.body}
+            {t.data.citation}
           </blockquote>
           <cite class="mt-4 block font-mono text-[11px] uppercase not-italic text-ink-2" style="letter-spacing: 0.06em;">
             — {t.data.auteur}

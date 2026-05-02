@@ -1,17 +1,24 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
 import DraftBadge from '../components/DraftBadge.astro';
 import { filterPublished } from '../lib/drafts';
+import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
-const page = await getEntry('pages', 'financeurs');
-if (!page) throw new Error('content/pages/financeurs.md introuvable');
+const page = await fetchPageLegacy('financeurs');
+if (!page) throw new Error('Page financeurs introuvable dans Payload');
 
-const all = filterPublished(await getCollection('partenaires')).sort(
-  (a, b) => a.data.ordre - b.data.ordre,
+type Partenaire = {
+  nom: string;
+  type: string;
+  description_courte?: string;
+  ordre?: number;
+  draft?: boolean;
+};
+const all = filterPublished(
+  await fetchCollectionLegacy<Partenaire>('partenaires', { sort: 'ordre' }),
 );
 const financeurs = all.filter(
   (p) => p.data.type === 'financeur public' || p.data.type === 'financeur privé',
@@ -20,7 +27,7 @@ const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif
 const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   {

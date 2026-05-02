@@ -1,23 +1,63 @@
-// Helper pour charger les paramètres globaux depuis la collection `site`.
-// Utilisé par les pages et composants pour éviter le code dur.
-import { getCollection, getEntry } from 'astro:content';
+// Helper pour charger les paramètres globaux du site.
+//
+// Tout le contenu éditable (identité, mission, réseaux, URLs HelloAsso,
+// banderole) vient du global Payload `site`. Seul `email_contact` est
+// dérivé de `MAIL_TO` (env), parce que le service mail backend en a
+// besoin de toute façon — pas la peine de dupliquer.
+//
+// Les composants Astro consomment `SiteSettings` comme un objet unifié,
+// avec un accès plat sur les URLs HelloAsso (compat avec l'ancien code
+// avant migration vers le group Payload).
+import { fetchSite } from './payload';
 
-export async function getSiteSettings() {
-  let entry = await getEntry('site', 'settings');
-  if (!entry) {
-    // Fallback : prendre la première entrée disponible (en cas d'id différent)
-    const all = await getCollection('site');
-    if (all.length === 0) {
-      throw new Error(
-        "content/site/settings.md introuvable — vérifier content/site/ et src/content/config.ts",
-      );
-    }
-    entry = all[0];
-  }
-  return entry.data;
+/** Forme du global Site retourné par Payload. */
+type PayloadSiteGlobal = {
+  nom_asso?: string;
+  url?: string;
+  accroche_globale?: string;
+  mission?: string;
+  directeur_publication?: string;
+  siren?: string;
+  rna?: string;
+  adresse?: string;
+  reseaux?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+  helloasso?: {
+    don?: string;
+    adhesion?: string;
+    newsletter?: string;
+  };
+  banderole_urgence?: {
+    active?: boolean;
+    message?: string;
+    couleur?: 'orange' | 'violet' | 'magenta';
+  };
+};
+
+export type SiteSettings = PayloadSiteGlobal & {
+  helloasso_don: string;
+  helloasso_adhesion?: string;
+  helloasso_newsletter?: string;
+  email_contact?: string;
+};
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const data = await fetchSite<PayloadSiteGlobal>();
+  return {
+    ...data,
+    // Aplatissement helloasso.* → helloasso_* pour rester compat avec
+    // les composants existants (Header.astro, dons.astro, etc.).
+    helloasso_don:
+      data.helloasso?.don ??
+      'https://www.helloasso.com/associations/2mains-de-femmes',
+    helloasso_adhesion: data.helloasso?.adhesion,
+    helloasso_newsletter: data.helloasso?.newsletter,
+    email_contact: process.env.MAIL_TO ?? 'contact@2mainsdefemmes.org',
+  };
 }
-
-export type SiteSettings = Awaited<ReturnType<typeof getSiteSettings>>;
 
 export type NavItem = {
   label: string;

@@ -1,103 +1,111 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
+// SSR : opt-in explicite (sinon Astro 6 demande un getStaticPaths,
+// or les slugs viennent de Payload à l'exécution).
+export const prerender = false;
+
+import { marked } from 'marked';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
-import { filterPublished } from '../../lib/drafts';
 import { getSiteSettings } from '../../lib/site';
+import { fetchBySlug } from '../../lib/payload';
 
-export async function getStaticPaths() {
-  const posts = filterPublished(await getCollection('actualites'));
-  return posts.map((p) => ({
-    params: { slug: p.id },
-    props: { post: p },
-  }));
-}
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/actualites', 302);
 
-type Props = { post: CollectionEntry<'actualites'> };
-const { post } = Astro.props;
-const { Content } = await render(post);
+type PostDoc = {
+  slug: string;
+  title: string;
+  description?: string;
+  date: string;
+  auteur?: string;
+  cover?: { filename?: string };
+  cover_alt?: string;
+  tags?: Array<{ tag: string }>;
+  body: string;
+  draft?: boolean;
+};
+
+const post = await fetchBySlug<PostDoc>('actualites', slug);
+if (!post) return new Response('Article introuvable', { status: 404 });
+
 const settings = await getSiteSettings();
 
-function formatDate(d: Date): string {
+const coverUrl = post.cover?.filename
+  ? `${process.env.ASTRO_PUBLIC_PAYLOAD_URL ?? 'http://localhost:3001'}/cms/api/media/file/${encodeURIComponent(post.cover.filename)}`
+  : undefined;
+
+const tags = (post.tags ?? []).map((t) => t.tag);
+const bodyHtml = post.body ? (marked.parse(post.body, { async: false }) as string) : '';
+
+function formatDate(s: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  }).format(d);
+  }).format(new Date(s));
 }
 
-// JSON-LD Article pour SEO.
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'NewsArticle',
-  headline: post.data.title,
-  datePublished: post.data.date.toISOString(),
-  ...(post.data.description ? { description: post.data.description } : {}),
-  ...(post.data.cover
-    ? { image: new URL(post.data.cover, settings.url).toString() }
-    : {}),
-  ...(post.data.auteur
-    ? { author: { '@type': 'Person', name: post.data.auteur } }
-    : {}),
+  headline: post.title,
+  datePublished: post.date,
+  ...(post.description ? { description: post.description } : {}),
+  ...(coverUrl ? { image: coverUrl } : {}),
+  ...(post.auteur ? { author: { '@type': 'Person', name: post.auteur } } : {}),
   publisher: {
     '@type': 'NGO',
     name: settings.nom_asso,
     logo: {
       '@type': 'ImageObject',
-      url: new URL('/brand/logo.svg', settings.url).toString(),
+      url: new URL('/brand/logo.svg', settings.url ?? 'https://2mainsdefemmes.org').toString(),
     },
   },
-  mainEntityOfPage: new URL(`/actualites/${post.id}`, settings.url).toString(),
+  mainEntityOfPage: new URL(`/actualites/${post.slug}`, settings.url ?? 'https://2mainsdefemmes.org').toString(),
 };
 ---
 
 <Layout
-  title={post.data.title}
-  description={post.data.description}
-  image={`/og/actualites/${post.id}.png`}
+  title={post.title}
+  description={post.description}
+  image={`/og/actualites/${post.slug}.png`}
   jsonLd={articleSchema}
 >
   <Hero
-    titre={post.data.title}
-    sousTitre={formatDate(post.data.date)}
-    accroche={post.data.description}
+    titre={post.title}
+    sousTitre={formatDate(post.date)}
+    accroche={post.description}
     variant="beige"
   />
 
-  {
-    post.data.cover && (
-      <Section>
-        <img
-          src={post.data.cover}
-          alt={post.data.cover_alt ?? ''}
-          class="mx-auto w-full max-w-4xl rounded-xl"
-        />
-      </Section>
-    )
-  }
+  {coverUrl && (
+    <Section>
+      <img
+        src={coverUrl}
+        alt={post.cover_alt ?? ''}
+        class="mx-auto w-full max-w-4xl rounded-xl"
+      />
+    </Section>
+  )}
 
   <Section>
     <Prose>
-      <Content />
+      <Fragment set:html={bodyHtml} />
     </Prose>
 
-    {
-      post.data.tags.length > 0 && (
-        <div class="mt-8 flex flex-wrap gap-2">
-          {post.data.tags.map((t) => (
-            <span class="rounded-full bg-cream px-3 py-1 text-sm">#{t}</span>
-          ))}
-        </div>
-      )
-    }
+    {tags.length > 0 && (
+      <div class="mt-8 flex flex-wrap gap-2">
+        {tags.map((t) => (
+          <span class="rounded-full bg-cream px-3 py-1 text-sm">#{t}</span>
+        ))}
+      </div>
+    )}
 
-    {
-      post.data.auteur && (
-        <p class="mt-6 text-sm opacity-70">Écrit par {post.data.auteur}</p>
-      )
-    }
+    {post.auteur && (
+      <p class="mt-6 text-sm opacity-70">Écrit par {post.auteur}</p>
+    )}
 
     <p class="mt-10">
       <a href="/actualites" class="font-semibold text-orange hover:underline">

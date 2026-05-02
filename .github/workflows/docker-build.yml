@@ -33,60 +33,21 @@ jobs:
       - name: Type check
         run: pnpm check
 
-      - name: Build (fetch-unsplash + optimize-images + astro build)
+      - name: Build (Astro Node SSR)
         run: pnpm build
 
-      - name: Accessibility audit (static)
-        run: pnpm a11y
-
-      - name: Smoke test — routes render
+      # Smoke test mode SSR : on vérifie que le bundle Node a bien été
+      # produit. Pas de `dist/<route>/index.html` à tester (plus de SSG).
+      - name: Smoke test — SSR bundle exists
         run: |
-          test -f dist/index.html
-          # L'association (dropdown, 4 SH)
-          test -f dist/qui-sommes-nous/index.html
-          test -f dist/publics-cible/index.html
-          test -f dist/interventions/index.html
-          test -f dist/financeurs/index.html
-          # L'isolement corporel (page unique)
-          test -f dist/isolement-corporel/index.html
-          # Audiences
-          test -f dist/structures/index.html
-          test -f dist/femmes/index.html
-          test -f dist/entreprises/index.html
-          # Agir et soutenir (4 SH)
-          test -f dist/benevolat/index.html
-          test -f dist/praticiennes/index.html
-          test -f dist/dons/index.html
-          test -f dist/mecenat/index.html
-          # Footer + utilitaires
-          test -f dist/documents/index.html
-          test -f dist/contact/index.html
-          test -f dist/mentions-legales/index.html
-          test -f dist/rgpd/index.html
-          test -f dist/accessibilite/index.html
-          test -f dist/404.html
-          test -f dist/sitemap-index.xml
-          echo "All expected routes present."
+          test -f dist/server/entry.mjs
+          test -d dist/client
+          echo "SSR bundle present."
 
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
-
-      - name: Start preview server
-        run: pnpm preview --host 127.0.0.1 --port 4322 &
-
-      - name: Wait for preview server
-        run: |
-          for i in $(seq 1 30); do
-            curl -sf -o /dev/null http://127.0.0.1:4322/ && exit 0
-            sleep 1
-          done
-          echo "preview server did not start in time" >&2
-          exit 1
-
-      - name: Accessibility audit (deep, axe-core)
-        run: pnpm a11y:deep
-        env:
-          BASE_URL: http://127.0.0.1:4322
+      # A11y deep désactivé côté CI tant qu'on n'a pas de Payload
+      # accessible : `astro preview` charge dist/ et tape Payload pour
+      # rendre les pages, ce qui exige une instance Payload joignable.
+      # À ré-activer en Phase 5 avec un mock ou un Payload de test.
 
   build-site:
     name: Build & push site image
@@ -117,6 +78,36 @@ jobs:
             ghcr.io/aliceout/2mains-site:${{ github.sha }}
           cache-from: type=gha,scope=site
           cache-to: type=gha,scope=site,mode=max
+
+  build-payload:
+    name: Build & push payload image
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push payload
+        uses: docker/build-push-action@v6
+        with:
+          context: services/payload
+          file: services/payload/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/aliceout/2mains-payload:latest
+            ghcr.io/aliceout/2mains-payload:${{ github.sha }}
+          cache-from: type=gha,scope=payload
+          cache-to: type=gha,scope=payload,mode=max
 
   build-mail:
     name: Build & push mail image

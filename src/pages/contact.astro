@@ -1,14 +1,14 @@
 ---
-import { getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
 import Draft from '../components/Draft.astro';
 import { getSiteSettings } from '../lib/site';
+import { fetchPageLegacy } from '../lib/payload';
 
-const page = await getEntry('pages', 'contact');
-if (!page) throw new Error('content/pages/contact.md introuvable');
+const page = await fetchPageLegacy('contact');
+if (!page) throw new Error('Page contact introuvable dans Payload');
 
 const settings = await getSiteSettings();
 
@@ -20,7 +20,7 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? (import.meta.env.PRO
 const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>

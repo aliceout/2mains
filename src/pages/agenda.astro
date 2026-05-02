@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
+import { marked } from 'marked';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
@@ -8,37 +8,44 @@ import Draft from '../components/Draft.astro';
 import DraftBadge from '../components/DraftBadge.astro';
 import { getSiteSettings } from '../lib/site';
 import { filterPublished } from '../lib/drafts';
+import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
-const page = await getEntry('pages', 'agenda');
-if (!page) throw new Error('content/pages/agenda.md introuvable');
+const page = await fetchPageLegacy('agenda');
+if (!page) throw new Error('Page agenda introuvable dans Payload');
 
-type Item = CollectionEntry<'evenements'>;
+type Evt = {
+  title: string;
+  date_debut: string;
+  date_fin?: string;
+  lieu: string;
+  adresse?: string;
+  public: string;
+  gratuit: boolean;
+  inscription_url?: string;
+  body?: string;
+  fictif?: boolean;
+  draft?: boolean;
+};
 
-async function withContent(items: Item[]) {
-  return Promise.all(
-    items.map(async (e) => {
-      const { Content } = await render(e);
-      return { ...e, Content };
-    }),
-  );
-}
-
-const all = filterPublished(await getCollection('evenements')).sort(
-  (a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf(),
+const all = filterPublished(
+  await fetchCollectionLegacy<Evt>('evenements', { sort: 'date_debut' }),
 );
 
-const now = new Date();
-const aVenir = await withContent(
-  all.filter((e) => e.data.date_debut.valueOf() >= now.valueOf()),
-);
+const now = Date.now();
+const aVenir = all
+  .filter((e) => Date.parse(e.data.date_debut) >= now)
+  .map((e) => ({
+    ...e,
+    bodyHtml: e.data.body ? (marked.parse(e.data.body, { async: false }) as string) : '',
+  }));
 const passes = all
-  .filter((e) => e.data.date_debut.valueOf() < now.valueOf())
+  .filter((e) => Date.parse(e.data.date_debut) < now)
   .reverse();
 
 const hasFictive = aVenir.some((e) => e.data.fictif);
 
 const settings = await getSiteSettings();
-const feedHttps = new URL('/agenda.ics', settings.url).toString();
+const feedHttps = new URL('/agenda.ics', settings.url ?? 'https://2mainsdefemmes.org').toString();
 const feedWebcal = feedHttps.replace(/^https?:/, 'webcal:');
 
 const eventSchemas = aVenir
@@ -47,8 +54,8 @@ const eventSchemas = aVenir
     '@context': 'https://schema.org',
     '@type': 'Event',
     name: e.data.title,
-    startDate: e.data.date_debut.toISOString(),
-    ...(e.data.date_fin ? { endDate: e.data.date_fin.toISOString() } : {}),
+    startDate: e.data.date_debut,
+    ...(e.data.date_fin ? { endDate: e.data.date_fin } : {}),
     eventStatus: 'https://schema.org/EventScheduled',
     eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
     location: {
@@ -65,7 +72,9 @@ const eventSchemas = aVenir
     ...(e.data.inscription_url ? { url: e.data.inscription_url } : {}),
   }));
 
-function formatDateFull(debut: Date, fin?: Date): string {
+function formatDateFull(debutStr: string, finStr?: string): string {
+  const debut = new Date(debutStr);
+  const fin = finStr ? new Date(finStr) : undefined;
   const dOpts: Intl.DateTimeFormatOptions = {
     day: 'numeric',
     month: 'long',
@@ -140,9 +149,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
                         <span class="rounded-full bg-moss text-paper px-3 py-1">Gratuit</span>
                       )}
                     </div>
-                    <div class="text-sm leading-relaxed">
-                      <e.Content />
-                    </div>
+                    <div class="text-sm leading-relaxed" set:html={e.bodyHtml} />
                     <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
                       {e.data.inscription_url && (
                         <a
@@ -178,9 +185,7 @@ function formatDateFull(debut: Date, fin?: Date): string {
                       <span class="rounded-full bg-moss text-paper px-3 py-1">Gratuit</span>
                     )}
                   </div>
-                  <div class="text-sm leading-relaxed">
-                    <e.Content />
-                  </div>
+                  <div class="text-sm leading-relaxed" set:html={e.bodyHtml} />
                   <div class="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2">
                     {e.data.inscription_url && (
                       <a

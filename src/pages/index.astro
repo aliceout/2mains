@@ -1,5 +1,4 @@
 ---
-import { getEntry, getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
 import Draft from '../components/Draft.astro';
@@ -9,25 +8,35 @@ import Eyebrow from '../components/atoms/Eyebrow.astro';
 import LinkArrow from '../components/atoms/LinkArrow.astro';
 import { getSiteSettings } from '../lib/site';
 import { filterPublished } from '../lib/drafts';
+import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
-const page = await getEntry('pages', 'accueil');
-if (!page) throw new Error('content/pages/accueil.md introuvable');
+const page = await fetchPageLegacy('accueil');
+if (!page) throw new Error('Page accueil introuvable dans Payload');
 
 const settings = await getSiteSettings();
 
-// Prochains événements (3 max, à venir).
-const now = new Date();
-const aVenir = filterPublished(await getCollection('evenements'))
-  .filter((e) => e.data.date_debut.valueOf() >= now.valueOf())
-  .sort((a, b) => a.data.date_debut.valueOf() - b.data.date_debut.valueOf())
+// Prochains événements (3 max, à venir). Payload renvoie les dates
+// en string ISO ; on les compare via Date.parse().
+type Evt = {
+  title: string;
+  date_debut: string;
+  lieu: string;
+  fictif?: boolean;
+  draft?: boolean;
+};
+const now = Date.now();
+const aVenir = filterPublished(
+  await fetchCollectionLegacy<Evt>('evenements', { sort: 'date_debut' }),
+)
+  .filter((e) => Date.parse(e.data.date_debut) >= now)
   .slice(0, 3);
 
-function formatDate(d: Date): string {
+function formatDate(s: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  }).format(d);
+  }).format(new Date(s));
 }
 
 const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
