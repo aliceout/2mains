@@ -4,6 +4,7 @@ import type { CollectionConfig } from 'payload';
 export const Documents: CollectionConfig = {
   slug: 'documents',
   labels: { singular: 'Document', plural: 'Documents' },
+  access: { read: () => true },
   admin: {
     useAsTitle: 'titre',
     defaultColumns: ['titre', 'categorie', 'date', 'a_paraitre'],

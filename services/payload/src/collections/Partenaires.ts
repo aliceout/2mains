@@ -4,6 +4,7 @@ import type { CollectionConfig } from 'payload';
 export const Partenaires: CollectionConfig = {
   slug: 'partenaires',
   labels: { singular: 'Partenaire', plural: 'Partenaires' },
+  access: { read: () => true },
   admin: {
     useAsTitle: 'nom',
     defaultColumns: ['nom', 'type', 'ordre'],

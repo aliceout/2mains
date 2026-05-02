@@ -8,6 +8,7 @@ import type { CollectionConfig } from 'payload';
 export const Actualites: CollectionConfig = {
   slug: 'actualites',
   labels: { singular: 'Actualité', plural: 'Actualités' },
+  access: { read: () => true },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'auteur', 'updatedAt'],

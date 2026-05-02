@@ -4,6 +4,7 @@ import type { CollectionConfig } from 'payload';
 export const Evenements: CollectionConfig = {
   slug: 'evenements',
   labels: { singular: 'Événement', plural: 'Événements' },
+  access: { read: () => true },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date_debut', 'lieu', 'gratuit'],

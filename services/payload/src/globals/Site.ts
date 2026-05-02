@@ -17,6 +17,11 @@ export const Site: GlobalConfig = {
       'Identité, mission, contact, réseaux. Pas de credentials ici — ' +
       'voir Infisical pour les SMTP, HelloAsso, etc.',
   },
+  // Lecture publique : Astro SSR doit pouvoir lire ces settings sans
+  // authentification. Modification : authentifié seulement (default).
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       name: 'nom_asso',

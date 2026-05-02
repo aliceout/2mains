@@ -8,6 +8,7 @@ import type { CollectionConfig } from 'payload';
 export const Temoignages: CollectionConfig = {
   slug: 'temoignages',
   labels: { singular: 'Témoignage', plural: 'Témoignages' },
+  access: { read: () => true },
   admin: {
     useAsTitle: 'auteur',
     defaultColumns: ['auteur', 'role', 'contexte', 'a_la_une', 'ordre'],

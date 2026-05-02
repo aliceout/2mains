@@ -319,9 +319,9 @@ export interface Page {
                   }[]
                 | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
-              cta: {
-                label: string;
-                href: string;
+              cta?: {
+                label?: string | null;
+                href?: string | null;
                 externe?: boolean | null;
               };
               id?: string | null;
@@ -391,8 +391,8 @@ export interface Page {
             titre?: string | null;
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             texte: string;
-            image: number | Media;
-            image_alt: string;
+            image?: (number | null) | Media;
+            image_alt?: string | null;
             image_legende?: string | null;
             image_credit?: string | null;
             position: 'droite' | 'gauche';
@@ -403,8 +403,8 @@ export interface Page {
           }
         | {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            image: number | Media;
-            alt: string;
+            image?: (number | null) | Media;
+            alt?: string | null;
             legende?: string | null;
             credit?: string | null;
             taille: 'petite' | 'moyenne' | 'grande';
@@ -421,8 +421,8 @@ export interface Page {
              */
             lightbox?: boolean | null;
             images: {
-              image: number | Media;
-              alt: string;
+              image?: (number | null) | Media;
+              alt?: string | null;
               legende?: string | null;
               id?: string | null;
             }[];
@@ -431,8 +431,8 @@ export interface Page {
             blockType: 'galerie';
           }
         | {
-            image: number | Media;
-            alt: string;
+            image?: (number | null) | Media;
+            alt?: string | null;
             titre: string;
             sousTitre?: string | null;
             hauteur: 'petite' | 'moyenne' | 'grande';
@@ -525,14 +525,14 @@ export interface Page {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             titre: string;
             corps?: string | null;
-            cta_primaire: {
-              label: string;
-              href: string;
+            cta_primaire?: {
+              label?: string | null;
+              href?: string | null;
               externe?: boolean | null;
             };
-            cta_secondaire: {
-              label: string;
-              href: string;
+            cta_secondaire?: {
+              label?: string | null;
+              href?: string | null;
               externe?: boolean | null;
             };
             id?: string | null;
