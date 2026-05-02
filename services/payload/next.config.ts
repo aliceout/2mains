@@ -7,9 +7,12 @@ const __filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(__filename)
 
 const nextConfig: NextConfig = {
-  // Output standalone : le Dockerfile copie .next/standalone + .next/static
-  // pour avoir un runtime minimal sans node_modules complet.
-  output: 'standalone',
+  // On reste en mode non-standalone : on a besoin du CLI payload + des
+  // migrations + de la config source au runtime pour `payload migrate`
+  // au boot du container. Le standalone trace ce qui est importé par
+  // server.js mais pas le CLI bin/, donc on ne peut pas appliquer les
+  // migrations en prod si on bundle minimal. ~300MB de plus en image,
+  // OK pour ce projet.
   images: {
     localPatterns: [
       {
