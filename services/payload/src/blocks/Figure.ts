@@ -11,9 +11,9 @@ export const Figure: Block = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
     },
-    { name: 'alt', type: 'text', required: true, label: 'Description (alt)' },
+    { name: 'alt', type: 'text', required: false, label: 'Description (alt)' },
     { name: 'legende', type: 'text', required: false },
     { name: 'credit', type: 'text', required: false },
     {

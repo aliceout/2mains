@@ -42,9 +42,13 @@ export const titreField: Field = {
   required: false,
 };
 
-/** Lien / CTA — sous-objet réutilisé dans cta, formats, etc. */
+/** Lien / CTA — sous-objet réutilisé dans cta, formats, etc.
+ *  Label et href sont en required:false côté schéma car Payload
+ *  n'a pas de "tout-ou-rien" sur les groups optionnels : si on les
+ *  marquait required, un format SANS cta serait quand même rejeté.
+ *  La cohérence (label+href ensemble) est validée côté UI/UX. */
 export const ctaFields: Field[] = [
-  { name: 'label', type: 'text', required: true },
-  { name: 'href', type: 'text', required: true },
+  { name: 'label', type: 'text', required: false },
+  { name: 'href', type: 'text', required: false },
   { name: 'externe', type: 'checkbox', defaultValue: false },
 ];

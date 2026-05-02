@@ -8,9 +8,9 @@ export const BandeauImage: Block = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
     },
-    { name: 'alt', type: 'text', required: true, label: 'Description (alt)' },
+    { name: 'alt', type: 'text', required: false, label: 'Description (alt)' },
     { name: 'titre', type: 'text', required: true },
     { name: 'sousTitre', type: 'text', required: false },
     {

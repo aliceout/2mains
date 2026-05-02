@@ -13,12 +13,12 @@ export const TextePhoto: Block = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      required: false,
     },
     {
       name: 'image_alt',
       type: 'text',
-      required: true,
+      required: false,
       label: 'Description image (alt)',
     },
     {
