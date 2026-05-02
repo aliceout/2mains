@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    pages: Page;
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
@@ -76,6 +77,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -84,7 +86,7 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {};
@@ -119,10 +121,438 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  /**
+   * Identifiant URL-safe, ex: 'accueil', 'qui-sommes-nous'. Sert à matcher la route Astro.
+   */
+  slug: string;
+  /**
+   * ~150 caractères, affiché dans Google.
+   */
+  description?: string | null;
+  /**
+   * Si coché, demande aux moteurs de ne pas indexer.
+   */
+  noindex?: boolean | null;
+  hero?: {
+    /**
+     * Décocher si la page commence directement par les sections.
+     */
+    enabled?: boolean | null;
+    /**
+     * Astuce : *italique* sur un mot pour l'accent serif.
+     */
+    titre?: string | null;
+    sousTitre?: string | null;
+    accroche?: string | null;
+    variant?: ('beige' | 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+    cta_primaire?: {
+      label?: string | null;
+      href?: string | null;
+      externe?: boolean | null;
+    };
+    cta_secondaire?: {
+      label?: string | null;
+      href?: string | null;
+      externe?: boolean | null;
+    };
+  };
+  /**
+   * Compose la page en empilant des sections. Chaque section est un type de bloc différent.
+   */
+  sections?:
+    | (
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Markdown : ## titres, **gras**, *italique*, [lien](url), - listes…
+             */
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'prose';
+          }
+        | {
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            ton: 'info' | 'important' | 'astuce' | 'note';
+            titre?: string | null;
+            body: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'callout';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Première ligne, en italique.
+             */
+            ouverture?: string | null;
+            /**
+             * Plusieurs paragraphes (séparés par lignes vides). *italique* pour l'accent.
+             */
+            corps: string;
+            signature?: string | null;
+            variant: 'orange' | 'violet';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'lettre';
+          }
+        | {
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            citation: string;
+            auteur: string;
+            role?: string | null;
+            variant: 'beige' | 'violet' | 'paper';
+            /**
+             * Marque la citation comme fictive (badge « À valider » côté site).
+             */
+            fictif?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'citation';
+          }
+        | {
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            citation: string;
+            auteur?: string | null;
+            role?: string | null;
+            variant: 'orange' | 'violet' | 'beige' | 'paper';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'citation-large';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Court : 90 %, 1/3, ×4…
+             */
+            chiffre: string;
+            /**
+             * Une à deux phrases. *italique* pour mettre en valeur un chiffre secondaire.
+             */
+            texte: string;
+            source?: string | null;
+            eyebrow?: string | null;
+            variant: 'orange' | 'violet';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stat-majeste';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Ex: 90 %, 1/3, 7 M+
+             */
+            chiffre: string;
+            texte: string;
+            source?: string | null;
+            alignement: 'gauche' | 'droite';
+            couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'chiffre-detail';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            colonnes: '2' | '3' | '4';
+            cartes: {
+              titre: string;
+              description: string;
+              href?: string | null;
+              cta?: string | null;
+              couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cartes';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            valeurs: {
+              nom: string;
+              description: string;
+              couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'valeurs';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            colonnes: '2' | '3';
+            formats: {
+              titre: string;
+              description?: string | null;
+              points?:
+                | {
+                    point: string;
+                    id?: string | null;
+                  }[]
+                | null;
+              couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+              cta: {
+                label: string;
+                href: string;
+                externe?: boolean | null;
+              };
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'formats';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
+            etapes: {
+              titre: string;
+              description?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'etapes';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            questions: {
+              question: string;
+              reponse: string;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            intro?: string | null;
+            stats: {
+              valeur: string;
+              legende: string;
+              source?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Inverse l'ordre (image à gauche, texte à droite).
+             */
+            inverse?: boolean | null;
+            texte: string;
+            picto_couleur: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu' | 'beige';
+            image?: (number | null) | Media;
+            /**
+             * Texte alternatif (override de l'alt de la media).
+             */
+            image_alt?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'deux-colonnes';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            texte: string;
+            image: number | Media;
+            image_alt: string;
+            image_legende?: string | null;
+            image_credit?: string | null;
+            position: 'droite' | 'gauche';
+            ratio: '50-50' | '2-tiers-texte' | '2-tiers-image';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'texte-photo';
+          }
+        | {
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            image: number | Media;
+            alt: string;
+            legende?: string | null;
+            credit?: string | null;
+            taille: 'petite' | 'moyenne' | 'grande';
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'figure';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            colonnes: '2' | '3' | '4';
+            /**
+             * Active l'ouverture en plein écran au clic.
+             */
+            lightbox?: boolean | null;
+            images: {
+              image: number | Media;
+              alt: string;
+              legende?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'galerie';
+          }
+        | {
+            image: number | Media;
+            alt: string;
+            titre: string;
+            sousTitre?: string | null;
+            hauteur: 'petite' | 'moyenne' | 'grande';
+            position_texte: 'gauche' | 'centre' | 'droite';
+            position_verticale: 'haut' | 'milieu' | 'bas';
+            /**
+             * Voile sombre pour la lisibilité du texte.
+             */
+            scrim?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'bandeau-image';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            colonnes: '2' | '3' | '4';
+            forme: 'rond' | 'carre';
+            personnes: {
+              nom: string;
+              role?: string | null;
+              photo?: (number | null) | Media;
+              photo_alt?: string | null;
+              bio?: string | null;
+              lien?: string | null;
+              lien_label?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portraits';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            alignement: 'vertical' | 'alterne';
+            etapes: {
+              /**
+               * Ex: 2024, Mars 2025, 15 juin…
+               */
+              date: string;
+              titre: string;
+              texte?: string | null;
+              image?: (number | null) | Media;
+              image_alt?: string | null;
+              id?: string | null;
+            }[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            contexte?: ('participante' | 'partenaire' | 'professionnelle') | null;
+            limite: number;
+            /**
+             * Laisse vide pour tirer automatiquement. Sinon liste les slugs.
+             */
+            ids?:
+              | {
+                  slug: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'temoignages';
+          }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            intro?: string | null;
+            forme: 'rond' | 'carre';
+            colonnes: '2' | '3' | '4';
+            /**
+             * Laisse vide pour afficher tous. Sinon liste les slugs (ex: audrey-relandeau).
+             */
+            ids?:
+              | {
+                  slug: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'equipe';
+          }
+        | {
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            titre: string;
+            corps?: string | null;
+            cta_primaire: {
+              label: string;
+              href: string;
+              externe?: boolean | null;
+            };
+            cta_secondaire: {
+              label: string;
+              href: string;
+              externe?: boolean | null;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -144,29 +574,10 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: string;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -183,20 +594,24 @@ export interface PayloadKv {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
@@ -206,10 +621,10 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
+  id: number;
   user: {
     relationTo: 'users';
-    value: string | User;
+    value: number | User;
   };
   key?: string | null;
   value?:
@@ -229,11 +644,412 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  noindex?: T;
+  hero?:
+    | T
+    | {
+        enabled?: T;
+        titre?: T;
+        sousTitre?: T;
+        accroche?: T;
+        variant?: T;
+        cta_primaire?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              externe?: T;
+            };
+        cta_secondaire?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              externe?: T;
+            };
+      };
+  sections?:
+    | T
+    | {
+        prose?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        callout?:
+          | T
+          | {
+              fond?: T;
+              ton?: T;
+              titre?: T;
+              body?: T;
+              id?: T;
+              blockName?: T;
+            };
+        lettre?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              ouverture?: T;
+              corps?: T;
+              signature?: T;
+              variant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        citation?:
+          | T
+          | {
+              fond?: T;
+              citation?: T;
+              auteur?: T;
+              role?: T;
+              variant?: T;
+              fictif?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'citation-large'?:
+          | T
+          | {
+              fond?: T;
+              citation?: T;
+              auteur?: T;
+              role?: T;
+              variant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'stat-majeste'?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              chiffre?: T;
+              texte?: T;
+              source?: T;
+              eyebrow?: T;
+              variant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'chiffre-detail'?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              chiffre?: T;
+              texte?: T;
+              source?: T;
+              alignement?: T;
+              couleur?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cartes?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              colonnes?: T;
+              cartes?:
+                | T
+                | {
+                    titre?: T;
+                    description?: T;
+                    href?: T;
+                    cta?: T;
+                    couleur?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        valeurs?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              valeurs?:
+                | T
+                | {
+                    nom?: T;
+                    description?: T;
+                    couleur?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        formats?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              colonnes?: T;
+              formats?:
+                | T
+                | {
+                    titre?: T;
+                    description?: T;
+                    points?:
+                      | T
+                      | {
+                          point?: T;
+                          id?: T;
+                        };
+                    couleur?: T;
+                    cta?:
+                      | T
+                      | {
+                          label?: T;
+                          href?: T;
+                          externe?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        etapes?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              couleur?: T;
+              etapes?:
+                | T
+                | {
+                    titre?: T;
+                    description?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              questions?:
+                | T
+                | {
+                    question?: T;
+                    reponse?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              intro?: T;
+              stats?:
+                | T
+                | {
+                    valeur?: T;
+                    legende?: T;
+                    source?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'deux-colonnes'?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              inverse?: T;
+              texte?: T;
+              picto_couleur?: T;
+              image?: T;
+              image_alt?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'texte-photo'?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              texte?: T;
+              image?: T;
+              image_alt?: T;
+              image_legende?: T;
+              image_credit?: T;
+              position?: T;
+              ratio?: T;
+              id?: T;
+              blockName?: T;
+            };
+        figure?:
+          | T
+          | {
+              fond?: T;
+              image?: T;
+              alt?: T;
+              legende?: T;
+              credit?: T;
+              taille?: T;
+              id?: T;
+              blockName?: T;
+            };
+        galerie?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              colonnes?: T;
+              lightbox?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    alt?: T;
+                    legende?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'bandeau-image'?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              titre?: T;
+              sousTitre?: T;
+              hauteur?: T;
+              position_texte?: T;
+              position_verticale?: T;
+              scrim?: T;
+              id?: T;
+              blockName?: T;
+            };
+        portraits?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              colonnes?: T;
+              forme?: T;
+              personnes?:
+                | T
+                | {
+                    nom?: T;
+                    role?: T;
+                    photo?: T;
+                    photo_alt?: T;
+                    bio?: T;
+                    lien?: T;
+                    lien_label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              alignement?: T;
+              etapes?:
+                | T
+                | {
+                    date?: T;
+                    titre?: T;
+                    texte?: T;
+                    image?: T;
+                    image_alt?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        temoignages?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              contexte?: T;
+              limite?: T;
+              ids?:
+                | T
+                | {
+                    slug?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        equipe?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              intro?: T;
+              forme?: T;
+              colonnes?: T;
+              ids?:
+                | T
+                | {
+                    slug?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              fond?: T;
+              titre?: T;
+              corps?: T;
+              cta_primaire?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                    externe?: T;
+                  };
+              cta_secondaire?:
+                | T
+                | {
+                    label?: T;
+                    href?: T;
+                    externe?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
