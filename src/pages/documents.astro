@@ -1,28 +1,39 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import DraftBadge from '../components/DraftBadge.astro';
 import { filterPublished } from '../lib/drafts';
+import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
-const page = await getEntry('pages', 'documents');
-if (!page) throw new Error('content/pages/documents.md introuvable');
+const page = await fetchPageLegacy('documents');
+if (!page) throw new Error('Page documents introuvable dans Payload');
 
-const docs = filterPublished(await getCollection('documents')).sort((a, b) => {
+type Doc = {
+  titre: string;
+  categorie: string;
+  fichier?: string;
+  date?: string;
+  description_courte?: string;
+  a_paraitre?: boolean;
+  draft?: boolean;
+};
+const docs = filterPublished(
+  await fetchCollectionLegacy<Doc>('documents'),
+).sort((a, b) => {
   if (a.data.a_paraitre !== b.data.a_paraitre) return a.data.a_paraitre ? 1 : -1;
-  const da = a.data.date?.valueOf() ?? 0;
-  const db = b.data.date?.valueOf() ?? 0;
+  const da = a.data.date ? Date.parse(a.data.date) : 0;
+  const db = b.data.date ? Date.parse(b.data.date) : 0;
   return db - da;
 });
 
-function formatDate(d: Date | undefined): string {
-  if (!d) return 'À paraître';
-  return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(d);
+function formatDate(s: string | undefined): string {
+  if (!s) return 'À paraître';
+  return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(new Date(s));
 }
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.id}>
+<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
   {page.data.hero && <Hero {...page.data.hero} />}
 
   <Section>
