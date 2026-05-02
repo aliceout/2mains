@@ -8,12 +8,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/fetch-unsplash.mjs && node scripts/optimize-images.mjs && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "fetch-unsplash": "node scripts/fetch-unsplash.mjs",
-    "optimize-images": "node scripts/optimize-images.mjs",
     "a11y": "node scripts/a11y-audit.mjs",
     "a11y:deep": "node scripts/a11y-deep.mjs",
     "format": "prettier --write \"src/**/*.{astro,ts,tsx,js,json,md}\" \"*.{md,mjs,ts,json}\"",

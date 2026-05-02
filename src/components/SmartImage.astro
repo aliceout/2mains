@@ -1,27 +1,12 @@
 ---
-// Wrapper image utilisé par tous les blocs. Deux manifests pré-calculés
-// au build :
-// 1. unsplash-manifest.json — mappe les URLs hotlink Unsplash vers un
-//    fichier téléchargé localement (évite les fuites d'IP côté visiteur).
-//    On substitue l'URL AVANT toute autre logique.
-// 2. image-manifest.json — mappe chaque fichier local vers ses variantes
-//    AVIF + WebP (multi-tailles). Produit un <picture> avec srcset.
+// Wrapper image — surcouche minimale au-dessus de <img>.
 //
-// Si aucun manifest ne matche, fallback sur un <img loading="lazy">
-// direct (images externes non-Unsplash, SVG, ou image pas encore
-// générée).
-import imageManifest from '../data/image-manifest.json';
-import unsplashManifest from '../data/unsplash-manifest.json';
-
-type Variant = { width: number; path: string };
-type ManifestEntry = {
-  original: string;
-  width: number;
-  height: number;
-  variants: { avif: Variant[]; webp: Variant[] };
-};
-const imageMap = imageManifest as Record<string, ManifestEntry>;
-const unsplashMap = unsplashManifest as Record<string, string>;
+// À l'origine ce composant gérait deux pipelines pré-build (download
+// Unsplash + génération AVIF/WebP multi-tailles) sur les fichiers
+// statiques de public/uploads/. Avec la migration vers Payload, les
+// uploads vivent côté CMS et leurs URLs sont externes — plus aucune
+// transformation côté Astro. On garde le wrapper pour normaliser
+// loading/decoding/fit sur tout le site.
 
 type Props = {
   src: string;
@@ -31,9 +16,8 @@ type Props = {
   height?: number;
   class?: string;
   eager?: boolean;
-  /** Hint sur la taille affichée pour que le navigateur choisisse la
-   *  bonne variante de srcset. Exemples : "50vw", "(min-width: 768px) 33vw, 100vw".
-   *  Par défaut "100vw" (image pleine largeur). */
+  /** Attribut `sizes` HTML — ignoré ici (pas de srcset), conservé
+   *  pour compat de l'API d'appel des composants existants. */
   sizes?: string;
 };
 
@@ -45,64 +29,20 @@ const {
   height,
   class: className,
   eager = false,
-  sizes = '100vw',
 } = Astro.props;
-
-// Étape 1 : si l'URL pointe vers Unsplash et qu'on a une copie locale,
-// on bascule dessus. Sinon on garde l'URL originale.
-const effectiveSrc = unsplashMap[src] ?? src;
-
-// Étape 2 : chercher l'entrée dans le manifest d'images optimisées
-// (seulement pour les fichiers locaux, pas les SVG).
-const entry =
-  !effectiveSrc.startsWith('http') && !effectiveSrc.endsWith('.svg')
-    ? imageMap[effectiveSrc] ?? null
-    : null;
-
-function srcsetFor(variants: Variant[]): string {
-  return variants.map((v) => `${v.path} ${v.width}w`).join(', ');
-}
 
 const imgClass = [
   fit === 'cover' ? 'object-cover' : 'object-contain',
   className,
 ];
-const w = width ?? entry?.width;
-const h = height ?? entry?.height;
 ---
 
-{
-  entry ? (
-    <picture>
-      <source
-        type="image/avif"
-        srcset={srcsetFor(entry.variants.avif)}
-        sizes={sizes}
-      />
-      <source
-        type="image/webp"
-        srcset={srcsetFor(entry.variants.webp)}
-        sizes={sizes}
-      />
-      <img
-        src={effectiveSrc}
-        alt={alt}
-        loading={eager ? 'eager' : 'lazy'}
-        decoding="async"
-        width={w}
-        height={h}
-        class:list={imgClass}
-      />
-    </picture>
-  ) : (
-    <img
-      src={src}
-      alt={alt}
-      loading={eager ? 'eager' : 'lazy'}
-      decoding="async"
-      width={w}
-      height={h}
-      class:list={imgClass}
-    />
-  )
-}
+<img
+  src={src}
+  alt={alt}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  width={width}
+  height={height}
+  class:list={imgClass}
+/>

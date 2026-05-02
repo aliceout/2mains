@@ -21,12 +21,6 @@ pnpm-debug.log*
 .DS_Store
 .idea/
 
-# Images optimisées (régénérées par scripts/optimize-images.mjs au build)
-public/uploads/optimized/
-
-# Images Unsplash téléchargées (régénérées par scripts/fetch-unsplash.mjs)
-public/uploads/unsplash/
-
 # Payload — Postgres local (dev) + uploads, jamais commiter
 data/
 services/payload/.next/
