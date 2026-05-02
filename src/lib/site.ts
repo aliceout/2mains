@@ -1,23 +1,59 @@
-// Helper pour charger les paramètres globaux depuis la collection `site`.
-// Utilisé par les pages et composants pour éviter le code dur.
-import { getCollection, getEntry } from 'astro:content';
+// Helper pour charger les paramètres globaux du site.
+//
+// Combine deux sources :
+//   - Payload (global `site`) : nom_asso, mission, accroche, réseaux,
+//     adresse, banderole d'urgence, etc. Édité par Audrey dans /cms.
+//   - process.env : helloasso_don / newsletter (URLs publiques mais
+//     versionnées dans Infisical), email_contact (= MAIL_TO du
+//     service mail). Pas dans le CMS pour pas qu'Audrey les casse.
+//
+// Les composants Astro consomment `SiteSettings` comme un objet
+// unifié, sans savoir d'où chaque champ vient.
+import { fetchSite } from './payload';
 
-export async function getSiteSettings() {
-  let entry = await getEntry('site', 'settings');
-  if (!entry) {
-    // Fallback : prendre la première entrée disponible (en cas d'id différent)
-    const all = await getCollection('site');
-    if (all.length === 0) {
-      throw new Error(
-        "content/site/settings.md introuvable — vérifier content/site/ et src/content/config.ts",
-      );
-    }
-    entry = all[0];
-  }
-  return entry.data;
+/** Forme du global Site retourné par Payload. */
+type PayloadSiteGlobal = {
+  nom_asso?: string;
+  url?: string;
+  accroche_globale?: string;
+  mission?: string;
+  directeur_publication?: string;
+  siren?: string;
+  rna?: string;
+  adresse?: string;
+  reseaux?: {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+  };
+  banderole_urgence?: {
+    active?: boolean;
+    message?: string;
+    couleur?: 'orange' | 'violet' | 'magenta';
+  };
+};
+
+export type SiteSettings = PayloadSiteGlobal & {
+  helloasso_don: string;
+  helloasso_adhesion?: string;
+  helloasso_newsletter?: string;
+  email_contact?: string;
+};
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const data = await fetchSite<PayloadSiteGlobal>();
+  return {
+    ...data,
+    // Champs sensibles / liens externes : depuis l'env (Infisical
+    // en prod). Fallbacks hardcodés pour le dev.
+    helloasso_don:
+      process.env.HELLOASSO_DON ??
+      'https://www.helloasso.com/associations/2mains-de-femmes',
+    helloasso_adhesion: process.env.HELLOASSO_ADHESION,
+    helloasso_newsletter: process.env.HELLOASSO_NEWSLETTER,
+    email_contact: process.env.MAIL_TO ?? 'contact@2mainsdefemmes.org',
+  };
 }
-
-export type SiteSettings = Awaited<ReturnType<typeof getSiteSettings>>;
 
 export type NavItem = {
   label: string;
