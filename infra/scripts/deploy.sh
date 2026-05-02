@@ -86,10 +86,17 @@ grep -q '^PAYLOAD_SECRET=' "$ENV_FILE" || {
 export DATA_DIR="${DATA_DIR:-$HOME/data/2mains}"
 mkdir -p "$DATA_DIR/postgres" "$DATA_DIR/payload-media"
 
-# 5. Pull les images GHCR (tags :latest mis à jour par CI) + up -d.
+# 5. Pull les images GHCR + restart propre.
+#    `down` (sans -v !) avant `up -d` libère les ports et nettoie
+#    le network proprement. Sinon un docker-proxy zombie d'un deploy
+#    précédent qui a crashé peut tenir le port (vu sur 8066 Payload)
+#    et bloquer le `up` avec "port is already allocated". L'absence
+#    de -v est cruciale : -v wiperait les bind mounts (data Postgres,
+#    payload-media). Tradeoff : ~2-5s de downtime entre down et up.
 cd "$DEPLOY_DIR"
 docker compose pull
-docker compose up -d --remove-orphans
+docker compose down
+docker compose up -d
 
 # 6. Attente healthy — chaque container a son healthcheck défini dans
 #    compose.yml, on les sonde via `docker inspect`. Timeout 90s.
