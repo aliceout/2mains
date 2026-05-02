@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
   // server.js mais pas le CLI bin/, donc on ne peut pas appliquer les
   // migrations en prod si on bundle minimal. ~300MB de plus en image,
   // OK pour ce projet.
+
+  // Le reverse proxy nginx VPS route `2mainsdefemmes.org/cms/*` vers
+  // ce container. Sans assetPrefix, les chunks Next.js demandent
+  // `/_next/static/...` à la racine — qui retombe sur le site Astro
+  // (catch-all /) et renvoie du HTML 404. Avec `/cms` en assetPrefix,
+  // les URLs deviennent `/cms/_next/...`, captées par le proxy et
+  // servies correctement par Payload.
+  // basePath n'est PAS utilisé : on a déplacé les routes sous /cms via
+  // la file structure (src/app/cms/(payload)) — basePath cassait des
+  // chemins d'assets à l'époque (cf payloadcms/payload#10534).
+  assetPrefix: '/cms',
   images: {
     localPatterns: [
       {
