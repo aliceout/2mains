@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /**
  * Témoignages (participantes, partenaires, professionnel·les).
  * Miroir Astro `temoignages`. Le corps du témoignage est dans le
@@ -8,7 +10,12 @@ import type { CollectionConfig } from 'payload';
 export const Temoignages: CollectionConfig = {
   slug: 'temoignages',
   labels: { singular: 'Témoignage', plural: 'Témoignages' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'auteur',
     defaultColumns: ['auteur', 'role', 'contexte', 'a_la_une', 'ordre'],

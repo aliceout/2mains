@@ -1,5 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /**
  * Articles de blog. Miroir de la collection Astro `actualites`,
  * avec un body markdown (textarea) pour rester compatible avec le
@@ -8,7 +10,12 @@ import type { CollectionConfig } from 'payload';
 export const Actualites: CollectionConfig = {
   slug: 'actualites',
   labels: { singular: 'Actualité', plural: 'Actualités' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date', 'auteur', 'updatedAt'],

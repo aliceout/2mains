@@ -1,10 +1,17 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /** Partenaires / financeurs. Miroir Astro `partenaires`. */
 export const Partenaires: CollectionConfig = {
   slug: 'partenaires',
   labels: { singular: 'Partenaire', plural: 'Partenaires' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'nom',
     defaultColumns: ['nom', 'type', 'ordre'],

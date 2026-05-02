@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
 import { allBlocks } from '../blocks';
 
 /**
@@ -21,7 +22,12 @@ import { allBlocks } from '../blocks';
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Page', plural: 'Pages' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'updatedAt'],

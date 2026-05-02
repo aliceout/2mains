@@ -1,10 +1,17 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /** Documents (rapports, projet associatif, etc.). Miroir Astro `documents`. */
 export const Documents: CollectionConfig = {
   slug: 'documents',
   labels: { singular: 'Document', plural: 'Documents' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'titre',
     defaultColumns: ['titre', 'categorie', 'date', 'a_paraitre'],

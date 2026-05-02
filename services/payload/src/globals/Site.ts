@@ -1,5 +1,7 @@
 import type { GlobalConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /**
  * Paramètres globaux du site (singleton). Miroir Astro
  * collection `site` (un seul document `settings.md`).
@@ -17,9 +19,10 @@ export const Site: GlobalConfig = {
       'Pas de credentials ici (SMTP, etc.) — ceux-là sont dans Infisical.',
   },
   // Lecture publique : Astro SSR doit pouvoir lire ces settings sans
-  // authentification. Modification : authentifié seulement (default).
+  // authentification. Modification : authentifié seulement.
   access: {
     read: () => true,
+    update: authenticated,
   },
   fields: [
     {

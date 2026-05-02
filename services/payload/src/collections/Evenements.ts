@@ -1,10 +1,17 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /** Événements / agenda. Miroir Astro `evenements`. */
 export const Evenements: CollectionConfig = {
   slug: 'evenements',
   labels: { singular: 'Événement', plural: 'Événements' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'date_debut', 'lieu', 'gratuit'],

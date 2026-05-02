@@ -1,10 +1,17 @@
 import type { CollectionConfig } from 'payload';
 
+import { authenticated } from '../access/authenticated';
+
 /** Membres CA / bénévoles. Miroir Astro `equipe`. */
 export const Equipe: CollectionConfig = {
   slug: 'equipe',
   labels: { singular: 'Membre équipe', plural: 'Équipe' },
-  access: { read: () => true },
+  access: {
+    read: () => true,
+    create: authenticated,
+    update: authenticated,
+    delete: authenticated,
+  },
   admin: {
     useAsTitle: 'nom',
     defaultColumns: ['nom', 'role', 'ordre'],
