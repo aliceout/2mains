@@ -153,11 +153,35 @@ function unwrapArray<T extends string>(
 }
 
 /**
+ * Remplace toutes les valeurs `null` par `undefined`. Payload
+ * sérialise les selects vides en null, mais les defaults ES6
+ * (`{x = 'paper'} = props`) ne s'appliquent qu'à undefined →
+ * les composants Astro plantent sur `null.bg`. Cette normalisation
+ * garantit que les defaults marchent comme avant.
+ */
+function nullsToUndefined<T>(obj: T): T {
+  if (obj === null) return undefined as T;
+  if (Array.isArray(obj)) {
+    return obj.map((v) => nullsToUndefined(v)) as T;
+  }
+  if (typeof obj === 'object' && obj !== null) {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
+      const cleaned = nullsToUndefined(v);
+      if (cleaned !== undefined) out[k] = cleaned;
+    }
+    return out as T;
+  }
+  return obj;
+}
+
+/**
  * Transforme un block Payload (sections[]) pour qu'il ait la shape
  * de l'ancienne section astro:content (discriminated union avec
  * `type` au lieu de `blockType`).
  */
-function transformBlock(b: Record<string, unknown>): Record<string, unknown> {
+function transformBlock(rawBlock: Record<string, unknown>): Record<string, unknown> {
+  const b = nullsToUndefined(rawBlock);
   const { blockType, blockName: _bn, id: _id, ...rest } = b;
   const out: Record<string, unknown> = { ...rest, type: blockType };
 
@@ -256,15 +280,16 @@ export async function fetchPageLegacy(slug: string): Promise<LegacyPage | null> 
     sections?: Array<Record<string, unknown>>;
   }>(slug, 2);
   if (!page) return null;
+  const cleaned = nullsToUndefined(page);
   return {
-    id: page.slug,
-    slug: page.slug,
+    id: cleaned.slug,
+    slug: cleaned.slug,
     data: {
-      title: page.title,
-      description: page.description,
-      noindex: page.noindex,
-      hero: page.hero?.enabled === false ? undefined : page.hero,
-      sections: (page.sections ?? []).map(transformBlock),
+      title: cleaned.title,
+      description: cleaned.description,
+      noindex: cleaned.noindex,
+      hero: cleaned.hero?.enabled === false ? undefined : cleaned.hero,
+      sections: (cleaned.sections ?? []).map(transformBlock),
     },
     body: '',
   };
@@ -299,7 +324,8 @@ export async function fetchCollectionLegacy<T = Record<string, unknown>>(
     { ...options, depth: 2 },
   );
   return docs.map((d) => {
-    const { id, slug, body, ...rest } = d;
+    const cleaned = nullsToUndefined(d);
+    const { id, slug, body, ...rest } = cleaned;
     // Convertit les uploads en URLs.
     const data: Record<string, unknown> = { ...rest };
     for (const key of ['photo', 'cover', 'logo', 'fichier']) {
