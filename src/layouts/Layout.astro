@@ -41,7 +41,7 @@ const showBandero = bandero?.active && bandero.message;
 
 // Adresse affichée en 1 ligne dans settings ; on l'éclate pour le schema.org.
 // Format attendu : "Tiers-lieu La Médiane, 255 rue de Créqui, 69003 Lyon"
-const addressParts = settings.adresse.split(',').map((p) => p.trim());
+const addressParts = (settings.adresse ?? '').split(',').map((p) => p.trim());
 const lastPart = addressParts.at(-1) ?? '';
 const postalMatch = lastPart.match(/^(\d{5})\s+(.+)$/);
 const postalCode = postalMatch?.[1];
@@ -66,9 +66,9 @@ const organizationSchema: Record<string, unknown> = {
     addressCountry: 'FR',
   },
   sameAs: [
-    settings.reseaux.facebook,
-    settings.reseaux.instagram,
-    settings.reseaux.linkedin,
+    settings.reseaux?.facebook,
+    settings.reseaux?.instagram,
+    settings.reseaux?.linkedin,
   ].filter((u): u is string => Boolean(u)),
 };
 

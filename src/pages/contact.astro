@@ -33,27 +33,27 @@ const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
           <h3>Sur les réseaux</h3>
           <ul>
             {
-              settings.reseaux.facebook && (
+              settings.reseaux?.facebook && (
                 <li>
-                  <a href={settings.reseaux.facebook} target="_blank" rel="noopener">
+                  <a href={settings.reseaux?.facebook} target="_blank" rel="noopener">
                     Facebook
                   </a>
                 </li>
               )
             }
             {
-              settings.reseaux.instagram && (
+              settings.reseaux?.instagram && (
                 <li>
-                  <a href={settings.reseaux.instagram} target="_blank" rel="noopener">
+                  <a href={settings.reseaux?.instagram} target="_blank" rel="noopener">
                     Instagram
                   </a>
                 </li>
               )
             }
             {
-              settings.reseaux.linkedin && (
+              settings.reseaux?.linkedin && (
                 <li>
-                  <a href={settings.reseaux.linkedin} target="_blank" rel="noopener">
+                  <a href={settings.reseaux?.linkedin} target="_blank" rel="noopener">
                     LinkedIn
                   </a>
                 </li>

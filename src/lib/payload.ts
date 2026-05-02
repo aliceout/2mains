@@ -250,7 +250,14 @@ function transformBlock(rawBlock: Record<string, unknown>): Record<string, unkno
   return out;
 }
 
-/** Forme legacy d'une page (équivalent CollectionEntry<'pages'>). */
+/** Forme legacy d'une page (équivalent CollectionEntry<'pages'>).
+ *
+ * `hero` et `sections[*]` sont typés `any` parce que le shape précis
+ * dépend du discriminant `type` (23 variantes possibles côté blocks).
+ * Le typage strict est appliqué côté schémas Payload (validation au
+ * write) et côté composants Astro (interface Props par bloc) — la
+ * shape ici n'est qu'un payload dynamique pivot.
+ */
 export type LegacyPage = {
   id: string;
   slug: string;
@@ -258,8 +265,10 @@ export type LegacyPage = {
     title: string;
     description?: string;
     noindex?: boolean;
-    hero?: Record<string, unknown>;
-    sections: Array<Record<string, unknown>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    hero?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sections: Array<any>;
   };
   body: string;
 };
