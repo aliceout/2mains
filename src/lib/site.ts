@@ -1,14 +1,13 @@
 // Helper pour charger les paramètres globaux du site.
 //
-// Combine deux sources :
-//   - Payload (global `site`) : nom_asso, mission, accroche, réseaux,
-//     adresse, banderole d'urgence, etc. Édité par Audrey dans /cms.
-//   - process.env : helloasso_don / newsletter (URLs publiques mais
-//     versionnées dans Infisical), email_contact (= MAIL_TO du
-//     service mail). Pas dans le CMS pour pas qu'Audrey les casse.
+// Tout le contenu éditable (identité, mission, réseaux, URLs HelloAsso,
+// banderole) vient du global Payload `site`. Seul `email_contact` est
+// dérivé de `MAIL_TO` (env), parce que le service mail backend en a
+// besoin de toute façon — pas la peine de dupliquer.
 //
-// Les composants Astro consomment `SiteSettings` comme un objet
-// unifié, sans savoir d'où chaque champ vient.
+// Les composants Astro consomment `SiteSettings` comme un objet unifié,
+// avec un accès plat sur les URLs HelloAsso (compat avec l'ancien code
+// avant migration vers le group Payload).
 import { fetchSite } from './payload';
 
 /** Forme du global Site retourné par Payload. */
@@ -25,6 +24,11 @@ type PayloadSiteGlobal = {
     facebook?: string;
     instagram?: string;
     linkedin?: string;
+  };
+  helloasso?: {
+    don?: string;
+    adhesion?: string;
+    newsletter?: string;
   };
   banderole_urgence?: {
     active?: boolean;
@@ -44,13 +48,13 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   const data = await fetchSite<PayloadSiteGlobal>();
   return {
     ...data,
-    // Champs sensibles / liens externes : depuis l'env (Infisical
-    // en prod). Fallbacks hardcodés pour le dev.
+    // Aplatissement helloasso.* → helloasso_* pour rester compat avec
+    // les composants existants (Header.astro, dons.astro, etc.).
     helloasso_don:
-      process.env.HELLOASSO_DON ??
+      data.helloasso?.don ??
       'https://www.helloasso.com/associations/2mains-de-femmes',
-    helloasso_adhesion: process.env.HELLOASSO_ADHESION,
-    helloasso_newsletter: process.env.HELLOASSO_NEWSLETTER,
+    helloasso_adhesion: data.helloasso?.adhesion,
+    helloasso_newsletter: data.helloasso?.newsletter,
     email_contact: process.env.MAIL_TO ?? 'contact@2mainsdefemmes.org',
   };
 }

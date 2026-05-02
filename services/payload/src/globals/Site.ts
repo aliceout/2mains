@@ -4,18 +4,17 @@ import type { GlobalConfig } from 'payload';
  * Paramètres globaux du site (singleton). Miroir Astro
  * collection `site` (un seul document `settings.md`).
  *
- * Attention : les URLs HelloAsso, SMTP credentials, etc. ne vivent
- * PAS ici — elles sont dans Infisical (env vars du runtime). Ici
- * on stocke uniquement ce qui doit être éditable par Audrey
- * sans avoir à contacter l'équipe technique.
+ * Audrey édite tout ce qui est public et susceptible de changer
+ * (URLs HelloAsso, réseaux sociaux, banderole d'urgence). Les
+ * credentials SMTP restent dans Infisical — pas ici.
  */
 export const Site: GlobalConfig = {
   slug: 'site',
   label: 'Paramètres du site',
   admin: {
     description:
-      'Identité, mission, contact, réseaux. Pas de credentials ici — ' +
-      'voir Infisical pour les SMTP, HelloAsso, etc.',
+      'Identité, mission, contact, réseaux, liens HelloAsso. ' +
+      'Pas de credentials ici (SMTP, etc.) — ceux-là sont dans Infisical.',
   },
   // Lecture publique : Astro SSR doit pouvoir lire ces settings sans
   // authentification. Modification : authentifié seulement (default).
@@ -81,6 +80,37 @@ export const Site: GlobalConfig = {
         { name: 'facebook', type: 'text', required: false },
         { name: 'instagram', type: 'text', required: false },
         { name: 'linkedin', type: 'text', required: false },
+      ],
+    },
+    {
+      name: 'helloasso',
+      type: 'group',
+      label: 'Liens HelloAsso',
+      admin: {
+        description:
+          'URLs publiques des campagnes HelloAsso. Visibles dans les ' +
+          'boutons "Faire un don", "Adhérer", "Newsletter".',
+      },
+      fields: [
+        {
+          name: 'don',
+          type: 'text',
+          required: false,
+          label: 'URL campagne don',
+          defaultValue: 'https://www.helloasso.com/associations/2mains-de-femmes',
+        },
+        {
+          name: 'adhesion',
+          type: 'text',
+          required: false,
+          label: 'URL campagne adhésion',
+        },
+        {
+          name: 'newsletter',
+          type: 'text',
+          required: false,
+          label: 'URL campagne newsletter',
+        },
       ],
     },
     {

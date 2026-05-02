@@ -1431,7 +1431,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Identité, mission, contact, réseaux. Pas de credentials ici — voir Infisical pour les SMTP, HelloAsso, etc.
+ * Identité, mission, contact, réseaux, liens HelloAsso. Pas de credentials ici (SMTP, etc.) — ceux-là sont dans Infisical.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site".
@@ -1450,6 +1450,14 @@ export interface Site {
     facebook?: string | null;
     instagram?: string | null;
     linkedin?: string | null;
+  };
+  /**
+   * URLs publiques des campagnes HelloAsso. Visibles dans les boutons "Faire un don", "Adhérer", "Newsletter".
+   */
+  helloasso?: {
+    don?: string | null;
+    adhesion?: string | null;
+    newsletter?: string | null;
   };
   banderole_urgence?: {
     /**
@@ -1484,6 +1492,13 @@ export interface SiteSelect<T extends boolean = true> {
         facebook?: T;
         instagram?: T;
         linkedin?: T;
+      };
+  helloasso?:
+    | T
+    | {
+        don?: T;
+        adhesion?: T;
+        newsletter?: T;
       };
   banderole_urgence?:
     | T
