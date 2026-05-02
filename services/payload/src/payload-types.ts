@@ -68,6 +68,12 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
+    actualites: Actualite;
+    evenements: Evenement;
+    equipe: Equipe;
+    temoignages: Temoignage;
+    partenaires: Partenaire;
+    documents: Document;
     users: User;
     media: Media;
     'payload-kv': PayloadKv;
@@ -78,6 +84,12 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    actualites: ActualitesSelect<false> | ActualitesSelect<true>;
+    evenements: EvenementsSelect<false> | EvenementsSelect<true>;
+    equipe: EquipeSelect<false> | EquipeSelect<true>;
+    temoignages: TemoignagesSelect<false> | TemoignagesSelect<true>;
+    partenaires: PartenairesSelect<false> | PartenairesSelect<true>;
+    documents: DocumentsSelect<false> | DocumentsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -549,6 +561,155 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actualites".
+ */
+export interface Actualite {
+  id: number;
+  title: string;
+  /**
+   * Identifiant URL, ex: 'lancement-association'.
+   */
+  slug: string;
+  description?: string | null;
+  date: string;
+  auteur?: string | null;
+  cover?: (number | null) | Media;
+  /**
+   * Alt override (sinon on prend l'alt de la media).
+   */
+  cover_alt?: string | null;
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * ## titres, **gras**, *italique*, [liens](url), - listes…
+   */
+  body: string;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "evenements".
+ */
+export interface Evenement {
+  id: number;
+  title: string;
+  slug: string;
+  date_debut: string;
+  date_fin?: string | null;
+  lieu: string;
+  adresse?: string | null;
+  cover?: (number | null) | Media;
+  public: 'tout public' | 'professionnels' | 'femmes concernées' | 'adhérents';
+  gratuit?: boolean | null;
+  inscription_url?: string | null;
+  body?: string | null;
+  /**
+   * Événement de démonstration — badge « À valider ».
+   */
+  fictif?: boolean | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "equipe".
+ */
+export interface Equipe {
+  id: number;
+  /**
+   * URL-safe, ex: 'audrey-relandeau'.
+   */
+  slug: string;
+  nom: string;
+  role: string;
+  photo?: (number | null) | Media;
+  bio_courte?: string | null;
+  linkedin?: string | null;
+  /**
+   * Plus petit = plus haut dans la liste.
+   */
+  ordre?: number | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "temoignages".
+ */
+export interface Temoignage {
+  id: number;
+  slug: string;
+  auteur: string;
+  role?: string | null;
+  contexte: 'participante' | 'partenaire' | 'professionnelle';
+  photo?: (number | null) | Media;
+  citation: string;
+  ordre?: number | null;
+  /**
+   * Si coché, candidat à la mise en avant home (un seul à la fois).
+   */
+  a_la_une?: boolean | null;
+  /**
+   * Marque comme fictif (badge « À valider »).
+   */
+  fictif?: boolean | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partenaires".
+ */
+export interface Partenaire {
+  id: number;
+  slug: string;
+  nom: string;
+  type: 'financeur public' | 'financeur privé' | 'partenaire associatif' | 'réseau';
+  logo?: (number | null) | Media;
+  url?: string | null;
+  description_courte?: string | null;
+  ordre?: number | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents".
+ */
+export interface Document {
+  id: number;
+  slug: string;
+  titre: string;
+  categorie: 'projet associatif' | "rapport d'activité" | 'ressource' | 'communication' | 'présentation';
+  /**
+   * PDF ou autre fichier téléchargeable.
+   */
+  fichier?: (number | null) | Media;
+  /**
+   * Date de publication ou de référence du document.
+   */
+  date?: string | null;
+  description_courte?: string | null;
+  /**
+   * Document annoncé mais pas encore publié.
+   */
+  a_paraitre?: boolean | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -599,6 +760,30 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'actualites';
+        value: number | Actualite;
+      } | null)
+    | ({
+        relationTo: 'evenements';
+        value: number | Evenement;
+      } | null)
+    | ({
+        relationTo: 'equipe';
+        value: number | Equipe;
+      } | null)
+    | ({
+        relationTo: 'temoignages';
+        value: number | Temoignage;
+      } | null)
+    | ({
+        relationTo: 'partenaires';
+        value: number | Partenaire;
+      } | null)
+    | ({
+        relationTo: 'documents';
+        value: number | Document;
       } | null)
     | ({
         relationTo: 'users';
@@ -1048,6 +1233,116 @@ export interface PagesSelect<T extends boolean = true> {
               blockName?: T;
             };
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "actualites_select".
+ */
+export interface ActualitesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  description?: T;
+  date?: T;
+  auteur?: T;
+  cover?: T;
+  cover_alt?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  body?: T;
+  draft?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "evenements_select".
+ */
+export interface EvenementsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  date_debut?: T;
+  date_fin?: T;
+  lieu?: T;
+  adresse?: T;
+  cover?: T;
+  public?: T;
+  gratuit?: T;
+  inscription_url?: T;
+  body?: T;
+  fictif?: T;
+  draft?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "equipe_select".
+ */
+export interface EquipeSelect<T extends boolean = true> {
+  slug?: T;
+  nom?: T;
+  role?: T;
+  photo?: T;
+  bio_courte?: T;
+  linkedin?: T;
+  ordre?: T;
+  draft?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "temoignages_select".
+ */
+export interface TemoignagesSelect<T extends boolean = true> {
+  slug?: T;
+  auteur?: T;
+  role?: T;
+  contexte?: T;
+  photo?: T;
+  citation?: T;
+  ordre?: T;
+  a_la_une?: T;
+  fictif?: T;
+  draft?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partenaires_select".
+ */
+export interface PartenairesSelect<T extends boolean = true> {
+  slug?: T;
+  nom?: T;
+  type?: T;
+  logo?: T;
+  url?: T;
+  description_courte?: T;
+  ordre?: T;
+  draft?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "documents_select".
+ */
+export interface DocumentsSelect<T extends boolean = true> {
+  slug?: T;
+  titre?: T;
+  categorie?: T;
+  fichier?: T;
+  date?: T;
+  description_courte?: T;
+  a_paraitre?: T;
+  draft?: T;
   updatedAt?: T;
   createdAt?: T;
 }
