@@ -1,21 +1,34 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import DraftBadge from '../../components/DraftBadge.astro';
 import { filterPublished } from '../../lib/drafts';
+import { fetchCollectionLegacy } from '../../lib/payload';
 
-const posts = filterPublished(await getCollection('actualites')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+type Post = {
+  title: string;
+  description?: string;
+  date: string;
+  auteur?: string;
+  tags?: Array<{ tag: string }> | string[];
+  draft?: boolean;
+};
+const posts = filterPublished(
+  await fetchCollectionLegacy<Post>('actualites', { sort: '-date' }),
 );
 
-function formatDate(d: Date): string {
+function formatDate(s: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-  }).format(d);
+  }).format(new Date(s));
+}
+
+function tagsAsStrings(tags: Post['tags']): string[] {
+  if (!tags) return [];
+  return tags.map((t) => (typeof t === 'string' ? t : t.tag));
 }
 ---
 
@@ -47,7 +60,7 @@ function formatDate(d: Date): string {
                 {p.data.auteur && <> · {p.data.auteur}</>}
               </p>
               <h2 class="mt-2 mb-2 text-xl font-bold">
-                <a href={`/actualites/${p.id}`} class="hover:text-orange">
+                <a href={`/actualites/${p.slug}`} class="hover:text-orange">
                   {p.data.title}
                 </a>
               </h2>
@@ -56,9 +69,9 @@ function formatDate(d: Date): string {
                   {p.data.description}
                 </p>
               )}
-              {p.data.tags.length > 0 && (
+              {tagsAsStrings(p.data.tags).length > 0 && (
                 <div class="mt-auto flex flex-wrap gap-2 text-xs">
-                  {p.data.tags.map((t) => (
+                  {tagsAsStrings(p.data.tags).map((t) => (
                     <span class="rounded-full bg-cream px-2 py-0.5">#{t}</span>
                   ))}
                 </div>
