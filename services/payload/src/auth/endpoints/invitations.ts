@@ -118,7 +118,6 @@ const inviteEndpoint: Endpoint = {
           password: tmpPassword,
           role,
           status: 'pending',
-          twoFactorMethod: 'email',
           displayName,
           invitation: {
             tokenHash,
@@ -201,8 +200,12 @@ const acceptInvitationEndpoint: Endpoint = {
     const rl = consume(RATE_PROFILES.login, ip);
     if (!rl.ok) return errorResponse('Trop de tentatives, réessayez plus tard.', 429);
 
-    const body = await readJsonBody<{ password?: string }>(req);
+    const body = await readJsonBody<{ password?: string; displayName?: string }>(req);
     const password = body?.password;
+    const displayName = body?.displayName?.trim();
+    if (!displayName) {
+      return errorResponse('Le prénom est obligatoire.', 400);
+    }
     if (!password || password.length < 12) {
       return errorResponse('Le mot de passe doit faire au moins 12 caractères.', 400);
     }
@@ -234,6 +237,7 @@ const acceptInvitationEndpoint: Endpoint = {
       req,
       data: {
         password,
+        displayName,
         status: 'active',
         invitation: {
           tokenHash: null,

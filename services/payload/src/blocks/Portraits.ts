@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbPortraits } from './_thumbnails';
 
 export const Portraits: Block = {
   slug: 'portraits',
   labels: { singular: 'Portraits (grille personnes)', plural: 'Portraits' },
+  imageURL: thumbPortraits,
+  imageAltText: 'Aperçu : 4 portraits ronds avec nom dessous',
   fields: [
     titreField,
     fondField,

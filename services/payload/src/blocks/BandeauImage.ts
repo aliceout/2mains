@@ -1,8 +1,12 @@
 import type { Block } from 'payload';
 
+import { thumbBandeauImage } from './_thumbnails';
+
 export const BandeauImage: Block = {
   slug: 'bandeau-image',
   labels: { singular: 'Bandeau image plein écran', plural: 'Bandeaux image' },
+  imageURL: thumbBandeauImage,
+  imageAltText: 'Aperçu : grande image plein écran avec texte en surimpression',
   fields: [
     {
       name: 'image',

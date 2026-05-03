@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbTextePhoto } from './_thumbnails';
 
 export const TextePhoto: Block = {
   slug: 'texte-photo',
   labels: { singular: 'Texte + photo', plural: 'Blocs texte + photo' },
+  imageURL: thumbTextePhoto,
+  imageAltText: 'Aperçu : photo à gauche, paragraphe à droite',
   fields: [
     titreField,
     fondField,

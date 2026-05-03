@@ -1,439 +1,84 @@
 # 2mains de femmes — site web
 
-Site vitrine de l'association lyonnaise [2mains de femmes](https://2mainsdefemmes.org).
-Lutte contre l'isolement corporel des femmes par le toucher relationnel.
-
-- **Stack** : Astro 6 SSR (Node) + Tailwind + Payload CMS 3 (Postgres)
-- **Hébergement** : self-host Docker (4 containers : `db`, `payload`, `site`, `mail`)
-- **Contenu** : édité via Payload sous `/cms/admin`, persisté en Postgres
-- **Dons** : externalisés sur HelloAsso, pas de paiement intégré
+Site vitrine de l'association lyonnaise [2mains de femmes](https://2mainsdefemmes.org). Astro 6 SSR + Tailwind + Payload CMS 3 + Postgres, self-hosté en Docker.
 
 ---
 
-## Sommaire
+## Démarrage en local
 
-1. [Démarrage rapide](#démarrage-rapide)
-2. [Structure du projet](#structure-du-projet)
-3. [Stack technique](#stack-technique)
-4. [Développement local](#développement-local)
-5. [Gestion du contenu](#gestion-du-contenu)
-6. [Déploiement serveur](#déploiement-serveur)
-7. [Accessibilité, SEO, RGPD](#accessibilité-seo-rgpd)
-8. [Charte graphique](#charte-graphique)
-9. [Conventions](#conventions)
-10. [Ce qui reste à faire](#ce-qui-reste-à-faire)
-
----
-
-## Démarrage rapide
-
-La stack dev = 3 process : Postgres (Docker), Payload (Next.js sur 3001),
-Astro (Vite SSR sur 4321). Astro fetch Payload server-side, Payload tape
-Postgres. Il faut donc lancer les trois.
+Prérequis : Node 22+, pnpm 10+, Docker.
 
 ```bash
-# Prérequis : Node 22+, pnpm 10+, Docker
+# 1. Récupérer les secrets dev dans .env (via DvSetup VS Code ou infisical CLI)
 
-# 1. Postgres en arrière-plan (data persistée dans data/postgres-dev/)
-docker compose -f docker-compose.dev.yml up -d
-
-# 2. Deps : 2 pnpm install (racine = Astro, services/payload = Payload)
+# 2. Installer les deps (1x par service)
 pnpm install
 pnpm --dir services/payload install
+pnpm --dir services/mail install
 
-# 3. .env à la racine (copier .env.example puis remplir, ou fetch
-#    depuis Infisical — cf section Déploiement)
-cp .env.example .env
+# 3. Postgres + Mailpit en arrière-plan
+docker compose -f compose.dev.yml up -d
 
-# 4. Payload dans un terminal
-pnpm dev:api   # → http://localhost:3001/cms/admin
-
-# 5. Astro dans un autre terminal
-pnpm dev:web   # → http://localhost:4321
+# 4. Lancer (un terminal par process)
+pnpm dev:api    # admin Payload   → http://localhost:3001/cms/admin
+pnpm dev:web    # site Astro      → http://localhost:4321
+pnpm dev:mail   # form contact    → http://localhost:3000  (optionnel)
 ```
 
-`dev:api` et `dev:web` se lancent depuis la racine du repo (pas besoin
-de `cd services/payload`). `pnpm dev` (sans suffixe) reste un alias de
-`dev:web` pour rétrocompat.
-
-Pour la prod : voir [Déploiement serveur](#déploiement-serveur).
+Mailpit (capture les mails envoyés en local) : <http://localhost:8025>.
 
 ---
 
-## Structure du projet
+## Déploiement en prod
+
+Push sur `main` → CI build les images Docker → push GHCR → webhook VPS → `infra/scripts/deploy.sh` fetch les secrets Infisical (env `prod`), pull les nouvelles images, `compose up -d`. Aucun build sur le serveur.
+
+Données persistantes en bind mount sous `$HOME/data/2mains/` (Postgres + uploads Payload), backup `restic` cron côté infra VPS.
+
+Voir [`compose.yml`](compose.yml) et [`infra/scripts/deploy.sh`](infra/scripts/deploy.sh) pour le détail.
+
+---
+
+## Structure
 
 ```
-2mains/
-├── src/                       # App Astro SSR
-│   ├── pages/                 # Routes (1 fichier = 1 URL)
-│   ├── layouts/               # Layout global (head, header, footer)
-│   ├── components/            # Composants Astro réutilisables (blocs CMS)
-│   ├── lib/payload.ts         # Client REST Payload + helpers legacy
-│   ├── lib/site.ts            # Nav + paramètres site (consomme global Site Payload)
-│   └── styles/global.css      # Tailwind + tokens charte + @font-face
-├── services/
-│   ├── payload/               # Service Payload CMS (Next.js + Postgres)
-│   │   ├── src/collections/   # 8 collections + 1 global Site
-│   │   ├── src/blocks/        # 23 blocs Payload (miroir des sections Astro)
-│   │   ├── src/migrations/    # Migrations SQL générées (payload migrate:create)
-│   │   └── scripts/migrate-to-payload.ts  # Import one-shot d'un dump markdown
-│   └── mail/                  # Backend formulaire de contact (Node + nodemailer)
-├── public/                    # Assets statiques servis par Astro
-│   ├── brand/                 # Logos et pictos SVG
-│   └── fonts/                 # Nunito self-hostée
-├── infra/scripts/deploy.sh    # Déploiement VPS (Infisical → .env → compose up)
-├── compose.yml                # Compose prod (4 services sur réseau Docker interne)
-├── docker-compose.dev.yml     # Compose dev (juste Postgres pour Payload local)
-├── Dockerfile.site            # Image Astro Node SSR
-├── .github/workflows/         # CI : check + build des 3 images GHCR
-├── brand/, references/        # Sources brand + docs asso
-├── 2mains-site-plan.md, ROADMAP.md, DRAFTS.md
-└── README.md
+src/                       App Astro SSR (pages, components, layouts)
+services/
+├── payload/               CMS Payload (Next.js + Postgres) → /cms/admin
+└── mail/                  Backend du formulaire /contact (Hono + nodemailer)
+public/                    Assets statiques + fonts Nunito self-hostées
+brand/                     Logos & pictos SVG (sources)
+infra/scripts/deploy.sh    Script de déploiement VPS
+compose.yml                Compose prod (db, payload, site, mail)
+compose.dev.yml            Compose dev (postgres + mailpit)
 ```
 
 ---
 
-## Stack technique
+## Contenu
 
-| Outil                                                  | Rôle                                       |
-| ------------------------------------------------------ | ------------------------------------------ |
-| [Astro 6](https://astro.build/)                        | Front SSR Node, fetch Payload server-side  |
-| [@astrojs/node](https://docs.astro.build/en/guides/integrations-guide/node/) | Adapter Node standalone (compose `site`) |
-| [Tailwind CSS v4](https://tailwindcss.com/)            | Styling via `@theme` tokens                |
-| [Payload CMS 3](https://payloadcms.com/)               | Admin + REST API sous `/cms/*` (Next.js)   |
-| [Postgres 16](https://www.postgresql.org/)             | DB Payload, alpine + bind mount            |
-| [Nunito](https://fonts.google.com/specimen/Nunito)     | Typo unique, self-hostée                   |
-| TypeScript strict                                      | Types sur toute la codebase                |
-| pnpm 10 + Node 22                                      | Package manager + runtime                  |
-| GitHub Actions + GHCR                                  | CI : check + build des 3 images Docker     |
-| [Infisical](https://infisical.com/)                    | Secrets management (creds DB, SMTP, etc.)  |
+Édité par Audrey via **`/cms/admin`**, persisté en Postgres, lu par Astro en SSR à chaque requête (pas de rebuild, modifs visibles immédiatement).
 
-Aucun Google Fonts. Aucun tracker. Aucun cookie de suivi.
+8 collections Payload (`pages`, `actualites`, `evenements`, `equipe`, `temoignages`, `partenaires`, `documents`, `media`) + 1 global `site`. Schéma dans [`services/payload/src/collections/`](services/payload/src/collections/).
+
+Les pages éditoriales sont composées de **blocs** (23 types : Prose, Cartes, Citation, CTA, FAQ, Galerie, Timeline, Témoignages, etc.). Chaque bloc Payload a son composant Astro miroir dans [`src/components/`](src/components/), dispatchés par [`src/components/PageRenderer.astro`](src/components/PageRenderer.astro).
+
+**Comptes admin** : invitations par mail uniquement (lien valable 7 jours, 2FA email par défaut, TOTP en option). Le premier user créé sur une base neuve devient `root` automatiquement au boot suivant.
+
+**Contenu provisoire** : entouré du composant `<Draft reason="…">`, audit auto sur la page `/status`.
 
 ---
 
-## Développement local
+## Charte
 
-### Prérequis
+Couleurs (cf [`src/styles/global.css`](src/styles/global.css)) : orange `#EC6A2C`, violet `#695EA3`, beige `#F9E8D8`, magenta `#DD057E`, vert `#A2D1B0`, bleu `#00607E`, paper `#FFFFFF`, ink `#1A1A1A`.
 
-- **Node 22+** (`node -v`)
-- **pnpm 10+** (`pnpm -v` ; sinon : `npm i -g pnpm`)
-- **Docker + Docker Compose** (pour Postgres en local)
+Typo : Nunito uniquement (400, 400i, 600, 700), self-hostée.
 
-### Commandes (toutes lançables depuis la racine)
-
-```bash
-# Web (Astro) — alias historiques sans suffixe + alias :web
-pnpm install          # installe les deps Astro
-pnpm dev              # = dev:web — serveur dev hot reload → http://localhost:4321
-pnpm dev:web          # idem
-pnpm build            # = build:web — génère dist/
-pnpm build:web        # idem
-pnpm preview          # sert dist/ en local pour vérifier
-pnpm check            # type-check Astro (TS strict)
-pnpm format           # Prettier sur src/ + fichiers racine
-pnpm lint             # ESLint sur src/
-
-# API (Payload) — proxys vers services/payload/
-pnpm --dir services/payload install              # installe les deps Payload (à faire 1x)
-pnpm dev:api                                     # admin + API → http://localhost:3001/cms/admin
-pnpm build:api                                   # build Next.js (prod)
-pnpm --dir services/payload generate:types       # régénère src/payload-types.ts
-pnpm --dir services/payload generate:importmap   # régénère importMap.js (custom components)
-pnpm --dir services/payload migrate              # joue les migrations SQL
-```
-
-### Docker dev (Postgres + Mailpit)
-
-Un seul `up -d` démarre les deux conteneurs nécessaires en local :
-
-```bash
-docker compose -f docker-compose.dev.yml up -d   # Postgres + Mailpit
-docker compose -f docker-compose.dev.yml down    # arrête (data Postgres conservée)
-```
-
-- **Postgres** sur `localhost:5432`, data persistée dans `./data/postgres-dev/`
-- **Mailpit** = SMTP catch-all + UI web pour inspecter les mails envoyés
-  par Payload (invitations, OTP 2FA) et le service `mail/` (formulaire
-  contact) sans qu'aucun mail ne sorte sur internet.
-  - SMTP : `localhost:1025` (auth quelconque acceptée)
-  - UI : <http://localhost:8025>
-  - Mails ephemeral, vidés à chaque restart (voulu)
-
-Pour brancher tes deux services dessus, override les `SMTP_*` du `.env`
-avec les valeurs Mailpit (cf bloc dans `.env.example`).
-
-### Service mail (formulaire contact)
-
-Le formulaire `/contact` POST sur le service `mail/`. Sans lui, `/contact`
-renvoie 503 mais le reste du site fonctionne. Pour le lancer en local :
-
-```bash
-pnpm --dir services/mail install   # à faire 1x
-pnpm dev:mail                      # → http://localhost:3000
-```
-
-Note : Payload utilise son **propre** transport SMTP (`@payloadcms/email-nodemailer`)
-pour les mails d'auth (invitations, OTP 2FA). Les variables `SMTP_*` du `.env`
-servent aux deux services — donc Mailpit en dev capte les mails des deux.
-
-### Pages disponibles en local
-
-28 pages + `/status` (audit interne) + `/404`. Toute l'arborescence option 1 est déjà
-scaffoldée avec du contenu.
+Sources brand dans [`brand/`](brand/), copies runtime dans [`public/brand/`](public/brand/).
 
 ---
 
-## Gestion du contenu
+## Sobriété, accessibilité, RGPD
 
-### Contenu fictif — le système `<Draft>`
-
-Tout contenu **inventé, provisoire ou à valider** est entouré du composant
-`<Draft reason="...">`. Ça produit :
-
-- un **ruban orange "À valider"** visible sur la page,
-- une **bordure pointillée orange** autour du bloc,
-- un attribut `data-draft="..."` dans le HTML (utile pour audit).
-
-Trois manières de voir ce qui reste à valider :
-
-1. **La page `/status`** — liste automatique de tous les `<Draft>` du site, avec raison.
-2. **`DRAFTS.md`** — audit humain à la racine.
-3. **En ligne de commande** :
-   ```bash
-   grep -rn "<Draft" src/pages
-   ```
-
-Pour valider un bloc : remplacer le contenu à l'intérieur, retirer le wrapper `<Draft>`,
-retirer l'import s'il n'est plus utilisé.
-
-### Contenu géré via CMS
-
-Payload est configuré dans [`services/payload/src/payload.config.ts`](services/payload/src/payload.config.ts)
-avec **8 collections + 1 global** :
-
-| Collection / Global | À quoi ça sert                                          |
-| ------------------- | ------------------------------------------------------- |
-| `pages`             | Pages éditoriales (composées de blocs)                  |
-| `actualites`        | Articles de blog                                        |
-| `evenements`        | Agenda                                                  |
-| `equipe`            | Membres du CA                                           |
-| `temoignages`       | Paroles recueillies                                     |
-| `partenaires`       | Financeurs et partenaires associatifs                   |
-| `documents`         | PDFs téléchargeables                                    |
-| `media`             | Uploads (images, fichiers) — bind mount payload-media/  |
-| `users`             | Comptes admin                                           |
-| Global `site`       | Paramètres globaux (identité, réseaux, HelloAsso…)      |
-
-L'admin est servie sur **`/cms/admin`**. Audrey crée un compte au premier accès,
-puis édite le contenu — pas de commit GitHub, pas d'OAuth proxy, pas de rebuild
-CI. Tout est en Postgres, le site Astro SSR consulte Payload à chaque requête
-via le réseau Docker interne.
-
-### Blocs Payload
-
-Les pages sont composées en empilant des **blocs** (équivalents des sections
-Astro). 23 types disponibles dans
-[`services/payload/src/blocks/`](services/payload/src/blocks/) — Prose, Cartes,
-Valeurs, Stats, Citation, CTA, Étapes, FAQ, Galerie, Portraits, Timeline,
-Témoignages, etc. Chaque bloc Payload a son composant Astro miroir dans
-[`src/components/`](src/components/), et
-[`src/components/PageRenderer.astro`](src/components/PageRenderer.astro) fait
-le dispatch.
-
-Pour ajouter un nouveau type de bloc :
-1. Créer le bloc Payload (`services/payload/src/blocks/MonBloc.ts`)
-2. L'ajouter à `allBlocks` dans `services/payload/src/blocks/index.ts`
-3. Régénérer les migrations : `cd services/payload && pnpm payload migrate:create`
-4. Créer le composant Astro (`src/components/MonBloc.astro`)
-5. Ajouter le case dans `PageRenderer.astro`
-
-### Flux de publication
-
-```
-┌──────────────┐        ┌────────────────┐        ┌──────────────┐
-│  Audrey      │──édite│ /cms/admin     │──save▶│  Postgres    │
-│  navigateur  │  ───── │ (Payload)      │        │  (DB)        │
-└──────────────┘        └────────────────┘        └──────┬───────┘
-                                                         │
-                                                         │ fetch SSR
-                                                         ▼
-┌──────────────┐                                  ┌──────────────┐
-│  visiteur·se │◀──── HTML rendu à la demande────│ Astro SSR    │
-│  site live   │                                  │ (Node)       │
-└──────────────┘                                  └──────────────┘
-```
-
-Pas de cache statique. Les modifs Audrey sont visibles **immédiatement**
-après un Save — pas de rebuild, pas de délai CI. Trade-off : chaque requête
-visiteur tape Payload (latence ~50ms via réseau Docker interne, négligeable).
-
-### Quelles pages sont branchées à quelle collection
-
-| Collection    | Pages qui l'affichent                       |
-| ------------- | ------------------------------------------- |
-| `pages`       | `/`, `/qui-sommes-nous`, `/structures`, etc. (consommées par PageRenderer) |
-| `actualites`  | `/actualites`, `/actualites/<slug>`         |
-| `evenements`  | `/agenda`, `/agenda/<slug>.ics`             |
-| `equipe`      | bloc `equipe` dans n'importe quelle page    |
-| `documents`   | `/documents`                                |
-| `partenaires` | `/financeurs`                               |
-| `temoignages` | bloc `temoignages` dans n'importe quelle page |
-
-Côté code, le client REST Payload est dans
-[`src/lib/payload.ts`](src/lib/payload.ts) avec des helpers `fetchPageLegacy`,
-`fetchCollectionLegacy`, `fetchSite`, etc.
-
----
-
-## Déploiement serveur
-
-**Principe** : push sur `main` → CI build les 3 images Docker → push sur GHCR
-→ webhook côté VPS → `infra/scripts/deploy.sh` qui pull + up -d. Aucune source
-sur le serveur, aucun build dessus.
-
-### Topologie prod
-
-4 containers sur réseau Docker interne, port-forwardés sur 127.0.0.1 ; reverse
-proxy nginx du VPS (hors compose) termine TLS et dispatche par préfixe :
-
-| Service   | Image                                       | Port host       | Route nginx     |
-| --------- | ------------------------------------------- | --------------- | --------------- |
-| `db`      | `postgres:16-alpine`                        | (interne)       | —               |
-| `payload` | `ghcr.io/aliceout/2mains-payload:latest`    | `127.0.0.1:8066`| `/cms/*`        |
-| `site`    | `ghcr.io/aliceout/2mains-site:latest`       | `127.0.0.1:8064`| `/*` (catch-all)|
-| `mail`    | `ghcr.io/aliceout/2mains-mail:latest`       | `127.0.0.1:8065`| `/api/*`        |
-
-Bind mounts data sous `$HOME/data/2mains/` (fixé par `deploy.sh`) :
-
-```
-$HOME/data/2mains/postgres/      ← /var/lib/postgresql/data (Postgres)
-$HOME/data/2mains/payload-media/ ← /app/media (uploads Payload)
-```
-
-### Configuration côté VPS
-
-Le script [`infra/scripts/deploy.sh`](infra/scripts/deploy.sh) attend :
-- Le repo cloné sur le VPS (par convention `/var/www/2mains/`)
-- Un fichier `~/.config/infisical/2mains.env` avec les creds Universal Auth
-  Machine Identity de l'instance Infisical self-hosted (5 vars :
-  `INFISICAL_API_URL`, `INFISICAL_PROJECT_ID`, `INFISICAL_CLIENT_ID`,
-  `INFISICAL_CLIENT_SECRET`, `INFISICAL_ENV`)
-- Docker + Docker Compose v2 installés
-
-Le script :
-1. Source les creds bootstrap
-2. Login Infisical → token éphémère
-3. Export les secrets app (POSTGRES_*, PAYLOAD_*, SMTP_*, etc.) depuis les
-   4 sous-paths `/payload`, `/postgres`, `/smtp`, `/web` vers `.env` racine
-   (chmod 600)
-4. `docker compose pull && down && up -d`
-5. Attend que les 4 containers soient healthy (timeout 90s)
-
-### Webhook GitHub → VPS
-
-Un GitHub Webhook sur `https://webhooks.backlice.dev/webhooks` déclenche
-`deploy.sh` à chaque `workflow_run` complété en succès sur la branche `main`.
-Le secret HMAC est partagé entre GitHub Settings → Webhooks et la conf
-Infisical `/services/webhooks/2mains/` côté cloud.
-
-### Reverse proxy nginx (côté VPS, hors compose)
-
-Le vhost `2mainsdefemmes.org` côté VPS dispatche en proxy_pass :
-
-```nginx
-location /cms/  { proxy_pass http://127.0.0.1:8066; ... }
-location /api/  { proxy_pass http://127.0.0.1:8065; ... }
-location /      { proxy_pass http://127.0.0.1:8064; ... }
-```
-
-Plus TLS Let's Encrypt via certbot, headers de sécu standards. La conf est
-maintenue côté repo `vps-install` (out-of-scope ici).
-
-### Premier déploiement / cold start
-
-Au premier `up -d`, la DB est vide. Au boot du container `payload`, le CMD
-applique d'abord les migrations (`payload migrate`) puis lance `next start` —
-les tables sont créées d'elles-mêmes. Pour peupler avec du contenu existant,
-voir le script
-[`services/payload/scripts/migrate-to-payload.ts`](services/payload/scripts/migrate-to-payload.ts).
-
-### Backups
-
-Les bind mounts sous `$HOME/data/2mains/` sont snapshottés via `restic` côté
-infra VPS (cron). Le repo git est lui-même un backup du code/config — pas du
-contenu, qui vit en Postgres.
-
-## Accessibilité, SEO, RGPD
-
-- **WCAG AA** comme objectif : contraste, focus visibles, skip link, `lang="fr"`,
-  balisage sémantique, navigation clavier, `prefers-reduced-motion` respecté.
-- **Sitemap auto** via `@astrojs/sitemap`.
-- **Open Graph** + métas par page via le frontmatter `<Layout>`.
-- **Pas de Google Analytics**, pas de tracker, pas de cookie tiers.
-- **Fonts self-hostées** (aucun appel à fonts.googleapis.com).
-- **Formulaire contact** : honeypot anti-spam basique, pas de base de données des
-  messages.
-- **Mentions légales** et **Politique de confidentialité** présentes.
-
----
-
-## Charte graphique
-
-Couleurs (tokens Tailwind dans `src/styles/global.css`) :
-
-| Token    | Hex       | Usage                  |
-| -------- | --------- | ---------------------- |
-| `orange` | `#EC6A2C` | primaire, CTA          |
-| `violet` | `#695EA3` | primaire, navigation   |
-| `beige`  | `#F9E8D8` | fond doux              |
-| `magenta`| `#DD057E` | accent fort, alertes   |
-| `vert`   | `#A2D1B0` | accent calme, succès   |
-| `bleu`   | `#00607E` | accent profond         |
-| `paper`  | `#FFFFFF` | fond clair             |
-| `ink`    | `#1A1A1A` | texte noir doux        |
-
-Typographie : **Nunito** uniquement (regular 400, italic 400, semibold 600, bold 700).
-Pas de variante typographique supplémentaire — jouer sur couleur + graisse.
-
-Logos et pictos SVG dans `brand/logos/` et `brand/pictos/` (sources), copiés à `/public/brand/`
-pour le runtime.
-
----
-
-## Conventions
-
-- **TypeScript strict** partout.
-- **Composants Astro** pour les blocs réutilisables (`src/components/`).
-- **Pas de CSS global hors de `global.css`** — préférer Tailwind + `<style>` scopé.
-- **Images** : toujours `alt` (champ requis côté CMS).
-- **Liens externes** : `target="_blank" rel="noopener"`.
-- **Commits** : libres (pas de Conventional Commits imposé), en français de préférence
-  vu que le contenu est en français.
-- **Contenu fictif** : systématiquement wrappé avec `<Draft reason="...">` — la page
-  `/status` l'audite automatiquement.
-
----
-
-## Ce qui reste à faire
-
-Grand brouillon non-exhaustif, à tenir à jour :
-
-**Bloquant pour mise en ligne** :
-- [ ] Récupérer SIREN et numéro RNA de l'asso (mentions légales)
-- [ ] Décider identité hébergeur affichée publiquement
-- [ ] Tests d'accessibilité (axe, Lighthouse ≥ 90)
-- [ ] Décommissionner le WordPress existant
-
-**Contenu à valider / remplacer** (cf. `/status` et `DRAFTS.md`) :
-- [ ] 8 témoignages fictifs → vraies paroles (via `/cms/admin`)
-- [ ] 4 événements agenda à valider ou remplacer
-- [ ] Remplacer ou retirer les citations isolées (home + `/femmes`)
-
-**Confort / plus tard** :
-- [ ] Page `/demo` listant tous les blocs (pour revue visuelle)
-- [ ] Newsletter (si décision positive)
-- [ ] Version EN pour bailleurs internationaux
-- [ ] Version "lecture facile"
-
-Voir `ROADMAP.md` pour le plan complet.
+WCAG AA visé. Aucun Google Fonts, aucun tracker, aucun cookie tiers. Sitemap auto, OG par page, mentions légales + politique confidentialité présentes. Formulaire contact avec honeypot, pas de stockage des messages.

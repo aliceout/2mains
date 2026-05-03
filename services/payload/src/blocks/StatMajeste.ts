@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbStatMajeste } from './_thumbnails';
 
 export const StatMajeste: Block = {
   slug: 'stat-majeste',
   labels: { singular: 'Statistique en majesté', plural: 'Stats en majesté' },
+  imageURL: thumbStatMajeste,
+  imageAltText: 'Aperçu : un grand chiffre seul, en majesté, avec légende',
   fields: [
     titreField,
     fondField,

@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { couleurField, ctaFields, fondField, titreField } from './_shared';
+import { thumbFormats } from './_thumbnails';
 
 export const Formats: Block = {
   slug: 'formats',
   labels: { singular: 'Formats (cartes riches)', plural: 'Formats' },
+  imageURL: thumbFormats,
+  imageAltText: 'Aperçu : 2 grandes cartes avec puces et bouton',
   fields: [
     titreField,
     fondField,

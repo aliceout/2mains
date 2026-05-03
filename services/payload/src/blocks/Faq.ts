@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbFaq } from './_thumbnails';
 
 export const Faq: Block = {
   slug: 'faq',
   labels: { singular: 'FAQ (accordéon)', plural: 'FAQ (accordéon)' },
+  imageURL: thumbFaq,
+  imageAltText: 'Aperçu : 3 lignes question/réponse en accordéon',
   fields: [
     titreField,
     fondField,

@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbLettre } from './_thumbnails';
 
 export const Lettre: Block = {
   slug: 'lettre',
   labels: { singular: 'Lettre adressée', plural: 'Lettres adressées' },
+  imageURL: thumbLettre,
+  imageAltText: 'Aperçu : feuille de lettre avec signature',
   fields: [
     titreField,
     fondField,

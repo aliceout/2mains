@@ -1,12 +1,12 @@
 'use client';
 
-// Vue de login custom : remplace le formulaire natif Payload pour
-// orchestrer le flux email/mdp → 2FA → admin.
-//
-// On reste sur les classes CSS Payload (form, btn, input) pour héritier
-// du theming admin. Pas de style custom, on s'intègre.
+// Login en deux étapes : email/mdp puis code 2FA. Utilise les primitives
+// @payloadcms/ui pour suivre le thème admin (light/dark/auto).
 
 import React, { useState } from 'react';
+import { Banner, Button } from '@payloadcms/ui';
+
+import { inputStyle, stack } from './styles';
 
 type Step = 'credentials' | 'two-factor';
 
@@ -101,22 +101,26 @@ export default function LoginView(): React.ReactElement {
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '64px auto', padding: '0 16px' }}>
-      <h1 style={{ fontSize: 22, marginBottom: 24 }}>Connexion</h1>
-      {error && (
-        <div style={{ padding: 12, marginBottom: 16, background: '#fee', color: '#900', borderRadius: 6, fontSize: 14 }}>
-          {error}
-        </div>
-      )}
-      {info && !error && (
-        <div style={{ padding: 12, marginBottom: 16, background: '#eef5ff', color: '#114', borderRadius: 6, fontSize: 14 }}>
-          {info}
-        </div>
-      )}
+    <div
+      style={{
+        ...stack,
+        maxWidth: 'calc(var(--base) * 20)',
+        margin: 'calc(var(--base) * 3) auto',
+        padding: 'var(--base)',
+        color: 'var(--theme-text)',
+        background: 'var(--theme-elevation-50)',
+        borderRadius: 4,
+      }}
+    >
+      <h1 style={{ margin: 0 }}>Connexion</h1>
+
+      {error && <Banner type="error">{error}</Banner>}
+      {info && !error && <Banner type="info">{info}</Banner>}
+
       {step === 'credentials' && (
-        <form onSubmit={submitCredentials}>
-          <div style={{ marginBottom: 16 }}>
-            <label htmlFor="login-email" style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>Email</label>
+        <form onSubmit={submitCredentials} style={stack}>
+          <div className="field-type">
+            <label htmlFor="login-email" className="field-label">Email</label>
             <input
               id="login-email"
               type="email"
@@ -124,11 +128,11 @@ export default function LoginView(): React.ReactElement {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+              style={inputStyle}
             />
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <label htmlFor="login-password" style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>Mot de passe</label>
+          <div className="field-type">
+            <label htmlFor="login-password" className="field-label">Mot de passe</label>
             <input
               id="login-password"
               type="password"
@@ -136,22 +140,19 @@ export default function LoginView(): React.ReactElement {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+              style={inputStyle}
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
-          >
+          <Button type="submit" disabled={loading}>
             {loading ? 'Connexion…' : 'Se connecter'}
-          </button>
+          </Button>
         </form>
       )}
+
       {step === 'two-factor' && (
-        <form onSubmit={submitTwoFactor}>
-          <div style={{ marginBottom: 16 }}>
-            <label htmlFor="login-code" style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>
+        <form onSubmit={submitTwoFactor} style={stack}>
+          <div className="field-type">
+            <label htmlFor="login-code" className="field-label">
               {method === 'totp' ? 'Code de l\'application' : 'Code reçu par email'}
             </label>
             <input
@@ -164,13 +165,10 @@ export default function LoginView(): React.ReactElement {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="6 chiffres ou code de secours"
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 18, textAlign: 'center', fontFamily: 'monospace' }}
+              style={{ ...inputStyle, fontFamily: 'monospace' }}
             />
-            <p style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
-              Tu peux aussi utiliser un code de secours (format XXXX-XXXX).
-            </p>
           </div>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 14 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 'calc(var(--base) / 2)' }}>
             <input
               type="checkbox"
               checked={rememberDevice}
@@ -178,22 +176,13 @@ export default function LoginView(): React.ReactElement {
             />
             Faire confiance à cet appareil pendant 7 jours
           </label>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}
-          >
+          <Button type="submit" disabled={loading}>
             {loading ? 'Vérification…' : 'Valider'}
-          </button>
+          </Button>
           {method === 'email' && (
-            <button
-              type="button"
-              onClick={resendCode}
-              disabled={loading}
-              style={{ width: '100%', padding: '8px 16px', background: 'transparent', color: '#666', border: '1px solid #ccc', borderRadius: 4, fontSize: 13, cursor: 'pointer' }}
-            >
+            <Button buttonStyle="secondary" type="button" onClick={resendCode} disabled={loading}>
               Renvoyer le code
-            </button>
+            </Button>
           )}
         </form>
       )}

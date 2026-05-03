@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField } from './_shared';
+import { thumbFigure } from './_thumbnails';
 
 export const Figure: Block = {
   slug: 'figure',
   labels: { singular: 'Figure (image centrée)', plural: 'Figures' },
+  imageURL: thumbFigure,
+  imageAltText: 'Aperçu : grande image centrée avec légende dessous',
   fields: [
     fondField,
     {

@@ -1,26 +1,25 @@
-// Endpoints du flux 2FA à la connexion.
+// Endpoints du flux 2FA email à la connexion.
 //
 //   POST /users/login-2fa
 //     Body: { email, password }
 //     Public. Vérifie email/password via payload.login(). Si trusted
 //     device → renvoie le cookie payload-token directement. Sinon →
-//     déclenche l'envoi du code (méthode email) ou attend le TOTP, et
-//     pose un cookie pl_pending_2fa pour la suite.
+//     déclenche l'envoi du code email et pose un cookie pl_pending_2fa.
 //
 //   POST /users/two-factor/verify
 //     Body: { code, rememberDevice? }
 //     Public mais nécessite le cookie pl_pending_2fa. Vérifie le code
-//     OTP/TOTP/backup. Si OK → installe le cookie payload-token, et si
+//     OTP email. Si OK → installe le cookie payload-token, et si
 //     rememberDevice=true → ajoute un trusted device 7j.
 //
 //   POST /users/two-factor/resend-email
 //     Public mais nécessite le cookie pl_pending_2fa. Re-génère et
 //     ré-envoie un OTP email (rate-limité fortement).
 
-import type { Endpoint, PayloadRequest } from 'payload';
+import type { Endpoint } from 'payload';
 
 import { AUTH_CONFIG } from '../config';
-import { generateUrlSafeToken, hashBackupCode, hashToken, normalizeBackupCode, decryptSecret } from '../crypto';
+import { generateUrlSafeToken, hashToken } from '../crypto';
 import {
   buildPayloadTokenCookie,
   buildPendingTwoFactorCookie,
@@ -36,7 +35,6 @@ import {
 } from '../helpers';
 import { consumePendingLogin, createPendingLogin, peekPendingLogin } from '../pending-store';
 import { clientIpFromHeaders, consume, RATE_PROFILES } from '../rate-limit';
-import { verifyTotpCode } from '../totp';
 
 const PENDING_LOGIN_TTL_MS = 15 * 60 * 1000;
 
@@ -71,7 +69,6 @@ const loginEndpoint: Endpoint = {
       id: number | string;
       email: string;
       status?: string;
-      twoFactorMethod?: 'email' | 'totp';
     };
 
     if (user.status === 'pending') {
@@ -102,24 +99,21 @@ const loginEndpoint: Endpoint = {
       ttlMs: PENDING_LOGIN_TTL_MS,
     });
 
-    if (user.twoFactorMethod === 'email' || !user.twoFactorMethod) {
-      const otpRl = consume(RATE_PROFILES.send, String(user.id));
-      if (!otpRl.ok) {
-        return errorResponse('Trop de codes envoyés, réessayez dans quelques minutes.', 429);
-      }
-      try {
-        await generateAndSendEmailOtp(req, { id: user.id, email: user.email });
-      } catch (err) {
-        req.payload.logger.error({ err }, 'otp_email_send_failed');
-        return errorResponse('Envoi du code impossible. Réessayez.', 500);
-      }
+    const otpRl = consume(RATE_PROFILES.send, String(user.id));
+    if (!otpRl.ok) {
+      return errorResponse('Trop de codes envoyés, réessayez dans quelques minutes.', 429);
+    }
+    try {
+      await generateAndSendEmailOtp(req, { id: user.id, email: user.email });
+    } catch (err) {
+      req.payload.logger.error({ err }, 'otp_email_send_failed');
+      return errorResponse('Envoi du code impossible. Réessayez.', 500);
     }
 
     const setCookies = [buildPendingTwoFactorCookie(sessionId)];
     return jsonResponse(
       {
         status: 'needs_two_factor',
-        method: user.twoFactorMethod ?? 'email',
         email: user.email,
       },
       { status: 200 },
@@ -160,51 +154,9 @@ const verifyEndpoint: Endpoint = {
       req,
       depth: 0,
     });
-    const u = user as {
-      id: number | string;
-      email: string;
-      twoFactorMethod?: 'email' | 'totp';
-      twoFactor?: {
-        totpSecret?: string | null;
-        backupCodeHashes?: Array<{ hash: string }> | null;
-      };
-    };
+    const u = user as { id: number | string; email: string };
 
-    let verified = false;
-
-    // 1) Backup code (8 chars, contient un -)
-    const normalized = normalizeBackupCode(code);
-    if (normalized.length === 8) {
-      const target = hashBackupCode(code);
-      const remaining = (u.twoFactor?.backupCodeHashes ?? []).filter((b) => b.hash !== target);
-      if (remaining.length !== (u.twoFactor?.backupCodeHashes ?? []).length) {
-        verified = true;
-        await req.payload.update({
-          collection: 'users',
-          id: u.id,
-          overrideAccess: true,
-          req,
-          data: { twoFactor: { backupCodeHashes: remaining } },
-        });
-      }
-    }
-
-    // 2) Méthode principale
-    if (!verified) {
-      if (u.twoFactorMethod === 'totp') {
-        if (u.twoFactor?.totpSecret) {
-          try {
-            const secret = decryptSecret(u.twoFactor.totpSecret);
-            verified = verifyTotpCode(secret, code, u.email);
-          } catch (err) {
-            req.payload.logger.error({ err }, 'totp_decrypt_failed');
-          }
-        }
-      } else {
-        verified = await verifyEmailOtp(req, u.id, code);
-      }
-    }
-
+    const verified = await verifyEmailOtp(req, u.id, code);
     if (!verified) return errorResponse('Code invalide ou expiré', 401);
 
     // Code OK → consume la session pending et finalise la connexion.

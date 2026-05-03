@@ -1,6 +1,7 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbDeuxColonnes } from './_thumbnails';
 
 export const DeuxColonnes: Block = {
   slug: 'deux-colonnes',
@@ -8,6 +9,8 @@ export const DeuxColonnes: Block = {
     singular: 'Deux colonnes (texte + picto/image)',
     plural: 'Blocs deux colonnes',
   },
+  imageURL: thumbDeuxColonnes,
+  imageAltText: 'Aperçu : deux colonnes parallèles avec picto et texte',
   fields: [
     titreField,
     fondField,

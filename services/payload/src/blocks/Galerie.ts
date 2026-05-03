@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbGalerie } from './_thumbnails';
 
 export const Galerie: Block = {
   slug: 'galerie',
   labels: { singular: 'Galerie', plural: 'Galeries' },
+  imageURL: thumbGalerie,
+  imageAltText: 'Aperçu : grille de 6 photos en mosaïque',
   fields: [
     titreField,
     fondField,

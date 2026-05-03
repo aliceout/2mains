@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch --env-file=../../.env src/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.7",

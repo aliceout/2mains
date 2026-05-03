@@ -18,8 +18,8 @@ export async function bootstrapRootUser(payload: Payload): Promise<void> {
     const hasRoot = (allUsers.docs as Array<{ role?: string }>).some((u) => u.role === 'root');
     if (hasRoot) return;
 
-    // Aucun root mais des users existent → on prend le plus ancien et on
-    // le promeut. status=active, twoFactorMethod=email par défaut.
+    // Aucun root mais des users existent → on prend le plus ancien et
+    // on le promeut. status=active.
     const oldest = await payload.find({
       collection: 'users',
       limit: 1,
@@ -39,7 +39,6 @@ export async function bootstrapRootUser(payload: Payload): Promise<void> {
       data: {
         role: 'root',
         status: 'active',
-        twoFactorMethod: 'email',
       },
     });
     payload.logger.info(
