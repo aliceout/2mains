@@ -143,26 +143,39 @@ pnpm --dir services/payload generate:importmap   # régénère importMap.js (cus
 pnpm --dir services/payload migrate              # joue les migrations SQL
 ```
 
-### Postgres (Docker)
+### Docker dev (Postgres + Mailpit)
+
+Un seul `up -d` démarre les deux conteneurs nécessaires en local :
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d   # démarre la DB (data persistée dans data/postgres-dev/)
-docker compose -f docker-compose.dev.yml down    # arrête (data conservée)
+docker compose -f docker-compose.dev.yml up -d   # Postgres + Mailpit
+docker compose -f docker-compose.dev.yml down    # arrête (data Postgres conservée)
 ```
 
-### Service mail (optionnel)
+- **Postgres** sur `localhost:5432`, data persistée dans `./data/postgres-dev/`
+- **Mailpit** = SMTP catch-all + UI web pour inspecter les mails envoyés
+  par Payload (invitations, OTP 2FA) et le service `mail/` (formulaire
+  contact) sans qu'aucun mail ne sorte sur internet.
+  - SMTP : `localhost:1025` (auth quelconque acceptée)
+  - UI : <http://localhost:8025>
+  - Mails ephemeral, vidés à chaque restart (voulu)
+
+Pour brancher tes deux services dessus, override les `SMTP_*` du `.env`
+avec les valeurs Mailpit (cf bloc dans `.env.example`).
+
+### Service mail (formulaire contact)
 
 Le formulaire `/contact` POST sur le service `mail/`. Sans lui, `/contact`
 renvoie 503 mais le reste du site fonctionne. Pour le lancer en local :
 
 ```bash
-pnpm --dir services/mail install
-pnpm --dir services/mail dev   # → http://localhost:3000
+pnpm --dir services/mail install   # à faire 1x
+pnpm dev:mail                      # → http://localhost:3000
 ```
 
 Note : Payload utilise son **propre** transport SMTP (`@payloadcms/email-nodemailer`)
 pour les mails d'auth (invitations, OTP 2FA). Les variables `SMTP_*` du `.env`
-servent aux deux services.
+servent aux deux services — donc Mailpit en dev capte les mails des deux.
 
 ### Pages disponibles en local
 

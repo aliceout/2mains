@@ -1,13 +1,14 @@
-# Stack DEV uniquement — Postgres pour Payload en local.
+# Stack DEV uniquement — Postgres + Mailpit pour tester en local.
 #
 # Usage : `docker compose -f docker-compose.dev.yml up -d`
 # Stop  : `docker compose -f docker-compose.dev.yml down`
 #
-# Le `compose.yml` racine (à venir, Phase 4) sera la config PROD avec
-# les 4 services (db, payload, site, mail). Celui-ci ne lance que
-# Postgres pour qu'on puisse coder/tester en local.
+# Le `compose.yml` racine est la config PROD avec les 4 services
+# (db, payload, site, mail). Celui-ci ne lance que ce dont on a besoin
+# pour coder/tester en local : Postgres + un SMTP catch-all.
 #
-# Données persistantes dans ./data/postgres-dev/ (gitignored).
+# Données persistantes Postgres dans ./data/postgres-dev/ (gitignored).
+# Mailpit garde les mails en mémoire — vidés à chaque restart, c'est voulu.
 
 services:
   db:
@@ -29,3 +30,27 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
+
+  # Mailpit = SMTP catch-all + UI web pour inspecter les mails envoyés en
+  # dev (invitations, OTP 2FA, formulaire contact). Aucun mail ne sort sur
+  # internet — tout reste local et visible sur http://localhost:8025.
+  #
+  # Pour brancher Payload + le service mail dessus, dans le .env racine :
+  #   SMTP_HOST=localhost
+  #   SMTP_PORT=1025
+  #   SMTP_USER=dev
+  #   SMTP_PASS=dev
+  #   SMTP_SECURE=false
+  #   SMTP_FROM=noreply@2mainsdefemmes.local
+  # Mailpit accepte n'importe quel user/pass (auth non vérifiée).
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: 2mains-mailpit-dev
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "8025:8025" # Web UI
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
