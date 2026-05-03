@@ -244,8 +244,15 @@ export const Users: CollectionConfig = {
             throw new Error('Un compte root existe déjà.');
           }
         }
-        // Empêche un changement implicite role=root via update.
-        if (operation === 'update' && data?.role === 'root' && originalDoc?.role !== 'root') {
+        // Empêche un changement implicite role=root via update — sauf si
+        // l'opération vient d'une initialisation interne (req.user absent),
+        // ce qui correspond au bootstrapRootUser exécuté dans onInit.
+        if (
+          operation === 'update' &&
+          data?.role === 'root' &&
+          originalDoc?.role !== 'root' &&
+          req.user
+        ) {
           throw new Error('Le rôle root ne peut pas être attribué via mise à jour.');
         }
         return data;
