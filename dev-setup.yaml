@@ -24,8 +24,11 @@ secrets:
   # (visible dans l'URL de l'admin Infisical quand tu ouvres le projet).
   project: 2mains-rnu5
   batches:
-    # Env Production. Ordre = priorité sur les doublons (first wins).
-    - prod/payload
-    - prod/postgres
-    - prod/smtp
-    - prod/web
+    # Env Infisical "dev" — valeurs locales (Postgres docker, Mailpit, etc.).
+    # En prod, ce fichier est ignoré : deploy.sh fetche directement l'env
+    # "prod" via les credentials VPS-level Universal Auth.
+    # Ordre = priorité sur les doublons (first wins).
+    - dev/payload
+    - dev/postgres
+    - dev/smtp
+    - dev/web
