@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbTemoignages } from './_thumbnails';
 
 export const Temoignages: Block = {
   slug: 'temoignages',
   labels: { singular: 'Témoignages (mosaïque)', plural: 'Témoignages' },
+  imageURL: thumbTemoignages,
+  imageAltText: 'Aperçu : 2 cartes témoignages avec citation et auteur',
   fields: [
     {
       ...titreField,

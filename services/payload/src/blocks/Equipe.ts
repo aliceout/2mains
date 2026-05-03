@@ -1,6 +1,7 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbEquipe } from './_thumbnails';
 
 export const Equipe: Block = {
   slug: 'equipe',
@@ -8,6 +9,8 @@ export const Equipe: Block = {
     singular: 'Notre équipe (trombi CA)',
     plural: 'Trombis équipe',
   },
+  imageURL: thumbEquipe,
+  imageAltText: 'Aperçu : trombinoscope avec 7 portraits sur 2 lignes',
   fields: [
     {
       ...titreField,

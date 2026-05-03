@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbBlocStat } from './_thumbnails';
 
 export const BlocStat: Block = {
   slug: 'stats',
   labels: { singular: 'Bandeau de chiffres', plural: 'Bandeaux de chiffres' },
+  imageURL: thumbBlocStat,
+  imageAltText: 'Aperçu : bandeau avec 4 chiffres-clés alignés',
   fields: [
     titreField,
     fondField,

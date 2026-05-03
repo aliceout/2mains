@@ -730,20 +730,10 @@ export interface User {
     invitedBy?: (number | null) | User;
     invitedAt?: string | null;
   };
-  twoFactorMethod: 'email' | 'totp';
   twoFactor?: {
-    totpSecret?: string | null;
-    totpEnrolledAt?: string | null;
     emailCodeHash?: string | null;
     emailCodeExpiresAt?: string | null;
     emailCodeAttempts?: number | null;
-    backupCodeHashes?:
-      | {
-          hash: string;
-          id?: string | null;
-        }[]
-      | null;
-    backupCodesGeneratedAt?: string | null;
   };
   lastActivityAt?: string | null;
   lastLoginAt?: string | null;
@@ -768,13 +758,6 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
   password?: string | null;
   collection: 'users';
 }
@@ -1407,22 +1390,12 @@ export interface UsersSelect<T extends boolean = true> {
         invitedBy?: T;
         invitedAt?: T;
       };
-  twoFactorMethod?: T;
   twoFactor?:
     | T
     | {
-        totpSecret?: T;
-        totpEnrolledAt?: T;
         emailCodeHash?: T;
         emailCodeExpiresAt?: T;
         emailCodeAttempts?: T;
-        backupCodeHashes?:
-          | T
-          | {
-              hash?: T;
-              id?: T;
-            };
-        backupCodesGeneratedAt?: T;
       };
   lastActivityAt?: T;
   lastLoginAt?: T;
@@ -1447,13 +1420,6 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

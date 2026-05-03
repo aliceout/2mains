@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { fondField, titreField } from './_shared';
+import { thumbTimeline } from './_thumbnails';
 
 export const Timeline: Block = {
   slug: 'timeline',
   labels: { singular: 'Timeline', plural: 'Timelines' },
+  imageURL: thumbTimeline,
+  imageAltText: 'Aperçu : ligne verticale avec 3 jalons datés',
   fields: [
     titreField,
     fondField,

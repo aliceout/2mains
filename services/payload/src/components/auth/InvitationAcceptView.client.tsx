@@ -1,10 +1,14 @@
 'use client';
 
-// Page d'acceptation d'invitation : `/cms/admin/invitation/[token]`.
-// Récupère le token dans l'URL, demande le mot de passe, l'envoie au
-// backend pour activer le compte.
+// Page d'acceptation d'invitation : /cms/admin/invitation/[token].
+// Récupère le token dans l'URL, demande prénom + mot de passe, envoie au
+// backend pour activer le compte. Suit le thème admin via les CSS vars
+// Payload + composants @payloadcms/ui.
 
 import React, { useEffect, useState } from 'react';
+import { Banner, Button } from '@payloadcms/ui';
+
+import { inputStyle, stack } from './styles';
 
 const API_BASE = '/cms/api/users';
 const ADMIN_BASE = '/cms/admin';
@@ -12,6 +16,7 @@ const ADMIN_BASE = '/cms/admin';
 export default function InvitationAcceptViewClient({ token }: { token: string }): React.ReactElement {
   const [status, setStatus] = useState<'loading' | 'ready' | 'invalid' | 'expired'>('loading');
   const [email, setEmail] = useState<string>('');
+  const [firstName, setFirstName] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -39,6 +44,8 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    const cleanedFirstName = firstName.trim();
+    if (!cleanedFirstName) return setError('Le prénom est obligatoire.');
     if (password.length < 12) return setError('Le mot de passe doit faire au moins 12 caractères.');
     if (password !== confirm) return setError('Les mots de passe ne correspondent pas.');
     setSubmitting(true);
@@ -47,7 +54,7 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ password, displayName: cleanedFirstName }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((data as { error?: string })?.error || 'Activation impossible');
@@ -59,38 +66,59 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
     }
   }
 
-  if (status === 'loading') return <p style={{ textAlign: 'center', marginTop: 64 }}>Chargement…</p>;
+  const wrapper: React.CSSProperties = {
+    ...stack,
+    maxWidth: 'calc(var(--base) * 20)',
+    margin: 'calc(var(--base) * 3) auto',
+    padding: 'var(--base)',
+    color: 'var(--theme-text)',
+    background: 'var(--theme-elevation-50)',
+    borderRadius: 4,
+  };
+
+  if (status === 'loading') return <p style={{ textAlign: 'center', marginTop: 'calc(var(--base) * 3)' }}>Chargement…</p>;
+
   if (status === 'invalid') {
     return (
-      <div style={{ maxWidth: 400, margin: '64px auto', padding: '0 16px' }}>
-        <h1 style={{ fontSize: 22, marginBottom: 16 }}>Invitation introuvable</h1>
-        <p>Ce lien d'invitation est invalide ou a déjà été utilisé. Demande à un administrateur de te renvoyer une invitation.</p>
+      <div style={wrapper}>
+        <h1 style={{ margin: 0 }}>Invitation introuvable</h1>
+        <p style={{ margin: 0 }}>Ce lien d'invitation est invalide ou a déjà été utilisé. Demande à un administrateur de te renvoyer une invitation.</p>
       </div>
     );
   }
+
   if (status === 'expired') {
     return (
-      <div style={{ maxWidth: 400, margin: '64px auto', padding: '0 16px' }}>
-        <h1 style={{ fontSize: 22, marginBottom: 16 }}>Invitation expirée</h1>
-        <p>Le délai pour activer ce compte a expiré. Demande à un administrateur de t'inviter à nouveau.</p>
+      <div style={wrapper}>
+        <h1 style={{ margin: 0 }}>Invitation expirée</h1>
+        <p style={{ margin: 0 }}>Le délai pour activer ce compte a expiré. Demande à un administrateur de t'inviter à nouveau.</p>
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: '64px auto', padding: '0 16px' }}>
-      <h1 style={{ fontSize: 22, marginBottom: 8 }}>Activer ton compte</h1>
-      <p style={{ marginBottom: 24, fontSize: 14, color: '#555' }}>
-        Compte : <strong>{email}</strong>
-      </p>
-      {error && (
-        <div style={{ padding: 12, marginBottom: 16, background: '#fee', color: '#900', borderRadius: 6, fontSize: 14 }}>
-          {error}
+    <div style={wrapper}>
+      <h1 style={{ margin: 0 }}>Activer ton compte</h1>
+      <p style={{ margin: 0, opacity: 0.7 }}>Compte : <strong>{email}</strong></p>
+
+      {error && <Banner type="error">{error}</Banner>}
+
+      <form onSubmit={submit} style={stack}>
+        <div className="field-type">
+          <label htmlFor="invite-firstname" className="field-label">Prénom</label>
+          <input
+            id="invite-firstname"
+            type="text"
+            autoComplete="given-name"
+            required
+            autoFocus
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            style={inputStyle}
+          />
         </div>
-      )}
-      <form onSubmit={submit}>
-        <div style={{ marginBottom: 16 }}>
-          <label htmlFor="invite-pw" style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>Mot de passe (min. 12 caractères)</label>
+        <div className="field-type">
+          <label htmlFor="invite-pw" className="field-label">Mot de passe (min. 12 caractères)</label>
           <input
             id="invite-pw"
             type="password"
@@ -99,11 +127,11 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
             minLength={12}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+            style={inputStyle}
           />
         </div>
-        <div style={{ marginBottom: 16 }}>
-          <label htmlFor="invite-pw2" style={{ display: 'block', marginBottom: 4, fontSize: 14 }}>Confirmer le mot de passe</label>
+        <div className="field-type">
+          <label htmlFor="invite-pw2" className="field-label">Confirmer le mot de passe</label>
           <input
             id="invite-pw2"
             type="password"
@@ -112,16 +140,12 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
             minLength={12}
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14 }}
+            style={inputStyle}
           />
         </div>
-        <button
-          type="submit"
-          disabled={submitting}
-          style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
-        >
+        <Button type="submit" disabled={submitting}>
           {submitting ? 'Activation…' : 'Activer mon compte'}
-        </button>
+        </Button>
       </form>
     </div>
   );

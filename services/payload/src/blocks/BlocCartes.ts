@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { couleurField, fondField, titreField } from './_shared';
+import { thumbBlocCartes } from './_thumbnails';
 
 export const BlocCartes: Block = {
   slug: 'cartes',
   labels: { singular: 'Grille de cartes', plural: 'Grilles de cartes' },
+  imageURL: thumbBlocCartes,
+  imageAltText: 'Aperçu : grille de 3 cartes colorées',
   fields: [
     titreField,
     fondField,

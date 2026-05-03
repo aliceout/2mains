@@ -36,10 +36,6 @@ const UsersWithEndpoints = {
     components: {
       ...(Users.admin?.components ?? {}),
       beforeListTable: ['@/components/auth/InviteUserButton#default'],
-      edit: {
-        ...(Users.admin?.components?.edit ?? {}),
-        beforeDocumentControls: ['@/components/auth/AccountSecurity#default'],
-      },
     },
   },
 }

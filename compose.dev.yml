@@ -1,7 +1,7 @@
 # Stack DEV uniquement — Postgres + Mailpit pour tester en local.
 #
-# Usage : `docker compose -f docker-compose.dev.yml up -d`
-# Stop  : `docker compose -f docker-compose.dev.yml down`
+# Usage : `docker compose -f compose.dev.yml up -d`
+# Stop  : `docker compose -f compose.dev.yml down`
 #
 # Le `compose.yml` racine est la config PROD avec les 4 services
 # (db, payload, site, mail). Celui-ci ne lance que ce dont on a besoin

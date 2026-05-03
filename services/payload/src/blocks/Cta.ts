@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { ctaFields, fondField } from './_shared';
+import { thumbCta } from './_thumbnails';
 
 export const Cta: Block = {
   slug: 'cta',
   labels: { singular: 'Bandeau CTA', plural: 'Bandeaux CTA' },
+  imageURL: thumbCta,
+  imageAltText: 'Aperçu : titre avec un gros bouton d\'action centré',
   fields: [
     fondField,
     { name: 'titre', type: 'text', required: true },

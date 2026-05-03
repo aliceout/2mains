@@ -13,7 +13,6 @@ export type ApiUser = {
   email: string;
   role?: 'root' | 'admin' | 'editor';
   status?: 'pending' | 'active' | 'disabled';
-  twoFactorMethod?: 'email' | 'totp';
   displayName?: string;
 };
 
@@ -89,27 +88,6 @@ export function readPendingTwoFactorCookie(req: PayloadRequest): string | null {
 
 export function clearPendingTwoFactorCookie(): string {
   return clearCookie(COOKIE_NAMES.pendingTwoFactor);
-}
-
-// ─── Step-up cookie ─────────────────────────────────────────────────
-
-export function buildStepUpCookie(tokenId: string): string {
-  return buildCookie(COOKIE_NAMES.stepUp, signCookie({ t: tokenId }), {
-    maxAgeSec: AUTH_CONFIG.stepUpTtlMinutes * 60,
-    httpOnly: true,
-    secure: isSecureRequest(),
-    sameSite: 'Lax',
-  });
-}
-
-export function readStepUpCookie(req: PayloadRequest): string | null {
-  const raw = readCookie(req.headers, COOKIE_NAMES.stepUp);
-  const decoded = verifyCookie<{ t: string }>(raw);
-  return decoded?.t ?? null;
-}
-
-export function clearStepUpCookie(): string {
-  return clearCookie(COOKIE_NAMES.stepUp);
 }
 
 // ─── Payload-token cookie (compat avec le cookie natif Payload) ─────

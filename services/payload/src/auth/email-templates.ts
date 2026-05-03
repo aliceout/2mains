@@ -150,32 +150,3 @@ ${button(opts.loginUrl, 'Aller à l\'espace d\'administration')}`,
   return { subject, html, text };
 }
 
-// ─── Notif sécurité : méthode 2FA changée ───────────────────────────
-
-export function twoFactorMethodChangedEmail(opts: {
-  email: string;
-  newMethod: 'email' | 'totp';
-}): { subject: string; html: string; text: string } {
-  const methodLabel = opts.newMethod === 'totp' ? 'application TOTP' : 'code par email';
-  const subject = `Méthode de double authentification modifiée (${methodLabel})`;
-
-  const text = `Bonjour,
-
-La méthode de double authentification de ton compte ${opts.email} vient d'être changée.
-
-Nouvelle méthode : ${methodLabel}.
-
-Si tu n'es pas à l'origine de ce changement, change immédiatement ton mot de passe et contacte un administrateur.
-
-— 2mains de femmes
-`;
-
-  const html = shell(
-    'Méthode 2FA modifiée',
-    `<p style="margin:0 0 16px;line-height:1.5;">La méthode de double authentification de ton compte <strong>${escapeHtml(opts.email)}</strong> vient d'être changée.</p>
-<p style="margin:0 0 16px;line-height:1.5;">Nouvelle méthode : <strong>${escapeHtml(methodLabel)}</strong>.</p>
-<p style="margin:0 0 16px;line-height:1.5;"><strong>Si ce n'est pas toi</strong>, change immédiatement ton mot de passe et contacte un administrateur.</p>`,
-  );
-
-  return { subject, html, text };
-}

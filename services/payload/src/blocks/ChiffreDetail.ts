@@ -1,10 +1,13 @@
 import type { Block } from 'payload';
 
 import { couleurField, fondField, titreField } from './_shared';
+import { thumbChiffreDetail } from './_thumbnails';
 
 export const ChiffreDetail: Block = {
   slug: 'chiffre-detail',
   labels: { singular: 'Chiffre + explication', plural: 'Chiffres + explication' },
+  imageURL: thumbChiffreDetail,
+  imageAltText: 'Aperçu : un chiffre à gauche, texte d\'explication à droite',
   fields: [
     titreField,
     fondField,

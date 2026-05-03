@@ -1,6 +1,6 @@
 import type { GlobalConfig } from 'payload';
 
-import { authenticated } from '../access/authenticated';
+import { isAdminOrRoot, userRole } from '../access/roles';
 
 /**
  * Paramètres globaux du site (singleton). Miroir Astro
@@ -17,12 +17,18 @@ export const Site: GlobalConfig = {
     description:
       'Identité, mission, contact, réseaux, liens HelloAsso. ' +
       'Pas de credentials ici (SMTP, etc.) — ceux-là sont dans Infisical.',
+    // Cache le global de la nav latérale pour les editor.
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null | undefined)?.role;
+      return role !== 'admin' && role !== 'root';
+    },
   },
   // Lecture publique : Astro SSR doit pouvoir lire ces settings sans
-  // authentification. Modification : authentifié seulement.
+  // authentification. Modification : admin/root uniquement (les editor
+  // ne touchent pas aux paramètres globaux du site).
   access: {
     read: () => true,
-    update: authenticated,
+    update: isAdminOrRoot,
   },
   fields: [
     {

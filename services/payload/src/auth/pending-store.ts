@@ -1,4 +1,4 @@
-// Stockage en mémoire des sessions de login en attente de 2FA.
+// Stockage en mémoire des sessions de login en attente de 2FA email.
 //
 // Le flux est :
 //   1. POST /users/login-2fa avec email+password → on appelle
@@ -10,16 +10,15 @@
 //      le code OTP, et on installe le cookie payload-token dans la
 //      réponse (avec le JWT mémorisé). On purge l'entrée.
 //
-// Avantages :
-//   - Le password n'est jamais re-stocké, c'est juste le JWT déjà émis
-//     par Payload qu'on garde temporairement.
-//   - Le cookie payload-token n'est posé qu'après vérif 2FA réussie,
-//     donc une session intermédiaire ne donne aucun accès aux APIs.
+// Le password n'est jamais re-stocké, c'est juste le JWT déjà émis par
+// Payload qu'on garde temporairement. Le cookie payload-token n'est posé
+// qu'après vérif 2FA réussie.
 //
-// Limites :
-//   - Map en mémoire = ne survit pas au reboot et ne fonctionne pas en
-//     multi-instance. Acceptable ici (1 process Next.js, sessions
-//     pending éphémères de quelques minutes max).
+// Map en mémoire = ne survit pas au reboot et ne fonctionne pas en
+// multi-instance. Acceptable ici (1 process Next.js, sessions pending
+// éphémères de quelques minutes max).
+
+import { randomBytes } from 'node:crypto';
 
 type PendingLogin = {
   userId: number | string;
@@ -29,12 +28,6 @@ type PendingLogin = {
 };
 
 const pendingLogins = new Map<string, PendingLogin>();
-
-const STEP_UP_TTL_MS = 10 * 60 * 1000;
-type StepUp = { userId: number | string; expiresAt: number };
-const stepUps = new Map<string, StepUp>();
-
-import { randomBytes } from 'node:crypto';
 
 export function createPendingLogin(opts: {
   userId: number | string;
@@ -76,36 +69,6 @@ export function dropPendingLogin(sessionId: string | null | undefined): void {
   if (sessionId) pendingLogins.delete(sessionId);
 }
 
-// ─── Step-up (re-saisie mdp pour action sensible) ────────────────────
-
-export function grantStepUp(userId: number | string, ttlMs = STEP_UP_TTL_MS): string {
-  const tokenId = randomBytes(32).toString('base64url');
-  stepUps.set(tokenId, { userId, expiresAt: Date.now() + ttlMs });
-  return tokenId;
-}
-
-export function consumeStepUp(tokenId: string | null | undefined, userId: number | string): boolean {
-  if (!tokenId) return false;
-  const entry = stepUps.get(tokenId);
-  if (!entry) return false;
-  stepUps.delete(tokenId);
-  if (entry.expiresAt < Date.now()) return false;
-  return entry.userId === userId;
-}
-
-// Ne consomme pas (pour permettre plusieurs actions consécutives sous
-// la même fenêtre step-up).
-export function checkStepUp(tokenId: string | null | undefined, userId: number | string): boolean {
-  if (!tokenId) return false;
-  const entry = stepUps.get(tokenId);
-  if (!entry) return false;
-  if (entry.expiresAt < Date.now()) {
-    stepUps.delete(tokenId);
-    return false;
-  }
-  return entry.userId === userId;
-}
-
 // Cleanup périodique
 let cleanupHandle: ReturnType<typeof setInterval> | null = null;
 export function startPendingCleanup(): void {
@@ -114,9 +77,6 @@ export function startPendingCleanup(): void {
     const now = Date.now();
     for (const [k, v] of pendingLogins) {
       if (v.expiresAt < now) pendingLogins.delete(k);
-    }
-    for (const [k, v] of stepUps) {
-      if (v.expiresAt < now) stepUps.delete(k);
     }
   }, 5 * 60 * 1000);
   cleanupHandle.unref?.();

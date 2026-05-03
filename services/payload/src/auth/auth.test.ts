@@ -15,7 +15,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { authEndpoints } from './endpoints/index.js'
-import { hashToken, safeEqualHex, generateNumericCode, generateBackupCode, normalizeBackupCode } from './crypto.js'
+import { hashToken, safeEqualHex, generateNumericCode } from './crypto.js'
 import { signCookie, verifyCookie } from './cookies.js'
 
 // PAYLOAD_SECRET est nécessaire pour les helpers crypto/cookies.
@@ -102,22 +102,6 @@ test('generateNumericCode produit le bon nombre de chiffres avec leading zeros',
     assert.equal(code.length, 6, `Code "${code}" doit faire 6 chars`)
     assert.match(code, /^\d{6}$/, `Code "${code}" doit être numérique`)
   }
-})
-
-test('generateBackupCode : format XXXX-XXXX, alphabet sans caractères ambigus', () => {
-  for (let i = 0; i < 20; i++) {
-    const code = generateBackupCode()
-    assert.equal(code.length, 9, `"${code}" doit faire 9 chars (8 + tiret)`)
-    assert.equal(code[4], '-', 'Tiret au milieu')
-    // 0/O/1/I/L exclus de l'alphabet
-    assert.doesNotMatch(code, /[01OIL]/, `"${code}" doit éviter les caractères ambigus`)
-  }
-})
-
-test('normalizeBackupCode strip espaces/tirets et uppercase', () => {
-  assert.equal(normalizeBackupCode('abcd-efgh'), 'ABCDEFGH')
-  assert.equal(normalizeBackupCode('  ab cd-ef gh  '), 'ABCDEFGH')
-  assert.equal(normalizeBackupCode('ABCD-EFGH'), 'ABCDEFGH')
 })
 
 test('signCookie + verifyCookie : roundtrip OK, signature invalide rejetée', () => {

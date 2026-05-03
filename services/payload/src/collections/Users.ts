@@ -38,6 +38,13 @@ export const Users: CollectionConfig = {
     useAsTitle: 'email',
     defaultColumns: ['email', 'displayName', 'role', 'status', 'updatedAt'],
     listSearchableFields: ['email', 'displayName'],
+    // Cache la collection users dans la nav latérale pour les editor.
+    // Les access ci-dessous bloquent aussi l'API/URL directe, ceci est
+    // juste pour ne pas leur montrer le lien.
+    hidden: ({ user }) => {
+      const role = (user as { role?: string } | null | undefined)?.role;
+      return role !== 'admin' && role !== 'root';
+    },
   },
   auth: {
     // Sliding 48h : Payload prolonge le cookie à chaque requête authentifiée
@@ -47,27 +54,36 @@ export const Users: CollectionConfig = {
     // verify: false → on gère nous-mêmes la vérif via le workflow
     // d'invitation (le user choisit son mdp en cliquant sur le lien).
     verify: false,
+    // useSessions: false → désactive le check Payload qui requiert que le
+    // `sid` du JWT soit présent dans user.sessions[]. En 3.84 ce check
+    // foire silencieusement dans certains contextes (req.user reste null
+    // → cascade sur 401/403 partout). On gère nos propres sessions via
+    // les trustedDevices et le sliding 48h.
+    useSessions: false,
     // maxLoginAttempts + lockTime : protection brute force native Payload,
     // complémentaire au rate-limit applicatif.
     maxLoginAttempts: 5,
     lockTime: 10 * 60 * 1000, // 10 min
   },
   access: {
-    // Lister/lire les users : admin et root.
-    // Un editor peut lire son propre profil (fait via /me, pas /users).
+    // Read : autorisé à admin/root et à soi-même (filtre par id).
+    // Quand req.user est null on autorise aussi : c'est le contexte de
+    // l'auth JWT interne de Payload qui appelle findByID(users, id) pour
+    // hydrater req.user — si on bloque ici, l'auth foire et req.user
+    // reste null partout (cf bug rencontré en Phase 6).
     read: ({ req }) => {
+      if (!req.user) return true;
       const role = userRole(req);
       if (role === 'admin' || role === 'root') return true;
-      if (req.user) return { id: { equals: req.user.id } };
-      return false;
+      return { id: { equals: req.user.id } };
     },
     // Création directe interdite — passage obligatoire par l'endpoint
     // /users/invite (qui génère un token et envoie le mail).
     // Exception : le bootstrap du premier user (register-first-user)
     // reste ouvert, géré par Payload nativement.
     create: () => false,
-    // Update : admin/root sur d'autres users, ou self sur soi-même.
-    // Les champs sensibles sont protégés au niveau field.
+    // Update : admin/root sur n'importe quel user, ou self sur soi-même.
+    // Les editor ne peuvent éditer que leur propre profil (pour le 2FA, etc).
     update: ({ req, id }) => {
       const role = userRole(req);
       if (role === 'admin' || role === 'root') return true;
@@ -78,9 +94,11 @@ export const Users: CollectionConfig = {
     },
     // Delete : admin/root uniquement, jamais sur le root (hook).
     delete: isAdminOrRoot,
-    // Permettre à l'utilisateur de voir les boutons admin de sa propre
-    // page profil (sinon l'admin Payload masque tout).
-    admin: ({ req }) => Boolean(req.user),
+    // Pas de surcharge `admin:` — on laisse le défaut Payload (si la
+    // collection du user matche `admin.user`, l'accès est accordé).
+    // Surcharger ici avec `({ req }) => Boolean(req.user)` casse les
+    // server actions Next (form state, preferences) où req.user n'est
+    // pas hydraté → 401 → cascade sur le PATCH suivant qui finit en 403.
     unlock: isAdminOrRoot,
   },
   fields: [
@@ -124,6 +142,26 @@ export const Users: CollectionConfig = {
       admin: { position: 'sidebar' },
     },
 
+    // ─── Panneau Sécurité (UI only, ne stocke rien) ────────────────
+    // Field type:'ui' = composant React rendu dans le formulaire user.
+    // Apparaît à la fois sur /cms/admin/account et /cms/admin/collections/
+    // users/:id, mais le `condition` ci-dessous ne le rend visible que
+    // sur son propre profil — vu que les boutons actionnent /me/*, on
+    // ne veut pas qu'un admin voie ce panneau sur le profil d'un editor.
+    {
+      name: 'security',
+      type: 'ui',
+      admin: {
+        condition: (data, _siblingData, { user }) => {
+          if (!user || !data?.id) return false;
+          return String(data.id) === String(user.id);
+        },
+        components: {
+          Field: '@/components/auth/AccountSecurity#default',
+        },
+      },
+    },
+
     // ─── Invitation (workflow d'activation) ──────────────────────────
     {
       name: 'invitation',
@@ -141,19 +179,7 @@ export const Users: CollectionConfig = {
       ],
     },
 
-    // ─── 2FA ─────────────────────────────────────────────────────────
-    {
-      name: 'twoFactorMethod',
-      type: 'select',
-      required: true,
-      defaultValue: 'email',
-      options: [
-        { label: 'Code par email', value: 'email' },
-        { label: 'Application TOTP (Google Authenticator, Authy…)', value: 'totp' },
-      ],
-      access: { update: () => false }, // muté via endpoint /two-factor/method
-      admin: { hidden: true }, // géré via l'onglet Sécurité du profil (AccountSecurity)
-    },
+    // ─── 2FA email (le seul mode supporté) ──────────────────────────
     {
       name: 'twoFactor',
       type: 'group',
@@ -163,20 +189,9 @@ export const Users: CollectionConfig = {
         update: () => false,
       },
       fields: [
-        // TOTP enrôlé : secret AES-256-GCM
-        { name: 'totpSecret', type: 'text' },
-        { name: 'totpEnrolledAt', type: 'date' },
-        // Email OTP en attente
         { name: 'emailCodeHash', type: 'text' },
         { name: 'emailCodeExpiresAt', type: 'date' },
         { name: 'emailCodeAttempts', type: 'number', defaultValue: 0 },
-        // Backup codes (codes hachés à usage unique)
-        {
-          name: 'backupCodeHashes',
-          type: 'array',
-          fields: [{ name: 'hash', type: 'text', required: true }],
-        },
-        { name: 'backupCodesGeneratedAt', type: 'date' },
       ],
     },
 
