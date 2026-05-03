@@ -46,11 +46,15 @@ pnpm --dir services/payload install
 cp .env.example .env
 
 # 4. Payload dans un terminal
-pnpm --dir services/payload dev   # → http://localhost:3001/cms/admin
+pnpm dev:api   # → http://localhost:3001/cms/admin
 
 # 5. Astro dans un autre terminal
-pnpm dev                          # → http://localhost:4321
+pnpm dev:web   # → http://localhost:4321
 ```
+
+`dev:api` et `dev:web` se lancent depuis la racine du repo (pas besoin
+de `cd services/payload`). `pnpm dev` (sans suffixe) reste un alias de
+`dev:web` pour rétrocompat.
 
 Pour la prod : voir [Déploiement serveur](#déploiement-serveur).
 
@@ -116,24 +120,24 @@ Aucun Google Fonts. Aucun tracker. Aucun cookie de suivi.
 - **pnpm 10+** (`pnpm -v` ; sinon : `npm i -g pnpm`)
 - **Docker + Docker Compose** (pour Postgres en local)
 
-### Commandes Astro (racine)
+### Commandes (toutes lançables depuis la racine)
 
 ```bash
-pnpm install          # installe les deps
-pnpm dev              # serveur dev avec hot reload  → http://localhost:4321
-pnpm build            # génère dist/ (production)
+# Web (Astro) — alias historiques sans suffixe + alias :web
+pnpm install          # installe les deps Astro
+pnpm dev              # = dev:web — serveur dev hot reload → http://localhost:4321
+pnpm dev:web          # idem
+pnpm build            # = build:web — génère dist/
+pnpm build:web        # idem
 pnpm preview          # sert dist/ en local pour vérifier
 pnpm check            # type-check Astro (TS strict)
 pnpm format           # Prettier sur src/ + fichiers racine
 pnpm lint             # ESLint sur src/
-```
 
-### Commandes Payload (services/payload/)
-
-```bash
-pnpm --dir services/payload install              # installe les deps Payload
-pnpm --dir services/payload dev                  # admin + API → http://localhost:3001/cms/admin
-pnpm --dir services/payload build                # build Next.js (prod)
+# API (Payload) — proxys vers services/payload/
+pnpm --dir services/payload install              # installe les deps Payload (à faire 1x)
+pnpm dev:api                                     # admin + API → http://localhost:3001/cms/admin
+pnpm build:api                                   # build Next.js (prod)
 pnpm --dir services/payload generate:types       # régénère src/payload-types.ts
 pnpm --dir services/payload generate:importmap   # régénère importMap.js (custom components)
 pnpm --dir services/payload migrate              # joue les migrations SQL

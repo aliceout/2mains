@@ -8,7 +8,11 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "dev:web": "astro dev",
+    "dev:api": "pnpm --dir services/payload dev",
     "build": "astro build",
+    "build:web": "astro build",
+    "build:api": "pnpm --dir services/payload build",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
