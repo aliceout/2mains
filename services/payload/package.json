@@ -15,7 +15,8 @@
     "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "import:content": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation tsx scripts/migrate-to-payload.ts",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001",
+    "test:auth": "cross-env NODE_OPTIONS=--no-deprecation tsx --test src/auth/auth.test.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.84.1",

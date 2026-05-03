@@ -71,7 +71,9 @@ export const Users: CollectionConfig = {
     update: ({ req, id }) => {
       const role = userRole(req);
       if (role === 'admin' || role === 'root') return true;
-      if (req.user && id === req.user.id) return true;
+      // Comparaison en string : id côté access et req.user.id peuvent venir
+      // sous des types différents (Postgres bigint vs number JS).
+      if (req.user && id !== undefined && String(id) === String(req.user.id)) return true;
       return false;
     },
     // Delete : admin/root uniquement, jamais sur le root (hook).

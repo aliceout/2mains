@@ -223,7 +223,11 @@ export async function isCurrentDeviceTrusted(
   userId: number | string,
 ): Promise<boolean> {
   const cookie = readTrustedDeviceCookie(req);
-  if (!cookie || cookie.uid !== userId) return false;
+  // Comparaison en string : Postgres rend les IDs en number alors que les
+  // cookies sérialisés JSON peuvent les conserver en number aussi, mais
+  // avec un cast TS sur `number | string` on ne sait jamais. Sécurité
+  // par cohérence du type comparé.
+  if (!cookie || String(cookie.uid) !== String(userId)) return false;
   const user = await req.payload.findByID({
     collection: 'users',
     id: userId,

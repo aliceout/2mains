@@ -70,5 +70,7 @@ export const isSelfOrAdmin: FieldAccess = ({ req, id }) => {
   const role = userRole(req);
   if (role === 'admin' || role === 'root') return true;
   if (!req.user || id === undefined) return false;
-  return req.user.id === id;
+  // Coercion en string : ID peut venir en number (Postgres) ou string
+  // (cas serialization) selon le contexte.
+  return String(req.user.id) === String(id);
 };
