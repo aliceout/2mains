@@ -15,9 +15,12 @@
     "migrate": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "import:content": "dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation tsx scripts/migrate-to-payload.ts",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001"
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start -p 3001",
+    "test:auth": "cross-env NODE_OPTIONS=--no-deprecation tsx --test src/auth/auth.test.ts"
   },
   "dependencies": {
+    "@payloadcms/db-postgres": "3.84.1",
+    "@payloadcms/email-nodemailer": "3.84.1",
     "@payloadcms/next": "3.84.1",
     "@payloadcms/richtext-lexical": "3.84.1",
     "@payloadcms/ui": "3.84.1",
@@ -25,14 +28,18 @@
     "dotenv": "16.4.7",
     "graphql": "^16.8.1",
     "next": "16.2.3",
+    "nodemailer": "^6.10.0",
+    "otpauth": "^9.4.1",
     "payload": "3.84.1",
+    "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "sharp": "0.34.2",
-    "@payloadcms/db-postgres": "3.84.1"
+    "sharp": "0.34.2"
   },
   "devDependencies": {
     "@types/node": "22.19.9",
+    "@types/nodemailer": "^6.4.17",
+    "@types/qrcode": "^1.5.5",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "dotenv-cli": "^8.0.0",
