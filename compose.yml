@@ -58,6 +58,15 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
+      # SMTP : Payload envoie les mails d'invitation, OTP 2FA et notifs
+      # de sécurité via le même transport SMTP que le service mail.
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
     volumes:
       - ${DATA_DIR}/payload-media:/app/media
     ports:
