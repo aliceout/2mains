@@ -118,7 +118,7 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
         <button
           type="submit"
           disabled={submitting}
-          style={{ width: '100%', padding: '10px 16px', background: '#EC6A2C', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+          style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
         >
           {submitting ? 'Activation…' : 'Activer mon compte'}
         </button>

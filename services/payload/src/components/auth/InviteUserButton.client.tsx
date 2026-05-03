@@ -53,7 +53,7 @@ export default function InviteUserButton({ canInviteAdmin }: { canInviteAdmin: b
         onClick={() => setOpen(true)}
         style={{
           padding: '8px 16px',
-          background: '#EC6A2C',
+          background: '#695EA3',
           color: '#fff',
           border: 'none',
           borderRadius: 4,
@@ -122,7 +122,7 @@ export default function InviteUserButton({ canInviteAdmin }: { canInviteAdmin: b
               <button type="button" onClick={() => { setOpen(false); setError(null); setDone(null); }} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid #ccc', borderRadius: 4, cursor: 'pointer' }}>
                 Annuler
               </button>
-              <button type="submit" disabled={submitting} style={{ padding: '8px 16px', background: '#EC6A2C', color: '#fff', border: 'none', borderRadius: 4, fontWeight: 600, cursor: 'pointer' }}>
+              <button type="submit" disabled={submitting} style={{ padding: '8px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontWeight: 600, cursor: 'pointer' }}>
                 {submitting ? 'Envoi…' : 'Envoyer l\'invitation'}
               </button>
             </div>

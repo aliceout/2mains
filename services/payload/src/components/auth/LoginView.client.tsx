@@ -142,7 +142,7 @@ export default function LoginView(): React.ReactElement {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '10px 16px', background: '#EC6A2C', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
+            style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}
           >
             {loading ? 'Connexion…' : 'Se connecter'}
           </button>
@@ -164,7 +164,7 @@ export default function LoginView(): React.ReactElement {
               value={code}
               onChange={(e) => setCode(e.target.value)}
               placeholder="6 chiffres ou code de secours"
-              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 18, letterSpacing: 4, textAlign: 'center' }}
+              style={{ width: '100%', padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 18, textAlign: 'center', fontFamily: 'monospace' }}
             />
             <p style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
               Tu peux aussi utiliser un code de secours (format XXXX-XXXX).
@@ -181,7 +181,7 @@ export default function LoginView(): React.ReactElement {
           <button
             type="submit"
             disabled={loading}
-            style={{ width: '100%', padding: '10px 16px', background: '#EC6A2C', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}
+            style={{ width: '100%', padding: '10px 16px', background: '#695EA3', color: '#fff', border: 'none', borderRadius: 4, fontSize: 14, fontWeight: 600, cursor: 'pointer', marginBottom: 8 }}
           >
             {loading ? 'Vérification…' : 'Valider'}
           </button>

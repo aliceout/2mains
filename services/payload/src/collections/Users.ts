@@ -36,7 +36,7 @@ export const Users: CollectionConfig = {
   labels: { singular: 'Utilisateur', plural: 'Utilisateurs' },
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['email', 'displayName', 'role', 'status', 'twoFactorMethod', 'updatedAt'],
+    defaultColumns: ['email', 'displayName', 'role', 'status', 'updatedAt'],
     listSearchableFields: ['email', 'displayName'],
   },
   auth: {
@@ -152,7 +152,7 @@ export const Users: CollectionConfig = {
         { label: 'Application TOTP (Google Authenticator, Authy…)', value: 'totp' },
       ],
       access: { update: () => false }, // muté via endpoint /two-factor/method
-      admin: { position: 'sidebar', readOnly: true },
+      admin: { hidden: true }, // géré via l'onglet Sécurité du profil (AccountSecurity)
     },
     {
       name: 'twoFactor',

@@ -179,9 +179,18 @@ export default function AccountSecurityClient({
           Méthode actuelle : <strong>{method === 'totp' ? 'Application TOTP' : 'Code par email'}</strong>
         </p>
         {method === 'email' && !enrollChallenge && (
-          <button onClick={enrollTotp} disabled={busy} style={btnPrimary}>
-            Activer une application TOTP
-          </button>
+          <details style={{ fontSize: 14, marginTop: 8 }}>
+            <summary style={{ cursor: 'pointer', color: '#555' }}>
+              Utiliser une application TOTP à la place
+            </summary>
+            <p style={{ fontSize: 13, color: '#777', margin: '8px 0 12px' }}>
+              Une application (Google Authenticator, Authy, 1Password, Aegis…) génère
+              les codes hors-ligne, sans dépendre de ta boîte mail.
+            </p>
+            <button onClick={enrollTotp} disabled={busy} style={btnSecondary}>
+              Configurer TOTP
+            </button>
+          </details>
         )}
         {method === 'totp' && (
           <button onClick={disableTotp} disabled={busy} style={btnSecondary}>
@@ -208,7 +217,7 @@ export default function AccountSecurityClient({
               value={enrollCode}
               onChange={(e) => setEnrollCode(e.target.value)}
               placeholder="123456"
-              style={{ padding: '8px 12px', fontSize: 16, letterSpacing: 4, textAlign: 'center', border: '1px solid #ccc', borderRadius: 4, marginRight: 8 }}
+              style={{ padding: '8px 12px', fontSize: 16, textAlign: 'center', border: '1px solid #ccc', borderRadius: 4, marginRight: 8, fontFamily: 'monospace' }}
             />
             <button onClick={confirmTotp} disabled={busy || !enrollCode} style={btnPrimary}>
               Confirmer
@@ -313,7 +322,7 @@ export default function AccountSecurityClient({
 
 const btnPrimary: React.CSSProperties = {
   padding: '8px 16px',
-  background: '#EC6A2C',
+  background: '#695EA3',
   color: '#fff',
   border: 'none',
   borderRadius: 4,

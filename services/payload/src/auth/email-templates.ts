@@ -6,7 +6,7 @@
 
 import { AUTH_CONFIG } from './config';
 
-const ORANGE = '#EC6A2C';
+const ACCENT = '#695EA3';
 const TEXT = '#1f1f1f';
 const MUTED = '#666';
 
@@ -36,7 +36,7 @@ function shell(title: string, bodyHtml: string): string {
 }
 
 function button(href: string, label: string): string {
-  return `<p style="margin:24px 0;"><a href="${escapeHtml(href)}" style="display:inline-block;background:${ORANGE};color:#fff;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;">${escapeHtml(label)}</a></p>`;
+  return `<p style="margin:24px 0;"><a href="${escapeHtml(href)}" style="display:inline-block;background:${ACCENT};color:#fff;text-decoration:none;padding:12px 24px;border-radius:6px;font-weight:600;">${escapeHtml(label)}</a></p>`;
 }
 
 function escapeHtml(s: string): string {
@@ -138,59 +138,13 @@ Ton compte ${opts.email} est maintenant actif.
 Tu peux te connecter à l'espace d'administration ici :
 ${opts.loginUrl}
 
-Par défaut, ta connexion est protégée par un code à usage unique envoyé par email à chaque connexion (toutes les semaines depuis un même appareil de confiance).
-
-Tu peux passer à une application TOTP (Google Authenticator, Authy, 1Password, Aegis…) depuis ton profil → Sécurité.
-
 — 2mains de femmes
 `;
 
   const html = shell(
     'Bienvenue ! Ton compte est actif',
     `<p style="margin:0 0 16px;line-height:1.5;">Ton compte <strong>${escapeHtml(opts.email)}</strong> est maintenant actif.</p>
-${button(opts.loginUrl, 'Aller à l\'espace d\'administration')}
-<p style="margin:0 0 16px;line-height:1.5;">Ta connexion est protégée par un code à usage unique reçu par email. Sur un appareil de confiance, on te le redemandera environ une fois par semaine.</p>
-<p style="margin:0 0 16px;line-height:1.5;">Tu peux activer une application TOTP (Google Authenticator, Authy, 1Password, Aegis…) à la place, depuis ton profil → <strong>Sécurité</strong>.</p>`,
-  );
-
-  return { subject, html, text };
-}
-
-// ─── Notif sécurité : nouveau device de confiance ───────────────────
-
-export function newTrustedDeviceEmail(opts: {
-  email: string;
-  ip?: string;
-  userAgent?: string;
-  revokeUrl: string;
-}): { subject: string; html: string; text: string } {
-  const subject = 'Nouvel appareil de confiance ajouté à ton compte';
-  const ipLine = opts.ip ? `\nIP : ${opts.ip}` : '';
-  const uaLine = opts.userAgent ? `\nNavigateur : ${opts.userAgent}` : '';
-
-  const text = `Bonjour,
-
-Un nouvel appareil vient d'être ajouté à la liste des appareils de confiance pour ton compte ${opts.email}.${ipLine}${uaLine}
-
-Tant qu'il est marqué de confiance (7 jours), il ne te demandera plus de code de vérification à la connexion.
-
-Si ce n'est pas toi, révoque cet appareil immédiatement et change ton mot de passe :
-${opts.revokeUrl}
-
-— 2mains de femmes
-`;
-
-  const html = shell(
-    'Nouvel appareil de confiance',
-    `<p style="margin:0 0 16px;line-height:1.5;">Un nouvel appareil vient d'être ajouté à la liste des appareils de confiance pour ton compte <strong>${escapeHtml(opts.email)}</strong>.</p>
-${
-  opts.ip || opts.userAgent
-    ? `<p style="margin:0 0 16px;font-size:14px;color:${MUTED};line-height:1.5;">${opts.ip ? `IP : ${escapeHtml(opts.ip)}<br>` : ''}${opts.userAgent ? `Navigateur : ${escapeHtml(opts.userAgent)}` : ''}</p>`
-    : ''
-}
-<p style="margin:0 0 16px;line-height:1.5;">Tant qu'il est marqué de confiance (7 jours), il ne te demandera plus de code à la connexion.</p>
-<p style="margin:0 0 16px;line-height:1.5;"><strong>Si ce n'est pas toi</strong>, révoque cet appareil immédiatement et change ton mot de passe.</p>
-${button(opts.revokeUrl, 'Voir mes appareils de confiance')}`,
+${button(opts.loginUrl, 'Aller à l\'espace d\'administration')}`,
   );
 
   return { subject, html, text };

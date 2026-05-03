@@ -21,7 +21,6 @@ import type { Endpoint, PayloadRequest } from 'payload';
 
 import { AUTH_CONFIG } from '../config';
 import { generateUrlSafeToken, hashBackupCode, hashToken, normalizeBackupCode, decryptSecret } from '../crypto';
-import { newTrustedDeviceEmail } from '../email-templates';
 import {
   buildPayloadTokenCookie,
   buildPendingTwoFactorCookie,
@@ -260,25 +259,6 @@ const verifyEndpoint: Endpoint = {
         },
       });
       setCookies.push(buildTrustedDeviceCookie({ uid: u.id, did: deviceId, fp: fingerprint }));
-
-      // Notif sécurité (best-effort)
-      try {
-        const base = process.env.PAYLOAD_PUBLIC_SERVER_URL?.replace(/\/$/, '') || '';
-        const tpl = newTrustedDeviceEmail({
-          email: u.email,
-          ip,
-          userAgent,
-          revokeUrl: `${base}/cms/admin/account?tab=security`,
-        });
-        await req.payload.sendEmail({
-          to: u.email,
-          subject: tpl.subject,
-          html: tpl.html,
-          text: tpl.text,
-        });
-      } catch (err) {
-        req.payload.logger.warn({ err }, 'trusted_device_email_failed');
-      }
     }
 
     return jsonResponse({ status: 'logged_in', user: u }, { status: 200 }, setCookies);
