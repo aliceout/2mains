@@ -15,9 +15,34 @@ import { Temoignages } from './collections/Temoignages'
 import { Partenaires } from './collections/Partenaires'
 import { Documents } from './collections/Documents'
 import { Site } from './globals/Site'
+import { authEndpoints } from './auth/endpoints'
+import { buildEmailAdapter } from './auth/transport'
+import { startCleanupJob } from './auth/cleanup'
+import { bootstrapRootUser } from './auth/bootstrap'
+import { startPendingCleanup } from './auth/pending-store'
+import { startRateLimitCleanup } from './auth/rate-limit'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// On branche les endpoints d'auth (invitations, 2FA, profil) sur la
+// collection users. Payload les expose alors sous /cms/api/users/<path>.
+const baseEndpoints = Array.isArray(Users.endpoints) ? Users.endpoints : []
+const UsersWithEndpoints = {
+  ...Users,
+  endpoints: [...baseEndpoints, ...authEndpoints],
+  admin: {
+    ...Users.admin,
+    components: {
+      ...(Users.admin?.components ?? {}),
+      beforeListTable: ['@/components/auth/InviteUserButton#default'],
+      edit: {
+        ...(Users.admin?.components?.edit ?? {}),
+        beforeDocumentControls: ['@/components/auth/AccountSecurity#default'],
+      },
+    },
+  },
+}
 
 export default buildConfig({
   // Admin sous /cms/admin via la file structure (src/app/cms/(payload)).
@@ -38,6 +63,22 @@ export default buildConfig({
         'app/cms/(payload)/admin/importMap.js',
       ),
     },
+    components: {
+      // Login overridé pour gérer le 2FA en deux étapes.
+      views: {
+        login: {
+          Component: '@/components/auth/LoginView#default',
+        },
+        // Page d'acceptation d'invitation : /cms/admin/invitation/:token
+        invitation: {
+          Component: '@/components/auth/InvitationAcceptView#default',
+          path: '/invitation/:token',
+        },
+      },
+      // Keepalive injecté en barre d'actions globale → tourne sur toutes
+      // les pages de l'admin tant qu'un onglet est ouvert.
+      actions: ['@/components/auth/SessionKeepalive#default'],
+    },
   },
   collections: [
     Pages,
@@ -47,11 +88,12 @@ export default buildConfig({
     Temoignages,
     Partenaires,
     Documents,
-    Users,
+    UsersWithEndpoints,
     Media,
   ],
   globals: [Site],
   editor: lexicalEditor(),
+  email: buildEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
@@ -78,4 +120,14 @@ export default buildConfig({
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
   sharp,
   plugins: [],
+  onInit: async (payload) => {
+    // Promotion idempotente du premier user historique en root (cas d'une
+    // base existant avant l'ajout du système de rôles).
+    await bootstrapRootUser(payload)
+    // Démarre le job de cleanup et les nettoyages mémoire (rate limit,
+    // pending logins). Idempotent : appel multiple sans effet.
+    startCleanupJob(payload)
+    startPendingCleanup()
+    startRateLimitCleanup()
+  },
 })

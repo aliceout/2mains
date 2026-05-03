@@ -718,6 +718,47 @@ export interface Document {
  */
 export interface User {
   id: number;
+  displayName?: string | null;
+  /**
+   * Root = compte propriétaire (1 seul, non supprimable). Admin = peut gérer les comptes. Éditeur·ice = édite le contenu.
+   */
+  role: 'root' | 'admin' | 'editor';
+  status: 'pending' | 'active' | 'disabled';
+  invitation?: {
+    tokenHash?: string | null;
+    expiresAt?: string | null;
+    invitedBy?: (number | null) | User;
+    invitedAt?: string | null;
+  };
+  twoFactorMethod: 'email' | 'totp';
+  twoFactor?: {
+    totpSecret?: string | null;
+    totpEnrolledAt?: string | null;
+    emailCodeHash?: string | null;
+    emailCodeExpiresAt?: string | null;
+    emailCodeAttempts?: number | null;
+    backupCodeHashes?:
+      | {
+          hash: string;
+          id?: string | null;
+        }[]
+      | null;
+    backupCodesGeneratedAt?: string | null;
+  };
+  lastActivityAt?: string | null;
+  lastLoginAt?: string | null;
+  trustedDevices?:
+    | {
+        deviceId: string;
+        fingerprintHash: string;
+        label?: string | null;
+        userAgent?: string | null;
+        ip?: string | null;
+        createdAt: string;
+        expiresAt: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -1355,6 +1396,48 @@ export interface DocumentsSelect<T extends boolean = true> {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  displayName?: T;
+  role?: T;
+  status?: T;
+  invitation?:
+    | T
+    | {
+        tokenHash?: T;
+        expiresAt?: T;
+        invitedBy?: T;
+        invitedAt?: T;
+      };
+  twoFactorMethod?: T;
+  twoFactor?:
+    | T
+    | {
+        totpSecret?: T;
+        totpEnrolledAt?: T;
+        emailCodeHash?: T;
+        emailCodeExpiresAt?: T;
+        emailCodeAttempts?: T;
+        backupCodeHashes?:
+          | T
+          | {
+              hash?: T;
+              id?: T;
+            };
+        backupCodesGeneratedAt?: T;
+      };
+  lastActivityAt?: T;
+  lastLoginAt?: T;
+  trustedDevices?:
+    | T
+    | {
+        deviceId?: T;
+        fingerprintHash?: T;
+        label?: T;
+        userAgent?: T;
+        ip?: T;
+        createdAt?: T;
+        expiresAt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   email?: T;
