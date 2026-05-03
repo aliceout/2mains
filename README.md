@@ -27,10 +27,29 @@ Lutte contre l'isolement corporel des femmes par le toucher relationnel.
 
 ## Démarrage rapide
 
+La stack dev = 3 process : Postgres (Docker), Payload (Next.js sur 3001),
+Astro (Vite SSR sur 4321). Astro fetch Payload server-side, Payload tape
+Postgres. Il faut donc lancer les trois.
+
 ```bash
-# Prérequis : Node 22+, pnpm 10+
+# Prérequis : Node 22+, pnpm 10+, Docker
+
+# 1. Postgres en arrière-plan (data persistée dans data/postgres-dev/)
+docker compose -f docker-compose.dev.yml up -d
+
+# 2. Deps : 2 pnpm install (racine = Astro, services/payload = Payload)
 pnpm install
-pnpm dev          # http://localhost:4321
+pnpm --dir services/payload install
+
+# 3. .env à la racine (copier .env.example puis remplir, ou fetch
+#    depuis Infisical — cf section Déploiement)
+cp .env.example .env
+
+# 4. Payload dans un terminal
+pnpm --dir services/payload dev   # → http://localhost:3001/cms/admin
+
+# 5. Astro dans un autre terminal
+pnpm dev                          # → http://localhost:4321
 ```
 
 Pour la prod : voir [Déploiement serveur](#déploiement-serveur).
@@ -95,8 +114,9 @@ Aucun Google Fonts. Aucun tracker. Aucun cookie de suivi.
 
 - **Node 22+** (`node -v`)
 - **pnpm 10+** (`pnpm -v` ; sinon : `npm i -g pnpm`)
+- **Docker + Docker Compose** (pour Postgres en local)
 
-### Commandes
+### Commandes Astro (racine)
 
 ```bash
 pnpm install          # installe les deps
@@ -107,6 +127,38 @@ pnpm check            # type-check Astro (TS strict)
 pnpm format           # Prettier sur src/ + fichiers racine
 pnpm lint             # ESLint sur src/
 ```
+
+### Commandes Payload (services/payload/)
+
+```bash
+pnpm --dir services/payload install              # installe les deps Payload
+pnpm --dir services/payload dev                  # admin + API → http://localhost:3001/cms/admin
+pnpm --dir services/payload build                # build Next.js (prod)
+pnpm --dir services/payload generate:types       # régénère src/payload-types.ts
+pnpm --dir services/payload generate:importmap   # régénère importMap.js (custom components)
+pnpm --dir services/payload migrate              # joue les migrations SQL
+```
+
+### Postgres (Docker)
+
+```bash
+docker compose -f docker-compose.dev.yml up -d   # démarre la DB (data persistée dans data/postgres-dev/)
+docker compose -f docker-compose.dev.yml down    # arrête (data conservée)
+```
+
+### Service mail (optionnel)
+
+Le formulaire `/contact` POST sur le service `mail/`. Sans lui, `/contact`
+renvoie 503 mais le reste du site fonctionne. Pour le lancer en local :
+
+```bash
+pnpm --dir services/mail install
+pnpm --dir services/mail dev   # → http://localhost:3000
+```
+
+Note : Payload utilise son **propre** transport SMTP (`@payloadcms/email-nodemailer`)
+pour les mails d'auth (invitations, OTP 2FA). Les variables `SMTP_*` du `.env`
+servent aux deux services.
 
 ### Pages disponibles en local
 
