@@ -168,9 +168,9 @@ for (const s of sections) {
             {s.corps && (
               <p class:list={['font-sans text-base leading-relaxed max-w-220', corpsColor]}>{s.corps}</p>
             )}
-            {(s.cta_primaire || s.cta_secondaire) && (
+            {(s.cta_primaire?.label || s.cta_secondaire?.label) && (
               <div class="mt-2 flex flex-wrap items-center gap-3">
-                {s.cta_primaire && (
+                {s.cta_primaire?.label && (
                   isDark ? (
                     <a
                       href={s.cta_primaire.href}
@@ -191,7 +191,7 @@ for (const s of sections) {
                     </a>
                   )
                 )}
-                {s.cta_secondaire && (
+                {s.cta_secondaire?.label && (
                   <a
                     href={s.cta_secondaire.href}
                     target={s.cta_secondaire.externe ? '_blank' : undefined}

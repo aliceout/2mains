@@ -148,9 +148,9 @@ const colorClass: Record<AccentColor, string> = {
         {accroche}
       </p>
     )}
-    {(cta_primaire || cta_secondaire) && (
+    {(cta_primaire?.label || cta_secondaire?.label) && (
       <div class="flex flex-wrap items-center gap-3">
-        {cta_primaire && (
+        {cta_primaire?.label && (
           <Btn
             href={cta_primaire.href}
             variant={primaryBtnVariant}
@@ -159,7 +159,7 @@ const colorClass: Record<AccentColor, string> = {
             {cta_primaire.label} <Arrow color="white" />
           </Btn>
         )}
-        {cta_secondaire && (
+        {cta_secondaire?.label && (
           <Btn
             href={cta_secondaire.href}
             variant="ghost"
