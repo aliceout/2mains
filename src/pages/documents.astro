@@ -7,7 +7,8 @@ import { filterPublished } from '../lib/drafts';
 import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('documents');
-if (!page) throw new Error('Page documents introuvable dans Payload');
+const hasContent = Boolean(page?.data.hero?.titre);
+const fallbackTitle = 'Documents';
 
 type Doc = {
   titre: string;
@@ -33,8 +34,12 @@ function formatDate(s: string | undefined): string {
 }
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
-  {page.data.hero && <Hero {...page.data.hero} />}
+<Layout
+  title={hasContent && page ? page.data.title : fallbackTitle}
+  description={hasContent && page ? page.data.description : undefined}
+  ogSlug={page?.slug ?? 'documents'}
+>
+  {page?.data.hero ? <Hero {...page.data.hero} /> : <Hero titre={fallbackTitle} variant="violet" />}
 
   <Section>
     <ul class="grid gap-4 md:grid-cols-2">

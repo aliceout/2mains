@@ -8,7 +8,8 @@ import { getSiteSettings } from '../lib/site';
 import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('contact');
-if (!page) throw new Error('Page contact introuvable dans Payload');
+const hasContent = Boolean(page?.data.hero?.titre);
+const fallbackTitle = 'Nous contacter';
 
 const settings = await getSiteSettings();
 
@@ -20,8 +21,12 @@ const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? (import.meta.env.PRO
 const mode: 'smtp' | 'mailto' = endpoint ? 'smtp' : 'mailto';
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
-  {page.data.hero && <Hero {...page.data.hero} />}
+<Layout
+  title={hasContent && page ? page.data.title : fallbackTitle}
+  description={hasContent && page ? page.data.description : undefined}
+  ogSlug={page?.slug ?? 'contact'}
+>
+  {page?.data.hero ? <Hero {...page.data.hero} /> : <Hero titre={fallbackTitle} variant="violet" />}
 
   <Section>
     <div class="grid gap-10 md:grid-cols-[1fr_1fr]">

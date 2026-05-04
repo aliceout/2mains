@@ -1,0 +1,34 @@
+---
+// Fallback minimal pour quand une Page Payload n'existe pas ou est
+// vide (pas de hero.titre ni de sections). Filet de sécurité pour
+// éviter qu'une suppression accidentelle dans /cms/admin ne fasse
+// tomber le site en 500.
+//
+// Usage typique :
+//   <Layout title={fallbackTitle}>
+//     {hasContent ? <PageRenderer page={page} /> : <MissingPageFallback title={fallbackTitle} />}
+//   </Layout>
+import Hero from './Hero.astro';
+import Section from './Section.astro';
+import Prose from './Prose.astro';
+
+type Props = { title: string };
+const { title } = Astro.props;
+---
+
+<Hero
+  titre={title}
+  sousTitre="Page en cours d'édition"
+  accroche="Cette page est en cours de mise à jour. Reviens bientôt — ou contacte-nous si tu as besoin d'informations dès maintenant."
+  variant="violet"
+/>
+
+<Section>
+  <Prose>
+    <p>
+      Le contenu de cette page n'a pas encore été publié. Pour toute question
+      ou demande spécifique, tu peux passer par le
+      <a href="/contact">formulaire de contact</a>.
+    </p>
+  </Prose>
+</Section>

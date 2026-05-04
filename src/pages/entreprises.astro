@@ -2,11 +2,19 @@
 import { fetchPageLegacy } from '../lib/payload';
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
+import MissingPageFallback from '../components/MissingPageFallback.astro';
 
 const page = await fetchPageLegacy('entreprises');
-if (!page) throw new Error("Page introuvable dans Payload");
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
+const fallbackTitle = 'Nos offres entreprise';
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
-  <PageRenderer page={page} />
+<Layout
+  title={hasContent && page ? page.data.title : fallbackTitle}
+  description={hasContent && page ? page.data.description : undefined}
+  ogSlug={page?.slug ?? 'entreprises'}
+  noindex={hasContent && page ? page.data.noindex : true}
+>
+  {hasContent && page ? <PageRenderer page={page} /> : <MissingPageFallback title={fallbackTitle} />}
 </Layout>
