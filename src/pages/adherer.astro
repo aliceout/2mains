@@ -13,10 +13,12 @@ import Prose from '../components/Prose.astro';
 import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('adherer');
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 ---
 
 {
-  page ? (
+  hasContent && page ? (
     <Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
       <PageRenderer page={page} />
     </Layout>

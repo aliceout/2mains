@@ -12,6 +12,8 @@ import Section from '../components/Section.astro';
 import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('soutenir');
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 
 const cards = [
   {
@@ -28,7 +30,7 @@ const cards = [
 ---
 
 {
-  page ? (
+  hasContent && page ? (
     <Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
       <PageRenderer page={page} />
     </Layout>

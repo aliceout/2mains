@@ -12,6 +12,12 @@ import Section from '../components/Section.astro';
 import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('agir');
+// On bascule sur le contenu Payload uniquement si Audrey a effectivement
+// rempli quelque chose (hero avec titre OU au moins une section). Si la
+// page est juste un shell créé dans l'admin avec son seul titre, on garde
+// le fallback hardcodé pour éviter un crash sur Hero (titre required).
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 
 const cards = [
   {
@@ -33,7 +39,7 @@ const cards = [
 ---
 
 {
-  page ? (
+  hasContent && page ? (
     <Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
       <PageRenderer page={page} />
     </Layout>
