@@ -14,7 +14,7 @@
 #      has read access to the project below.
 #
 # In production, this file is unused — secrets come from
-# `infra/scripts/deploy.sh` which calls `infisical export` directly
+# `scripts/deploy.sh` which calls `infisical export` directly
 # with the VPS-level Universal Auth credentials.
 
 secrets:

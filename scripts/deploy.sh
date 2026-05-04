@@ -12,7 +12,7 @@
 #   6. attendre que tous les containers soient healthy
 #
 # DEPLOY_DIR est résolu depuis l'emplacement du script — le hook l'invoque
-# via /var/www/2mains/infra/scripts/deploy.sh, ça résout à /var/www/2mains.
+# via /var/www/2mains/scripts/deploy.sh, ça résout à /var/www/2mains.
 # En dev local, ça résout à la racine du repo.
 #
 # CREDS_FILE par défaut : $HOME/.config/infisical/2mains.env (écrit par
@@ -20,7 +20,7 @@
 
 set -euo pipefail
 
-DEPLOY_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+DEPLOY_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 CREDS_FILE="${CREDS_FILE:-$HOME/.config/infisical/2mains.env}"
 
 [[ -s "$CREDS_FILE" ]] || {

@@ -31,11 +31,11 @@ Mailpit (capture les mails envoyés en local) : <http://localhost:8025>.
 
 ## Déploiement en prod
 
-Push sur `main` → CI build les images Docker → push GHCR → webhook VPS → `infra/scripts/deploy.sh` fetch les secrets Infisical (env `prod`), pull les nouvelles images, `compose up -d`. Aucun build sur le serveur.
+Push sur `main` → CI build les images Docker → push GHCR → webhook VPS → `scripts/deploy.sh` fetch les secrets Infisical (env `prod`), pull les nouvelles images, `compose up -d`. Aucun build sur le serveur.
 
 Données persistantes en bind mount sous `$HOME/data/2mains/` (Postgres + uploads Payload), backup `restic` cron côté infra VPS.
 
-Voir [`compose.yml`](compose.yml) et [`infra/scripts/deploy.sh`](infra/scripts/deploy.sh) pour le détail.
+Voir [`compose.yml`](compose.yml) et [`scripts/deploy.sh`](scripts/deploy.sh) pour le détail.
 
 ---
 
@@ -48,7 +48,7 @@ services/
 └── mail/                  Backend du formulaire /contact (Hono + nodemailer)
 public/                    Assets statiques + fonts Nunito self-hostées
 brand/                     Logos & pictos SVG (sources)
-infra/scripts/deploy.sh    Script de déploiement VPS
+scripts/deploy.sh    Script de déploiement VPS
 compose.yml                Compose prod (db, payload, site, mail)
 compose.dev.yml            Compose dev (postgres + mailpit)
 ```

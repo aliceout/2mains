@@ -12,11 +12,11 @@
 #   2mainsdefemmes.org/*     → 127.0.0.1:8064
 #
 # Data persistante = bind mounts sous $DATA_DIR (= $HOME/data/2mains,
-# injecté par infra/scripts/deploy.sh) :
+# injecté par scripts/deploy.sh) :
 #   $DATA_DIR/postgres/      → /var/lib/postgresql/data
 #   $DATA_DIR/payload-media/ → /app/media
 #
-# Secrets = .env racine, généré à chaque deploy par infra/scripts/deploy.sh
+# Secrets = .env racine, généré à chaque deploy par scripts/deploy.sh
 # depuis Infisical. Jamais commité.
 
 services:
