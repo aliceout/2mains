@@ -6,7 +6,7 @@ import Prose from '../components/Prose.astro';
 import { getSiteSettings } from '../lib/site';
 
 const settings = await getSiteSettings();
-const updated = '21 avril 2026';
+const updated = '4 mai 2026';
 ---
 
 <Layout
@@ -15,63 +15,152 @@ const updated = '21 avril 2026';
 >
   <Hero
     titre="Déclaration d'accessibilité"
-    sousTitre="Engagement RGAA"
-    accroche={`${settings.nom_asso} s'engage à rendre son site internet accessible, conformément à l'article 47 de la loi n° 2005-102 du 11 février 2005.`}
+    sousTitre="Notre démarche"
+    accroche={`${settings.nom_asso} s'efforce de rendre son site accessible au plus grand nombre. Cette page liste ce que nous avons mis en place et ce qui reste perfectible.`}
     variant="violet"
   />
 
   <Section>
     <Prose>
       <p>
-        Cette déclaration d'accessibilité s'applique au site <strong
-          >{settings.url}</strong
-        >. Elle a été mise à jour le {updated}.
+        Cette déclaration s'applique au site <strong>{settings.url}</strong>.
+        Elle a été mise à jour le {updated}.
       </p>
 
       <h2>État de conformité</h2>
       <p>
         Le site <strong>{settings.nom_asso}</strong> est <strong
-          >non conforme</strong
-        > au Référentiel général d'amélioration de l'accessibilité (RGAA) version
-        4.1. Aucun audit de conformité n'a encore été réalisé à ce jour. Un audit
-        est prévu dans le cadre du développement du site.
+          >partiellement conforme</strong
+        > au Référentiel général d'amélioration de l'accessibilité (RGAA)
+        version 4.1. Nous n'avons pas réalisé d'audit formel de conformité —
+        l'association est petite, sans budget pour un audit professionnel — mais
+        nous avons construit le site en suivant au mieux les recommandations
+        WCAG 2.1 niveau AA.
       </p>
 
-      <h2>Notre engagement</h2>
-      <p>
-        Malgré l'absence d'audit formel, le site a été conçu en cherchant à
-        respecter les critères du niveau AA des WCAG 2.1 :
-      </p>
+      <h2>Ce qui est en place</h2>
+      <p>Concrètement, voici ce qui a été pensé pour l'accessibilité :</p>
+
+      <h3>Navigation et structure</h3>
       <ul>
-        <li>structure sémantique (titres hiérarchisés, repères ARIA) ;</li>
         <li>
-          navigation au clavier (lien d'évitement « Aller au contenu », ordre de
-          tabulation cohérent, focus visible) ;
+          lien d'évitement « Aller au contenu » en début de page pour sauter la
+          navigation au clavier ;
         </li>
-        <li>contrastes de couleurs vérifiés automatiquement à chaque build ;</li>
+        <li>structure sémantique HTML5 (header, nav, main, footer, article) ;</li>
         <li>
-          textes alternatifs pour les images porteuses d'information, images
-          décoratives marquées <code>aria-hidden</code> ;
+          titres hiérarchisés (un seul <code>h1</code> par page, pas de saut de
+          niveau) ;
         </li>
-        <li>formulaires avec étiquettes explicites ;</li>
+        <li>repères ARIA sur les régions principales ;</li>
+        <li>fil d'Ariane sur les pages secondaires ;</li>
         <li>
-          responsive et zoomable jusqu'à 200 % sans perte d'information.
+          ordre de tabulation cohérent et naturel, focus visible (anneau
+          contrasté) ;
+        </li>
+        <li>
+          tous les éléments interactifs (liens, boutons, champs) sont
+          atteignables et activables au clavier seul.
         </li>
       </ul>
 
-      <h2>Contenus non accessibles</h2>
-      <p>
-        Les documents PDF téléchargeables depuis la section « Nos documents »
-        peuvent ne pas être entièrement accessibles (absence de balisage, ordre
-        de lecture, textes alternatifs). Nous travaillons à rendre accessible
-        progressivement l'ensemble des documents mis en ligne.
-      </p>
+      <h3>Contenu et médias</h3>
+      <ul>
+        <li>
+          attribut <code>lang="fr"</code> au niveau du document, langue annoncée
+          aux lecteurs d'écran ;
+        </li>
+        <li>
+          textes alternatifs (<code>alt</code>) sur toutes les images porteuses
+          d'information ;
+        </li>
+        <li>
+          images purement décoratives marquées <code>aria-hidden="true"</code> et{' '}
+          <code>alt=""</code> pour ne pas polluer la lecture vocale ;
+        </li>
+        <li>
+          formulaires avec étiquettes <code>label</code> explicites associées à
+          chaque champ ;
+        </li>
+        <li>
+          messages d'erreur de formulaire annoncés au plus près du champ
+          concerné ;
+        </li>
+        <li>
+          écriture inclusive utilisée dans les textes (point médian,
+          formulations épicènes), avec une priorité à la lisibilité.
+        </li>
+      </ul>
+
+      <h3>Mise en page et confort de lecture</h3>
+      <ul>
+        <li>
+          contrastes texte/fond conformes au niveau AA (ratio ≥ 4,5:1 pour le
+          texte courant), vérifiés sur la palette de la charte ;
+        </li>
+        <li>
+          interface entièrement responsive (smartphone, tablette, desktop) ;
+        </li>
+        <li>
+          zoom jusqu'à 200 % sans perte de contenu ni cassure de mise en page ;
+        </li>
+        <li>
+          respect de la préférence système{' '}
+          <code>prefers-reduced-motion</code> : si l'utilisateur·trice a demandé
+          à réduire les animations, le site n'en joue plus ;
+        </li>
+        <li>typographie lisible (Inter Tight, Newsreader), tailles confortables ;</li>
+        <li>pas d'auto-play vidéo ou son.</li>
+      </ul>
+
+      <h3>Vie privée et performance</h3>
+      <ul>
+        <li>
+          fontes auto-hébergées — aucun appel à Google Fonts, aucune fuite
+          d'adresse IP vers un tiers ;
+        </li>
+        <li>aucun tracker, aucun script analytics, aucun cookie de suivi ;</li>
+        <li>
+          le formulaire de contact ne stocke pas les messages dans une base —
+          il les transmet par mail, point.
+        </li>
+      </ul>
+
+      <h2>Ce qui reste perfectible</h2>
+      <p>Honnêtement, voici les zones qu'on sait imparfaites :</p>
+      <ul>
+        <li>
+          <strong>Documents PDF</strong> téléchargeables depuis la section « Nos
+          documents » — leur balisage interne (ordre de lecture, textes
+          alternatifs des images, structure de titres) n'est pas garanti. On
+          essaie de produire les nouveaux documents directement accessibles, mais
+          les anciens documents legacy peuvent ne pas l'être.
+        </li>
+        <li>
+          <strong>Tests utilisateurs</strong> : on n'a pas testé le site avec des
+          personnes utilisant un lecteur d'écran (NVDA, VoiceOver, JAWS) ou un
+          autre dispositif d'assistance en conditions réelles. Les choix
+          techniques sont guidés par les standards mais n'ont pas été validés en
+          usage.
+        </li>
+        <li>
+          <strong>Vidéos / contenus enrichis</strong> : si des vidéos sont
+          ajoutées un jour, elles devront être sous-titrées et avoir une
+          transcription — ce n'est pas en place actuellement.
+        </li>
+      </ul>
 
       <h2>Établissement de cette déclaration</h2>
       <p>
         Cette déclaration a été établie le {updated} sur la base d'une
-        auto-évaluation informelle. Elle sera complétée après un audit de
-        conformité RGAA.
+        auto-évaluation informelle (revue manuelle des pages, vérification des
+        contrastes via les outils de design, tests clavier). Elle est mise à
+        jour quand le site évolue.
+      </p>
+      <p>
+        Nous restons ouvert·e·s aux remarques, signalements et suggestions —
+        toute remontée nous aide à améliorer le site (cf. Retour d'information
+        ci-dessous).
       </p>
       <h3>Technologies utilisées</h3>
       <ul>
