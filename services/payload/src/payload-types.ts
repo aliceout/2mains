@@ -723,6 +723,9 @@ export interface User {
    * Root = compte propriétaire (1 seul, non supprimable). Admin = peut gérer les comptes. Éditeur·ice = édite le contenu.
    */
   role: 'root' | 'admin' | 'editor';
+  /**
+   * Géré automatiquement par le système d'invitation.
+   */
   status: 'pending' | 'active' | 'disabled';
   invitation?: {
     tokenHash?: string | null;
