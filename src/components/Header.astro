@@ -29,14 +29,14 @@ const isChildActive = (href: string | undefined): boolean => {
   <div class="flex items-center">
     <a
       href="/"
-      class="flex shrink-0 items-center gap-2 py-5 pl-6 md:pl-10"
+      class="flex shrink-0 items-center gap-2 py-4 pl-6 md:pl-10"
       aria-label={`Accueil — ${settings.nom_asso}`}
     >
       <img src="/brand/logo.svg" alt="" class="h-10 w-auto" width="140" height="40" />
       <span class="sr-only">{settings.nom_asso}</span>
     </a>
 
-    <nav aria-label="Navigation principale" class="hidden py-5 pl-10 lg:block">
+    <nav aria-label="Navigation principale" class="hidden py-4 pl-10 lg:block">
       <ul class="flex items-center gap-7 font-sans text-sm">
         {
           navigation.map((item) => {

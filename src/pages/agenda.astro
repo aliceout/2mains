@@ -11,7 +11,8 @@ import { filterPublished } from '../lib/drafts';
 import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('agenda');
-if (!page) throw new Error('Page agenda introuvable dans Payload');
+const hasContent = Boolean(page?.data.hero?.titre);
+const fallbackTitle = 'Agenda';
 
 type Evt = {
   title: string;
@@ -91,8 +92,13 @@ function formatDateFull(debutStr: string, finStr?: string): string {
 }
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.id} jsonLd={eventSchemas}>
-  {page.data.hero && <Hero {...page.data.hero} />}
+<Layout
+  title={hasContent && page ? page.data.title : fallbackTitle}
+  description={hasContent && page ? page.data.description : undefined}
+  ogSlug={page?.id ?? 'agenda'}
+  jsonLd={eventSchemas}
+>
+  {page?.data.hero ? <Hero {...page.data.hero} /> : <Hero titre={fallbackTitle} variant="violet" />}
 
   <Section>
     <div

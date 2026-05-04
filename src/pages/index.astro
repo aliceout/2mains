@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
+import MissingPageFallback from '../components/MissingPageFallback.astro';
 import Draft from '../components/Draft.astro';
 import DraftBadge from '../components/DraftBadge.astro';
 import Btn from '../components/atoms/Btn.astro';
@@ -11,7 +12,9 @@ import { filterPublished } from '../lib/drafts';
 import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('accueil');
-if (!page) throw new Error('Page accueil introuvable dans Payload');
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
+const fallbackTitle = 'Accueil';
 
 const settings = await getSiteSettings();
 
@@ -42,8 +45,11 @@ function formatDate(s: string): string {
 const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
 ---
 
-<Layout ogSlug="accueil">
-  <PageRenderer page={page} />
+<Layout
+  title={hasContent && page ? undefined : fallbackTitle}
+  ogSlug="accueil"
+>
+  {page && hasContent ? <PageRenderer page={page} /> : <MissingPageFallback title={fallbackTitle} />}
 
 
   <section class="border-t border-line">

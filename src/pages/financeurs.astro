@@ -8,7 +8,8 @@ import { filterPublished } from '../lib/drafts';
 import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('financeurs');
-if (!page) throw new Error('Page financeurs introuvable dans Payload');
+const hasContent = Boolean(page?.data.hero?.titre);
+const fallbackTitle = 'Nos financeurs et partenaires';
 
 type Partenaire = {
   nom: string;
@@ -27,8 +28,12 @@ const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif
 const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
-<Layout title={page.data.title} description={page.data.description} ogSlug={page.slug}>
-  {page.data.hero && <Hero {...page.data.hero} />}
+<Layout
+  title={hasContent && page ? page.data.title : fallbackTitle}
+  description={hasContent && page ? page.data.description : undefined}
+  ogSlug={page?.slug ?? 'financeurs'}
+>
+  {page?.data.hero ? <Hero {...page.data.hero} /> : <Hero titre={fallbackTitle} variant="violet" />}
 
   {
     financeurs.length > 0 && (
