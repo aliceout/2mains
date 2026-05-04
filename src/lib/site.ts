@@ -93,15 +93,10 @@ export const navigation: NavItem[] = [
       { label: 'Mécénat entreprise', href: '/mecenat' },
     ],
   },
-  {
-    label: 'Agir et soutenir',
-    children: [
-      { label: 'Devenir bénévole', href: '/benevolat' },
-      { label: 'Réseau des praticien·ne·s', href: '/praticiennes' },
-      { label: 'Faire un don', href: '/dons' },
-      { label: 'Mécénat entreprise', href: '/mecenat' },
-    ],
-  },
+  // Note : les anciens enfants « Agir et soutenir » (bénévole, praticien·nes,
+  // don, mécénat) sont maintenant accessibles via les 3 boutons d'action
+  // du header (Blog / Agir / Soutenir) qui pointent vers /agir et /soutenir,
+  // pages d'aiguillage qui listent ces sous-pages.
 ];
 
 // Labels pour le fil d'Ariane sur les pages hors-top-nav (footer, contenu
@@ -115,8 +110,11 @@ const breadcrumbLabels: Record<string, string> = {
   '/structures': 'Structure santé/social',
   '/femmes': 'Femme concernée',
   '/entreprises': 'Nos offres entreprises',
+  '/agir': 'Agir',
   '/benevolat': 'Devenir bénévole',
   '/praticiennes': 'Réseau des praticien·ne·s',
+  '/adherer': 'Adhérer',
+  '/soutenir': 'Soutenir',
   '/dons': 'Faire un don',
   '/mecenat': 'Mécénat entreprise',
   '/documents': 'Nos documents cadres',

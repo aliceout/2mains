@@ -1,0 +1,51 @@
+---
+// Page « Adhérer ». Permet de rejoindre formellement l'asso comme
+// membre — accessible depuis /agir.
+//
+// Pattern résilient : si Audrey crée la page « adherer » dans Payload,
+// son contenu prend le dessus. Sinon, on rend un fallback hard-codé
+// minimal qui demande à Audrey de remplir le contenu via le CMS.
+import Layout from '../layouts/Layout.astro';
+import PageRenderer from '../components/PageRenderer.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Prose from '../components/Prose.astro';
+import { fetchPageLegacy } from '../lib/payload';
+
+const page = await fetchPageLegacy('adherer');
+---
+
+{
+  page ? (
+    <Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
+      <PageRenderer page={page} />
+    </Layout>
+  ) : (
+    <Layout
+      title="Adhérer"
+      description="Devenir membre de 2mains de femmes — soutenir et participer à la vie associative."
+      noindex={true}
+    >
+      <Hero
+        titre="*Adhérer* à l'association"
+        sousTitre="Devenir membre"
+        accroche="Rejoindre 2mains de femmes en tant que membre, voter en assemblée générale et participer aux décisions."
+        variant="violet"
+      />
+
+      <Section>
+        <Prose>
+          <p>
+            Cette page n'est pas encore configurée. Le contenu sera ajouté
+            depuis l'admin <a href="/cms/admin">/cms/admin → Pages → adherer</a>
+            par l'équipe de l'association.
+          </p>
+          <p>
+            En attendant, pour adhérer, contacte-nous via la
+            <a href="/contact">page de contact</a>.
+          </p>
+        </Prose>
+      </Section>
+    </Layout>
+  )
+}

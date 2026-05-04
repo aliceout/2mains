@@ -1,0 +1,72 @@
+---
+// Page d'aiguillage « Agir » — accessible via le bouton Agir du header.
+// Liste les façons concrètes de s'engager auprès de l'asso.
+//
+// Pattern résilient : si Audrey crée la page « agir » dans Payload, son
+// contenu prend le dessus. Sinon, on rend un fallback hard-codé avec
+// hero + 3 cartes vers les sous-pages (bénévole, praticien·nes, adhérer).
+import Layout from '../layouts/Layout.astro';
+import PageRenderer from '../components/PageRenderer.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import { fetchPageLegacy } from '../lib/payload';
+
+const page = await fetchPageLegacy('agir');
+
+const cards = [
+  {
+    label: 'Devenir bénévole',
+    href: '/benevolat',
+    desc: "Donner du temps : accueil, ateliers, événements, communication.",
+  },
+  {
+    label: 'Réseau des praticien·ne·s',
+    href: '/praticiennes',
+    desc: 'Rejoindre le collectif des praticien·ne·s du toucher relationnel.',
+  },
+  {
+    label: 'Adhérer',
+    href: '/adherer',
+    desc: "Devenir membre, soutenir l'asso et participer à la vie associative.",
+  },
+];
+---
+
+{
+  page ? (
+    <Layout title={page.data.title} description={page.data.description} ogSlug={page.slug} noindex={page.data.noindex}>
+      <PageRenderer page={page} />
+    </Layout>
+  ) : (
+    <Layout
+      title="Agir"
+      description="S'engager auprès de 2mains de femmes : bénévolat, réseau des praticien·ne·s, adhésion."
+    >
+      <Hero
+        titre="*Agir* à nos côtés"
+        sousTitre="Engagement"
+        accroche="Plusieurs façons de prendre part à l'action de l'association — du temps, des compétences, ou de la présence."
+        variant="violet"
+      />
+
+      <Section>
+        <ul class="grid gap-6 md:grid-cols-3">
+          {cards.map((card) => (
+            <li>
+              <a
+                href={card.href}
+                class="flex h-full flex-col rounded-2xl border border-line bg-paper p-6 transition-opacity hover:opacity-90"
+              >
+                <h2 class="font-serif text-xl font-bold leading-tight">{card.label}</h2>
+                <p class="mt-3 flex-1 text-sm leading-relaxed text-ink-2">{card.desc}</p>
+                <span class="mt-6 font-sans text-sm font-semibold text-orange">
+                  En savoir plus →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    </Layout>
+  )
+}
