@@ -92,9 +92,11 @@ const isChildActive = (href: string | undefined): boolean => {
     </nav>
 
     <div class="ml-auto flex items-center gap-3">
-      <span class="hidden md:inline-block">
-        <Btn href={settings.helloasso_don} external>
-          Faire un don <Arrow color="white" />
+      <span class="hidden md:inline-flex md:items-center md:gap-2">
+        <Btn href="/actualites" variant="violet">Blog</Btn>
+        <Btn href="/benevolat" variant="ghost">Agir</Btn>
+        <Btn href="/dons" variant="primary">
+          Soutenir <Arrow color="white" />
         </Btn>
       </span>
       <button
@@ -182,9 +184,11 @@ const isChildActive = (href: string | undefined): boolean => {
             );
           })
         }
-        <li class="pt-3">
-          <Btn href={settings.helloasso_don} external>
-            Faire un don <Arrow color="white" />
+        <li class="pt-3 flex flex-col gap-2">
+          <Btn href="/actualites" variant="violet">Blog</Btn>
+          <Btn href="/benevolat" variant="ghost">Agir</Btn>
+          <Btn href="/dons" variant="primary">
+            Soutenir <Arrow color="white" />
           </Btn>
         </li>
       </ul>
