@@ -239,6 +239,29 @@ export const Users: CollectionConfig = {
   hooks: {
     // Garde l'unicité du root et empêche sa suppression / rétrogradation.
     beforeChange: [
+      // Empêche les admins de changer le mot de passe d'un autre user.
+      // Le password est self-managed : chacun le change via /cms/admin/account
+      // (panneau Sécurité). L'admin/root ne peut PAS reset le mdp de qq d'autre
+      // depuis la liste — pour ça il faut passer par le flow forgot-password
+      // qui envoie un mail à l'utilisateur cible.
+      //
+      // Le check s'applique uniquement aux requêtes authentifiées (req.user
+      // présent). Les flows programmatiques (acceptation d'invitation, reset
+      // via token de mail) passent avec req.user undefined → autorisés.
+      async ({ data, originalDoc, operation, req }) => {
+        if (
+          operation === 'update' &&
+          data?.password &&
+          req.user &&
+          String(req.user.id) !== String(originalDoc?.id)
+        ) {
+          throw new Error(
+            'Vous ne pouvez pas modifier le mot de passe d\'un autre utilisateur. ' +
+              'Demandez-lui d\'utiliser « Mot de passe oublié » sur la page de connexion.',
+          );
+        }
+        return data;
+      },
       async ({ data, originalDoc, operation, req }) => {
         if (operation === 'create' && data?.role === 'root') {
           // Création d'un root : autorisée uniquement s'il n'en existe pas

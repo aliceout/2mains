@@ -146,6 +146,14 @@ export default function LoginView(): React.ReactElement {
           <Button type="submit" disabled={loading}>
             {loading ? 'Connexion…' : 'Se connecter'}
           </Button>
+          <p style={{ margin: 0, textAlign: 'center', fontSize: 14 }}>
+            <a
+              href="/cms/admin/forgot"
+              style={{ color: 'var(--theme-text)', opacity: 0.7 }}
+            >
+              Mot de passe oublié ?
+            </a>
+          </p>
         </form>
       )}
 
