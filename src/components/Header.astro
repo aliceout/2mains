@@ -122,72 +122,46 @@ const isChildActive = (href: string | undefined): boolean => {
       </svg>
     </button>
 
-    <!-- 3 boutons d'action — pleine hauteur, flush bord droit de l'écran. -->
+    <!-- 3 boutons d'action — pleine hauteur, flush bord droit de l'écran.
+         Couleurs sur les tokens charte (bg-violet / bg-magenta / bg-orange).
+         Icônes : SVG fournis par Audrey (bulle de blog, personnage bras
+         levés, main + 3 points) — chargés via mask-image pour que la
+         couleur d'encrage suive `text-paper` du parent (les fichiers
+         eux-mêmes sont figés en dark teal #2f4d53). Le label « LE BLOG /
+         NOUS REJOINDRE / NOUS SOUTENIR » est intégré dans chaque SVG. -->
     <div class="hidden self-stretch md:flex md:items-stretch">
       <a
         href="/actualites"
-        class="flex w-24 flex-col items-center justify-center gap-1 bg-lav text-ink transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Blog — actualités de l'association"
+        class="flex w-24 items-center justify-center bg-violet text-paper transition-opacity hover:opacity-85 lg:w-28"
+        aria-label="Le blog — actualités de l'association"
       >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <span
+          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
+          style="-webkit-mask:url('/brand/blog.svg') center/contain no-repeat;mask:url('/brand/blog.svg') center/contain no-repeat;"
           aria-hidden="true"
-        >
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-          <polyline points="14 2 14 8 20 8" />
-          <line x1="8" y1="13" x2="16" y2="13" />
-          <line x1="8" y1="17" x2="13" y2="17" />
-        </svg>
-        <span class="font-sans text-xs font-bold uppercase tracking-wider">Blog</span>
+        ></span>
       </a>
       <a
         href="/agir"
-        class="flex w-24 flex-col items-center justify-center gap-1 bg-honey text-ink transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Agir — s'engager auprès de l'association"
+        class="flex w-24 items-center justify-center bg-magenta text-paper transition-opacity hover:opacity-85 lg:w-28"
+        aria-label="Nous rejoindre — bénévolat, praticien·ne·s, adhésion"
       >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <span
+          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
+          style="-webkit-mask:url('/brand/rejoindre.svg') center/contain no-repeat;mask:url('/brand/rejoindre.svg') center/contain no-repeat;"
           aria-hidden="true"
-        >
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
-        <span class="font-sans text-xs font-bold uppercase tracking-wider">Agir</span>
+        ></span>
       </a>
       <a
         href="/soutenir"
-        class="flex w-24 flex-col items-center justify-center gap-1 bg-orange text-paper transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Soutenir — don, mécénat"
+        class="flex w-24 items-center justify-center bg-orange text-paper transition-opacity hover:opacity-85 lg:w-28"
+        aria-label="Nous soutenir — don, mécénat"
       >
-        <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+        <span
+          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
+          style="-webkit-mask:url('/brand/soutenir.svg') center/contain no-repeat;mask:url('/brand/soutenir.svg') center/contain no-repeat;"
           aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="16" />
-          <line x1="8" y1="12" x2="16" y2="12" />
-        </svg>
-        <span class="font-sans text-xs font-bold uppercase tracking-wider">Soutenir</span>
+        ></span>
       </a>
     </div>
   </div>
@@ -251,10 +225,10 @@ const isChildActive = (href: string | undefined): boolean => {
           })
         }
         <li class="pt-3 flex flex-col gap-2">
-          <Btn href="/actualites" variant="violet">Blog</Btn>
-          <Btn href="/agir" variant="ghost">Agir</Btn>
+          <Btn href="/actualites" variant="violet">Le blog</Btn>
+          <Btn href="/agir" variant="ghost">Nous rejoindre</Btn>
           <Btn href="/soutenir" variant="primary">
-            Soutenir <Arrow color="white" />
+            Nous soutenir <Arrow color="white" />
           </Btn>
         </li>
       </ul>
