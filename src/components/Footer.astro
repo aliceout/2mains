@@ -20,41 +20,13 @@ const { settings } = Astro.props;
     class="mx-auto grid max-w-310 gap-12 px-6 py-20 md:grid-cols-4 md:gap-16 md:px-10"
   >
     <div class="md:col-span-2">
-      <div class="flex items-center gap-2.5">
-        <svg
-          width="36"
-          height="36"
-          viewBox="0 0 32 32"
-          fill="none"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path
-            d="M22 8 a8 8 0 1 0 0 16"
-            stroke="var(--color-orange-soft)"
-            stroke-width="2.5"
-            fill="none"
-            stroke-linecap="round"></path>
-          <path
-            d="M10 24 a8 8 0 1 0 0 -16"
-            stroke="var(--color-violet-soft)"
-            stroke-width="2.5"
-            fill="none"
-            stroke-linecap="round"></path>
-        </svg>
-        <span class="flex flex-col font-serif" style="line-height: 1;">
-          <span
-            style="font-size: 22px; color: var(--color-orange-soft); font-weight: 500;"
-          >
-            2mains
-          </span>
-          <span
-            style="font-size: 16px; color: #A39DBF; font-style: italic; margin-top: 2px;"
-          >
-            de femmes
-          </span>
-        </span>
-      </div>
+      <img
+        src="/brand/logo.svg"
+        alt={settings.nom_asso}
+        class="h-12 w-auto"
+        width="181"
+        height="48"
+      />
       <p
         class="mt-5 max-w-[32ch] font-sans text-sm leading-relaxed text-[#9C9080]"
       >
