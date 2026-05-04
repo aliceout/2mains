@@ -138,8 +138,17 @@ export const Users: CollectionConfig = {
         { label: 'Actif', value: 'active' },
         { label: 'Désactivé', value: 'disabled' },
       ],
-      access: { update: ({ req }) => userRole(req) === 'admin' || userRole(req) === 'root' },
-      admin: { position: 'sidebar' },
+      // Status muté uniquement programmatiquement : par l'endpoint
+      // d'acceptation d'invitation (pending → active) et par les futurs
+      // boutons admin (active → disabled). Pas modifiable via le formulaire
+      // pour éviter qu'un user en flux d'invitation puisse le changer
+      // ou que quelqu'un crée des incohérences manuellement.
+      access: { update: () => false },
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Géré automatiquement par le système d\'invitation.',
+      },
     },
 
     // ─── Panneau Sécurité (UI only, ne stocke rien) ────────────────
