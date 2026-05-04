@@ -1,5 +1,7 @@
 User-agent: *
 Disallow: /admin/
+Disallow: /cms/
+Disallow: /api/
 Disallow: /status
 Disallow: /demo
 

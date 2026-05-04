@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+---
+
+<Layout title="Erreur serveur" noindex>
+  <Section taille="lg" fond="beige">
+    <div class="mx-auto max-w-xl text-center">
+      <img
+        src="/brand/picto.svg"
+        alt=""
+        aria-hidden="true"
+        class="mx-auto mb-6 h-24 w-24"
+      />
+      <p class="mb-2 text-sm font-semibold tracking-wide uppercase text-violet">
+        Erreur 500
+      </p>
+      <h1 class="mb-4 text-4xl font-bold md:text-5xl">
+        Quelque chose a coincé.
+      </h1>
+      <p class="mb-8 text-lg leading-relaxed">
+        Une erreur inattendue s'est produite côté serveur. On regarde ce qui
+        s'est passé. Réessaie dans un moment, ou écris-nous si ça persiste.
+      </p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a
+          href="/"
+          class="rounded-full bg-orange px-6 py-3 font-bold text-paper hover:opacity-85"
+        >
+          Retour à l'accueil
+        </a>
+        <a
+          href="/contact"
+          class="rounded-full border-2 border-ink px-6 py-3 font-bold hover:bg-paper/10"
+        >
+          Nous écrire
+        </a>
+      </div>
+    </div>
+  </Section>
+</Layout>

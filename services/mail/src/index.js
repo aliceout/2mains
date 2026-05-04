@@ -192,7 +192,9 @@ ${message}
       subject,
       text,
     });
-    logEvent('mail_sent', { ip, from: email });
+    // PII : on ne logue ni l'email ni le nom — juste l'IP pour pouvoir
+    // identifier d'éventuels abus (rate limit / spam).
+    logEvent('mail_sent', { ip });
     return c.json({ ok: true });
   } catch (err) {
     logEvent('mail_failed', { ip, error: err.message });

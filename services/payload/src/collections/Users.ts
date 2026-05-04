@@ -239,6 +239,18 @@ export const Users: CollectionConfig = {
   hooks: {
     // Garde l'unicité du root et empêche sa suppression / rétrogradation.
     beforeChange: [
+      // Politique mot de passe : 12 caractères min (recommandation NIST
+      // SP 800-63B — longueur > complexité forcée). On pose le check ici
+      // plutôt que sur le field `password` parce que ce dernier est
+      // auto-géré par Payload (pas surchargeable directement).
+      async ({ data }) => {
+        if (typeof data?.password === 'string' && data.password.length > 0 && data.password.length < 12) {
+          throw new Error(
+            'Le mot de passe doit contenir au moins 12 caractères.',
+          );
+        }
+        return data;
+      },
       // Empêche les admins de changer le mot de passe d'un autre user.
       // Le password est self-managed : chacun le change via /cms/admin/account
       // (panneau Sécurité). L'admin/root ne peut PAS reset le mdp de qq d'autre

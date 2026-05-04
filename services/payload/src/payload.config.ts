@@ -114,6 +114,26 @@ export default buildConfig({
     push: true,
   }),
   serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL || 'http://localhost:3001',
+  // CORS : restreint aux domaines connus. En dev on autorise les
+  // ports locaux courants (Astro 4321, Payload 3001) ; en prod on
+  // autorise uniquement le domaine du site (et en cas de domaine
+  // staging, ajouter ici).
+  cors: [
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    process.env.PUBLIC_SITE_URL,
+    'https://2mainsdefemmes.org',
+    'http://localhost:4321',
+    'http://localhost:3001',
+  ].filter((url): url is string => Boolean(url)),
+  // Idem pour le CSRF — Payload utilise cette liste pour valider les
+  // requêtes mutantes (POST/PATCH/DELETE) côté admin et auth.
+  csrf: [
+    process.env.PAYLOAD_PUBLIC_SERVER_URL,
+    process.env.PUBLIC_SITE_URL,
+    'https://2mainsdefemmes.org',
+    'http://localhost:4321',
+    'http://localhost:3001',
+  ].filter((url): url is string => Boolean(url)),
   sharp,
   plugins: [],
   onInit: async (payload) => {
