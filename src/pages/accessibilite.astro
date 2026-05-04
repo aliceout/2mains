@@ -1,14 +1,35 @@
 ---
+// Page /accessibilite — pattern résilient : si Audrey crée une Page
+// Payload avec slug `accessibilite`, son contenu prend le dessus.
+// Sinon, on rend le fallback hardcodé ci-dessous (texte par défaut
+// rédigé pour le lancement du site, à actualiser via le CMS).
 import Layout from '../layouts/Layout.astro';
+import PageRenderer from '../components/PageRenderer.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
 import Prose from '../components/Prose.astro';
 import { getSiteSettings } from '../lib/site';
+import { fetchPageLegacy } from '../lib/payload';
 
 const settings = await getSiteSettings();
 const updated = '4 mai 2026';
+
+const page = await fetchPageLegacy('accessibilite');
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 ---
 
+{
+  hasContent && page ? (
+    <Layout
+      title={page.data.title}
+      description={page.data.description}
+      ogSlug={page.slug}
+      noindex={page.data.noindex}
+    >
+      <PageRenderer page={page} />
+    </Layout>
+  ) : (
 <Layout
   title="Déclaration d'accessibilité"
   description="Engagement et état de conformité du site aux règles d'accessibilité (RGAA, WCAG 2.1 niveau AA)."
@@ -184,3 +205,5 @@ const updated = '4 mai 2026';
     </Prose>
   </Section>
 </Layout>
+  )
+}
