@@ -15,6 +15,12 @@ jobs:
   test:
     name: Type check + a11y
     runs-on: ubuntu-latest
+    # ADDRESS factice au niveau job — on teste juste que ça compile.
+    # `astro check` ET `astro build` chargent astro.config.mjs qui
+    # throw si la var manque. La vraie valeur arrive en build-arg
+    # sur le job build-site.
+    env:
+      ADDRESS: https://example.invalid
     steps:
       - uses: actions/checkout@v4
 
@@ -32,10 +38,6 @@ jobs:
         run: pnpm check
 
       - name: Build (Astro Node SSR)
-        # ADDRESS factice ici — on teste juste que le build compile,
-        # la vraie valeur arrive en build-arg sur le job build-site.
-        env:
-          ADDRESS: https://example.invalid
         run: pnpm build
 
       # Smoke test mode SSR : on vérifie que le bundle Node a bien été
