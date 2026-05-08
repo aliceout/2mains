@@ -21,13 +21,18 @@ try {
 //  - en dev : .env (chargé ci-dessus)
 //  - en build CI : workflow l'injecte sur le step `pnpm build`
 //  - en build Docker : Dockerfile.site reçoit ADDRESS en build-arg
-const SITE = process.env.ADDRESS;
-if (!SITE) {
+//
+// Normalisation : Infisical peut stocker la valeur sans schème (juste
+// `domaine.tld`). On préfixe `https://` si absent ; les valeurs déjà
+// préfixées (incl. `http://` en dev local) sont conservées.
+const RAW_ADDRESS = process.env.ADDRESS;
+if (!RAW_ADDRESS) {
   throw new Error(
     "ADDRESS env var manquante. Astro a besoin de l'URL publique au build " +
       '(sitemap, RSS, JSON-LD). Renseigne-la dans .env (dev) ou en build-arg (Docker).',
   );
 }
+const SITE = /^https?:\/\//.test(RAW_ADDRESS) ? RAW_ADDRESS : `https://${RAW_ADDRESS}`;
 
 export default defineConfig({
   site: SITE,

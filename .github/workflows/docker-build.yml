@@ -71,17 +71,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ADDRESS = URL publique du site. Lue depuis Infisical (source
+      # de vérité unique avec la prod) et passée en build-arg au
+      # Dockerfile.site, parce que Astro fige `site:` dans dist/ au
+      # build (sitemap, RSS, JSON-LD). En prod runtime, deploy.sh
+      # refetch Infisical et alimente .env qui est consommé par
+      # docker compose (compose.yml expose ADDRESS au service site).
+      - name: Fetch build-time secrets from Infisical
+        uses: Infisical/secrets-action@v1.0.7
+        with:
+          method: universal
+          domain: ${{ secrets.INFISICAL_API_URL }}
+          client-id: ${{ secrets.INFISICAL_CI_CLIENT_ID }}
+          client-secret: ${{ secrets.INFISICAL_CI_CLIENT_SECRET }}
+          project-slug: ${{ secrets.INFISICAL_PROJECT_ID }}
+          env-slug: prod
+          secret-path: /services/2mains
+          export-type: env
+
       - name: Build and push site
         uses: docker/build-push-action@v6
         with:
           context: .
           file: Dockerfile.site
           push: true
-          # ADDRESS = URL publique du site. À configurer sur GitHub :
-          # repo Settings → Secrets and variables → Actions → Variables →
-          # New repository variable, name=ADDRESS, value=https://votre-domaine.tld
           build-args: |
-            ADDRESS=${{ vars.ADDRESS }}
+            ADDRESS=${{ env.ADDRESS }}
           tags: |
             ghcr.io/aliceout/2mains-site:latest
             ghcr.io/aliceout/2mains-site:${{ github.sha }}

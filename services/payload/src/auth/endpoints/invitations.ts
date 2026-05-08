@@ -32,14 +32,21 @@ import { randomBytes } from 'node:crypto';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Base URL publique (= ADDRESS), normalisée et sans slash final.
+ *  Infisical peut stocker la valeur sans schème (ex: `2mainsdefemmes.org`) ;
+ *  on préfixe `https://` si absent. */
+function publicBase(): string {
+  const raw = process.env.ADDRESS || 'http://localhost:3001';
+  const withScheme = /^https?:\/\//.test(raw) ? raw : `https://${raw}`;
+  return withScheme.replace(/\/$/, '');
+}
+
 function buildAcceptUrl(token: string): string {
-  const base = process.env.PAYLOAD_PUBLIC_SERVER_URL?.replace(/\/$/, '') || 'http://localhost:3001';
-  return `${base}/cms/admin/invitation/${token}`;
+  return `${publicBase()}/cms/admin/invitation/${token}`;
 }
 
 function buildLoginUrl(): string {
-  const base = process.env.PAYLOAD_PUBLIC_SERVER_URL?.replace(/\/$/, '') || 'http://localhost:3001';
-  return `${base}/cms/admin/login`;
+  return `${publicBase()}/cms/admin/login`;
 }
 
 // ─── POST /users/invite ────────────────────────────────────────────

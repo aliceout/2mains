@@ -25,6 +25,14 @@ import { startRateLimitCleanup } from './auth/rate-limit'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+// Normalisation ADDRESS : Infisical peut stocker la valeur sans schème
+// (ex: `2mainsdefemmes.org`). On préfixe `https://` si absent ; les
+// valeurs déjà préfixées sont conservées (incl. `http://localhost` en dev).
+const RAW_ADDRESS = process.env.ADDRESS || 'http://localhost:3001'
+const ADDRESS = /^https?:\/\//.test(RAW_ADDRESS)
+  ? RAW_ADDRESS
+  : `https://${RAW_ADDRESS}`
+
 // On branche les endpoints d'auth (invitations, 2FA, profil) sur la
 // collection users. Payload les expose alors sous /cms/api/users/<path>.
 const baseEndpoints = Array.isArray(Users.endpoints) ? Users.endpoints : []
@@ -113,22 +121,14 @@ export default buildConfig({
     },
     push: true,
   }),
-  serverURL: process.env.ADDRESS || 'http://localhost:3001',
+  serverURL: ADDRESS,
   // CORS : restreint aux domaines connus. En prod ADDRESS pointe sur
   // le domaine public ; en dev on autorise aussi les ports locaux
   // courants (Astro 4321, Payload 3001).
-  cors: [
-    process.env.ADDRESS,
-    'http://localhost:4321',
-    'http://localhost:3001',
-  ].filter((url): url is string => Boolean(url)),
+  cors: [ADDRESS, 'http://localhost:4321', 'http://localhost:3001'],
   // Idem pour le CSRF — Payload utilise cette liste pour valider les
   // requêtes mutantes (POST/PATCH/DELETE) côté admin et auth.
-  csrf: [
-    process.env.ADDRESS,
-    'http://localhost:4321',
-    'http://localhost:3001',
-  ].filter((url): url is string => Boolean(url)),
+  csrf: [ADDRESS, 'http://localhost:4321', 'http://localhost:3001'],
   sharp,
   plugins: [],
   onInit: async (payload) => {

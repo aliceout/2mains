@@ -16,8 +16,14 @@ const INTERNAL_URL =
 /** URL de base de l'API REST Payload (ajoute `/cms/api`). */
 const API_BASE = `${INTERNAL_URL.replace(/\/$/, '')}/cms/api`;
 
-/** URL publique pour servir les fichiers media (côté browser). */
-const PUBLIC_URL = process.env.ADDRESS ?? 'http://localhost:3001';
+/** URL publique pour servir les fichiers media (côté browser).
+ *  Normalise ADDRESS : Infisical peut stocker la valeur sans schème
+ *  (ex: `2mainsdefemmes.org`). On préfixe `https://` si absent ;
+ *  les valeurs déjà préfixées sont conservées. */
+const RAW_PUBLIC = process.env.ADDRESS ?? 'http://localhost:3001';
+const PUBLIC_URL = /^https?:\/\//.test(RAW_PUBLIC)
+  ? RAW_PUBLIC
+  : `https://${RAW_PUBLIC}`;
 
 /**
  * Construit l'URL publique d'une image Payload depuis son `filename`
