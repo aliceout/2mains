@@ -4,8 +4,33 @@ import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
+// Astro ne charge pas .env pour SON PROPRE fichier de config (Vite le
+// fait pour le runtime, mais la config tourne avant Vite). On charge
+// manuellement via l'API Node native (≥ 20.6). En CI/Docker, ADDRESS
+// est déjà dans process.env (workflow env / build-arg), donc le
+// loadEnvFile silencieusement échoue et on tombe sur la valeur déjà
+// présente.
+try {
+  process.loadEnvFile('.env');
+} catch {
+  // pas de .env → on s'attend à process.env déjà rempli (CI, Docker).
+}
+
+// `site:` est lu au BUILD (sitemap, RSS, URLs absolues). Doit être
+// fourni via la var d'env `ADDRESS` :
+//  - en dev : .env (chargé ci-dessus)
+//  - en build CI : workflow l'injecte sur le step `pnpm build`
+//  - en build Docker : Dockerfile.site reçoit ADDRESS en build-arg
+const SITE = process.env.ADDRESS;
+if (!SITE) {
+  throw new Error(
+    "ADDRESS env var manquante. Astro a besoin de l'URL publique au build " +
+      '(sitemap, RSS, JSON-LD). Renseigne-la dans .env (dev) ou en build-arg (Docker).',
+  );
+}
+
 export default defineConfig({
-  site: 'https://2mainsdefemmes.org',
+  site: SITE,
   trailingSlash: 'ignore',
   // SSR via Node : chaque requête tape Payload (réseau docker
   // interne en prod, localhost:3001 en dev). Pas de rebuild CI

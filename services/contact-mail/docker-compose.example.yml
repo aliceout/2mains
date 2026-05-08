@@ -11,8 +11,8 @@ services:
       SMTP_HOST: mail.infomaniak.com
       SMTP_PORT: 587
       SMTP_SECURE: "false"
-      SMTP_USER: contact@2mainsdefemmes.org
+      SMTP_USER: contact@example.com
       SMTP_PASS: ${SMTP_PASS}
-      CONTACT_TO: contact@2mainsdefemmes.org
-      ALLOWED_ORIGIN: https://2mainsdefemmes.org
+      CONTACT_TO: contact@example.com
+      ALLOWED_ORIGIN: https://example.com
       RATE_LIMIT_PER_HOUR: "5"

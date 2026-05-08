@@ -46,7 +46,9 @@ const passes = all
 const hasFictive = aVenir.some((e) => e.data.fictif);
 
 const settings = await getSiteSettings();
-const feedHttps = new URL('/agenda.ics', settings.url ?? 'https://2mainsdefemmes.org').toString();
+const siteAddress = settings.url ?? process.env.ADDRESS;
+if (!siteAddress) throw new Error('Site URL inconnue (settings.url + ADDRESS vides).');
+const feedHttps = new URL('/agenda.ics', siteAddress).toString();
 const feedWebcal = feedHttps.replace(/^https?:/, 'webcal:');
 
 const eventSchemas = aVenir

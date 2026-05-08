@@ -24,7 +24,7 @@ message par SMTP. ~130 lignes de Node, aucune dépendance hors `nodemailer`.
 | `SMTP_USER`         | oui         | —                                   |
 | `SMTP_PASS`         | oui         | —                                   |
 | `CONTACT_TO`        | non         | même que `SMTP_USER`                |
-| `ALLOWED_ORIGIN`    | non         | `https://2mainsdefemmes.org`        |
+| `ALLOWED_ORIGIN`    | oui         | —                                   |
 | `RATE_LIMIT_PER_HOUR` | non       | `5`                                 |
 | `PORT`              | non         | `3000`                              |
 
@@ -50,7 +50,7 @@ Voir [`docker-compose.example.yml`](./docker-compose.example.yml).
 Proxy vers `127.0.0.1:3002`, monté sur le path `/api/contact` du site :
 
 ```nginx
-# À ajouter dans le server block de 2mainsdefemmes.org
+# À ajouter dans le server block de example.com
 location = /api/contact {
     limit_except POST OPTIONS { deny all; }
     proxy_pass http://127.0.0.1:3002/send;

@@ -17,14 +17,13 @@ const INTERNAL_URL =
 const API_BASE = `${INTERNAL_URL.replace(/\/$/, '')}/cms/api`;
 
 /** URL publique pour servir les fichiers media (côté browser). */
-const PUBLIC_URL =
-  process.env.PAYLOAD_PUBLIC_SERVER_URL ?? 'http://localhost:3001';
+const PUBLIC_URL = process.env.ADDRESS ?? 'http://localhost:3001';
 
 /**
  * Construit l'URL publique d'une image Payload depuis son `filename`
  * (champ `media.filename` retourné par l'API).
  *
- * Ex : `mediaUrl('lyon-sdf.jpg')` → `https://2mainsdefemmes.org/cms/api/media/file/lyon-sdf.jpg`
+ * Ex : `mediaUrl('lyon-sdf.jpg')` → `${ADDRESS}/cms/api/media/file/lyon-sdf.jpg`
  */
 export function mediaUrl(filename: string | undefined | null): string | null {
   if (!filename) return null;

@@ -17,9 +17,11 @@ type Evt = {
   body?: string;
 };
 
-function toIcsEvent(entry: Evt, siteUrl: string): IcsEvent {
+function toIcsEvent(entry: Evt, siteUrl: string, uidHost: string): IcsEvent {
   return {
-    uid: `${entry.slug}@2mainsdefemmes.org`,
+    // UID iCal RFC 5545 : doit être stable et inclure un domaine. On
+    // dérive du host de siteUrl (= ADDRESS prod ou settings.url CMS).
+    uid: `${entry.slug}@${uidHost}`,
     start: new Date(entry.date_debut),
     end: entry.date_fin ? new Date(entry.date_fin) : undefined,
     summary: entry.title,
@@ -37,10 +39,14 @@ export const GET: APIRoute = async ({ params }) => {
   if (!entry) return new Response('Événement introuvable', { status: 404 });
 
   const settings = await getSiteSettings();
-  const siteUrl = settings.url ?? 'https://2mainsdefemmes.org';
+  const siteUrl = settings.url ?? process.env.ADDRESS;
+  if (!siteUrl) {
+    throw new Error('Site URL inconnue (settings.url + ADDRESS vides) — feed iCal injoignable.');
+  }
+  const uidHost = new URL(siteUrl).host;
   const ics = buildCalendar({
     calName: entry.title,
-    events: [toIcsEvent(entry, siteUrl)],
+    events: [toIcsEvent(entry, siteUrl, uidHost)],
   });
   return new Response(ics, {
     headers: {

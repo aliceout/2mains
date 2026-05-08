@@ -32,6 +32,10 @@ jobs:
         run: pnpm check
 
       - name: Build (Astro Node SSR)
+        # ADDRESS factice ici — on teste juste que le build compile,
+        # la vraie valeur arrive en build-arg sur le job build-site.
+        env:
+          ADDRESS: https://example.invalid
         run: pnpm build
 
       # Smoke test mode SSR : on vérifie que le bundle Node a bien été
@@ -71,6 +75,11 @@ jobs:
           context: .
           file: Dockerfile.site
           push: true
+          # ADDRESS = URL publique du site. À configurer sur GitHub :
+          # repo Settings → Secrets and variables → Actions → Variables →
+          # New repository variable, name=ADDRESS, value=https://votre-domaine.tld
+          build-args: |
+            ADDRESS=${{ vars.ADDRESS }}
           tags: |
             ghcr.io/aliceout/2mains-site:latest
             ghcr.io/aliceout/2mains-site:${{ github.sha }}

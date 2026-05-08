@@ -21,7 +21,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: `${settings.nom_asso} — Actualités`,
     description: `Les actualités de ${settings.nom_asso} : comptes-rendus, prises de position, revue de presse.`,
-    site: context.site ?? settings.url ?? 'https://2mainsdefemmes.org',
+    site: context.site ?? settings.url ?? process.env.ADDRESS!,
     items: posts.map((p) => {
       const tags = (p.data.tags ?? []).map((t) => t.tag);
       return {

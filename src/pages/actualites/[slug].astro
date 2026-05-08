@@ -58,10 +58,13 @@ const articleSchema = {
     name: settings.nom_asso,
     logo: {
       '@type': 'ImageObject',
-      url: new URL('/brand/logo.svg', settings.url ?? 'https://2mainsdefemmes.org').toString(),
+      url: new URL('/brand/logo.svg', settings.url ?? process.env.ADDRESS!).toString(),
     },
   },
-  mainEntityOfPage: new URL(`/actualites/${post.slug}`, settings.url ?? 'https://2mainsdefemmes.org').toString(),
+  mainEntityOfPage: new URL(
+    `/actualites/${post.slug}`,
+    settings.url ?? process.env.ADDRESS!,
+  ).toString(),
 };
 ---
 

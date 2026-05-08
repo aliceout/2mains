@@ -16,6 +16,12 @@
 FROM node:22 AS builder
 WORKDIR /app
 
+# ADDRESS = URL publique du site, utilisée par Astro au build
+# (sitemap, RSS, URLs absolues). Doit être passée en --build-arg
+# par le workflow CI (cf .github/workflows/docker-build.yml).
+ARG ADDRESS
+ENV ADDRESS=${ADDRESS}
+
 RUN corepack enable
 
 COPY package.json pnpm-lock.yaml ./

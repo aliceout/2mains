@@ -16,9 +16,15 @@ type Evt = {
   draft?: boolean;
 };
 
-function toIcsEvent(entry: LegacyEntry<Evt>, siteUrl: string): IcsEvent {
+function toIcsEvent(
+  entry: LegacyEntry<Evt>,
+  siteUrl: string,
+  uidHost: string,
+): IcsEvent {
   return {
-    uid: `${entry.slug}@2mainsdefemmes.org`,
+    // UID iCal RFC 5545 : doit être stable et inclure un domaine. On
+    // dérive du host de siteUrl (= ADDRESS prod ou settings.url CMS).
+    uid: `${entry.slug}@${uidHost}`,
     start: new Date(entry.data.date_debut),
     end: entry.data.date_fin ? new Date(entry.data.date_fin) : undefined,
     summary: entry.data.title,
@@ -30,13 +36,17 @@ function toIcsEvent(entry: LegacyEntry<Evt>, siteUrl: string): IcsEvent {
 
 export const GET: APIRoute = async () => {
   const settings = await getSiteSettings();
-  const siteUrl = settings.url ?? 'https://2mainsdefemmes.org';
+  const siteUrl = settings.url ?? process.env.ADDRESS;
+  if (!siteUrl) {
+    throw new Error('Site URL inconnue (settings.url + ADDRESS vides) — feed iCal injoignable.');
+  }
+  const uidHost = new URL(siteUrl).host;
   const all = filterPublished(
     await fetchCollectionLegacy<Evt>('evenements', { sort: 'date_debut' }),
   );
   const events = all
     .filter((e) => !e.data.fictif)
-    .map((e) => toIcsEvent(e, siteUrl));
+    .map((e) => toIcsEvent(e, siteUrl, uidHost));
 
   const ics = buildCalendar({
     calName: `${settings.nom_asso} — Agenda`,

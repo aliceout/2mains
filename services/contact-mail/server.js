@@ -8,11 +8,15 @@ const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
 const CONTACT_TO = process.env.CONTACT_TO || SMTP_USER;
-const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'https://2mainsdefemmes.org';
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN;
 const RATE_LIMIT = parseInt(process.env.RATE_LIMIT_PER_HOUR || '5', 10);
 
 if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
   console.error('Missing SMTP_HOST / SMTP_USER / SMTP_PASS env vars');
+  process.exit(1);
+}
+if (!ALLOWED_ORIGIN) {
+  console.error('Missing ALLOWED_ORIGIN env var (CORS).');
   process.exit(1);
 }
 

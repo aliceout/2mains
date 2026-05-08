@@ -50,12 +50,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     ...data,
     // Aplatissement helloasso.* → helloasso_* pour rester compat avec
     // les composants existants (Header.astro, dons.astro, etc.).
+    // Fallback HelloAsso : URL générique de l'asso si Audrey n'a pas
+    // (encore) renseigné le champ dans /cms/admin. Reste hardcodée
+    // parce que c'est un slug HelloAsso spécifique au compte.
     helloasso_don:
       data.helloasso?.don ??
       'https://www.helloasso.com/associations/2mains-de-femmes',
     helloasso_adhesion: data.helloasso?.adhesion,
     helloasso_newsletter: data.helloasso?.newsletter,
-    email_contact: process.env.MAIL_TO ?? 'contact@2mainsdefemmes.org',
+    // Email de contact = MAIL_TO côté env. Si pas configuré, le champ
+    // est `undefined` et les composants qui l'affichent doivent
+    // gérer le cas (mailto silencieux, lien caché, etc.).
+    email_contact: process.env.MAIL_TO || undefined,
   };
 }
 

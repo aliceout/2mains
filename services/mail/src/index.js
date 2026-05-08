@@ -9,7 +9,7 @@
 //   SMTP_SECURE          (défaut "true")
 //   PORT                 (défaut 3000)
 //   RATE_LIMIT_PER_HOUR  (défaut 20)
-//   ALLOWED_ORIGIN       (défaut "*", à fixer sur https://2mainsdefemmes.org en prod)
+//   ALLOWED_ORIGIN       (défaut "*", à fixer sur le domaine du site en prod)
 //
 // Pas de stockage persistant, pas de queue. Si SMTP est down, on renvoie
 // 500 et le formulaire affiche le message d'erreur côté client. Logs JSON

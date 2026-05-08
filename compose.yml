@@ -7,9 +7,9 @@
 #   mail    (ghcr.io/.../2mains-mail)    127.0.0.1:${PORT_MAIL}    → /api/contact
 #
 # Le reverse proxy nginx du VPS (hors compose) termine TLS et route :
-#   2mainsdefemmes.org/cms/* → 127.0.0.1:${PORT_PAYLOAD}
-#   2mainsdefemmes.org/api/* → 127.0.0.1:${PORT_MAIL}
-#   2mainsdefemmes.org/*     → 127.0.0.1:${PORT_SITE}
+#   ${ADDRESS}/cms/* → 127.0.0.1:${PORT_PAYLOAD}
+#   ${ADDRESS}/api/* → 127.0.0.1:${PORT_MAIL}
+#   ${ADDRESS}/*     → 127.0.0.1:${PORT_SITE}
 #
 # Convention historique (Infisical defaults) : 8066 / 8064 / 8065.
 # Modifiable via Infisical (path prod/infra), mais doit rester aligné
@@ -56,7 +56,7 @@ services:
     environment:
       NODE_ENV: production
       PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+      ADDRESS: ${ADDRESS}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
@@ -101,7 +101,7 @@ services:
       HOST: "0.0.0.0"
       PORT: "4321"
       PAYLOAD_INTERNAL_URL: http://payload:3001
-      PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
+      ADDRESS: ${ADDRESS}
       MAIL_TO: ${MAIL_TO}
     ports:
       - "127.0.0.1:${PORT_SITE}:4321"

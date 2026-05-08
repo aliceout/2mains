@@ -43,7 +43,9 @@ export const Site: GlobalConfig = {
       type: 'text',
       required: true,
       label: 'URL canonique du site',
-      defaultValue: 'https://2mainsdefemmes.org',
+      admin: {
+        description: 'Domaine racine, ex: https://votre-domaine.tld (sans slash final).',
+      },
     },
     {
       name: 'accroche_globale',

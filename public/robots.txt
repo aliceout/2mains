@@ -1,8 +1,0 @@
-User-agent: *
-Disallow: /admin/
-Disallow: /cms/
-Disallow: /api/
-Disallow: /status
-Disallow: /demo
-
-Sitemap: https://2mainsdefemmes.org/sitemap-index.xml
