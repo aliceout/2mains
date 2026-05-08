@@ -70,7 +70,6 @@ services:
       SMTP_PASS: ${SMTP_PASS}
       SMTP_SECURE: ${SMTP_SECURE}
       SMTP_FROM: ${SMTP_FROM}
-      SMTP_FROM_NAME: ${SMTP_FROM_NAME}
     volumes:
       - ${DATA_DIR}/payload-media:/app/media
     ports:

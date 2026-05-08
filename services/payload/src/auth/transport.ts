@@ -20,7 +20,10 @@ export function buildEmailAdapter() {
   const SMTP_FROM = getEnv('SMTP_FROM');
   const SMTP_PORT = Number.parseInt(process.env.SMTP_PORT || '587', 10);
   const SMTP_SECURE = (process.env.SMTP_SECURE ?? 'false') === 'true';
-  const FROM_NAME = getEnv('SMTP_FROM_NAME') ?? '2mains de femmes';
+  // Nom affiché dans le From: des mails. Hardcodé : il ne bougera pas
+  // dans la durée de vie du projet, et l'externaliser en var d'env
+  // ajoutait du bruit (Infisical, compose, .env.example) sans gain.
+  const FROM_NAME = '2mains de femmes';
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_FROM) {
     const missing = ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM'].filter(
