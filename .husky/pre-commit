@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+# Auto-génération des migrations Payload.
+#
+# Drizzle (l'ORM sous Payload) refuse silencieusement push:true en
+# NODE_ENV=production. La prod doit donc s'appuyer sur les migrations
+# SQL versionnées dans services/payload/src/migrations/, appliquées
+# au boot par `payload migrate` (cf. CMD du Dockerfile).
+#
+# Pour que l'autrice n'ait jamais à taper migrate:create à la main :
+# ce hook détecte les modifs de schéma stagées (collections, globals,
+# blocks, payload.config) et génère la migration correspondante,
+# qu'il ajoute automatiquement au commit en cours.
+#
+# Pré-requis : Postgres dev qui tourne au moment du commit. Sinon le
+# hook plante et bloque le commit (volontaire — mieux vaut bloquer
+# que pousser un schéma sans SQL associé).
+
+SCHEMA_CHANGED=$(git diff --cached --name-only --diff-filter=ACMR | \
+  grep -E '^services/payload/src/(collections|globals|blocks)/.+\.ts$|^services/payload/src/payload\.config\.ts$' || true)
+
+if [ -z "$SCHEMA_CHANGED" ]; then
+  exit 0
+fi
+
+echo "→ Schéma Payload modifié, génération de la migration…"
+echo "$SCHEMA_CHANGED" | sed 's/^/   /'
+
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+MIGRATION_NAME="auto_${TIMESTAMP}"
+
+cd services/payload
+
+BEFORE=$(ls src/migrations/*.ts 2>/dev/null | wc -l)
+
+# `< /dev/null` : si Payload ne détecte aucun changement de schéma, il
+# prompte "create blank migration? (y/N)" — on lui envoie EOF, il
+# tombe sur le N par défaut et ne crée rien. Sans ça, le commit
+# pause sur un prompt interactif.
+pnpm exec dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation \
+  payload migrate:create "$MIGRATION_NAME" < /dev/null 2>&1 | sed 's/^/   /'
+
+AFTER=$(ls src/migrations/*.ts 2>/dev/null | wc -l)
+
+cd ../..
+
+if [ "$AFTER" -gt "$BEFORE" ]; then
+  echo "→ Migration générée, ajout au commit en cours."
+  git add services/payload/src/migrations/
+else
+  echo "→ Pas de changement schéma effectif (label/description seulement) — aucune migration à ajouter."
+fi

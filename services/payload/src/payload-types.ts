@@ -1491,6 +1491,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Site {
   id: number;
   nom_asso: string;
+  /**
+   * Domaine racine, ex: https://votre-domaine.tld (sans slash final).
+   */
   url: string;
   accroche_globale: string;
   mission: string;

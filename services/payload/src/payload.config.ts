@@ -105,12 +105,16 @@ export default buildConfig({
   // Postgres via fields séparés (évite les problèmes d'URL-encoding
   // quand POSTGRES_PASSWORD a des caractères spéciaux).
   //
-  // push: true force la synchro schéma → DB à chaque boot, en dev ET
-  // en prod. Pas de migrations à générer/maintenir. Trade-off conscient
-  // pour ce projet : data peu critique (contenus éditoriaux), schéma
-  // sous code review (changements structurés via PR), petite asso →
-  // simplicité l'emporte sur l'historique formel des migrations.
-  // À reconsidérer si on prend de la data sensible (commandes, paiements).
+  // push: en dev → true (sync auto au boot, zéro friction quand on
+  // touche aux collections). En prod → false : Drizzle refuse
+  // silencieusement push:true en NODE_ENV=production (protection
+  // perte de données). Le schéma vient des migrations versionnées
+  // dans services/payload/src/migrations/, appliquées au boot par
+  // `payload migrate` (cf. CMD du Dockerfile).
+  //
+  // La génération des migrations est automatisée via un git hook
+  // pre-commit (cf .husky/pre-commit) — l'autrice ne tape jamais
+  // `payload migrate:create` à la main.
   db: postgresAdapter({
     pool: {
       user: process.env.POSTGRES_USER,
@@ -119,7 +123,7 @@ export default buildConfig({
       port: Number.parseInt(process.env.POSTGRES_PORT ?? '5432', 10),
       database: process.env.POSTGRES_DB,
     },
-    push: true,
+    push: process.env.NODE_ENV !== 'production',
   }),
   serverURL: ADDRESS,
   // CORS : restreint aux domaines connus. En prod ADDRESS pointe sur
