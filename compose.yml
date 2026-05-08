@@ -2,14 +2,14 @@
 #
 # Topologie :
 #   db      (postgres:16-alpine)        non exposé, accessible uniquement par `payload`
-#   payload (ghcr.io/.../2mains-payload) 127.0.0.1:${HOST_PORT_PAYLOAD}  → /cms/admin + /cms/api
-#   site    (ghcr.io/.../2mains-site)    127.0.0.1:${HOST_PORT_SITE}    → / (Astro SSR)
-#   mail    (ghcr.io/.../2mains-mail)    127.0.0.1:${HOST_PORT_MAIL}    → /api/contact
+#   payload (ghcr.io/.../2mains-payload) 127.0.0.1:${PORT_PAYLOAD}  → /cms/admin + /cms/api
+#   site    (ghcr.io/.../2mains-site)    127.0.0.1:${PORT_SITE}    → / (Astro SSR)
+#   mail    (ghcr.io/.../2mains-mail)    127.0.0.1:${PORT_MAIL}    → /api/contact
 #
 # Le reverse proxy nginx du VPS (hors compose) termine TLS et route :
-#   2mainsdefemmes.org/cms/* → 127.0.0.1:${HOST_PORT_PAYLOAD}
-#   2mainsdefemmes.org/api/* → 127.0.0.1:${HOST_PORT_MAIL}
-#   2mainsdefemmes.org/*     → 127.0.0.1:${HOST_PORT_SITE}
+#   2mainsdefemmes.org/cms/* → 127.0.0.1:${PORT_PAYLOAD}
+#   2mainsdefemmes.org/api/* → 127.0.0.1:${PORT_MAIL}
+#   2mainsdefemmes.org/*     → 127.0.0.1:${PORT_SITE}
 #
 # Convention historique (Infisical defaults) : 8066 / 8064 / 8065.
 # Modifiable via Infisical (path prod/infra), mais doit rester aligné
@@ -73,7 +73,7 @@ services:
     volumes:
       - ${DATA_DIR}/payload-media:/app/media
     ports:
-      - "127.0.0.1:${HOST_PORT_PAYLOAD}:3001"
+      - "127.0.0.1:${PORT_PAYLOAD}:3001"
     networks:
       - internal
     depends_on:
@@ -104,7 +104,7 @@ services:
       PAYLOAD_PUBLIC_SERVER_URL: ${PAYLOAD_PUBLIC_SERVER_URL}
       MAIL_TO: ${MAIL_TO}
     ports:
-      - "127.0.0.1:${HOST_PORT_SITE}:4321"
+      - "127.0.0.1:${PORT_SITE}:4321"
     networks:
       - internal
     depends_on:
@@ -138,7 +138,7 @@ services:
       RATE_LIMIT_PER_HOUR: ${RATE_LIMIT_PER_HOUR}
       ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
     ports:
-      - "127.0.0.1:${HOST_PORT_MAIL}:3000"
+      - "127.0.0.1:${PORT_MAIL}:3000"
     networks:
       - internal
     healthcheck:
