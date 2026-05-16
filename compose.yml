@@ -11,9 +11,9 @@
 #   ${ADDRESS}/api/* → 127.0.0.1:${PORT_MAIL}
 #   ${ADDRESS}/*     → 127.0.0.1:${PORT_SITE}
 #
-# Convention historique (Infisical defaults) : 8066 / 8064 / 8065.
-# Modifiable via Infisical (path prod/infra), mais doit rester aligné
-# avec la config nginx du VPS (sinon 502).
+# Convention historique : 8066 / 8064 / 8065. Modifiable via Infisical
+# (path /services/2mains), mais doit rester aligné avec la config
+# nginx du VPS (sinon 502).
 #
 # Data persistante = bind mounts sous $DATA_DIR (= $HOME/data/2mains,
 # injecté par scripts/deploy.sh) :
@@ -29,11 +29,11 @@ services:
     container_name: 2mains-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB required}
     volumes:
-      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
+      - ${DATA_DIR:?DATA_DIR required}/postgres:/var/lib/postgresql/data
     networks:
       - internal
     healthcheck:
@@ -55,25 +55,32 @@ services:
     pull_policy: always
     environment:
       NODE_ENV: production
-      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
-      ADDRESS: ${ADDRESS}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET:?PAYLOAD_SECRET required}
+      ADDRESS: ${ADDRESS:?ADDRESS required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB required}
       POSTGRES_HOST: db
       POSTGRES_PORT: "5432"
       # SMTP : Payload envoie les mails d'invitation, OTP 2FA et notifs
       # de sécurité via le même transport SMTP que le service mail.
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_PORT: ${SMTP_PORT}
-      SMTP_USER: ${SMTP_USER}
-      SMTP_PASS: ${SMTP_PASS}
-      SMTP_SECURE: ${SMTP_SECURE}
-      SMTP_FROM: ${SMTP_FROM}
+      SMTP_HOST: ${SMTP_HOST:?SMTP_HOST required}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:?SMTP_USER required}
+      SMTP_PASS: ${SMTP_PASS:?SMTP_PASS required}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_FROM: ${SMTP_FROM:?SMTP_FROM required}
+      # Auth — toutes optionnelles, defaults dans services/payload/src/auth/config.ts.
+      INVITATION_TTL_DAYS: ${INVITATION_TTL_DAYS:-}
+      OTP_TTL_MINUTES: ${OTP_TTL_MINUTES:-}
+      TRUSTED_DEVICE_TTL_DAYS: ${TRUSTED_DEVICE_TTL_DAYS:-}
+      SESSION_INACTIVE_HOURS: ${SESSION_INACTIVE_HOURS:-}
+      # Pour debug HTTP en dev/staging uniquement. En prod doit rester non-true.
+      PAYLOAD_INSECURE_COOKIES: ${PAYLOAD_INSECURE_COOKIES:-}
     volumes:
-      - ${DATA_DIR}/payload-media:/app/media
+      - ${DATA_DIR:?DATA_DIR required}/payload-media:/app/media
     ports:
-      - "127.0.0.1:${PORT_PAYLOAD}:3001"
+      - "127.0.0.1:${PORT_PAYLOAD:?PORT_PAYLOAD required}:3001"
     networks:
       - internal
     depends_on:
@@ -101,10 +108,10 @@ services:
       HOST: "0.0.0.0"
       PORT: "4321"
       PAYLOAD_INTERNAL_URL: http://payload:3001
-      ADDRESS: ${ADDRESS}
-      MAIL_TO: ${MAIL_TO}
+      ADDRESS: ${ADDRESS:?ADDRESS required}
+      MAIL_TO: ${MAIL_TO:?MAIL_TO required}
     ports:
-      - "127.0.0.1:${PORT_SITE}:4321"
+      - "127.0.0.1:${PORT_SITE:?PORT_SITE required}:4321"
     networks:
       - internal
     depends_on:
@@ -128,17 +135,17 @@ services:
     restart: unless-stopped
     pull_policy: always
     environment:
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_PORT: ${SMTP_PORT}
-      SMTP_USER: ${SMTP_USER}
-      SMTP_PASS: ${SMTP_PASS}
-      SMTP_SECURE: ${SMTP_SECURE}
-      SMTP_FROM: ${SMTP_FROM}
-      MAIL_TO: ${MAIL_TO}
-      RATE_LIMIT_PER_HOUR: ${RATE_LIMIT_PER_HOUR}
-      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN}
+      SMTP_HOST: ${SMTP_HOST:?SMTP_HOST required}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:?SMTP_USER required}
+      SMTP_PASS: ${SMTP_PASS:?SMTP_PASS required}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_FROM: ${SMTP_FROM:?SMTP_FROM required}
+      MAIL_TO: ${MAIL_TO:?MAIL_TO required}
+      RATE_LIMIT_PER_HOUR: ${RATE_LIMIT_PER_HOUR:-20}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:?ALLOWED_ORIGIN required}
     ports:
-      - "127.0.0.1:${PORT_MAIL}:3000"
+      - "127.0.0.1:${PORT_MAIL:?PORT_MAIL required}:3000"
     networks:
       - internal
     healthcheck:

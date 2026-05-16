@@ -4,19 +4,29 @@
 # Invoqué par le webhook handler du VPS après un workflow GHA `Docker build`
 # vert sur main. Le hook s'occupe de cloner / pull le repo dans $DEPLOY_DIR ;
 # ce script se contente de :
-#   1. sourcer les creds Infisical (auth Machine Identity Universal Auth)
+#   1. sourcer les creds Infisical Cloud (Machine Identity Universal Auth)
 #   2. login Infisical → token
-#   3. export les secrets app → .env (chmod 600 avant écriture)
+#   3. export récursif des secrets app → .env (chmod 600 avant écriture)
 #   4. créer les bind mounts data
 #   5. docker compose pull && up -d
 #   6. attendre que tous les containers soient healthy
+#
+# Archi Infisical (Cloud) :
+#   /services/2mains/             → vars communes (ADDRESS, PORT_*, etc.)
+#   /services/2mains/payload/     → PAYLOAD_SECRET, vars Payload-spécifiques
+#   /services/2mains/postgres/    → POSTGRES_USER/PASSWORD/DB
+#   /services/2mains/smtp/        → SMTP_*, MAIL_TO
+#   /services/2mains/web/         → RATE_LIMIT_PER_HOUR, ALLOWED_ORIGIN
+# Un `infisical export --recursive --path=/services/2mains` aplatit tout.
+# En cas de collision de clés, le sous-dossier l'emporte sur la racine
+# (comportement Infisical par défaut).
 #
 # DEPLOY_DIR est résolu depuis l'emplacement du script — le hook l'invoque
 # via /var/www/2mains/scripts/deploy.sh, ça résout à /var/www/2mains.
 # En dev local, ça résout à la racine du repo.
 #
 # CREDS_FILE par défaut : $HOME/.config/infisical/2mains.env (écrit par
-# l'install.sh côté vps-install). Override via env si besoin.
+# l'install.sh côté vps-install, contient les creds Cloud).
 
 set -euo pipefail
 
@@ -41,34 +51,34 @@ set +a
 : "${INFISICAL_CLIENT_SECRET:?INFISICAL_CLIENT_SECRET manquant dans $CREDS_FILE}"
 INFISICAL_ENV="${INFISICAL_ENV:-prod}"
 
-# 2. Login Infisical self-hosted → token éphémère.
+# 2. Login Infisical Cloud → token éphémère.
 TOKEN=$(infisical login --method=universal-auth \
   --domain="$INFISICAL_API_URL" \
   --client-id="$INFISICAL_CLIENT_ID" \
   --client-secret="$INFISICAL_CLIENT_SECRET" \
   --plain --silent)
 
-# 3. Export tous les secrets app vers .env racine. Chmod AVANT d'écrire pour
-#    qu'aucun process tiers ne puisse lire le fichier en 644 même brièvement.
+# 3. Export récursif des secrets app vers .env racine. Chmod AVANT d'écrire
+#    pour qu'aucun process tiers ne puisse lire le fichier en 644 même
+#    brièvement. `set -euo pipefail` au top fait aborter le script si le
+#    fetch foire (.env partiel = silent broken deploy).
 #
-#    Le projet Infisical 2mains a ses secrets organisés en 4 sous-dossiers
-#    (payload/, postgres/, smtp/, web/) — `--path=/` ne recurse pas, on
-#    itère explicitement. `set -euo pipefail` au top fait aborter le
-#    script si l'un des fetch foire (.env partiel = silent broken deploy).
+#    --recursive aplatit /services/2mains + tous ses sous-dossiers. Pas
+#    de liste à maintenir : ajouter un dossier dans Infisical le rend
+#    immédiatement disponible côté prod.
 ENV_FILE="$DEPLOY_DIR/.env"
 : > "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 
-for subpath in payload postgres smtp web; do
-  echo "[deploy] fetching /$subpath"
-  infisical export \
-    --domain="$INFISICAL_API_URL" \
-    --projectId="$INFISICAL_PROJECT_ID" \
-    --env="$INFISICAL_ENV" \
-    --path="/$subpath" \
-    --format=dotenv \
-    --token="$TOKEN" >> "$ENV_FILE"
-done
+echo "[deploy] fetching /services/2mains (recursive)"
+infisical export \
+  --domain="$INFISICAL_API_URL" \
+  --projectId="$INFISICAL_PROJECT_ID" \
+  --env="$INFISICAL_ENV" \
+  --path=/services/2mains \
+  --recursive \
+  --format=dotenv \
+  --token="$TOKEN" >> "$ENV_FILE"
 
 # Sanity check — si l'un de ces 2 secrets est absent, le deploy partirait
 # en vrille (Postgres refuse la connexion / Payload refuse de booter).

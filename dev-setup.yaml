@@ -22,13 +22,14 @@ secrets:
   loader: dotenv
   # TODO: remplacer par le slug exact du projet 
   # (visible dans l'URL de l'admin Infisical quand tu ouvres le projet).
-  project: 2mains-rnu5
+  project: infra-perso-x-lwh
   batches:
     # Env Infisical "dev" — valeurs locales (Postgres docker, Mailpit, etc.).
     # En prod, ce fichier est ignoré : deploy.sh fetche directement l'env
     # "prod" via les credentials VPS-level Universal Auth.
     # Ordre = priorité sur les doublons (first wins).
-    - dev/payload
-    - dev/postgres
-    - dev/smtp
-    - dev/web
+    - dev/services/2mains/payload
+    - dev/services/2mains/postgres
+    - dev/services/2mains/web
+    - dev/services/2mains/smtp
+    - dev/services/2mains
