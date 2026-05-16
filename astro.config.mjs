@@ -34,8 +34,27 @@ if (!RAW_ADDRESS) {
 }
 const SITE = /^https?:\/\//.test(RAW_ADDRESS) ? RAW_ADDRESS : `https://${RAW_ADDRESS}`;
 
+// Domaine public déclaré en `allowedDomains` : indispensable pour que
+// le check CSRF d'Astro (security.checkOrigin) reconnaisse les POST
+// venant du navigateur quand on est derrière un reverse proxy.
+// Sans ça, Astro ignore les `X-Forwarded-Host` de nginx et compare le
+// `Origin` du navigateur (= domaine public) avec l'upstream interne
+// (= 127.0.0.1:8064), ce qui ne matche jamais → 403 "Cross-site POST
+// form submissions are forbidden". Concret : le form de /gate.astro
+// échouait en prod.
+const SITE_URL = new URL(SITE);
+const allowedDomains = [
+  {
+    hostname: SITE_URL.hostname,
+    protocol: SITE_URL.protocol.replace(/:$/, ''),
+  },
+];
+
 export default defineConfig({
   site: SITE,
+  security: {
+    allowedDomains,
+  },
   trailingSlash: 'ignore',
   // SSR via Node : chaque requête tape Payload (réseau docker
   // interne en prod, localhost:3001 en dev). Pas de rebuild CI
