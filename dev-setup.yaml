@@ -32,4 +32,4 @@ secrets:
     - dev/services/2mains/postgres
     - dev/services/2mains/web
     - dev/services/2mains/smtp
-    - dev/services/2mains
+    - dev/services/2mains/

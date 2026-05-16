@@ -23,9 +23,14 @@ const {
   description = settings.mission,
   image,
   ogSlug,
-  noindex = false,
+  noindex: pageNoindex = false,
   jsonLd,
 } = Astro.props;
+
+// noindex effectif = toggle site-wide (Payload Site global) OU param de la page.
+// Le site-wide a priorité : si Audrey coche "ne pas indexer" dans /cms/admin,
+// chaque page est noindex peu importe son propre param.
+const noindex = pageNoindex || settings.noindex === true;
 
 // OG image : par page si ogSlug fourni (image PNG 1200x630 générée par
 // /og/[slug].png.ts), sinon image statique explicite, sinon logo.

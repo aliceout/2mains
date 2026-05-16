@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from 'astro';
+import { getSiteSettings } from './lib/site';
 
 // Headers de sécurité globaux. Appliqués par Astro sur toutes les pages
 // servies par cette appli (les sous-services /cms/* et /api/* sont
@@ -32,6 +33,20 @@ export const onRequest: MiddlewareHandler = async (_context, next) => {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
   );
+
+  // Toggle site-wide noindex (cf Site global Payload). Si on est en
+  // mode "non indexable", on pose aussi un header HTTP : certains
+  // crawlers (Bingbot notamment) le lisent même sur les ressources
+  // non-HTML (sitemap, RSS, ICS) où le <meta robots> ne s'applique pas.
+  try {
+    const settings = await getSiteSettings();
+    if (settings.noindex === true) {
+      response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+    }
+  } catch {
+    // Si Payload n'est pas joignable au moment du middleware, on évite
+    // de casser le rendu : on ne pose juste pas le header.
+  }
 
   return response;
 };

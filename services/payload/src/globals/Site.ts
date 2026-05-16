@@ -48,6 +48,19 @@ export const Site: GlobalConfig = {
       },
     },
     {
+      name: 'noindex',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Empêcher l\'indexation par les moteurs de recherche',
+      admin: {
+        description:
+          'Si coché, le site entier devient invisible pour Google, Bing, etc. ' +
+          'Utile pendant une refonte ou pour une instance de staging. ' +
+          'Le toggle ajoute `Disallow: /` à robots.txt, un `<meta name="robots" content="noindex, nofollow">` ' +
+          'sur toutes les pages, et un header HTTP `X-Robots-Tag`.',
+      },
+    },
+    {
       name: 'accroche_globale',
       type: 'text',
       required: true,
