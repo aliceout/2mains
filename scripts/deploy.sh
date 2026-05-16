@@ -58,27 +58,31 @@ TOKEN=$(infisical login --method=universal-auth \
   --client-secret="$INFISICAL_CLIENT_SECRET" \
   --plain --silent)
 
-# 3. Export récursif des secrets app vers .env racine. Chmod AVANT d'écrire
-#    pour qu'aucun process tiers ne puisse lire le fichier en 644 même
-#    brièvement. `set -euo pipefail` au top fait aborter le script si le
-#    fetch foire (.env partiel = silent broken deploy).
+# 3. Export des secrets app vers .env racine. Chmod AVANT d'écrire pour
+#    qu'aucun process tiers ne puisse lire le fichier en 644 même
+#    brièvement. `set -euo pipefail` au top fait aborter le script si
+#    l'un des fetch foire (.env partiel = silent broken deploy).
 #
-#    --recursive aplatit /services/2mains + tous ses sous-dossiers. Pas
-#    de liste à maintenir : ajouter un dossier dans Infisical le rend
-#    immédiatement disponible côté prod.
+#    Itération explicite : la CLI Infisical du VPS ne supporte pas
+#    encore --recursive (ajouté dans une version récente). Si tu ajoutes
+#    un sous-dossier dans Infisical, pense à l'ajouter ici.
+#    L'élément vide ("") fetch la racine /services/2mains où vivent les
+#    vars communes (ADDRESS, PORT_*, etc.).
 ENV_FILE="$DEPLOY_DIR/.env"
 : > "$ENV_FILE"
 chmod 600 "$ENV_FILE"
 
-echo "[deploy] fetching /services/2mains (recursive)"
-infisical export \
-  --domain="$INFISICAL_API_URL" \
-  --projectId="$INFISICAL_PROJECT_ID" \
-  --env="$INFISICAL_ENV" \
-  --path=/services/2mains \
-  --recursive \
-  --format=dotenv \
-  --token="$TOKEN" >> "$ENV_FILE"
+for subpath in "" "payload" "postgres" "smtp" "web"; do
+  full_path="/services/2mains${subpath:+/$subpath}"
+  echo "[deploy] fetching $full_path"
+  infisical export \
+    --domain="$INFISICAL_API_URL" \
+    --projectId="$INFISICAL_PROJECT_ID" \
+    --env="$INFISICAL_ENV" \
+    --path="$full_path" \
+    --format=dotenv \
+    --token="$TOKEN" >> "$ENV_FILE"
+done
 
 # Sanity check — si l'un de ces 2 secrets est absent, le deploy partirait
 # en vrille (Postgres refuse la connexion / Payload refuse de booter).
