@@ -1,4 +1,5 @@
 import type { MiddlewareHandler } from 'astro';
+import { createHash } from 'node:crypto';
 import { getSiteSettings } from './lib/site';
 
 // Headers de sécurité globaux. Appliqués par Astro sur toutes les pages
@@ -21,7 +22,36 @@ const CSP = [
   "object-src 'none'",
 ].join('; ');
 
-export const onRequest: MiddlewareHandler = async (_context, next) => {
+// Paths qui doivent toujours passer même quand le gate est actif :
+//   /gate            la page de garde elle-même (sinon redirect loop)
+//   /brand/*         logo/picto utilisés par la page de garde
+//   /robots.txt      doit rester accessible aux crawlers
+//   /favicon.ico     idem pour les navigateurs
+const GATE_WHITELIST = (path: string): boolean =>
+  path === '/gate' ||
+  path === '/robots.txt' ||
+  path === '/favicon.ico' ||
+  path.startsWith('/brand/');
+
+export const onRequest: MiddlewareHandler = async (context, next) => {
+  const settings = await getSiteSettings().catch(() => null);
+
+  // Gate "Site en construction" : si gate_password est défini dans Payload,
+  // on intercepte toutes les requêtes hors whitelist et on redirige vers
+  // /gate tant que le cookie `site_gate` n'a pas la bonne valeur.
+  // /cms/admin est sur un service séparé derrière le reverse proxy →
+  // ne traverse pas ce middleware (admin reste accessible).
+  const gatePassword = settings?.gate_password ?? '';
+  const path = context.url.pathname;
+  if (gatePassword && !GATE_WHITELIST(path)) {
+    const expectedHash = createHash('sha256').update(gatePassword).digest('hex');
+    const cookie = context.cookies.get('site_gate')?.value;
+    if (cookie !== expectedHash) {
+      const nextParam = encodeURIComponent(context.url.pathname + context.url.search);
+      return context.redirect(`/gate?next=${nextParam}`, 302);
+    }
+  }
+
   const response = await next();
 
   response.headers.set('Content-Security-Policy', CSP);
@@ -38,14 +68,8 @@ export const onRequest: MiddlewareHandler = async (_context, next) => {
   // mode "non indexable", on pose aussi un header HTTP : certains
   // crawlers (Bingbot notamment) le lisent même sur les ressources
   // non-HTML (sitemap, RSS, ICS) où le <meta robots> ne s'applique pas.
-  try {
-    const settings = await getSiteSettings();
-    if (settings.noindex === true) {
-      response.headers.set('X-Robots-Tag', 'noindex, nofollow');
-    }
-  } catch {
-    // Si Payload n'est pas joignable au moment du middleware, on évite
-    // de casser le rendu : on ne pose juste pas le header.
+  if (settings?.noindex === true) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   }
 
   return response;

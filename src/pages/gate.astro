@@ -1,0 +1,188 @@
+---
+// Page de garde "Site en construction". Si `gate_password` est défini
+// dans le global Payload Site, le middleware redirige toutes les pages
+// vers ici. L'utilisateur saisit le mdp → on set un cookie → le
+// middleware laisse passer.
+//
+// Handle GET (affiche le form) ET POST (vérifie le mdp).
+// Sécurité modérée : protéger l'accès à une refonte/staging entre
+// proches. Pas pour des secrets sensibles.
+export const prerender = false;
+
+import { createHash } from 'node:crypto';
+import { getSiteSettings } from '../lib/site';
+
+const settings = await getSiteSettings();
+const gatePassword = settings.gate_password ?? '';
+
+// Si le gate est désactivé, on redirige proprement vers l'accueil.
+if (!gatePassword) {
+  return Astro.redirect('/', 302);
+}
+
+function hashPassword(pw: string): string {
+  return createHash('sha256').update(pw).digest('hex');
+}
+
+const expectedHash = hashPassword(gatePassword);
+
+let error: string | null = null;
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const submitted = String(formData.get('password') ?? '');
+  const next = String(formData.get('next') ?? '/');
+
+  if (hashPassword(submitted) === expectedHash) {
+    Astro.cookies.set('site_gate', expectedHash, {
+      httpOnly: true,
+      secure: import.meta.env.PROD,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7, // 7 jours
+    });
+    // Évite open-redirect : on ne suit `next` que si c'est un path relatif.
+    const safeNext = next.startsWith('/') && !next.startsWith('//') ? next : '/';
+    return Astro.redirect(safeNext, 302);
+  }
+  error = 'Mot de passe incorrect.';
+}
+
+const nextParam = Astro.url.searchParams.get('next') ?? '/';
+const safeNextDefault = nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/';
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Site en construction — {settings.nom_asso}</title>
+    <link rel="icon" href="/brand/picto.svg" />
+    <style>
+      :root {
+        --paper: #fbf7ee;
+        --ink: #1f1d1a;
+        --ink-2: #555049;
+        --orange: #d96f2c;
+        --violet: #5a4e9c;
+        --line: rgba(31, 29, 26, 0.12);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: 'Inter Tight', system-ui, -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+      }
+      .card {
+        max-width: 28rem;
+        width: 100%;
+        text-align: center;
+      }
+      .logo { width: 4rem; height: 4rem; margin: 0 auto 1.5rem; }
+      .eyebrow {
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin-bottom: 0.75rem;
+      }
+      h1 {
+        font-family: 'Newsreader', Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(2rem, 6vw, 2.75rem);
+        line-height: 1.05;
+        letter-spacing: -0.01em;
+        margin: 0 0 1rem;
+      }
+      h1 em { color: var(--orange); font-style: italic; font-weight: 500; }
+      p {
+        color: var(--ink-2);
+        line-height: 1.6;
+        margin: 0 0 1.5rem;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      label {
+        text-align: left;
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+      input[type="password"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 0.5rem;
+        background: white;
+        font: inherit;
+        color: var(--ink);
+      }
+      input[type="password"]:focus {
+        outline: none;
+        border-color: var(--violet);
+        box-shadow: 0 0 0 3px rgba(90, 78, 156, 0.18);
+      }
+      button {
+        margin-top: 0.5rem;
+        padding: 0.875rem 1.5rem;
+        border: none;
+        border-radius: 9999px;
+        background: var(--orange);
+        color: var(--paper);
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      button:hover { opacity: 0.85; }
+      .error {
+        color: var(--orange);
+        font-size: 0.875rem;
+        margin-top: -0.25rem;
+      }
+      footer {
+        margin-top: 2rem;
+        font-size: 0.8125rem;
+        color: var(--ink-2);
+      }
+      footer a { color: var(--violet); }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <img src="/brand/picto.svg" alt="" class="logo" />
+      <p class="eyebrow">— Pré-lancement</p>
+      <h1>Le site est <em>en construction</em>.</h1>
+      <p>
+        On y travaille. Si tu as le mot de passe, entre-le ci-dessous —
+        sinon, à très bientôt&nbsp;!
+      </p>
+      <form method="POST">
+        <label for="password">Mot de passe</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          required
+          autocomplete="current-password"
+          autofocus
+        />
+        <input type="hidden" name="next" value={safeNextDefault} />
+        {error && <p class="error" role="alert">{error}</p>}
+        <button type="submit">Entrer sur le site</button>
+      </form>
+    </main>
+  </body>
+</html>

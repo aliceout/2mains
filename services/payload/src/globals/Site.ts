@@ -61,6 +61,19 @@ export const Site: GlobalConfig = {
       },
     },
     {
+      name: 'gate_password',
+      type: 'text',
+      required: false,
+      label: 'Mot de passe d\'accès au site (mode "site en construction")',
+      admin: {
+        description:
+          'Si renseigné, le site entier est masqué derrière une page de garde ' +
+          'qui demande ce mot de passe. Laisser vide pour désactiver. ' +
+          'Idéal pour une période de refonte ou de pré-lancement entre proches — ' +
+          'pas pour de la vraie sécurité. /cms/admin reste toujours accessible.',
+      },
+    },
+    {
       name: 'accroche_globale',
       type: 'text',
       required: true,

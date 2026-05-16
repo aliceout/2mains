@@ -15,6 +15,7 @@ type PayloadSiteGlobal = {
   nom_asso?: string;
   url?: string;
   noindex?: boolean;
+  gate_password?: string;
   accroche_globale?: string;
   mission?: string;
   directeur_publication?: string;
