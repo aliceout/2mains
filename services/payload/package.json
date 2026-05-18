@@ -58,6 +58,9 @@
       "sharp",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "overrides": {
+      "yaml@<2.8.3": ">=2.8.3"
+    }
   }
 }
