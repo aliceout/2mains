@@ -349,8 +349,12 @@ for (const s of sections) {
       );
     }
     if (s.type === 'temoignages') {
-      let subset = s.ids
-        ? tousTemoignages.filter((t) => s.ids!.includes(t.id))
+      // Filtrage par slugs (le champ `ids` du bloc contient des slugs
+      // saisis par Audrey, pas des IDs numériques). Aussi : on garde
+      // la liste complète si l'array est vide ou absent — sinon la
+      // condition truthy `[]` réduirait à zéro résultat.
+      let subset = s.ids && s.ids.length > 0
+        ? tousTemoignages.filter((t) => s.ids!.includes(t.slug))
         : tousTemoignages;
       if (s.contexte && !s.ids) {
         subset = subset.filter((t) => t.data.contexte === s.contexte);
@@ -364,8 +368,12 @@ for (const s of sections) {
       );
     }
     if (s.type === 'equipe') {
-      const subset = s.ids
-        ? equipeMembres.filter((m) => s.ids!.includes(m.id))
+      // Filtrage par slugs (le champ `ids` du bloc contient des slugs
+      // saisis par Audrey, pas des IDs numériques). Aussi : on garde
+      // la liste complète si l'array est vide ou absent — sinon la
+      // condition truthy `[]` réduirait à zéro résultat.
+      const subset = s.ids && s.ids.length > 0
+        ? equipeMembres.filter((m) => s.ids!.includes(m.slug))
         : equipeMembres;
       const personnes = subset.map((m) => ({
         nom: m.data.nom,
