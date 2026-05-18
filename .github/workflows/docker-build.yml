@@ -11,13 +11,12 @@ permissions:
   contents: read
   packages: write
 
-# Note : on n'opt-in PAS encore au flag FORCE_JAVASCRIPT_ACTIONS_TO_NODE24
-# tant que `Infisical/secrets-action@v1.0.7` n'a pas une release
-# Node 24-compatible. Forcée à Node 24, cette action retourne 404 sur le
-# fetch des secrets (probablement undici/format de requête qui change
-# entre Node 20 et 24). À ré-activer dès qu'une nouvelle release de
-# secrets-action passe en Node 24, ou au pire le 2026-06-02 (forcé par
-# GitHub). Cf. https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+# Force Node 24 pour les actions GitHub avant la migration obligatoire
+# du 2026-06-02. Évite le warning « Node.js 20 actions are deprecated »
+# et flushe les éventuelles incompatibilités avant que GitHub bascule
+# en force. Cf. https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   test:
