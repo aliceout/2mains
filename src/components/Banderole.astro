@@ -1,8 +1,11 @@
 ---
 // Banderole en haut de page — pilotée par site.banderole_urgence.
 // Bande pleine largeur sur fond orange/violet/rose selon la couleur,
-// texte sans-serif simple. Markdown inline minimal (gras / italique /
-// liens) pour ne pas dépendre d'une lib lourde sur ce mini composant.
+// texte sans-serif simple. Rendu via marked.parseInline (déjà importé
+// partout ailleurs), qui gère **gras**, *italique*, ***les deux***,
+// [liens](url) sans wrapper paragraphe.
+import { marked } from 'marked';
+
 type Props = {
   message: string;
   couleur?: 'orange' | 'violet' | 'magenta';
@@ -17,25 +20,28 @@ const bg = {
   magenta: 'bg-rose text-ink',
 }[couleur];
 
-function renderInline(md: string): string {
-  let s = md
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  s = s.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" class="underline decoration-2 underline-offset-2 hover:no-underline">$1</a>',
-  );
-  return s;
-}
+const html = marked.parseInline(message, { async: false }) as string;
 ---
 
 <div
   role="region"
   aria-label="Annonce"
-  class:list={['px-6 py-3 text-center font-sans text-sm md:px-10', bg]}
+  class:list={['banderole px-6 py-3 text-center font-sans text-sm md:px-10', bg]}
 >
-  <p set:html={renderInline(message)} class="mx-auto max-w-4xl" />
+  <p set:html={html} class="mx-auto max-w-4xl" />
 </div>
+
+<style>
+  /* Style des liens dans la banderole (rendus par marked.parseInline).
+     On hérite de la couleur du texte (paper sur fond orange/violet,
+     ink sur fond rose) et on garde un soulignement marqué. */
+  .banderole :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+  .banderole :global(a:hover) {
+    text-decoration: none;
+  }
+</style>
