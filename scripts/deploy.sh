@@ -108,7 +108,24 @@ mkdir -p "$DATA_DIR/postgres" "$DATA_DIR/payload-media"
 #    de -v est cruciale : -v wiperait les bind mounts (data Postgres,
 #    payload-media). Tradeoff : ~2-5s de downtime entre down et up.
 cd "$DEPLOY_DIR"
-docker compose pull
+
+# Retry du pull GHCR : sous charge ou micro-coupure, GHCR renvoie un
+# 502 Bad Gateway transient sur un blob — un retry suffit en général.
+# 3 tentatives espacées de 10s.
+pull_ok=false
+for i in 1 2 3; do
+  if docker compose pull; then
+    pull_ok=true
+    break
+  fi
+  echo "[deploy] pull KO (tentative $i/3), retry dans 10s..." >&2
+  sleep 10
+done
+if [ "$pull_ok" != "true" ]; then
+  echo "[deploy] pull GHCR KO après 3 tentatives, abort." >&2
+  exit 1
+fi
+
 docker compose down
 docker compose up -d
 
