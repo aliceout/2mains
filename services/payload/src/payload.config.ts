@@ -14,7 +14,10 @@ import { Equipe } from './collections/Equipe'
 import { Temoignages } from './collections/Temoignages'
 import { Partenaires } from './collections/Partenaires'
 import { Documents } from './collections/Documents'
-import { Site } from './globals/Site'
+import { Identite } from './globals/Identite'
+import { Parametres } from './globals/Parametres'
+import { LiensExternes } from './globals/LiensExternes'
+import { BanderoleUrgence } from './globals/BanderoleUrgence'
 import { authEndpoints } from './auth/endpoints'
 import { buildEmailAdapter } from './auth/transport'
 import { startCleanupJob } from './auth/cleanup'
@@ -100,7 +103,8 @@ export default buildConfig({
     UsersWithEndpoints,
     Media,
   ],
-  globals: [Site],
+  // Ordre = ordre d'affichage dans la sidebar admin sous "Globals".
+  globals: [Identite, Parametres, LiensExternes, BanderoleUrgence],
   editor: lexicalEditor(),
   email: buildEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET || '',

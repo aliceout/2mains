@@ -2,6 +2,7 @@ import type { CollectionConfig, FieldHook } from 'payload';
 
 import { canMutateRole, isAdminOrRoot, isSelfOrAdmin, userRole } from '../access/roles';
 import { AUTH_CONFIG } from '../auth/config';
+import { forgotPasswordEmail } from '../auth/email-templates';
 
 // Collection users — étendue pour supporter :
 //  - rôles (root unique / admin / editor)
@@ -64,6 +65,21 @@ export const Users: CollectionConfig = {
     // complémentaire au rate-limit applicatif.
     maxLoginAttempts: 5,
     lockTime: 10 * 60 * 1000, // 10 min
+    // Template HTML custom pour le mail de reset password (Payload utilise
+    // un template par défaut moche en plain HTML sans aucun style).
+    forgotPassword: {
+      generateEmailSubject: () =>
+        'Réinitialisation de ton mot de passe — 2mains de femmes',
+      generateEmailHTML: (args) => {
+        // args.token est le token de reset, args.req contient l'origin/host.
+        // On reconstruit l'URL côté admin /cms/admin/reset/<token>.
+        const token = (args as { token?: string } | undefined)?.token ?? '';
+        const base =
+          process.env.ADDRESS?.replace(/\/$/, '') || 'http://localhost:3001';
+        const resetUrl = `${base}/cms/admin/reset/${token}`;
+        return forgotPasswordEmail({ resetUrl }).html;
+      },
+    },
   },
   access: {
     // Read : autorisé à admin/root et à soi-même (filtre par id).

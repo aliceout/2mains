@@ -135,11 +135,17 @@ async function existsBySlug(
 // ─── Migrations par collection ──────────────────────────────────
 
 async function migrateSite(payload: Payload) {
-  console.log('\n→ Site (global)');
+  console.log('\n→ Site (globals : identite + liens-externes + banderole-urgence)');
   const settings = await readMd(path.join(CONTENT_DIR, 'site/settings.md'));
   const d = settings.data as Record<string, unknown>;
+  // Le global "site" a été splitté en 4 globals en mai 2026
+  // (cf migration 20260518_164916_split_site_global). On dispatche
+  // les champs du markdown sur les 3 globals "contenu" (identité,
+  // liens externes, banderole). Le 4e (parametres) n'a pas de
+  // valeur initiale dans le markdown — ses toggles techniques sont
+  // initialisés par défaut.
   await payload.updateGlobal({
-    slug: 'site',
+    slug: 'identite',
     data: {
       nom_asso: d.nom_asso,
       url: d.url,
@@ -149,11 +155,24 @@ async function migrateSite(payload: Payload) {
       siren: d.siren ?? '',
       rna: d.rna ?? '',
       adresse: d.adresse ?? '',
-      reseaux: (d.reseaux as Record<string, string>) ?? {},
-      banderole_urgence: d.banderole_urgence ?? { active: false },
     } as never,
   });
-  console.log('  ✓ Settings importés');
+  await payload.updateGlobal({
+    slug: 'liens-externes',
+    data: {
+      reseaux: (d.reseaux as Record<string, string>) ?? {},
+    } as never,
+  });
+  const banderole = (d.banderole_urgence as Record<string, unknown> | undefined) ?? {};
+  await payload.updateGlobal({
+    slug: 'banderole-urgence',
+    data: {
+      active: banderole.active ?? false,
+      message: banderole.message,
+      couleur: banderole.couleur ?? 'orange',
+    } as never,
+  });
+  console.log('  ✓ Settings importés (3 globals)');
 }
 
 async function migrateEquipe(payload: Payload) {

@@ -123,6 +123,38 @@ ${
   return { subject, html, text };
 }
 
+// ─── Reset mot de passe ─────────────────────────────────────────────
+
+export function forgotPasswordEmail(opts: {
+  resetUrl: string;
+}): { subject: string; html: string; text: string } {
+  const subject = 'Réinitialisation de ton mot de passe — 2mains de femmes';
+
+  const text = `Bonjour,
+
+Tu (ou quelqu'un d'autre) a demandé la réinitialisation du mot de passe de ton compte sur l'espace d'administration de 2mains de femmes.
+
+Pour choisir un nouveau mot de passe, clique sur le lien ci-dessous (valable 1 heure) :
+
+${opts.resetUrl}
+
+Si tu n'es pas à l'origine de cette demande, tu peux ignorer ce mail — ton mot de passe ne sera pas modifié.
+
+— 2mains de femmes
+`;
+
+  const html = shell(
+    'Réinitialise ton mot de passe',
+    `<p style="margin:0 0 16px;line-height:1.5;">Tu (ou quelqu'un d'autre) a demandé la réinitialisation du mot de passe de ton compte sur l'espace d'administration de <strong>2mains de femmes</strong>.</p>
+<p style="margin:0 0 16px;line-height:1.5;">Pour choisir un nouveau mot de passe, clique sur le bouton ci-dessous.</p>
+${button(opts.resetUrl, 'Choisir un nouveau mot de passe')}
+<p style="margin:0 0 16px;font-size:14px;color:${MUTED};line-height:1.5;">Ce lien est valable <strong>1 heure</strong>.</p>
+<p style="margin:24px 0 0;font-size:13px;color:${MUTED};line-height:1.5;">Si tu n'es pas à l'origine de cette demande, ignore ce mail — ton mot de passe ne sera pas modifié. Si le bouton ne fonctionne pas, copie ce lien dans ton navigateur :<br><span style="word-break:break-all;">${escapeHtml(opts.resetUrl)}</span></p>`,
+  );
+
+  return { subject, html, text };
+}
+
 // ─── Bienvenue (post-activation) ────────────────────────────────────
 
 export function welcomeEmail(opts: {

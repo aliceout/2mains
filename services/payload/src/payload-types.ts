@@ -102,10 +102,16 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    site: Site;
+    identite: Identite;
+    parametres: Parametre;
+    'liens-externes': LiensExterne;
+    'banderole-urgence': BanderoleUrgence;
   };
   globalsSelect: {
-    site: SiteSelect<false> | SiteSelect<true>;
+    identite: IdentiteSelect<false> | IdentiteSelect<true>;
+    parametres: ParametresSelect<false> | ParametresSelect<true>;
+    'liens-externes': LiensExternesSelect<false> | LiensExternesSelect<true>;
+    'banderole-urgence': BanderoleUrgenceSelect<false> | BanderoleUrgenceSelect<true>;
   };
   locale: null;
   widgets: {
@@ -1483,18 +1489,35 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Identité, mission, contact, réseaux, liens HelloAsso. Pas de credentials ici (SMTP, etc.) — ceux-là sont dans Infisical.
+ * Identité de l'association : nom, URL canonique, accroche, mission, directeur·rice de publication, identifiants légaux, adresse postale.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site".
+ * via the `definition` "identite".
  */
-export interface Site {
+export interface Identite {
   id: number;
   nom_asso: string;
   /**
    * Domaine racine, ex: https://votre-domaine.tld (sans slash final).
    */
   url: string;
+  accroche_globale: string;
+  mission: string;
+  directeur_publication: string;
+  siren?: string | null;
+  rna?: string | null;
+  adresse?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Toggles techniques : indexation moteurs de recherche, page de garde pendant la refonte, cache navigateur.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parametres".
+ */
+export interface Parametre {
+  id: number;
   /**
    * Si coché, le site entier devient invisible pour Google, Bing, etc. Utile pendant une refonte ou pour une instance de staging. Le toggle ajoute `Disallow: /` à robots.txt, un `<meta name="robots" content="noindex, nofollow">` sur toutes les pages, et un header HTTP `X-Robots-Tag`.
    */
@@ -1507,12 +1530,17 @@ export interface Site {
    * Si coché, chaque page est servie avec des headers `Cache-Control: no-store` qui forcent les navigateurs à refetch à chaque visite. Utile pendant une recette client (Audrey voit toutes les modifs immédiatement sans Ctrl+F5). À désactiver une fois le site stabilisé : le cache est ce qui rend le site rapide.
    */
   no_cache?: boolean | null;
-  accroche_globale: string;
-  mission: string;
-  directeur_publication: string;
-  siren?: string | null;
-  rna?: string | null;
-  adresse?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * URLs externes : profils réseaux sociaux + campagnes HelloAsso. Ces liens apparaissent dans le footer + les boutons "Faire un don", "Adhérer", "Newsletter".
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "liens-externes".
+ */
+export interface LiensExterne {
+  id: number;
   reseaux?: {
     facebook?: string | null;
     instagram?: string | null;
@@ -1526,36 +1554,63 @@ export interface Site {
     adhesion?: string | null;
     newsletter?: string | null;
   };
-  banderole_urgence?: {
-    /**
-     * Active la banderole sur toutes les pages.
-     */
-    active?: boolean | null;
-    /**
-     * Markdown inline supporté (**gras**, *italique*, [lien](url)).
-     */
-    message?: string | null;
-    couleur?: ('orange' | 'violet' | 'magenta') | null;
-  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Bandeau d'alerte affiché en haut de toutes les pages. Activable et éditable indépendamment du reste, pour ne pas avoir à toucher au site en code en cas de message urgent à passer.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banderole-urgence".
+ */
+export interface BanderoleUrgence {
+  id: number;
+  /**
+   * Active la banderole sur toutes les pages.
+   */
+  active?: boolean | null;
+  /**
+   * Markdown inline supporté (**gras**, *italique*, [lien](url)).
+   */
+  message?: string | null;
+  couleur?: ('orange' | 'violet' | 'magenta') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site_select".
+ * via the `definition` "identite_select".
  */
-export interface SiteSelect<T extends boolean = true> {
+export interface IdentiteSelect<T extends boolean = true> {
   nom_asso?: T;
   url?: T;
-  noindex?: T;
-  gate_password?: T;
-  no_cache?: T;
   accroche_globale?: T;
   mission?: T;
   directeur_publication?: T;
   siren?: T;
   rna?: T;
   adresse?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "parametres_select".
+ */
+export interface ParametresSelect<T extends boolean = true> {
+  noindex?: T;
+  gate_password?: T;
+  no_cache?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "liens-externes_select".
+ */
+export interface LiensExternesSelect<T extends boolean = true> {
   reseaux?:
     | T
     | {
@@ -1570,13 +1625,18 @@ export interface SiteSelect<T extends boolean = true> {
         adhesion?: T;
         newsletter?: T;
       };
-  banderole_urgence?:
-    | T
-    | {
-        active?: T;
-        message?: T;
-        couleur?: T;
-      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "banderole-urgence_select".
+ */
+export interface BanderoleUrgenceSelect<T extends boolean = true> {
+  active?: T;
+  message?: T;
+  couleur?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

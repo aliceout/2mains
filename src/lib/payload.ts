@@ -122,9 +122,12 @@ export async function fetchCollection<T = unknown>(
   return data.docs;
 }
 
-/** Récupère le global Site (paramètres). */
-export async function fetchSite<T = unknown>(depth = 1): Promise<T> {
-  return fetchPayload<T>(`/globals/site?depth=${depth}`);
+/** Récupère un global Payload par son slug. */
+export async function fetchGlobal<T = unknown>(
+  slug: string,
+  depth = 1,
+): Promise<T> {
+  return fetchPayload<T>(`/globals/${slug}?depth=${depth}`);
 }
 
 // ─── Transformations shape Payload → shape Astro legacy ─────────
