@@ -74,6 +74,20 @@ export const Site: GlobalConfig = {
       },
     },
     {
+      name: 'no_cache',
+      type: 'checkbox',
+      defaultValue: false,
+      label: 'Désactiver le cache navigateur',
+      admin: {
+        description:
+          'Si coché, chaque page est servie avec des headers `Cache-Control: ' +
+          'no-store` qui forcent les navigateurs à refetch à chaque visite. ' +
+          'Utile pendant une recette client (Audrey voit toutes les modifs ' +
+          'immédiatement sans Ctrl+F5). À désactiver une fois le site stabilisé : ' +
+          'le cache est ce qui rend le site rapide.',
+      },
+    },
+    {
       name: 'accroche_globale',
       type: 'text',
       required: true,

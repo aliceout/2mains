@@ -72,5 +72,18 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
   }
 
+  // Toggle no_cache (cf Site global Payload) : pendant une recette
+  // client, on force le navigateur à refetch à chaque visite pour
+  // que toute modif soit visible immédiatement, sans Ctrl+F5.
+  // À désactiver une fois le site stabilisé (le cache, c'est la perf).
+  if (settings?.no_cache === true) {
+    response.headers.set(
+      'Cache-Control',
+      'no-store, no-cache, must-revalidate, max-age=0',
+    );
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+  }
+
   return response;
 };

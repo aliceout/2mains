@@ -3,6 +3,7 @@ import * as migration_20260503_070220_phase6_auth from './20260503_070220_phase6
 import * as migration_20260508_142701_drift_since_phase6 from './20260508_142701_drift_since_phase6';
 import * as migration_20260516_200631_auto_20260516_230622 from './20260516_200631_auto_20260516_230622';
 import * as migration_20260516_202821_auto_20260516_232814 from './20260516_202821_auto_20260516_232814';
+import * as migration_20260518_154950_auto_20260518_184944 from './20260518_154950_auto_20260518_184944';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20260516_202821_auto_20260516_232814.up,
     down: migration_20260516_202821_auto_20260516_232814.down,
-    name: '20260516_202821_auto_20260516_232814'
+    name: '20260516_202821_auto_20260516_232814',
+  },
+  {
+    up: migration_20260518_154950_auto_20260518_184944.up,
+    down: migration_20260518_154950_auto_20260518_184944.down,
+    name: '20260518_154950_auto_20260518_184944'
   },
 ];
