@@ -71,8 +71,17 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     fetchGlobal<BanderoleUrgenceGlobal>('banderole-urgence'),
   ]);
 
+  // url : la valeur source de vérité c'est le champ `url` du global
+  // Identité (saisie par Audrey via /cms/admin). Si elle n'a pas (encore)
+  // été renseignée — typique en dev frais ou juste après une migration —
+  // on retombe sur ADDRESS (env), puis sur localhost pour ne JAMAIS
+  // throw "Invalid URL" côté composants qui font `new URL(..., settings.url)`.
+  const url =
+    identite.url ?? process.env.ADDRESS ?? 'http://localhost:3001';
+
   return {
     ...identite,
+    url,
     ...parametres,
     reseaux: liens.reseaux,
     helloasso: liens.helloasso,

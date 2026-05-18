@@ -30,15 +30,6 @@ export const Parametres: GlobalConfig = {
   },
   fields: [
     {
-      name: 'commit_info',
-      type: 'ui',
-      admin: {
-        components: {
-          Field: '@/components/admin/CommitInfo#default',
-        },
-      },
-    },
-    {
       name: 'noindex',
       type: 'checkbox',
       defaultValue: false,
@@ -76,6 +67,15 @@ export const Parametres: GlobalConfig = {
           'Utile pendant une recette client (Audrey voit toutes les modifs ' +
           'immédiatement sans Ctrl+F5). À désactiver une fois le site stabilisé : ' +
           'le cache est ce qui rend le site rapide.',
+      },
+    },
+    {
+      name: 'commit_info',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/admin/CommitInfo#default',
+        },
       },
     },
   ],

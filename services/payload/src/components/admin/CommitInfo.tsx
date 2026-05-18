@@ -16,22 +16,37 @@ export default function CommitInfo(): React.ReactElement {
   const commitUrl = sha ? `${REPO_URL}/commit/${sha}` : null;
 
   return (
-    <div style={{ marginTop: '0.5rem', padding: '0.75rem 1rem', background: 'var(--theme-elevation-50)', borderRadius: '4px', fontSize: '0.875rem' }}>
-      <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
+    <div
+      style={{
+        marginTop: '2.5rem',
+        paddingTop: '1.25rem',
+        borderTop: '1px solid var(--theme-elevation-100)',
+        fontSize: '0.8125rem',
+        color: 'var(--theme-text-muted)',
+        display: 'flex',
+        alignItems: 'baseline',
+        gap: '0.75rem',
+        flexWrap: 'wrap',
+      }}
+    >
+      <span style={{ fontWeight: 600, color: 'var(--theme-text)' }}>
         Version déployée
-      </strong>
+      </span>
       <code style={{ fontFamily: 'var(--font-mono)' }}>
         {commitUrl ? (
-          <a href={commitUrl} target="_blank" rel="noopener noreferrer">
+          <a
+            href={commitUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit' }}
+          >
             {shortSha}
           </a>
         ) : (
           shortSha
         )}
       </code>
-      <span style={{ marginLeft: '0.75rem', color: 'var(--theme-text-muted)', fontSize: '0.8125rem' }}>
-        SHA du commit Git baké dans l&rsquo;image Docker en cours.
-      </span>
+      <span>SHA du commit Git baké dans l&rsquo;image Docker en cours.</span>
     </div>
   );
 }
