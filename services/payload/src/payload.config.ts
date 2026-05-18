@@ -1,5 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { en } from '@payloadcms/translations/languages/en'
+import { fr } from '@payloadcms/translations/languages/fr'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -91,6 +93,15 @@ export default buildConfig({
         '@/components/admin/AdminStyles#default',
       ],
     },
+  },
+  // i18n admin : FR par défaut, EN dispo en bascule via le profil
+  // utilisateur. Concerne les chaînes natives Payload (boutons "Save",
+  // labels système, navigation, drawers d'invitation, etc.). Les
+  // labels custom qu'on a écrits dans nos collections/globals/blocs
+  // restent tels quels (déjà en FR).
+  i18n: {
+    fallbackLanguage: 'fr',
+    supportedLanguages: { fr, en },
   },
   collections: [
     Pages,
