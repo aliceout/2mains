@@ -14,8 +14,9 @@ import { isAdminOrRoot } from '../access/roles';
  */
 export const Parametres: GlobalConfig = {
   slug: 'parametres',
-  label: 'Paramètres',
+  label: 'Réglages',
   admin: {
+    group: 'Paramètres',
     description:
       'Toggles techniques : indexation moteurs de recherche, page de garde ' +
       'pendant la refonte, cache navigateur.',

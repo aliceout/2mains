@@ -14,6 +14,7 @@ export const BanderoleUrgence: GlobalConfig = {
   slug: 'banderole-urgence',
   label: 'Banderole d\'urgence',
   admin: {
+    group: 'Paramètres',
     description:
       'Bandeau d\'alerte affiché en haut de toutes les pages. Activable et ' +
       'éditable indépendamment du reste, pour ne pas avoir à toucher au site ' +

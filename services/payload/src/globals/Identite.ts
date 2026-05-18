@@ -13,6 +13,7 @@ export const Identite: GlobalConfig = {
   slug: 'identite',
   label: 'Identité',
   admin: {
+    group: 'Paramètres',
     description:
       'Identité de l\'association : nom, URL canonique, accroche, mission, ' +
       'directeur·rice de publication, identifiants légaux, adresse postale.',

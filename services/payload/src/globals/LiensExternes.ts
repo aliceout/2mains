@@ -13,6 +13,7 @@ export const LiensExternes: GlobalConfig = {
   slug: 'liens-externes',
   label: 'Liens externes',
   admin: {
+    group: 'Paramètres',
     description:
       'URLs externes : profils réseaux sociaux + campagnes HelloAsso. ' +
       'Ces liens apparaissent dans le footer + les boutons "Faire un don", ' +

@@ -36,6 +36,7 @@ export const Users: CollectionConfig = {
   slug: 'users',
   labels: { singular: 'Utilisateur', plural: 'Utilisateurs' },
   admin: {
+    group: 'Paramètres',
     useAsTitle: 'email',
     defaultColumns: ['email', 'displayName', 'role', 'status', 'updatedAt'],
     listSearchableFields: ['email', 'displayName'],
