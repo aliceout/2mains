@@ -15,6 +15,25 @@
     color: var(--color-ink-2);
     line-height: 1.65;
   }
+  /* h1 : déconseillé en pratique (chaque page a déjà un h1 dans son Hero,
+     un deuxième h1 dans le contenu nuit au SEO + a11y). On le style
+     quand même au cas où Audrey en met un — visuellement plus gros que
+     h2 pour respecter la hiérarchie. */
+  .prose-custom :global(h1) {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+  @media (min-width: 768px) {
+    .prose-custom :global(h1) {
+      font-size: 36px;
+    }
+  }
   .prose-custom :global(h2) {
     font-family: var(--font-serif);
     font-size: 24px;
@@ -45,6 +64,35 @@
       font-size: 21px;
     }
   }
+  /* h4 : sous-section dans une section. Plus petit que h3, sans serif
+     (sans-serif pour le différencier). */
+  .prose-custom :global(h4) {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.005em;
+    color: var(--color-ink);
+    margin-top: 1.5rem;
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+  @media (min-width: 768px) {
+    .prose-custom :global(h4) {
+      font-size: 17px;
+    }
+  }
+  /* h5 + h6 : très rares — même style que h4 mais sans uppercase. */
+  .prose-custom :global(h5),
+  .prose-custom :global(h6) {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-ink);
+    margin-top: 1.25rem;
+    margin-bottom: 0.35rem;
+  }
   .prose-custom :global(p) {
     font-size: 16px;
     line-height: 1.65;
@@ -74,6 +122,17 @@
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 500;
+    color: var(--color-orange);
+  }
+  /* ***bold italic*** : marked produit <em><strong>X</strong></em>
+     (ou inverse). Sans cette règle, le strong override la couleur
+     orange du em → rendu "italique gris" non voulu. On force les deux
+     ensembles : serif + italic + bold + orange. */
+  .prose-custom :global(em strong),
+  .prose-custom :global(strong em) {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 600;
     color: var(--color-orange);
   }
   .prose-custom :global(a) {
