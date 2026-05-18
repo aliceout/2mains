@@ -94,19 +94,21 @@ export const Pages: CollectionConfig = {
         {
           name: 'cta_primaire',
           type: 'group',
+          label: 'Bouton principal',
           fields: [
-            { name: 'label', type: 'text' },
-            { name: 'href', type: 'text' },
-            { name: 'externe', type: 'checkbox', defaultValue: false },
+            { name: 'label', type: 'text', label: 'Texte du bouton' },
+            { name: 'href', type: 'text', label: 'URL (interne ex. /contact, ou externe https://...)' },
+            { name: 'externe', type: 'checkbox', defaultValue: false, label: 'Lien externe (ouvre dans un nouvel onglet)' },
           ],
         },
         {
           name: 'cta_secondaire',
           type: 'group',
+          label: 'Bouton secondaire (facultatif)',
           fields: [
-            { name: 'label', type: 'text' },
-            { name: 'href', type: 'text' },
-            { name: 'externe', type: 'checkbox', defaultValue: false },
+            { name: 'label', type: 'text', label: 'Texte du bouton' },
+            { name: 'href', type: 'text', label: 'URL (interne ex. /contact, ou externe https://...)' },
+            { name: 'externe', type: 'checkbox', defaultValue: false, label: 'Lien externe (ouvre dans un nouvel onglet)' },
           ],
         },
       ],

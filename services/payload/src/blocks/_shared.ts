@@ -47,13 +47,31 @@ export const titreField = {
   required: false,
 } satisfies Field;
 
-/** Lien / CTA — sous-objet réutilisé dans cta, formats, etc.
- *  Label et href sont en required:false côté schéma car Payload
- *  n'a pas de "tout-ou-rien" sur les groups optionnels : si on les
- *  marquait required, un format SANS cta serait quand même rejeté.
- *  La cohérence (label+href ensemble) est validée côté UI/UX. */
+/** Bouton d'action — sous-objet réutilisé dans Cta, Hero, Formats, etc.
+ *  Texte (= label affiché) et URL (= href) sont en required:false côté
+ *  schéma car Payload n'a pas de "tout-ou-rien" sur les groups
+ *  optionnels : si on les marquait required, un bloc SANS bouton serait
+ *  quand même rejeté. La cohérence (texte+url ensemble) est validée
+ *  côté UI/UX.
+ *  Slugs `label`/`href`/`externe` conservés tels quels pour ne pas
+ *  invalider la DB existante. */
 export const ctaFields = [
-  { name: 'label', type: 'text', required: false },
-  { name: 'href', type: 'text', required: false },
-  { name: 'externe', type: 'checkbox', defaultValue: false },
+  {
+    name: 'label',
+    type: 'text',
+    required: false,
+    label: 'Texte du bouton',
+  },
+  {
+    name: 'href',
+    type: 'text',
+    required: false,
+    label: 'URL (interne ex. /contact, ou externe https://...)',
+  },
+  {
+    name: 'externe',
+    type: 'checkbox',
+    defaultValue: false,
+    label: 'Lien externe (ouvre dans un nouvel onglet)',
+  },
 ] satisfies Field[];
