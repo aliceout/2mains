@@ -35,14 +35,16 @@ export const Temoignages: Block = {
     },
     {
       name: 'ids',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'temoignages',
+      hasMany: true,
       required: false,
       label: 'Filtrer par entrées spécifiques (optionnel)',
       admin: {
         description:
-          'Laisse vide pour tirer automatiquement. Sinon liste les slugs.',
+          'Laisse vide pour tirer automatiquement (en respectant la limite). ' +
+          'Sinon sélectionne les témoignages dans la liste déroulante.',
       },
-      fields: [{ name: 'slug', type: 'text', required: true }],
     },
   ],
 };

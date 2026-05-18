@@ -46,14 +46,16 @@ export const Equipe: Block = {
     },
     {
       name: 'ids',
-      type: 'array',
+      type: 'relationship',
+      relationTo: 'equipe',
+      hasMany: true,
       required: false,
       label: 'Filtrer par membres (optionnel)',
       admin: {
         description:
-          'Laisse vide pour afficher tous. Sinon liste les slugs (ex: audrey-relandeau).',
+          'Laisse vide pour afficher tous les membres. Sinon sélectionne ' +
+          'ceux que tu veux afficher dans la liste déroulante.',
       },
-      fields: [{ name: 'slug', type: 'text', required: true }],
     },
   ],
 };

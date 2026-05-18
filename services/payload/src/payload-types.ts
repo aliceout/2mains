@@ -496,14 +496,9 @@ export interface Page {
             contexte?: ('participante' | 'partenaire' | 'professionnelle') | null;
             limite: number;
             /**
-             * Laisse vide pour tirer automatiquement. Sinon liste les slugs.
+             * Laisse vide pour tirer automatiquement (en respectant la limite). Sinon sélectionne les témoignages dans la liste déroulante.
              */
-            ids?:
-              | {
-                  slug: string;
-                  id?: string | null;
-                }[]
-              | null;
+            ids?: (number | Temoignage)[] | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'temoignages';
@@ -515,14 +510,9 @@ export interface Page {
             forme: 'rond' | 'carre';
             colonnes: '2' | '3' | '4';
             /**
-             * Laisse vide pour afficher tous. Sinon liste les slugs (ex: audrey-relandeau).
+             * Laisse vide pour afficher tous les membres. Sinon sélectionne ceux que tu veux afficher dans la liste déroulante.
              */
-            ids?:
-              | {
-                  slug: string;
-                  id?: string | null;
-                }[]
-              | null;
+            ids?: (number | Equipe)[] | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'equipe';
@@ -568,6 +558,54 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "temoignages".
+ */
+export interface Temoignage {
+  id: number;
+  slug: string;
+  auteur: string;
+  role?: string | null;
+  contexte: 'participante' | 'partenaire' | 'professionnelle';
+  photo?: (number | null) | Media;
+  citation: string;
+  ordre?: number | null;
+  /**
+   * Si coché, candidat à la mise en avant home (un seul à la fois).
+   */
+  a_la_une?: boolean | null;
+  /**
+   * Marque comme fictif (badge « À valider »).
+   */
+  fictif?: boolean | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "equipe".
+ */
+export interface Equipe {
+  id: number;
+  /**
+   * URL-safe, ex: 'audrey-relandeau'.
+   */
+  slug: string;
+  nom: string;
+  role: string;
+  photo?: (number | null) | Media;
+  bio_courte?: string | null;
+  linkedin?: string | null;
+  /**
+   * Plus petit = plus haut dans la liste.
+   */
+  ordre?: number | null;
+  draft?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -621,54 +659,6 @@ export interface Evenement {
   body?: string | null;
   /**
    * Événement de démonstration — badge « À valider ».
-   */
-  fictif?: boolean | null;
-  draft?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "equipe".
- */
-export interface Equipe {
-  id: number;
-  /**
-   * URL-safe, ex: 'audrey-relandeau'.
-   */
-  slug: string;
-  nom: string;
-  role: string;
-  photo?: (number | null) | Media;
-  bio_courte?: string | null;
-  linkedin?: string | null;
-  /**
-   * Plus petit = plus haut dans la liste.
-   */
-  ordre?: number | null;
-  draft?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "temoignages".
- */
-export interface Temoignage {
-  id: number;
-  slug: string;
-  auteur: string;
-  role?: string | null;
-  contexte: 'participante' | 'partenaire' | 'professionnelle';
-  photo?: (number | null) | Media;
-  citation: string;
-  ordre?: number | null;
-  /**
-   * Si coché, candidat à la mise en avant home (un seul à la fois).
-   */
-  a_la_une?: boolean | null;
-  /**
-   * Marque comme fictif (badge « À valider »).
    */
   fictif?: boolean | null;
   draft?: boolean | null;
@@ -1220,12 +1210,7 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               contexte?: T;
               limite?: T;
-              ids?:
-                | T
-                | {
-                    slug?: T;
-                    id?: T;
-                  };
+              ids?: T;
               id?: T;
               blockName?: T;
             };
@@ -1237,12 +1222,7 @@ export interface PagesSelect<T extends boolean = true> {
               intro?: T;
               forme?: T;
               colonnes?: T;
-              ids?:
-                | T
-                | {
-                    slug?: T;
-                    id?: T;
-                  };
+              ids?: T;
               id?: T;
               blockName?: T;
             };

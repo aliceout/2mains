@@ -242,15 +242,24 @@ function transformBlock(rawBlock: Record<string, unknown>): Record<string, unkno
     }));
   }
 
-  // temoignages/equipe.ids : [{slug}] → string[]
+  // temoignages/equipe.ids : maintenant des relations hasMany. Selon
+  // la profondeur de fetch, Payload renvoie soit un array d'IDs bruts
+  // (depth 0), soit un array de docs populated (depth >= 1). On
+  // normalise en array de string IDs pour pouvoir filtrer simplement
+  // dans le PageRenderer.
   if (
     (blockType === 'temoignages' || blockType === 'equipe') &&
     Array.isArray(out.ids)
   ) {
-    out.ids = unwrapArray(
-      out.ids as Array<Record<string, string>>,
-      'slug',
-    );
+    out.ids = (out.ids as Array<unknown>)
+      .map((item) => {
+        if (item === null || item === undefined) return null;
+        if (typeof item === 'object' && 'id' in item) {
+          return String((item as { id: number | string }).id);
+        }
+        return String(item);
+      })
+      .filter((v): v is string => v !== null);
   }
 
   return out;

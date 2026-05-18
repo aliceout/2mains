@@ -349,12 +349,11 @@ for (const s of sections) {
       );
     }
     if (s.type === 'temoignages') {
-      // Filtrage par slugs (le champ `ids` du bloc contient des slugs
-      // saisis par Audrey, pas des IDs numériques). Aussi : on garde
-      // la liste complète si l'array est vide ou absent — sinon la
-      // condition truthy `[]` réduirait à zéro résultat.
+      // `s.ids` = array d'IDs string (relations hasMany normalisées par
+      // transformBlock). Vide ou absent → on tire automatiquement
+      // depuis la liste complète (respecte filtre `contexte` + limite).
       let subset = s.ids && s.ids.length > 0
-        ? tousTemoignages.filter((t) => s.ids!.includes(t.slug))
+        ? tousTemoignages.filter((t) => s.ids!.includes(t.id))
         : tousTemoignages;
       if (s.contexte && !s.ids) {
         subset = subset.filter((t) => t.data.contexte === s.contexte);
@@ -368,12 +367,11 @@ for (const s of sections) {
       );
     }
     if (s.type === 'equipe') {
-      // Filtrage par slugs (le champ `ids` du bloc contient des slugs
-      // saisis par Audrey, pas des IDs numériques). Aussi : on garde
-      // la liste complète si l'array est vide ou absent — sinon la
-      // condition truthy `[]` réduirait à zéro résultat.
+      // `s.ids` = array d'IDs string (relations hasMany normalisées par
+      // transformBlock). Vide ou absent → tous les membres (sortés
+      // par `ordre`).
       const subset = s.ids && s.ids.length > 0
-        ? equipeMembres.filter((m) => s.ids!.includes(m.slug))
+        ? equipeMembres.filter((m) => s.ids!.includes(m.id))
         : equipeMembres;
       const personnes = subset.map((m) => ({
         nom: m.data.nom,
