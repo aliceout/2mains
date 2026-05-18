@@ -96,6 +96,13 @@ jobs:
           secret-path: /services/2mains
           export-type: env
 
+      # Re-export ADDRESS pour faire taire le warning "Context access
+      # might be invalid: ADDRESS" du YAML language server (faux positif :
+      # la step Infisical ci-dessus injecte bien la var dans GITHUB_ENV
+      # au runtime, mais le linter ne le sait pas).
+      - name: Re-export ADDRESS to env
+        run: echo "ADDRESS=$ADDRESS" >> "$GITHUB_ENV"
+
       - name: Build and push site
         uses: docker/build-push-action@v6
         with:
