@@ -1495,6 +1495,18 @@ export interface Site {
    * Domaine racine, ex: https://votre-domaine.tld (sans slash final).
    */
   url: string;
+  /**
+   * Si coché, le site entier devient invisible pour Google, Bing, etc. Utile pendant une refonte ou pour une instance de staging. Le toggle ajoute `Disallow: /` à robots.txt, un `<meta name="robots" content="noindex, nofollow">` sur toutes les pages, et un header HTTP `X-Robots-Tag`.
+   */
+  noindex?: boolean | null;
+  /**
+   * Si renseigné, le site entier est masqué derrière une page de garde qui demande ce mot de passe. Laisser vide pour désactiver. Idéal pour une période de refonte ou de pré-lancement entre proches — pas pour de la vraie sécurité. /cms/admin reste toujours accessible.
+   */
+  gate_password?: string | null;
+  /**
+   * Si coché, chaque page est servie avec des headers `Cache-Control: no-store` qui forcent les navigateurs à refetch à chaque visite. Utile pendant une recette client (Audrey voit toutes les modifs immédiatement sans Ctrl+F5). À désactiver une fois le site stabilisé : le cache est ce qui rend le site rapide.
+   */
+  no_cache?: boolean | null;
   accroche_globale: string;
   mission: string;
   directeur_publication: string;
@@ -1535,6 +1547,9 @@ export interface Site {
 export interface SiteSelect<T extends boolean = true> {
   nom_asso?: T;
   url?: T;
+  noindex?: T;
+  gate_password?: T;
+  no_cache?: T;
   accroche_globale?: T;
   mission?: T;
   directeur_publication?: T;

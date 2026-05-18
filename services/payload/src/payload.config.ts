@@ -79,9 +79,14 @@ export default buildConfig({
           path: '/invitation/:token',
         },
       },
-      // Keepalive injecté en barre d'actions globale → tourne sur toutes
-      // les pages de l'admin tant qu'un onglet est ouvert.
-      actions: ['@/components/auth/SessionKeepalive#default'],
+      // Keepalive + style sheet injectée globale. Le slot `actions` est
+      // rendu sur toutes les pages de l'admin. AdminStyles ne rend qu'un
+      // <style> invisible qui masque .doc-tabs (onglets Edit/API qu'on
+      // ne veut pas exposer à l'autrice).
+      actions: [
+        '@/components/auth/SessionKeepalive#default',
+        '@/components/admin/AdminStyles#default',
+      ],
     },
   },
   collections: [
