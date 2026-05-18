@@ -86,7 +86,7 @@ jobs:
       # refetch Infisical et alimente .env qui est consommé par
       # docker compose (compose.yml expose ADDRESS au service site).
       - name: Fetch build-time secrets from Infisical
-        uses: Infisical/secrets-action@v1.0.7
+        uses: Infisical/secrets-action@v1.0.16
         with:
           method: universal
           domain: ${{ secrets.INFISICAL_API_URL }}
