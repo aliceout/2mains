@@ -43,7 +43,11 @@ RUN pnpm install --frozen-lockfile --prod
 FROM node:22-alpine AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production \
+# GIT_SHA injecté en build-arg par le workflow CI ; exposé en runtime
+# via process.env.GIT_SHA pour que le footer affiche le SHA déployé.
+ARG GIT_SHA
+ENV GIT_SHA=$GIT_SHA \
+    NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=4321
 

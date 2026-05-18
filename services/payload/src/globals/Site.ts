@@ -32,6 +32,15 @@ export const Site: GlobalConfig = {
   },
   fields: [
     {
+      name: 'commit_info',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/admin/CommitInfo#default',
+        },
+      },
+    },
+    {
       name: 'nom_asso',
       type: 'text',
       required: true,

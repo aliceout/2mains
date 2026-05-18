@@ -24,7 +24,12 @@ RUN corepack enable pnpm && pnpm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV=production \
+# GIT_SHA injecté en build-arg par le workflow CI ; exposé en runtime
+# via process.env.GIT_SHA pour affichage du SHA déployé dans /cms/admin
+# (champ ui sur le global Site).
+ARG GIT_SHA
+ENV GIT_SHA=$GIT_SHA \
+    NODE_ENV=production \
     PORT=3001 \
     HOSTNAME=0.0.0.0
 

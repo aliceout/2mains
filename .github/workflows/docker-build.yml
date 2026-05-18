@@ -111,6 +111,7 @@ jobs:
           push: true
           build-args: |
             ADDRESS=${{ env.ADDRESS }}
+            GIT_SHA=${{ github.sha }}
           tags: |
             ghcr.io/aliceout/2mains-site:latest
             ghcr.io/aliceout/2mains-site:${{ github.sha }}
@@ -141,6 +142,8 @@ jobs:
           context: services/payload
           file: services/payload/Dockerfile
           push: true
+          build-args: |
+            GIT_SHA=${{ github.sha }}
           tags: |
             ghcr.io/aliceout/2mains-payload:latest
             ghcr.io/aliceout/2mains-payload:${{ github.sha }}
