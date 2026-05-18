@@ -9,18 +9,38 @@ import { getSiteSettings } from './lib/site';
 // CSP : autorise 'unsafe-inline' sur script et style pour ne pas casser
 // le formulaire /contact (script inline) ni Tailwind v4 (style inline
 // sur certains composants Astro). À durcir en Phase 7 avec des nonces.
-const CSP = [
-  "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
-  "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https:",
-  "font-src 'self'",
-  "connect-src 'self'",
-  "form-action 'self'",
-  "frame-ancestors 'none'",
-  "base-uri 'self'",
-  "object-src 'none'",
-].join('; ');
+//
+// Pour img-src on autorise l'origin de ADDRESS — c'est de là que viennent
+// les médias Payload (/cms/api/media/file/...). En prod c'est typiquement
+// https://2mainsdefemmes.org (couvert par `https:` de toute façon). En dev
+// c'est http://localhost:3001 (Payload local) → sinon les images sont
+// bloquées par CSP avec le seul `https:` qui couvre que les origins TLS.
+function buildCsp(): string {
+  const address = process.env.ADDRESS;
+  let payloadOrigin = '';
+  if (address) {
+    try {
+      const u = new URL(address);
+      payloadOrigin = `${u.protocol}//${u.host}`;
+    } catch {
+      // ADDRESS mal formé → on tombe sur les directives de base
+    }
+  }
+  return [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' data: blob: https: ${payloadOrigin}`.trim(),
+    "font-src 'self'",
+    "connect-src 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "object-src 'none'",
+  ].join('; ');
+}
+
+const CSP = buildCsp();
 
 // Paths qui doivent toujours passer même quand le gate est actif :
 //   /gate            la page de garde elle-même (sinon redirect loop)
