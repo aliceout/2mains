@@ -1,19 +1,16 @@
 ---
 // Banderole en haut de page — pilotée par site.banderole_urgence.
 // Bande pleine largeur sur fond orange/violet/rose selon la couleur,
-// texte sans-serif simple. Rendu inline (sans <p>) : Lexical si rempli,
-// sinon fallback marked.parseInline sur l'ancien champ markdown.
-import { renderRichOrMarkdown } from '../lib/lexical';
+// texte sans-serif simple. Rendu inline (sans <p>).
+import { lexicalToHtmlInline } from '../lib/lexical';
 
 type Props = {
-  /** Message markdown legacy. */
-  message?: string;
-  /** Message Lexical (nouveau richText). Si rempli, écrase message. */
+  /** Message Lexical (richText). */
   message_rich?: unknown;
   couleur?: 'orange' | 'violet' | 'magenta';
 };
 
-const { message, message_rich, couleur = 'orange' } = Astro.props;
+const { message_rich, couleur = 'orange' } = Astro.props;
 
 // magenta de l'ancienne API mappé sur rose dans la nouvelle palette.
 const bg = {
@@ -22,7 +19,7 @@ const bg = {
   magenta: 'bg-rose text-ink',
 }[couleur];
 
-const html = renderRichOrMarkdown(message_rich, message, true);
+const html = lexicalToHtmlInline(message_rich);
 ---
 
 <div

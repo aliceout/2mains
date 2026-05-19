@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { couleurField, fondField, richTextWithLegacy, titreField } from './_shared';
+import { couleurField, fondField, richTextField, titreField } from './_shared';
 import { thumbBlocValeurs } from './_thumbnails';
 
 export const BlocValeurs: Block = {
@@ -18,7 +18,7 @@ export const BlocValeurs: Block = {
       labels: { singular: 'Valeur', plural: 'Valeurs' },
       fields: [
         { name: 'nom', type: 'text', required: true },
-        ...richTextWithLegacy({ name: 'description', label: 'Description' }),
+        richTextField({ name: 'description', label: 'Description' }),
         couleurField,
       ],
     },

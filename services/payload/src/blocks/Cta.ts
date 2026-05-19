@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { ctaFields, fondField, richTextWithLegacy } from './_shared';
+import { ctaFields, fondField, richTextField } from './_shared';
 import { thumbCta } from './_thumbnails';
 
 export const Cta: Block = {
@@ -14,7 +14,7 @@ export const Cta: Block = {
   fields: [
     fondField,
     { name: 'titre', type: 'text', required: true },
-    ...richTextWithLegacy({ name: 'corps', label: 'Sous-titre / corps' }),
+    richTextField({ name: 'corps', label: 'Sous-titre / corps' }),
     {
       name: 'cta_primaire',
       type: 'group',

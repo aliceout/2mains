@@ -2,18 +2,16 @@
 // Encadré coloré pour faire ressortir un point clé. Inspiré des
 // callouts éthiques de la page Structure du proto : border-left 3px,
 // fond tinté, eyebrow mono uppercase coloré, body Inter Tight.
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Props = {
   ton?: 'info' | 'important' | 'astuce' | 'note';
   titre?: string;
-  /** Contenu markdown legacy (champ historique). */
-  body?: string;
-  /** Contenu Lexical (nouveau champ richText). Si rempli, écrase body. */
+  /** Contenu Lexical (richText). */
   body_rich?: unknown;
 };
 
-const { ton = 'info', titre, body, body_rich } = Astro.props;
+const { ton = 'info', titre, body_rich } = Astro.props;
 
 // Mapping des tons sur les nouvelles teintes du design.
 const styles = {
@@ -43,7 +41,7 @@ const styles = {
   },
 }[ton];
 
-const html = renderRichOrMarkdown(body_rich, body);
+const html = lexicalToHtml(body_rich);
 ---
 
 <aside

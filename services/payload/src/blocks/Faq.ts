@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbFaq } from './_thumbnails';
 
 export const Faq: Block = {
@@ -18,7 +18,7 @@ export const Faq: Block = {
       labels: { singular: 'Question', plural: 'Questions' },
       fields: [
         { name: 'question', type: 'text', required: true },
-        ...richTextWithLegacy({ name: 'reponse', label: 'Réponse' }),
+        richTextField({ name: 'reponse', label: 'Réponse' }),
       ],
     },
   ],

@@ -63,55 +63,32 @@ export function richTextFieldEditor() {
 }
 
 /**
- * Construit le dual-field (richText + textarea legacy) pour un champ.
- * Pendant la période de migration, le frontend rend le richText si
- * rempli, sinon retombe sur marked.parse(legacy). Une fois la prod
- * vérifiée, le champ legacy sera retiré par une migration Phase 3.
+ * Construit un champ richText Lexical. Le nom de la colonne DB inclut
+ * le suffixe `_rich` (héritage de la Phase 2 où le richText coexistait
+ * avec un textarea markdown legacy — celui-ci a été supprimé en Phase 3).
  *
  * @example
- *   ...richTextWithLegacy({
- *     name: 'body',           // nom historique → devient body_rich + body
- *     label: 'Contenu',
- *     legacyLabel: 'Contenu (Markdown) — héritage, ne plus utiliser',
- *   })
+ *   richTextField({ name: 'body', label: 'Contenu' })
+ *   // → produit un champ Payload nommé `body_rich`
  */
-export function richTextWithLegacy(opts: {
-  /** Nom historique du champ. Devient `<name>_rich` (nouveau) + `<name>` (legacy). */
+export function richTextField(opts: {
+  /** Nom logique du champ. La colonne DB sera `<name>_rich`. */
   name: string;
-  /** Label affiché pour le nouveau champ richText. */
+  /** Label affiché en admin. */
   label: string;
-  /** Label du champ legacy markdown — typiquement "<...> (Markdown) — héritage". */
-  legacyLabel?: string;
-  /** Description affichée sous le champ richText. */
+  /** Description optionnelle affichée sous le champ. */
   description?: string;
-}): Field[] {
-  const legacyLabel =
-    opts.legacyLabel ?? `${opts.label} (Markdown) — héritage, ne plus utiliser`;
-  return [
-    {
-      name: `${opts.name}_rich`,
-      type: 'richText',
-      label: opts.label,
-      required: false,
-      ...richTextFieldEditor(),
-      admin: {
-        description:
-          opts.description ??
-          `Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "${legacyLabel}".`,
-      },
+}): Field {
+  return {
+    name: `${opts.name}_rich`,
+    type: 'richText',
+    label: opts.label,
+    required: false,
+    ...richTextFieldEditor(),
+    admin: {
+      description: opts.description,
     },
-    {
-      name: opts.name,
-      type: 'textarea',
-      label: legacyLabel,
-      required: false,
-      admin: {
-        description:
-          `Champ historique en markdown. À ignorer pour les nouvelles entrées — ` +
-          `utilise le champ "${opts.label}" au-dessus. Sera supprimé après migration complète.`,
-      },
-    },
-  ];
+  };
 }
 
 export const fondField = {

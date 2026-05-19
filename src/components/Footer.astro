@@ -10,14 +10,13 @@
 //   text :  #D8CFBF (paper-cream-ish, contraste AA sur le fond)
 //   meta :  #9C9080 (méta-infos plus sourdes)
 import type { SiteSettings } from '../lib/site';
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtmlInline } from '../lib/lexical';
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
 
-// Mission en HTML inline (gras/italique/liens si rempli en richText,
-// sinon fallback marked sur le markdown legacy).
-const missionHtml = renderRichOrMarkdown(settings.mission_rich, settings.mission, true);
+// Mission en HTML inline (gras/italique/liens).
+const missionHtml = lexicalToHtmlInline(settings.mission_rich);
 
 // SHA du commit déployé, injecté en build-arg par le CI (cf
 // Dockerfile.site + .github/workflows/docker-build.yml). En dev local

@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { couleurField, fondField, richTextWithLegacy, titreField } from './_shared';
+import { couleurField, fondField, richTextField, titreField } from './_shared';
 import { thumbChiffreDetail } from './_thumbnails';
 
 export const ChiffreDetail: Block = {
@@ -17,7 +17,7 @@ export const ChiffreDetail: Block = {
       required: true,
       admin: { description: 'Ex: 90 %, 1/3, 7 M+' },
     },
-    ...richTextWithLegacy({ name: 'texte', label: 'Explication' }),
+    richTextField({ name: 'texte', label: 'Explication' }),
     { name: 'source', type: 'text', required: false },
     {
       name: 'alignement',

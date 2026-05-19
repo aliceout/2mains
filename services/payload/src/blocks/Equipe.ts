@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbEquipe } from './_thumbnails';
 
 export const Equipe: Block = {
@@ -17,7 +17,7 @@ export const Equipe: Block = {
       defaultValue: 'Notre équipe',
     },
     fondField,
-    ...richTextWithLegacy({ name: 'intro', label: 'Texte introductif (optionnel)' }),
+    richTextField({ name: 'intro', label: 'Texte introductif (optionnel)' }),
     {
       name: 'forme',
       type: 'select',

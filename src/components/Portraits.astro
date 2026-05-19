@@ -4,16 +4,14 @@
 // la structure des cards (mêmes radius, même typo) mais centré.
 import SmartImage from './SmartImage.astro';
 import LinkArrow from './atoms/LinkArrow.astro';
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Personne = {
   nom: string;
   role?: string;
   photo?: string;
   photo_alt?: string;
-  /** Bio markdown legacy. */
-  bio?: string;
-  /** Bio Lexical (nouveau richText). Si remplie, écrase bio. */
+  /** Bio Lexical (richText). */
   bio_rich?: unknown;
   lien?: string;
   lien_label?: string;
@@ -73,10 +71,10 @@ const photoClass =
             {p.role}
           </p>
         )}
-        {(p.bio || p.bio_rich) && (
+        {p.bio_rich && (
           <div
             class="mt-3 max-w-xs font-sans text-sm leading-relaxed text-ink-2"
-            set:html={renderRichOrMarkdown(p.bio_rich, p.bio, true)}
+            set:html={lexicalToHtml(p.bio_rich)}
           />
         )}
         {p.lien && (

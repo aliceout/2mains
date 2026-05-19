@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
-import { richTextWithLegacy } from '../blocks/_shared';
+import { richTextField } from '../blocks/_shared';
 
 /**
  * Témoignages (participantes, partenaires, professionnel·les).
@@ -49,7 +49,7 @@ export const Temoignages: CollectionConfig = {
       relationTo: 'media',
       required: false,
     },
-    ...richTextWithLegacy({ name: 'citation', label: 'Citation' }),
+    richTextField({ name: 'citation', label: 'Citation' }),
     {
       name: 'ordre',
       type: 'number',

@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy } from './_shared';
+import { fondField, richTextField } from './_shared';
 import { thumbCitation } from './_thumbnails';
 
 export const Citation: Block = {
@@ -10,7 +10,7 @@ export const Citation: Block = {
   imageAltText: 'Aperçu : guillemets avec citation et nom',
   fields: [
     fondField,
-    ...richTextWithLegacy({ name: 'citation', label: 'Citation' }),
+    richTextField({ name: 'citation', label: 'Citation' }),
     { name: 'auteur', type: 'text', required: true },
     { name: 'role', type: 'text', required: false },
     {

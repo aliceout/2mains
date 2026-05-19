@@ -2,22 +2,19 @@
 // Citation simple en carte. Variant pilote la couleur de fond.
 // Guillemet décoratif géant à gauche, citation en italique
 // Newsreader, attribution en mono uppercase.
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Props = {
-  /** Citation markdown legacy. */
-  citation?: string;
-  /** Citation Lexical (nouveau richText). Si rempli, écrase citation. */
+  /** Citation Lexical (richText). */
   citation_rich?: unknown;
   auteur: string;
   role?: string;
   variant?: 'beige' | 'violet' | 'paper';
 };
 
-const { citation, citation_rich, auteur, role, variant = 'beige' } = Astro.props;
+const { citation_rich, auteur, role, variant = 'beige' } = Astro.props;
 
-// Rendu inline (sans <p>) : on est déjà dans un <blockquote>.
-const citationHtml = renderRichOrMarkdown(citation_rich, citation, true);
+const citationHtml = lexicalToHtml(citation_rich);
 
 const variantMap = {
   paper: { bg: 'bg-paper border border-line', text: 'text-ink', quote: 'text-orange' },

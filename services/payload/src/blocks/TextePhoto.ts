@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbTextePhoto } from './_thumbnails';
 
 export const TextePhoto: Block = {
@@ -11,7 +11,7 @@ export const TextePhoto: Block = {
   fields: [
     titreField,
     fondField,
-    ...richTextWithLegacy({ name: 'texte', label: 'Texte' }),
+    richTextField({ name: 'texte', label: 'Texte' }),
     {
       name: 'image',
       type: 'upload',

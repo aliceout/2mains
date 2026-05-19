@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbCallout } from './_thumbnails';
 
 export const Callout: Block = {
@@ -23,6 +23,6 @@ export const Callout: Block = {
       ],
     },
     { ...titreField, label: 'Titre (optionnel)' },
-    ...richTextWithLegacy({ name: 'body', label: 'Contenu' }),
+    richTextField({ name: 'body', label: 'Contenu' }),
   ],
 };

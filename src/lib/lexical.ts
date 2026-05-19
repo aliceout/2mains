@@ -1,5 +1,3 @@
-import { marked } from 'marked';
-
 // Serialise un document Lexical JSON (produit par l'éditeur Payload
 // `@payloadcms/richtext-lexical`) en HTML.
 //
@@ -175,21 +173,3 @@ export function richOrMarkdownToPlainText(
   return (markdown ?? '').trim();
 }
 
-/** Helper unique pour rendre un champ pendant la migration markdown → Lexical :
- *  - si `rich` (Lexical doc) est rempli → on l'utilise (WYSIWYG nouvelle saisie)
- *  - sinon → fallback sur `marked.parse(markdown)` (ancien contenu legacy)
- *  Si `inline=true`, on rend sans wrapping <p> (banderole d'urgence). */
-export function renderRichOrMarkdown(
-  rich: unknown,
-  markdown: string | null | undefined,
-  inline = false,
-): string {
-  if (rich && !isLexicalEmpty(rich)) {
-    return inline ? lexicalToHtmlInline(rich) : lexicalToHtml(rich);
-  }
-  const md = markdown ?? '';
-  if (!md) return '';
-  return inline
-    ? (marked.parseInline(md, { async: false }) as string)
-    : (marked.parse(md, { async: false }) as string);
-}

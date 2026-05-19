@@ -3,15 +3,13 @@
 // posé à gauche d'un bloc de texte explicatif Newsreader 22px. Réservé aux
 // faits marquants : un constat qui ouvre une page, pas une grille de stats.
 import Eyebrow from './atoms/Eyebrow.astro';
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Variant = 'orange' | 'violet';
 
 type Props = {
   chiffre: string;
-  /** Texte markdown legacy. */
-  texte?: string;
-  /** Texte Lexical (nouveau richText). Si rempli, écrase texte. */
+  /** Texte Lexical (richText). */
   texte_rich?: unknown;
   source?: string;
   eyebrow?: string;
@@ -20,7 +18,6 @@ type Props = {
 
 const {
   chiffre,
-  texte,
   texte_rich,
   source,
   eyebrow = '— constat',
@@ -29,7 +26,7 @@ const {
 
 const chiffreColor = variant === 'violet' ? 'text-violet' : 'text-orange';
 
-const html = renderRichOrMarkdown(texte_rich, texte, true);
+const html = lexicalToHtml(texte_rich);
 ---
 
 <div class="stat-majeste">

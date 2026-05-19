@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbStatMajeste } from './_thumbnails';
 
 export const StatMajeste: Block = {
@@ -17,7 +17,7 @@ export const StatMajeste: Block = {
       required: true,
       admin: { description: 'Court : 90 %, 1/3, ×4…' },
     },
-    ...richTextWithLegacy({
+    richTextField({
       name: 'texte',
       label: 'Texte explicatif',
       description: 'Une à deux phrases ; *italique* pour mettre en valeur un chiffre secondaire.',

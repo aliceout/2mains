@@ -2,23 +2,21 @@
 // Citation pleine largeur — moment de lecture suspendu. Guillemets
 // décoratifs en italique 200px Newsreader, citation en italique
 // 32-36px sur fond cream / paper / lav / orange / violet.
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Variant = 'orange' | 'violet' | 'beige' | 'paper';
 
 type Props = {
-  /** Citation markdown legacy. */
-  citation?: string;
-  /** Citation Lexical (nouveau richText). Si rempli, écrase citation. */
+  /** Citation Lexical (richText). */
   citation_rich?: unknown;
   auteur?: string;
   role?: string;
   variant?: Variant;
 };
 
-const { citation, citation_rich, auteur, role, variant = 'paper' } = Astro.props;
+const { citation_rich, auteur, role, variant = 'paper' } = Astro.props;
 
-const citationHtml = renderRichOrMarkdown(citation_rich, citation, true);
+const citationHtml = lexicalToHtml(citation_rich);
 
 const variantMap: Record<Variant, { bg: string; text: string; quote: string }> = {
   paper: { bg: 'bg-cream', text: 'text-ink', quote: 'text-orange' },

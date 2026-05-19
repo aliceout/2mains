@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextWithLegacy, titreField } from './_shared';
+import { fondField, richTextField, titreField } from './_shared';
 import { thumbLettre } from './_thumbnails';
 
 export const Lettre: Block = {
@@ -17,7 +17,7 @@ export const Lettre: Block = {
       defaultValue: 'Bonjour,',
       admin: { description: 'Première ligne, en italique.' },
     },
-    ...richTextWithLegacy({
+    richTextField({
       name: 'corps',
       label: 'Corps de la lettre',
       description:

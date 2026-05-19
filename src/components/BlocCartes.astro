@@ -5,15 +5,13 @@
 // optionnel, LinkArrow en pied.
 import Blob from './atoms/Blob.astro';
 import LinkArrow from './atoms/LinkArrow.astro';
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
 
 type Carte = {
   titre: string;
-  /** Description markdown legacy. */
-  description?: string;
-  /** Description Lexical (nouveau richText). Si remplie, écrase description. */
+  /** Description Lexical (richText). */
   description_rich?: unknown;
   href?: string;
   cta?: string;
@@ -106,7 +104,7 @@ const accentBg: Record<string, string> = {
           </h3>
           <div
             class="relative mb-6 flex-1 font-sans text-[15px] leading-relaxed text-ink-2"
-            set:html={renderRichOrMarkdown(c.description_rich, c.description, true)}
+            set:html={lexicalToHtml(c.description_rich)}
           />
           {c.href && c.cta && (
             <div class="relative">

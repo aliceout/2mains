@@ -8,7 +8,7 @@ import DraftBadge from '../components/DraftBadge.astro';
 import { getSiteSettings } from '../lib/site';
 import { filterPublished } from '../lib/drafts';
 import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
-import { renderRichOrMarkdown } from '../lib/lexical';
+import { lexicalToHtml } from '../lib/lexical';
 
 const page = await fetchPageLegacy('agenda');
 const hasContent = Boolean(page?.data.hero?.titre);
@@ -23,9 +23,7 @@ type Evt = {
   public: string;
   gratuit: boolean;
   inscription_url?: string;
-  /** Description markdown legacy. */
-  body?: string;
-  /** Description Lexical (nouveau richText). */
+  /** Description Lexical (richText). */
   body_rich?: unknown;
   fictif?: boolean;
   draft?: boolean;
@@ -40,7 +38,7 @@ const aVenir = all
   .filter((e) => Date.parse(e.data.date_debut) >= now)
   .map((e) => ({
     ...e,
-    bodyHtml: renderRichOrMarkdown(e.data.body_rich, e.data.body),
+    bodyHtml: lexicalToHtml(e.data.body_rich),
   }));
 const passes = all
   .filter((e) => Date.parse(e.data.date_debut) < now)
