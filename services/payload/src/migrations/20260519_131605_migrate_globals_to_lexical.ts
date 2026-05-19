@@ -24,7 +24,7 @@ async function migrateGlobalField(
   toKey: string,
   editorConfig: EditorConfig,
 ): Promise<boolean> {
-  const doc = (await payload.findGlobal({ slug, depth: 0 })) as Record<string, unknown>
+  const doc = (await payload.findGlobal({ slug, depth: 0 })) as unknown as Record<string, unknown>
   if (hasLexicalContent(doc[toKey])) return false
   const md = typeof doc[fromKey] === 'string' ? (doc[fromKey] as string).trim() : ''
   if (!md) return false
