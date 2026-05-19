@@ -15,6 +15,7 @@ import * as migration_20260519_131205_migrate_collections_to_lexical from './202
 import * as migration_20260519_131605_migrate_globals_to_lexical from './20260519_131605_migrate_globals_to_lexical';
 import * as migration_20260519_140442_migrate_temoignages_to_lexical from './20260519_140442_migrate_temoignages_to_lexical';
 import * as migration_20260519_153555_drop_legacy_markdown_columns from './20260519_153555_drop_legacy_markdown_columns';
+import * as migration_20260519_154827_auto_20260519_184819 from './20260519_154827_auto_20260519_184819';
 
 export const migrations = [
   {
@@ -101,5 +102,10 @@ export const migrations = [
     up: migration_20260519_153555_drop_legacy_markdown_columns.up,
     down: migration_20260519_153555_drop_legacy_markdown_columns.down,
     name: '20260519_153555_drop_legacy_markdown_columns',
+  },
+  {
+    up: migration_20260519_154827_auto_20260519_184819.up,
+    down: migration_20260519_154827_auto_20260519_184819.down,
+    name: '20260519_154827_auto_20260519_184819'
   },
 ];

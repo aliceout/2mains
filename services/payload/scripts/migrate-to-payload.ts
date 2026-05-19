@@ -64,7 +64,7 @@ async function uploadMedia(
   try {
     const doc = await payload.create({
       collection: 'media',
-      data: { alt: alt ?? filename },
+      data: { alt: alt ?? filename, nom: filename },
       file: {
         data: buffer,
         mimetype: guessMime(filename),
