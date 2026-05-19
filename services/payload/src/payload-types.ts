@@ -191,9 +191,6 @@ export interface Page {
         | {
             titre?: string | null;
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils (gras, italique, titres, listes, liens). Si rempli, écrase l'ancien champ "Contenu (Markdown)".
-             */
             body_rich?: {
               root: {
                 type: string;
@@ -209,10 +206,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Contenu" au-dessus. Sera supprimé après migration complète.
-             */
-            body?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'prose';
@@ -221,9 +214,6 @@ export interface Page {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             ton: 'info' | 'important' | 'astuce' | 'note';
             titre?: string | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Contenu (Markdown) — héritage, ne plus utiliser".
-             */
             body_rich?: {
               root: {
                 type: string;
@@ -239,10 +229,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Contenu" au-dessus. Sera supprimé après migration complète.
-             */
-            body?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'callout';
@@ -272,10 +258,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Corps de la lettre" au-dessus. Sera supprimé après migration complète.
-             */
-            corps?: string | null;
             signature?: string | null;
             variant: 'orange' | 'violet';
             id?: string | null;
@@ -284,9 +266,6 @@ export interface Page {
           }
         | {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Citation (Markdown) — héritage, ne plus utiliser".
-             */
             citation_rich?: {
               root: {
                 type: string;
@@ -302,10 +281,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Citation" au-dessus. Sera supprimé après migration complète.
-             */
-            citation?: string | null;
             auteur: string;
             role?: string | null;
             variant: 'beige' | 'violet' | 'paper';
@@ -319,9 +294,6 @@ export interface Page {
           }
         | {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Citation (Markdown) — héritage, ne plus utiliser".
-             */
             citation_rich?: {
               root: {
                 type: string;
@@ -337,10 +309,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Citation" au-dessus. Sera supprimé après migration complète.
-             */
-            citation?: string | null;
             auteur?: string | null;
             role?: string | null;
             variant: 'orange' | 'violet' | 'beige' | 'paper';
@@ -373,10 +341,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte explicatif" au-dessus. Sera supprimé après migration complète.
-             */
-            texte?: string | null;
             source?: string | null;
             eyebrow?: string | null;
             variant: 'orange' | 'violet';
@@ -391,9 +355,6 @@ export interface Page {
              * Ex: 90 %, 1/3, 7 M+
              */
             chiffre: string;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Explication (Markdown) — héritage, ne plus utiliser".
-             */
             texte_rich?: {
               root: {
                 type: string;
@@ -409,10 +370,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Explication" au-dessus. Sera supprimé après migration complète.
-             */
-            texte?: string | null;
             source?: string | null;
             alignement: 'gauche' | 'droite';
             couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
@@ -426,9 +383,6 @@ export interface Page {
             colonnes: '2' | '3' | '4';
             cartes: {
               titre: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description (Markdown) — héritage, ne plus utiliser".
-               */
               description_rich?: {
                 root: {
                   type: string;
@@ -444,10 +398,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description" au-dessus. Sera supprimé après migration complète.
-               */
-              description?: string | null;
               href?: string | null;
               cta?: string | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
@@ -462,9 +412,6 @@ export interface Page {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             valeurs: {
               nom: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description (Markdown) — héritage, ne plus utiliser".
-               */
               description_rich?: {
                 root: {
                   type: string;
@@ -480,10 +427,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description" au-dessus. Sera supprimé après migration complète.
-               */
-              description?: string | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
               id?: string | null;
             }[];
@@ -497,9 +440,6 @@ export interface Page {
             colonnes: '2' | '3';
             formats: {
               titre: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description (Markdown) — héritage, ne plus utiliser".
-               */
               description_rich?: {
                 root: {
                   type: string;
@@ -515,10 +455,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description" au-dessus. Sera supprimé après migration complète.
-               */
-              description?: string | null;
               points?:
                 | {
                     point: string;
@@ -543,9 +479,6 @@ export interface Page {
             couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
             etapes: {
               titre: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description (Markdown) — héritage, ne plus utiliser".
-               */
               description_rich?: {
                 root: {
                   type: string;
@@ -561,10 +494,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description" au-dessus. Sera supprimé après migration complète.
-               */
-              description?: string | null;
               id?: string | null;
             }[];
             id?: string | null;
@@ -576,9 +505,6 @@ export interface Page {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             questions: {
               question: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Réponse (Markdown) — héritage, ne plus utiliser".
-               */
               reponse_rich?: {
                 root: {
                   type: string;
@@ -594,10 +520,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Réponse" au-dessus. Sera supprimé après migration complète.
-               */
-              reponse?: string | null;
               id?: string | null;
             }[];
             id?: string | null;
@@ -607,9 +529,6 @@ export interface Page {
         | {
             titre?: string | null;
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Texte introductif (optionnel) (Markdown) — héritage, ne plus utiliser".
-             */
             intro_rich?: {
               root: {
                 type: string;
@@ -625,10 +544,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte introductif (optionnel)" au-dessus. Sera supprimé après migration complète.
-             */
-            intro?: string | null;
             stats: {
               valeur: string;
               legende: string;
@@ -646,9 +561,6 @@ export interface Page {
              * Inverse l'ordre (image à gauche, texte à droite).
              */
             inverse?: boolean | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Texte (Markdown) — héritage, ne plus utiliser".
-             */
             texte_rich?: {
               root: {
                 type: string;
@@ -664,10 +576,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte" au-dessus. Sera supprimé après migration complète.
-             */
-            texte?: string | null;
             picto_couleur: 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu' | 'beige';
             image?: (number | null) | Media;
             /**
@@ -681,9 +589,6 @@ export interface Page {
         | {
             titre?: string | null;
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Texte (Markdown) — héritage, ne plus utiliser".
-             */
             texte_rich?: {
               root: {
                 type: string;
@@ -699,10 +604,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte" au-dessus. Sera supprimé après migration complète.
-             */
-            texte?: string | null;
             image?: (number | null) | Media;
             image_alt?: string | null;
             image_legende?: string | null;
@@ -768,9 +669,6 @@ export interface Page {
               role?: string | null;
               photo?: (number | null) | Media;
               photo_alt?: string | null;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Bio (Markdown) — héritage, ne plus utiliser".
-               */
               bio_rich?: {
                 root: {
                   type: string;
@@ -786,10 +684,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Bio" au-dessus. Sera supprimé après migration complète.
-               */
-              bio?: string | null;
               lien?: string | null;
               lien_label?: string | null;
               id?: string | null;
@@ -808,9 +702,6 @@ export interface Page {
                */
               date: string;
               titre: string;
-              /**
-               * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Texte (Markdown) — héritage, ne plus utiliser".
-               */
               texte_rich?: {
                 root: {
                   type: string;
@@ -826,10 +717,6 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              /**
-               * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte" au-dessus. Sera supprimé après migration complète.
-               */
-              texte?: string | null;
               image?: (number | null) | Media;
               image_alt?: string | null;
               id?: string | null;
@@ -854,9 +741,6 @@ export interface Page {
         | {
             titre?: string | null;
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Texte introductif (optionnel) (Markdown) — héritage, ne plus utiliser".
-             */
             intro_rich?: {
               root: {
                 type: string;
@@ -872,10 +756,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Texte introductif (optionnel)" au-dessus. Sera supprimé après migration complète.
-             */
-            intro?: string | null;
             forme: 'rond' | 'carre';
             colonnes: '2' | '3' | '4';
             /**
@@ -889,9 +769,6 @@ export interface Page {
         | {
             fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
             titre: string;
-            /**
-             * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Sous-titre / corps (Markdown) — héritage, ne plus utiliser".
-             */
             corps_rich?: {
               root: {
                 type: string;
@@ -907,10 +784,6 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            /**
-             * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Sous-titre / corps" au-dessus. Sera supprimé après migration complète.
-             */
-            corps?: string | null;
             cta_primaire?: {
               label?: string | null;
               href?: string | null;
@@ -936,6 +809,13 @@ export interface Page {
  */
 export interface Media {
   id: number;
+  /**
+   * Nom court qui identifie le média dans la bibliothèque (ex: « Portrait Audrey 2024 »).
+   */
+  nom: string;
+  /**
+   * Description de l'image pour l'accessibilité (lecteurs d'écran) et le SEO.
+   */
   alt: string;
   updatedAt: string;
   createdAt: string;
@@ -960,9 +840,6 @@ export interface Temoignage {
   role?: string | null;
   contexte: 'participante' | 'partenaire' | 'professionnelle';
   photo?: (number | null) | Media;
-  /**
-   * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Citation (Markdown) — héritage, ne plus utiliser".
-   */
   citation_rich?: {
     root: {
       type: string;
@@ -978,10 +855,6 @@ export interface Temoignage {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Citation" au-dessus. Sera supprimé après migration complète.
-   */
-  citation?: string | null;
   ordre?: number | null;
   /**
    * Si coché, candidat à la mise en avant home (un seul à la fois).
@@ -1029,9 +902,6 @@ export interface Actualite {
    * Identifiant URL, ex: 'lancement-association'.
    */
   slug: string;
-  /**
-   * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description (chapô) (Markdown) — héritage, ne plus utiliser".
-   */
   description_rich?: {
     root: {
       type: string;
@@ -1047,10 +917,6 @@ export interface Actualite {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description (chapô)" au-dessus. Sera supprimé après migration complète.
-   */
-  description?: string | null;
   date: string;
   auteur?: string | null;
   cover?: (number | null) | Media;
@@ -1064,9 +930,6 @@ export interface Actualite {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Corps de l'article (Markdown) — héritage, ne plus utiliser".
-   */
   body_rich?: {
     root: {
       type: string;
@@ -1082,10 +945,6 @@ export interface Actualite {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Corps de l'article" au-dessus. Sera supprimé après migration complète.
-   */
-  body?: string | null;
   draft?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -1106,9 +965,6 @@ export interface Evenement {
   public: 'tout public' | 'professionnels' | 'femmes concernées' | 'adhérents';
   gratuit?: boolean | null;
   inscription_url?: string | null;
-  /**
-   * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Description longue (optionnel) (Markdown) — héritage, ne plus utiliser".
-   */
   body_rich?: {
     root: {
       type: string;
@@ -1124,10 +980,6 @@ export interface Evenement {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Description longue (optionnel)" au-dessus. Sera supprimé après migration complète.
-   */
-  body?: string | null;
   /**
    * Événement de démonstration — badge « À valider ».
    */
@@ -1374,7 +1226,6 @@ export interface PagesSelect<T extends boolean = true> {
               titre?: T;
               fond?: T;
               body_rich?: T;
-              body?: T;
               id?: T;
               blockName?: T;
             };
@@ -1385,7 +1236,6 @@ export interface PagesSelect<T extends boolean = true> {
               ton?: T;
               titre?: T;
               body_rich?: T;
-              body?: T;
               id?: T;
               blockName?: T;
             };
@@ -1396,7 +1246,6 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               ouverture?: T;
               corps_rich?: T;
-              corps?: T;
               signature?: T;
               variant?: T;
               id?: T;
@@ -1407,7 +1256,6 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               fond?: T;
               citation_rich?: T;
-              citation?: T;
               auteur?: T;
               role?: T;
               variant?: T;
@@ -1420,7 +1268,6 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               fond?: T;
               citation_rich?: T;
-              citation?: T;
               auteur?: T;
               role?: T;
               variant?: T;
@@ -1434,7 +1281,6 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               chiffre?: T;
               texte_rich?: T;
-              texte?: T;
               source?: T;
               eyebrow?: T;
               variant?: T;
@@ -1448,7 +1294,6 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               chiffre?: T;
               texte_rich?: T;
-              texte?: T;
               source?: T;
               alignement?: T;
               couleur?: T;
@@ -1466,7 +1311,6 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     titre?: T;
                     description_rich?: T;
-                    description?: T;
                     href?: T;
                     cta?: T;
                     couleur?: T;
@@ -1485,7 +1329,6 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     nom?: T;
                     description_rich?: T;
-                    description?: T;
                     couleur?: T;
                     id?: T;
                   };
@@ -1503,7 +1346,6 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     titre?: T;
                     description_rich?: T;
-                    description?: T;
                     points?:
                       | T
                       | {
@@ -1534,7 +1376,6 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     titre?: T;
                     description_rich?: T;
-                    description?: T;
                     id?: T;
                   };
               id?: T;
@@ -1550,7 +1391,6 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     question?: T;
                     reponse_rich?: T;
-                    reponse?: T;
                     id?: T;
                   };
               id?: T;
@@ -1562,7 +1402,6 @@ export interface PagesSelect<T extends boolean = true> {
               titre?: T;
               fond?: T;
               intro_rich?: T;
-              intro?: T;
               stats?:
                 | T
                 | {
@@ -1581,7 +1420,6 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               inverse?: T;
               texte_rich?: T;
-              texte?: T;
               picto_couleur?: T;
               image?: T;
               image_alt?: T;
@@ -1594,7 +1432,6 @@ export interface PagesSelect<T extends boolean = true> {
               titre?: T;
               fond?: T;
               texte_rich?: T;
-              texte?: T;
               image?: T;
               image_alt?: T;
               image_legende?: T;
@@ -1663,7 +1500,6 @@ export interface PagesSelect<T extends boolean = true> {
                     photo?: T;
                     photo_alt?: T;
                     bio_rich?: T;
-                    bio?: T;
                     lien?: T;
                     lien_label?: T;
                     id?: T;
@@ -1683,7 +1519,6 @@ export interface PagesSelect<T extends boolean = true> {
                     date?: T;
                     titre?: T;
                     texte_rich?: T;
-                    texte?: T;
                     image?: T;
                     image_alt?: T;
                     id?: T;
@@ -1708,7 +1543,6 @@ export interface PagesSelect<T extends boolean = true> {
               titre?: T;
               fond?: T;
               intro_rich?: T;
-              intro?: T;
               forme?: T;
               colonnes?: T;
               ids?: T;
@@ -1721,7 +1555,6 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               titre?: T;
               corps_rich?: T;
-              corps?: T;
               cta_primaire?:
                 | T
                 | {
@@ -1751,7 +1584,6 @@ export interface ActualitesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   description_rich?: T;
-  description?: T;
   date?: T;
   auteur?: T;
   cover?: T;
@@ -1763,7 +1595,6 @@ export interface ActualitesSelect<T extends boolean = true> {
         id?: T;
       };
   body_rich?: T;
-  body?: T;
   draft?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1784,7 +1615,6 @@ export interface EvenementsSelect<T extends boolean = true> {
   gratuit?: T;
   inscription_url?: T;
   body_rich?: T;
-  body?: T;
   fictif?: T;
   draft?: T;
   updatedAt?: T;
@@ -1817,7 +1647,6 @@ export interface TemoignagesSelect<T extends boolean = true> {
   contexte?: T;
   photo?: T;
   citation_rich?: T;
-  citation?: T;
   ordre?: T;
   a_la_une?: T;
   fictif?: T;
@@ -1909,6 +1738,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  nom?: T;
   alt?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1976,9 +1806,6 @@ export interface Identite {
    */
   url: string;
   accroche_globale: string;
-  /**
-   * Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "Mission (texte court, footer/about) (Markdown) — héritage, ne plus utiliser".
-   */
   mission_rich?: {
     root: {
       type: string;
@@ -1994,10 +1821,6 @@ export interface Identite {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Mission (texte court, footer/about)" au-dessus. Sera supprimé après migration complète.
-   */
-  mission?: string | null;
   directeur_publication: string;
   siren?: string | null;
   rna?: string | null;
@@ -2082,10 +1905,6 @@ export interface BanderoleUrgence {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Champ historique en markdown. À ignorer pour les nouvelles entrées — utilise le champ "Message" au-dessus. Sera supprimé après migration complète.
-   */
-  message?: string | null;
   couleur?: ('orange' | 'violet' | 'magenta') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2099,7 +1918,6 @@ export interface IdentiteSelect<T extends boolean = true> {
   url?: T;
   accroche_globale?: T;
   mission_rich?: T;
-  mission?: T;
   directeur_publication?: T;
   siren?: T;
   rna?: T;
@@ -2150,7 +1968,6 @@ export interface LiensExternesSelect<T extends boolean = true> {
 export interface BanderoleUrgenceSelect<T extends boolean = true> {
   active?: T;
   message_rich?: T;
-  message?: T;
   couleur?: T;
   updatedAt?: T;
   createdAt?: T;
