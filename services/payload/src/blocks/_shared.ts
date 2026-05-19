@@ -10,6 +10,109 @@
 // gardent le narrowing sur `type: 'text'` et trouvent `label` dans
 // TextField au lieu de tomber sur RowField (sans label).
 import type { Field } from 'payload';
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  ParagraphFeature,
+  HeadingFeature,
+  BoldFeature,
+  ItalicFeature,
+  UnderlineFeature,
+  StrikethroughFeature,
+  LinkFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
+} from '@payloadcms/richtext-lexical';
+
+/**
+ * Helper pour les champs richText partagés (toolbar fixe, features
+ * restreintes au strict minimum dont une rédactrice non-tech a besoin :
+ * gras / italique / souligné / barré / titres h2-h3 / listes / liens).
+ *
+ * Pas de BlocksFeature / UploadFeature / RelationshipFeature : ces
+ * affordances génèrent des "+" / drag-handles / slash menus qui
+ * perturbent les rédactrices. Le rendu visuel est custom-stylé dans
+ * AdminStyles.tsx pour aligner sur les textareas du reste du formulaire.
+ *
+ * Pattern d'usage dans un bloc/collection :
+ *
+ *   {
+ *     name: 'body_rich',
+ *     type: 'richText',
+ *     label: 'Contenu',
+ *     ...richTextFieldEditor(),
+ *   }
+ */
+export function richTextFieldEditor() {
+  return {
+    editor: lexicalEditor({
+      features: [
+        ParagraphFeature(),
+        HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }),
+        BoldFeature(),
+        ItalicFeature(),
+        UnderlineFeature(),
+        StrikethroughFeature(),
+        UnorderedListFeature(),
+        OrderedListFeature(),
+        LinkFeature(),
+        FixedToolbarFeature(),
+      ],
+    }),
+  };
+}
+
+/**
+ * Construit le dual-field (richText + textarea legacy) pour un champ.
+ * Pendant la période de migration, le frontend rend le richText si
+ * rempli, sinon retombe sur marked.parse(legacy). Une fois la prod
+ * vérifiée, le champ legacy sera retiré par une migration Phase 3.
+ *
+ * @example
+ *   ...richTextWithLegacy({
+ *     name: 'body',           // nom historique → devient body_rich + body
+ *     label: 'Contenu',
+ *     legacyLabel: 'Contenu (Markdown) — héritage, ne plus utiliser',
+ *   })
+ */
+export function richTextWithLegacy(opts: {
+  /** Nom historique du champ. Devient `<name>_rich` (nouveau) + `<name>` (legacy). */
+  name: string;
+  /** Label affiché pour le nouveau champ richText. */
+  label: string;
+  /** Label du champ legacy markdown — typiquement "<...> (Markdown) — héritage". */
+  legacyLabel?: string;
+  /** Description affichée sous le champ richText. */
+  description?: string;
+}): Field[] {
+  const legacyLabel =
+    opts.legacyLabel ?? `${opts.label} (Markdown) — héritage, ne plus utiliser`;
+  return [
+    {
+      name: `${opts.name}_rich`,
+      type: 'richText',
+      label: opts.label,
+      required: false,
+      ...richTextFieldEditor(),
+      admin: {
+        description:
+          opts.description ??
+          `Éditeur visuel avec barre d'outils. Si rempli, écrase l'ancien champ "${legacyLabel}".`,
+      },
+    },
+    {
+      name: opts.name,
+      type: 'textarea',
+      label: legacyLabel,
+      required: false,
+      admin: {
+        description:
+          `Champ historique en markdown. À ignorer pour les nouvelles entrées — ` +
+          `utilise le champ "${opts.label}" au-dessus. Sera supprimé après migration complète.`,
+      },
+    },
+  ];
+}
 
 export const fondField = {
   name: 'fond',

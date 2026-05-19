@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { couleurField, fondField, titreField } from './_shared';
+import { couleurField, fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbEtapes } from './_thumbnails';
 
 export const Etapes: Block = {
@@ -19,7 +19,7 @@ export const Etapes: Block = {
       labels: { singular: 'Étape', plural: 'Étapes' },
       fields: [
         { name: 'titre', type: 'text', required: true },
-        { name: 'description', type: 'textarea', required: false },
+        ...richTextWithLegacy({ name: 'description', label: 'Description' }),
       ],
     },
   ],

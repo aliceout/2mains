@@ -1,11 +1,16 @@
 ---
 // Étapes numérotées en colonnes (5 max idéalement) avec border-top
 // colorée et numéro italique. Inspiré de Parcours dans final-home.jsx.
+import { renderRichOrMarkdown } from '../lib/lexical';
+
 type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
 
 type Etape = {
   titre: string;
+  /** Description markdown legacy. */
   description?: string;
+  /** Description Lexical (nouveau richText). Si remplie, écrase description. */
+  description_rich?: unknown;
 };
 
 type Props = {
@@ -51,10 +56,11 @@ const colsClass = etapes.length >= 5
         <h3 class="mb-2 font-serif text-lg font-medium leading-tight tracking-tight text-ink">
           {e.titre}
         </h3>
-        {e.description && (
-          <p class="font-sans text-sm leading-relaxed text-ink-2">
-            {e.description}
-          </p>
+        {(e.description || e.description_rich) && (
+          <div
+            class="font-sans text-sm leading-relaxed text-ink-2"
+            set:html={renderRichOrMarkdown(e.description_rich, e.description, true)}
+          />
         )}
       </li>
     ))

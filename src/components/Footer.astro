@@ -10,9 +10,14 @@
 //   text :  #D8CFBF (paper-cream-ish, contraste AA sur le fond)
 //   meta :  #9C9080 (méta-infos plus sourdes)
 import type { SiteSettings } from '../lib/site';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Props = { settings: SiteSettings };
 const { settings } = Astro.props;
+
+// Mission en HTML inline (gras/italique/liens si rempli en richText,
+// sinon fallback marked sur le markdown legacy).
+const missionHtml = renderRichOrMarkdown(settings.mission_rich, settings.mission, true);
 
 // SHA du commit déployé, injecté en build-arg par le CI (cf
 // Dockerfile.site + .github/workflows/docker-build.yml). En dev local
@@ -38,9 +43,8 @@ const commitUrl = gitSha
       />
       <p
         class="mt-5 max-w-[32ch] font-sans text-sm leading-relaxed text-[#9C9080]"
-      >
-        {settings.mission}
-      </p>
+        set:html={missionHtml}
+      />
     </div>
 
     <div>

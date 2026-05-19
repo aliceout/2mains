@@ -1,4 +1,17 @@
 import type { Block } from 'payload';
+import {
+  lexicalEditor,
+  FixedToolbarFeature,
+  ParagraphFeature,
+  HeadingFeature,
+  BoldFeature,
+  ItalicFeature,
+  UnderlineFeature,
+  StrikethroughFeature,
+  LinkFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
+} from '@payloadcms/richtext-lexical';
 
 import { fondField, titreField } from './_shared';
 import { thumbProse } from './_thumbnails';
@@ -22,6 +35,27 @@ export const Prose: Block = {
       type: 'richText',
       label: 'Contenu',
       required: false,
+      // Feature set restreint : on n'expose à Audrey que ce dont elle a
+      // besoin pour rédiger du texte courant — gras, italique, souligné,
+      // barré, titres h2/h3, listes à puces/numérotées, liens. Pas de
+      // BlocksFeature, UploadFeature, RelationshipFeature, etc. : ces
+      // affordances ajoutent des "+" / drag-handles / slash menus qui
+      // perturbent les rédactrices non-tech. La toolbar fixe en haut
+      // donne un éditeur de texte classique style Google Docs simplifié.
+      editor: lexicalEditor({
+        features: [
+          ParagraphFeature(),
+          HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }),
+          BoldFeature(),
+          ItalicFeature(),
+          UnderlineFeature(),
+          StrikethroughFeature(),
+          UnorderedListFeature(),
+          OrderedListFeature(),
+          LinkFeature(),
+          FixedToolbarFeature(),
+        ],
+      }),
       admin: {
         description:
           'Éditeur visuel avec barre d\'outils (gras, italique, titres, listes, liens). ' +

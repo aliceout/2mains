@@ -6,6 +6,7 @@ import Banderole from '../components/Banderole.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import ShareButton from '../components/ShareButton.astro';
 import { getSiteSettings } from '../lib/site';
+import { richOrMarkdownToPlainText } from '../lib/lexical';
 
 type Props = {
   title?: string;
@@ -18,9 +19,13 @@ type Props = {
 
 const settings = await getSiteSettings();
 
+// Mission en plain text pour le <meta description> et le JSON-LD :
+// strip d'éventuel HTML/markdown du richText.
+const missionPlain = richOrMarkdownToPlainText(settings.mission_rich, settings.mission);
+
 const {
   title,
-  description = settings.mission,
+  description = missionPlain,
   image,
   ogSlug,
   noindex: pageNoindex = false,
@@ -42,7 +47,8 @@ const fullTitle = title
 const canonical = new URL(Astro.url.pathname, settings.url).toString();
 
 const bandero = settings.banderole_urgence;
-const showBandero = bandero?.active && bandero.message;
+const showBandero =
+  bandero?.active && (Boolean(bandero.message) || Boolean(bandero.message_rich));
 
 // Adresse affichée en 1 ligne dans settings ; on l'éclate pour le schema.org.
 // Format attendu : "Tiers-lieu La Médiane, 255 rue de Créqui, 69003 Lyon"
@@ -62,7 +68,7 @@ const organizationSchema: Record<string, unknown> = {
   name: settings.nom_asso,
   url: settings.url,
   logo: new URL('/brand/logo.svg', settings.url).toString(),
-  description: settings.mission,
+  description: missionPlain,
   address: {
     '@type': 'PostalAddress',
     streetAddress,
@@ -119,7 +125,13 @@ const schemas = [organizationSchema, ...extraSchemas];
   </head>
   <body class="flex min-h-screen flex-col">
     <a href="#contenu" class="skip-link">Aller au contenu principal</a>
-    {showBandero && <Banderole message={bandero!.message!} couleur={bandero!.couleur} />}
+    {showBandero && (
+      <Banderole
+        message={bandero!.message}
+        message_rich={bandero!.message_rich}
+        couleur={bandero!.couleur}
+      />
+    )}
     <Header settings={settings} />
     <Breadcrumbs />
     <main id="contenu" class="flex-1">

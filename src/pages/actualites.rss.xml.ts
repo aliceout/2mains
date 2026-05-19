@@ -3,10 +3,12 @@ import type { APIContext } from 'astro';
 import { filterPublished } from '../lib/drafts';
 import { getSiteSettings } from '../lib/site';
 import { fetchCollectionLegacy } from '../lib/payload';
+import { richOrMarkdownToPlainText } from '../lib/lexical';
 
 type Post = {
   title: string;
   description?: string;
+  description_rich?: unknown;
   date: string;
   auteur?: string;
   tags?: Array<{ tag: string }>;
@@ -27,7 +29,7 @@ export async function GET(context: APIContext) {
       return {
         title: p.data.title,
         pubDate: new Date(p.data.date),
-        description: p.data.description ?? '',
+        description: richOrMarkdownToPlainText(p.data.description_rich, p.data.description),
         link: `/actualites/${p.slug}`,
         ...(p.data.auteur ? { author: p.data.auteur } : {}),
         ...(tags.length > 0 ? { categories: tags } : {}),

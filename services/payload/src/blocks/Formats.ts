@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { couleurField, ctaFields, fondField, titreField } from './_shared';
+import { couleurField, ctaFields, fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbFormats } from './_thumbnails';
 
 export const Formats: Block = {
@@ -28,7 +28,7 @@ export const Formats: Block = {
       labels: { singular: 'Format', plural: 'Formats' },
       fields: [
         { name: 'titre', type: 'text', required: true },
-        { name: 'description', type: 'textarea', required: false },
+        ...richTextWithLegacy({ name: 'description', label: 'Description' }),
         {
           name: 'points',
           type: 'array',

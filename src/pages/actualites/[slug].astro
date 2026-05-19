@@ -3,13 +3,13 @@
 // or les slugs viennent de Payload à l'exécution).
 export const prerender = false;
 
-import { marked } from 'marked';
 import Layout from '../../layouts/Layout.astro';
 import Hero from '../../components/Hero.astro';
 import Section from '../../components/Section.astro';
 import Prose from '../../components/Prose.astro';
 import { getSiteSettings } from '../../lib/site';
 import { fetchBySlug, mediaUrl } from '../../lib/payload';
+import { renderRichOrMarkdown } from '../../lib/lexical';
 
 const { slug } = Astro.params;
 if (!slug) return Astro.redirect('/actualites', 302);
@@ -17,13 +17,19 @@ if (!slug) return Astro.redirect('/actualites', 302);
 type PostDoc = {
   slug: string;
   title: string;
+  /** Chapô markdown legacy. */
   description?: string;
+  /** Chapô Lexical (nouveau richText). */
+  description_rich?: unknown;
   date: string;
   auteur?: string;
   cover?: { filename?: string };
   cover_alt?: string;
   tags?: Array<{ tag: string }>;
-  body: string;
+  /** Corps markdown legacy. */
+  body?: string;
+  /** Corps Lexical (nouveau richText). */
+  body_rich?: unknown;
   draft?: boolean;
 };
 
@@ -35,7 +41,15 @@ const settings = await getSiteSettings();
 const coverUrl = mediaUrl(post.cover?.filename) ?? undefined;
 
 const tags = (post.tags ?? []).map((t) => t.tag);
-const bodyHtml = post.body ? (marked.parse(post.body, { async: false }) as string) : '';
+const bodyHtml = renderRichOrMarkdown(post.body_rich, post.body);
+// Description plain-text pour le SEO/<meta>/JSON-LD : si on n'a que du
+// richText, on prend l'HTML et on strip les tags.
+const descriptionPlain =
+  post.description ?? (post.description_rich ? stripHtml(renderRichOrMarkdown(post.description_rich, undefined, true)) : undefined);
+
+function stripHtml(s: string): string {
+  return s.replace(/<[^>]+>/g, '').trim();
+}
 
 function formatDate(s: string): string {
   return new Intl.DateTimeFormat('fr-FR', {
@@ -50,7 +64,7 @@ const articleSchema = {
   '@type': 'NewsArticle',
   headline: post.title,
   datePublished: post.date,
-  ...(post.description ? { description: post.description } : {}),
+  ...(descriptionPlain ? { description: descriptionPlain } : {}),
   ...(coverUrl ? { image: coverUrl } : {}),
   ...(post.auteur ? { author: { '@type': 'Person', name: post.auteur } } : {}),
   publisher: {
@@ -70,14 +84,14 @@ const articleSchema = {
 
 <Layout
   title={post.title}
-  description={post.description}
+  description={descriptionPlain}
   image={`/og/actualites/${post.slug}.png`}
   jsonLd={articleSchema}
 >
   <Hero
     titre={post.title}
     sousTitre={formatDate(post.date)}
-    accroche={post.description}
+    accroche={descriptionPlain}
     variant="beige"
   />
 

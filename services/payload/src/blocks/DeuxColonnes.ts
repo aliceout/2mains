@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbDeuxColonnes } from './_thumbnails';
 
 export const DeuxColonnes: Block = {
@@ -20,12 +20,7 @@ export const DeuxColonnes: Block = {
       defaultValue: false,
       admin: { description: 'Inverse l\'ordre (image à gauche, texte à droite).' },
     },
-    {
-      name: 'texte',
-      type: 'textarea',
-      required: true,
-      label: 'Texte (Markdown)',
-    },
+    ...richTextWithLegacy({ name: 'texte', label: 'Texte' }),
     {
       name: 'picto_couleur',
       type: 'select',

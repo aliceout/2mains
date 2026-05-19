@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbPortraits } from './_thumbnails';
 
 export const Portraits: Block = {
@@ -47,7 +47,7 @@ export const Portraits: Block = {
           required: false,
         },
         { name: 'photo_alt', type: 'text', required: false },
-        { name: 'bio', type: 'textarea', required: false },
+        ...richTextWithLegacy({ name: 'bio', label: 'Bio' }),
         { name: 'lien', type: 'text', required: false, label: 'URL externe' },
         { name: 'lien_label', type: 'text', required: false, label: 'Texte du lien' },
       ],

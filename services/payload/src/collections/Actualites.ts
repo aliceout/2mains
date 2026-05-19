@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
+import { richTextWithLegacy } from '../blocks/_shared';
 
 /**
  * Articles de blog. Miroir de la collection Astro `actualites`,
@@ -33,12 +34,7 @@ export const Actualites: CollectionConfig = {
         description: "Identifiant URL, ex: 'lancement-association'.",
       },
     },
-    {
-      name: 'description',
-      type: 'textarea',
-      required: false,
-      label: 'Description (chapô)',
-    },
+    ...richTextWithLegacy({ name: 'description', label: 'Description (chapô)' }),
     { name: 'date', type: 'date', required: true, label: 'Date de publication' },
     { name: 'auteur', type: 'text', required: false },
     {
@@ -61,15 +57,7 @@ export const Actualites: CollectionConfig = {
       labels: { singular: 'Tag', plural: 'Tags' },
       fields: [{ name: 'tag', type: 'text', required: true }],
     },
-    {
-      name: 'body',
-      type: 'textarea',
-      required: true,
-      label: 'Corps de l\'article (Markdown)',
-      admin: {
-        description: "## titres, **gras**, *italique*, [liens](url), - listes…",
-      },
-    },
+    ...richTextWithLegacy({ name: 'body', label: 'Corps de l\'article' }),
     {
       name: 'draft',
       type: 'checkbox',

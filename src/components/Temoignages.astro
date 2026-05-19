@@ -3,12 +3,16 @@
 // Filtrage optionnel par contexte (participante / partenaire /
 // professionnelle), limite par défaut 3, fond tinté tournant.
 import type { LegacyEntry } from '../lib/payload';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Temoignage = LegacyEntry<{
   auteur: string;
   role?: string;
   contexte: string;
-  citation: string;
+  /** Citation markdown legacy. */
+  citation?: string;
+  /** Citation Lexical (nouveau richText). Si rempli, écrase citation. */
+  citation_rich?: unknown;
 }>;
 
 type Props = {
@@ -47,9 +51,10 @@ const tones: { bg: string; quote: string }[] = [
           >
             “
           </span>
-          <blockquote class="font-serif italic text-[17px] leading-snug tracking-tight text-ink md:text-[18px]">
-            {t.data.citation}
-          </blockquote>
+          <blockquote
+            class="font-serif italic text-[17px] leading-snug tracking-tight text-ink md:text-[18px]"
+            set:html={renderRichOrMarkdown(t.data.citation_rich, t.data.citation, true)}
+          />
           <cite class="mt-4 block font-mono text-[11px] uppercase not-italic text-ink-2" style="letter-spacing: 0.06em;">
             — {t.data.auteur}
             {t.data.role && <span class="opacity-80"> · {t.data.role}</span>}

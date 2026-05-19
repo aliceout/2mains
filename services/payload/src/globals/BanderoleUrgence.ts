@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload';
 
 import { isAdminOrRoot } from '../access/roles';
+import { richTextWithLegacy } from '../blocks/_shared';
 
 /**
  * Global "Banderole d'urgence" — bandeau d'alerte affiché en haut de
@@ -35,15 +36,12 @@ export const BanderoleUrgence: GlobalConfig = {
       defaultValue: false,
       admin: { description: 'Active la banderole sur toutes les pages.' },
     },
-    {
+    ...richTextWithLegacy({
       name: 'message',
-      type: 'textarea',
-      required: false,
-      admin: {
-        description:
-          'Markdown inline supporté (**gras**, *italique*, [lien](url)).',
-      },
-    },
+      label: 'Message',
+      description:
+        'Bandeau court : gras, italique, lien inline. Le rendu frontend extrait le contenu sans wrapping paragraphe.',
+    }),
     {
       name: 'couleur',
       type: 'select',

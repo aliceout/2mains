@@ -1,3 +1,5 @@
+import { marked } from 'marked';
+
 // Serialise un document Lexical JSON (produit par l'éditeur Payload
 // `@payloadcms/richtext-lexical`) en HTML.
 //
@@ -134,4 +136,60 @@ export function isLexicalEmpty(doc: unknown): boolean {
   }
   const html = lexicalToHtml(doc).replace(/<\/?p>/g, '').trim();
   return html === '';
+}
+
+/** Sérialise un Lexical en HTML inline (sans wrapping <p>) : utile pour
+ *  les champs courts comme la banderole d'urgence, où on veut juste les
+ *  formatages inline (gras, italique, liens) sans bloc paragraphe.
+ *  Concatène tous les paragraphes en aplatissant. */
+export function lexicalToHtmlInline(doc: unknown): string {
+  return lexicalToHtml(doc)
+    .replace(/<p[^>]*>/g, '')
+    .replace(/<\/p>/g, ' ')
+    .trim();
+}
+
+/** Convertit Lexical → texte brut (strip HTML/markdown). Utile pour
+ *  RSS, ICS, JSON-LD : formats qui veulent du texte plain. */
+export function lexicalToPlainText(doc: unknown): string {
+  return lexicalToHtml(doc)
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Retourne le contenu d'un champ rich-or-markdown en texte plain
+ *  (sans HTML/markdown). Si rich rempli → lexicalToPlainText ; sinon →
+ *  markdown brut. Utile pour RSS, JSON-LD, ICS. */
+export function richOrMarkdownToPlainText(
+  rich: unknown,
+  markdown: string | null | undefined,
+): string {
+  if (rich && !isLexicalEmpty(rich)) return lexicalToPlainText(rich);
+  return (markdown ?? '').trim();
+}
+
+/** Helper unique pour rendre un champ pendant la migration markdown → Lexical :
+ *  - si `rich` (Lexical doc) est rempli → on l'utilise (WYSIWYG nouvelle saisie)
+ *  - sinon → fallback sur `marked.parse(markdown)` (ancien contenu legacy)
+ *  Si `inline=true`, on rend sans wrapping <p> (banderole d'urgence). */
+export function renderRichOrMarkdown(
+  rich: unknown,
+  markdown: string | null | undefined,
+  inline = false,
+): string {
+  if (rich && !isLexicalEmpty(rich)) {
+    return inline ? lexicalToHtmlInline(rich) : lexicalToHtml(rich);
+  }
+  const md = markdown ?? '';
+  if (!md) return '';
+  return inline
+    ? (marked.parseInline(md, { async: false }) as string)
+    : (marked.parse(md, { async: false }) as string);
 }

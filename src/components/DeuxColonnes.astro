@@ -3,13 +3,16 @@
 // l'autre. Le picto est un blob organique coloré (signature visuelle
 // du design) qu'on peut remplacer par une image réelle si fournie.
 // Inversable via `inverse=true`.
-import { marked } from 'marked';
+import { renderRichOrMarkdown } from '../lib/lexical';
 import Blob from './atoms/Blob.astro';
 
 type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu' | 'beige';
 
 type Props = {
-  texte: string;
+  /** Texte markdown legacy. */
+  texte?: string;
+  /** Texte Lexical (nouveau richText). Si rempli, écrase texte. */
+  texte_rich?: unknown;
   picto_couleur?: Couleur;
   inverse?: boolean;
   image?: string; // chemin public (ex: /uploads/…)
@@ -18,13 +21,14 @@ type Props = {
 
 const {
   texte,
+  texte_rich,
   picto_couleur = 'orange',
   inverse = false,
   image,
   image_alt,
 } = Astro.props;
 
-const html = marked.parse(texte, { async: false }) as string;
+const html = renderRichOrMarkdown(texte_rich, texte);
 
 // Mapping couleur historique → couleur de blob (palette élargie).
 const blobColor: Record<Couleur, 'orange' | 'violet' | 'rose' | 'moss' | 'mauve' | 'peach'> = {

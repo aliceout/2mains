@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbCallout } from './_thumbnails';
 
 export const Callout: Block = {
@@ -23,11 +23,6 @@ export const Callout: Block = {
       ],
     },
     { ...titreField, label: 'Titre (optionnel)' },
-    {
-      name: 'body',
-      type: 'textarea',
-      label: 'Contenu',
-      required: true,
-    },
+    ...richTextWithLegacy({ name: 'body', label: 'Contenu' }),
   ],
 };

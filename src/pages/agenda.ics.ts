@@ -3,6 +3,7 @@ import { buildCalendar, type IcsEvent } from '../lib/ical';
 import { getSiteSettings } from '../lib/site';
 import { filterPublished } from '../lib/drafts';
 import { fetchCollectionLegacy, type LegacyEntry } from '../lib/payload';
+import { richOrMarkdownToPlainText } from '../lib/lexical';
 
 type Evt = {
   title: string;
@@ -12,6 +13,7 @@ type Evt = {
   adresse?: string;
   inscription_url?: string;
   body?: string;
+  body_rich?: unknown;
   fictif?: boolean;
   draft?: boolean;
 };
@@ -28,7 +30,7 @@ function toIcsEvent(
     start: new Date(entry.data.date_debut),
     end: entry.data.date_fin ? new Date(entry.data.date_fin) : undefined,
     summary: entry.data.title,
-    description: (entry.data.body ?? '').trim(),
+    description: richOrMarkdownToPlainText(entry.data.body_rich, entry.data.body),
     location: [entry.data.lieu, entry.data.adresse].filter(Boolean).join(', '),
     url: entry.data.inscription_url ?? new URL('/agenda', siteUrl).toString(),
   };

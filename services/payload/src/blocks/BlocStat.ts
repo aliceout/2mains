@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbBlocStat } from './_thumbnails';
 
 export const BlocStat: Block = {
@@ -11,12 +11,7 @@ export const BlocStat: Block = {
   fields: [
     titreField,
     fondField,
-    {
-      name: 'intro',
-      type: 'textarea',
-      required: false,
-      label: 'Texte introductif (optionnel)',
-    },
+    ...richTextWithLegacy({ name: 'intro', label: 'Texte introductif (optionnel)' }),
     {
       name: 'stats',
       type: 'array',

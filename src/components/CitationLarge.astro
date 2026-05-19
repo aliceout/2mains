@@ -2,16 +2,23 @@
 // Citation pleine largeur — moment de lecture suspendu. Guillemets
 // décoratifs en italique 200px Newsreader, citation en italique
 // 32-36px sur fond cream / paper / lav / orange / violet.
+import { renderRichOrMarkdown } from '../lib/lexical';
+
 type Variant = 'orange' | 'violet' | 'beige' | 'paper';
 
 type Props = {
-  citation: string;
+  /** Citation markdown legacy. */
+  citation?: string;
+  /** Citation Lexical (nouveau richText). Si rempli, écrase citation. */
+  citation_rich?: unknown;
   auteur?: string;
   role?: string;
   variant?: Variant;
 };
 
-const { citation, auteur, role, variant = 'paper' } = Astro.props;
+const { citation, citation_rich, auteur, role, variant = 'paper' } = Astro.props;
+
+const citationHtml = renderRichOrMarkdown(citation_rich, citation, true);
 
 const variantMap: Record<Variant, { bg: string; text: string; quote: string }> = {
   paper: { bg: 'bg-cream', text: 'text-ink', quote: 'text-orange' },
@@ -44,9 +51,8 @@ const v = variantMap[variant];
     <div>
       <blockquote
         class="font-serif italic font-normal text-[17px] leading-snug tracking-tight max-w-[48ch] md:text-[19px]"
-      >
-        {citation}
-      </blockquote>
+        set:html={citationHtml}
+      />
       {(auteur || role) && (
         <figcaption
           class="mt-6 font-mono text-[11px] uppercase opacity-90"

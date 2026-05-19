@@ -1,6 +1,7 @@
 import type { GlobalConfig } from 'payload';
 
 import { isAdminOrRoot } from '../access/roles';
+import { richTextWithLegacy } from '../blocks/_shared';
 
 /**
  * Global "Identité" — nom, URL canonique, mission, mentions légales.
@@ -49,12 +50,7 @@ export const Identite: GlobalConfig = {
       required: true,
       label: 'Accroche globale (slogan)',
     },
-    {
-      name: 'mission',
-      type: 'textarea',
-      required: true,
-      label: 'Mission (texte court, footer/about)',
-    },
+    ...richTextWithLegacy({ name: 'mission', label: 'Mission (texte court, footer/about)' }),
     {
       name: 'directeur_publication',
       type: 'text',

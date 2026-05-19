@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbTimeline } from './_thumbnails';
 
 export const Timeline: Block = {
@@ -29,7 +29,7 @@ export const Timeline: Block = {
       fields: [
         { name: 'date', type: 'text', required: true, admin: { description: 'Ex: 2024, Mars 2025, 15 juin…' } },
         { name: 'titre', type: 'text', required: true },
-        { name: 'texte', type: 'textarea', required: false },
+        ...richTextWithLegacy({ name: 'texte', label: 'Texte' }),
         {
           name: 'image',
           type: 'upload',

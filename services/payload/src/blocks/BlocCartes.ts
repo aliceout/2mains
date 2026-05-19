@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { couleurField, fondField, titreField } from './_shared';
+import { couleurField, fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbBlocCartes } from './_thumbnails';
 
 export const BlocCartes: Block = {
@@ -29,7 +29,7 @@ export const BlocCartes: Block = {
       labels: { singular: 'Carte', plural: 'Cartes' },
       fields: [
         { name: 'titre', type: 'text', required: true },
-        { name: 'description', type: 'textarea', required: true },
+        ...richTextWithLegacy({ name: 'description', label: 'Description' }),
         { name: 'href', type: 'text', required: false },
         { name: 'cta', type: 'text', required: false, label: 'Texte du lien' },
         couleurField,

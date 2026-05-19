@@ -5,10 +5,14 @@ import Section from '../../components/Section.astro';
 import DraftBadge from '../../components/DraftBadge.astro';
 import { filterPublished } from '../../lib/drafts';
 import { fetchCollectionLegacy } from '../../lib/payload';
+import { renderRichOrMarkdown } from '../../lib/lexical';
 
 type Post = {
   title: string;
+  /** Chapô markdown legacy. */
   description?: string;
+  /** Chapô Lexical (nouveau richText). */
+  description_rich?: unknown;
   date: string;
   auteur?: string;
   tags?: Array<{ tag: string }> | string[];
@@ -64,10 +68,11 @@ function tagsAsStrings(tags: Post['tags']): string[] {
                   {p.data.title}
                 </a>
               </h2>
-              {p.data.description && (
-                <p class="mb-4 flex-1 text-sm leading-relaxed">
-                  {p.data.description}
-                </p>
+              {(p.data.description || p.data.description_rich) && (
+                <div
+                  class="mb-4 flex-1 text-sm leading-relaxed"
+                  set:html={renderRichOrMarkdown(p.data.description_rich, p.data.description, true)}
+                />
               )}
               {tagsAsStrings(p.data.tags).length > 0 && (
                 <div class="mt-auto flex flex-wrap gap-2 text-xs">

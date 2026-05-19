@@ -2,11 +2,14 @@
 // Bloc texte + photo côte à côte. Position et ratio ajustables.
 // Visuel refondu : photo sans bordure, légende mono italique fine,
 // crédit en italique discret en dessous.
-import { marked } from 'marked';
+import { renderRichOrMarkdown } from '../lib/lexical';
 import SmartImage from './SmartImage.astro';
 
 type Props = {
-  texte: string;
+  /** Texte markdown legacy. */
+  texte?: string;
+  /** Texte Lexical (nouveau richText). Si rempli, écrase texte. */
+  texte_rich?: unknown;
   image: string;
   image_alt: string;
   image_legende?: string;
@@ -17,6 +20,7 @@ type Props = {
 
 const {
   texte,
+  texte_rich,
   image,
   image_alt,
   image_legende,
@@ -25,7 +29,7 @@ const {
   ratio = '50-50',
 } = Astro.props;
 
-const html = marked.parse(texte, { async: false }) as string;
+const html = renderRichOrMarkdown(texte_rich, texte);
 
 const gridClass = {
   '50-50': 'md:grid-cols-2',

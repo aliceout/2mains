@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
+import { richTextWithLegacy } from '../blocks/_shared';
 
 /** Événements / agenda. Miroir Astro `evenements`. */
 export const Evenements: CollectionConfig = {
@@ -59,12 +60,7 @@ export const Evenements: CollectionConfig = {
       required: false,
       label: 'URL d\'inscription (HelloAsso, Eventbrite, etc.)',
     },
-    {
-      name: 'body',
-      type: 'textarea',
-      required: false,
-      label: 'Description longue (Markdown, optionnel)',
-    },
+    ...richTextWithLegacy({ name: 'body', label: 'Description longue (optionnel)' }),
     {
       name: 'fictif',
       type: 'checkbox',

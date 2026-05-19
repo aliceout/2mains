@@ -3,11 +3,15 @@
 // à gauche) ou alternée (zig-zag desktop). Date en mono uppercase
 // orange, titre Newsreader 22px, body Inter Tight 14.
 import SmartImage from './SmartImage.astro';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Etape = {
   date: string;
   titre: string;
+  /** Texte markdown legacy. */
   texte?: string;
+  /** Texte Lexical (nouveau richText). Si rempli, écrase texte. */
+  texte_rich?: unknown;
   image?: string;
   image_alt?: string;
 };
@@ -61,10 +65,11 @@ const alterne = alignement === 'alterne';
             <h3 class="mt-2 font-serif text-[22px] font-medium leading-tight tracking-tight text-ink">
               {e.titre}
             </h3>
-            {e.texte && (
-              <p class="mt-2 font-sans text-sm leading-relaxed text-ink-2">
-                {e.texte}
-              </p>
+            {(e.texte || e.texte_rich) && (
+              <div
+                class="mt-2 font-sans text-sm leading-relaxed text-ink-2"
+                set:html={renderRichOrMarkdown(e.texte_rich, e.texte, true)}
+              />
             )}
             {e.image && (
               <SmartImage

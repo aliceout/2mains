@@ -2,7 +2,7 @@
 import { marked } from 'marked';
 import { filterPublished } from '../lib/drafts';
 import { fetchCollectionLegacy, type LegacyPage } from '../lib/payload';
-import { lexicalToHtml, isLexicalEmpty } from '../lib/lexical';
+import { lexicalToHtml, isLexicalEmpty, renderRichOrMarkdown } from '../lib/lexical';
 import Hero from './Hero.astro';
 import Section from './Section.astro';
 import Prose from './Prose.astro';
@@ -133,12 +133,12 @@ for (const s of sections) {
       );
     }
     if (s.type === 'stats') {
+      const introRich = (s as { intro_rich?: unknown }).intro_rich;
+      const introHtml = renderRichOrMarkdown(introRich, s.intro);
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
-          {s.intro && (
-            <div class="mb-8 max-w-3xl">
-              <p class="text-lg leading-relaxed">{s.intro}</p>
-            </div>
+          {introHtml && (
+            <div class="mb-8 max-w-3xl text-lg leading-relaxed" set:html={introHtml} />
           )}
           <BlocStat stats={s.stats} />
         </Section>
@@ -148,6 +148,7 @@ for (const s of sections) {
       const inner = (
         <BlocCitation
           citation={s.citation}
+          citation_rich={(s as { citation_rich?: unknown }).citation_rich}
           auteur={s.auteur}
           role={s.role}
           variant={s.variant}
@@ -167,14 +168,19 @@ for (const s of sections) {
       const isDark = (s.fond ?? 'violet') === 'violet' || (s.fond ?? 'violet') === 'orange' || s.fond === 'vert';
       const titreColor = isDark ? 'text-paper' : 'text-ink';
       const corpsColor = isDark ? 'text-paper/85' : 'text-ink-2';
+      const corpsRich = (s as { corps_rich?: unknown }).corps_rich;
+      const corpsHtml = renderRichOrMarkdown(corpsRich, s.corps);
       return (
         <Section id={id} fond={s.fond ?? 'violet'}>
           <div class="grid gap-6 max-w-225">
             <h2 class:list={['font-serif text-[26px] font-normal leading-tight tracking-tight md:text-[32px]', titreColor]}>
               {s.titre}
             </h2>
-            {s.corps && (
-              <p class:list={['font-sans text-base leading-relaxed max-w-220', corpsColor]}>{s.corps}</p>
+            {corpsHtml && (
+              <div
+                class:list={['font-sans text-base leading-relaxed max-w-220', corpsColor]}
+                set:html={corpsHtml}
+              />
             )}
             {(s.cta_primaire?.label || s.cta_secondaire?.label) && (
               <div class="mt-2 flex flex-wrap items-center gap-3">
@@ -230,6 +236,7 @@ for (const s of sections) {
         <Section id={id} titre={s.titre} fond={s.fond}>
           <DeuxColonnes
             texte={s.texte}
+            texte_rich={(s as { texte_rich?: unknown }).texte_rich}
             inverse={s.inverse}
             picto_couleur={s.picto_couleur}
             image={s.image}
@@ -248,7 +255,12 @@ for (const s of sections) {
     if (s.type === 'callout') {
       return (
         <Section id={id} fond={s.fond}>
-          <Callout ton={s.ton} titre={s.titre} body={s.body} />
+          <Callout
+            ton={s.ton}
+            titre={s.titre}
+            body={s.body}
+            body_rich={(s as { body_rich?: unknown }).body_rich}
+          />
         </Section>
       );
     }
@@ -258,6 +270,7 @@ for (const s of sections) {
           <ChiffreDetail
             chiffre={s.chiffre}
             texte={s.texte}
+            texte_rich={(s as { texte_rich?: unknown }).texte_rich}
             source={s.source}
             alignement={s.alignement}
             couleur={s.couleur ?? undefined}
@@ -277,6 +290,7 @@ for (const s of sections) {
         <Section id={id} fond={s.fond}>
           <CitationLarge
             citation={s.citation}
+            citation_rich={(s as { citation_rich?: unknown }).citation_rich}
             auteur={s.auteur}
             role={s.role}
             variant={s.variant}
@@ -289,6 +303,7 @@ for (const s of sections) {
         <Section id={id} titre={s.titre} fond={s.fond}>
           <TextePhoto
             texte={s.texte}
+            texte_rich={(s as { texte_rich?: unknown }).texte_rich}
             image={s.image}
             image_alt={s.image_alt}
             image_legende={s.image_legende}
@@ -390,12 +405,15 @@ for (const s of sections) {
         lien: m.data.linkedin,
         lien_label: m.data.linkedin ? 'LinkedIn' : undefined,
       }));
+      const introRich = (s as { intro_rich?: unknown }).intro_rich;
+      const introHtml = renderRichOrMarkdown(introRich, s.intro);
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
-          {s.intro && (
-            <p class="mb-8 max-w-220 font-sans text-base leading-relaxed text-ink-2">
-              {s.intro}
-            </p>
+          {introHtml && (
+            <div
+              class="mb-8 max-w-220 font-sans text-base leading-relaxed text-ink-2"
+              set:html={introHtml}
+            />
           )}
           <Portraits
             personnes={personnes}
@@ -410,6 +428,7 @@ for (const s of sections) {
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Lettre
             corps={s.corps}
+            corps_rich={(s as { corps_rich?: unknown }).corps_rich}
             ouverture={s.ouverture}
             signature={s.signature}
             variant={s.variant}
@@ -423,6 +442,7 @@ for (const s of sections) {
           <StatMajeste
             chiffre={s.chiffre}
             texte={s.texte}
+            texte_rich={(s as { texte_rich?: unknown }).texte_rich}
             source={s.source}
             eyebrow={s.eyebrow}
             variant={s.variant}

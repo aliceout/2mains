@@ -4,11 +4,14 @@
 //
 // Design refondu : pas de fond carte, juste des lignes fines entre
 // questions. Titre Newsreader 22px medium, plus orange à droite.
-import { marked } from 'marked';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Question = {
   question: string;
-  reponse: string; // markdown
+  /** Réponse markdown legacy. */
+  reponse?: string;
+  /** Réponse Lexical (nouveau richText). Si remplie, écrase reponse. */
+  reponse_rich?: unknown;
 };
 
 type Props = {
@@ -19,7 +22,7 @@ const { questions } = Astro.props;
 
 const rendered = questions.map((q) => ({
   question: q.question,
-  html: marked.parse(q.reponse, { async: false }) as string,
+  html: renderRichOrMarkdown(q.reponse_rich, q.reponse),
 }));
 ---
 

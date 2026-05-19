@@ -3,14 +3,17 @@
 // rythme épistolaire. Newsreader 26px italique sur l'ouverture/clôture,
 // roman pour les paragraphes intermédiaires. Markdown inline minimal :
 // *italique* devient l'accent (variant), **gras** mis en valeur.
-import { marked } from 'marked';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Variant = 'orange' | 'violet';
 
 type Props = {
   ouverture?: string;
   signature?: string;
-  corps: string;
+  /** Corps markdown legacy (champ historique). */
+  corps?: string;
+  /** Corps Lexical (nouveau champ richText). Si rempli, écrase corps. */
+  corps_rich?: unknown;
   variant?: Variant;
 };
 
@@ -18,13 +21,13 @@ const {
   ouverture = 'Bonjour,',
   signature = '— l\'équipe.',
   corps,
+  corps_rich,
   variant = 'orange',
 } = Astro.props;
 
 const accent = variant === 'violet' ? 'text-violet' : 'text-orange';
 
-// Markdown du corps : on autorise <em>/<strong> + paragraphes.
-const html = marked.parse(corps, { async: false }) as string;
+const html = renderRichOrMarkdown(corps_rich, corps);
 ---
 
 <div class="lettre mx-auto max-w-220 relative">

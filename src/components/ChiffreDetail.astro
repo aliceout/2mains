@@ -1,13 +1,16 @@
 ---
 // Un chiffre énorme italique + texte explicatif. Inspiré du « 50 € »
 // dans la page Entreprise du proto. Différent de BlocStat (grille).
-import { marked } from 'marked';
+import { renderRichOrMarkdown } from '../lib/lexical';
 
 type Couleur = 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu';
 
 type Props = {
   chiffre: string;
-  texte: string; // markdown
+  /** Texte markdown legacy. */
+  texte?: string;
+  /** Texte Lexical (nouveau richText). Si rempli, écrase texte. */
+  texte_rich?: unknown;
   source?: string;
   alignement?: 'gauche' | 'droite';
   couleur?: Couleur;
@@ -16,12 +19,13 @@ type Props = {
 const {
   chiffre,
   texte,
+  texte_rich,
   source,
   alignement = 'gauche',
   couleur = 'orange',
 } = Astro.props;
 
-const html = marked.parse(texte, { async: false }) as string;
+const html = renderRichOrMarkdown(texte_rich, texte);
 
 const textCol: Record<Couleur, string> = {
   orange: 'text-orange',

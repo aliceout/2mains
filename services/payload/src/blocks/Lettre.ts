@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, titreField } from './_shared';
+import { fondField, richTextWithLegacy, titreField } from './_shared';
 import { thumbLettre } from './_thumbnails';
 
 export const Lettre: Block = {
@@ -17,16 +17,12 @@ export const Lettre: Block = {
       defaultValue: 'Bonjour,',
       admin: { description: 'Première ligne, en italique.' },
     },
-    {
+    ...richTextWithLegacy({
       name: 'corps',
-      type: 'textarea',
       label: 'Corps de la lettre',
-      required: true,
-      admin: {
-        description:
-          "Plusieurs paragraphes (séparés par lignes vides). *italique* pour l'accent.",
-      },
-    },
+      description:
+        "Plusieurs paragraphes ; mise en forme via la barre d'outils (gras, italique, listes, liens).",
+    }),
     {
       name: 'signature',
       type: 'text',

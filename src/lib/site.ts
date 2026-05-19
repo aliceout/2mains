@@ -18,7 +18,10 @@ type IdentiteGlobal = {
   nom_asso?: string;
   url?: string;
   accroche_globale?: string;
+  /** Mission markdown legacy. */
   mission?: string;
+  /** Mission Lexical (nouveau richText). Si rempli, écrase mission. */
+  mission_rich?: unknown;
   directeur_publication?: string;
   siren?: string;
   rna?: string;
@@ -46,7 +49,10 @@ type LiensExternesGlobal = {
 
 type BanderoleUrgenceGlobal = {
   active?: boolean;
+  /** Message markdown legacy. */
   message?: string;
+  /** Message Lexical (nouveau richText). Si rempli, écrase message. */
+  message_rich?: unknown;
   couleur?: 'orange' | 'violet' | 'magenta';
 };
 

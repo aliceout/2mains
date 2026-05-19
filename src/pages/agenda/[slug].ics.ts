@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { buildCalendar, type IcsEvent } from '../../lib/ical';
 import { getSiteSettings } from '../../lib/site';
 import { fetchBySlug } from '../../lib/payload';
+import { richOrMarkdownToPlainText } from '../../lib/lexical';
 
 // SSR : route dynamique opt-in.
 export const prerender = false;
@@ -15,6 +16,7 @@ type Evt = {
   adresse?: string;
   inscription_url?: string;
   body?: string;
+  body_rich?: unknown;
 };
 
 function toIcsEvent(entry: Evt, siteUrl: string, uidHost: string): IcsEvent {
@@ -25,7 +27,7 @@ function toIcsEvent(entry: Evt, siteUrl: string, uidHost: string): IcsEvent {
     start: new Date(entry.date_debut),
     end: entry.date_fin ? new Date(entry.date_fin) : undefined,
     summary: entry.title,
-    description: (entry.body ?? '').trim(),
+    description: richOrMarkdownToPlainText(entry.body_rich, entry.body),
     location: [entry.lieu, entry.adresse].filter(Boolean).join(', '),
     url: entry.inscription_url ?? new URL('/agenda', siteUrl).toString(),
   };
