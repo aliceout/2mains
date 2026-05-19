@@ -20,6 +20,7 @@ import { Identite } from './globals/Identite'
 import { Parametres } from './globals/Parametres'
 import { LiensExternes } from './globals/LiensExternes'
 import { BanderoleUrgence } from './globals/BanderoleUrgence'
+import { Navigation } from './globals/Navigation'
 import { authEndpoints } from './auth/endpoints'
 import { buildEmailAdapter } from './auth/transport'
 import { startCleanupJob } from './auth/cleanup'
@@ -115,7 +116,7 @@ export default buildConfig({
     Media,
   ],
   // Ordre = ordre d'affichage dans la sidebar admin sous "Globals".
-  globals: [Identite, Parametres, LiensExternes, BanderoleUrgence],
+  globals: [Identite, Parametres, Navigation, LiensExternes, BanderoleUrgence],
   editor: lexicalEditor(),
   email: buildEmailAdapter(),
   secret: process.env.PAYLOAD_SECRET || '',

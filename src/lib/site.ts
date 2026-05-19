@@ -1,9 +1,10 @@
 // Helper pour charger les paramètres globaux du site.
 //
-// Le contenu éditable vient de 4 globals Payload distincts (split fait
+// Le contenu éditable vient de 5 globals Payload distincts (split fait
 // en mai 2026 pour rendre l'UI admin moins surchargée) :
 //   - identite          : nom, URL, accroche, mission, mentions légales
 //   - parametres        : toggles techniques (noindex, gate, no_cache)
+//   - navigation        : header (nav + boutons) + colonnes footer
 //   - liens-externes    : réseaux sociaux + URLs HelloAsso
 //   - banderole-urgence : bandeau d'alerte top-of-page
 // On les fetch en parallèle puis on les merge dans une seule structure
@@ -56,6 +57,62 @@ type BanderoleUrgenceGlobal = {
   couleur?: 'orange' | 'violet' | 'magenta';
 };
 
+/** Sous-objet « lien » du global Navigation. Côté Payload : `type` peut
+ *  être 'page' (relation vers Pages, populated avec depth >= 1) ou
+ *  'custom' (URL libre). Le helper `resolveLink` réduit ça à un
+ *  simple `href` string pour les composants. */
+type PayloadLink = {
+  type?: 'page' | 'custom';
+  page?: number | { id: number; slug?: string } | null;
+  url?: string | null;
+};
+
+type NavigationGlobal = {
+  header_nav?: Array<{
+    label: string;
+    is_dropdown?: boolean;
+    link?: PayloadLink;
+    children?: Array<{ label: string; link?: PayloadLink }>;
+  }>;
+  header_buttons?: Array<{
+    label: string;
+    link?: PayloadLink;
+  }>;
+  footer_columns?: Array<{
+    title: string;
+    links?: Array<{
+      label: string;
+      link?: PayloadLink;
+      highlight?: boolean;
+    }>;
+  }>;
+};
+
+/** Item de la nav header consommé par les composants (lien résolu). */
+export type NavItem = {
+  label: string;
+  /** Si absent, l'item est un parent de dropdown non cliquable (trigger
+   *  visuel uniquement). Les enfants sont dans `children`. */
+  href?: string;
+  children?: NavItem[];
+};
+
+/** Un des 3 boutons d'action du header (Blog / Rejoindre / Soutenir). */
+export type HeaderButton = {
+  label: string;
+  href: string;
+};
+
+/** Une colonne de liens du footer. */
+export type FooterColumn = {
+  title: string;
+  links: Array<{
+    label: string;
+    href: string;
+    highlight?: boolean;
+  }>;
+};
+
 /** Forme unifiée consommée par les composants Astro. Garde la même
  *  shape qu'avant le split de mai 2026 (banderole en sous-objet, etc.)
  *  pour ne pas avoir à refactor les consumers. */
@@ -67,15 +124,38 @@ export type SiteSettings = IdentiteGlobal &
     helloasso_adhesion?: string;
     helloasso_newsletter?: string;
     email_contact?: string;
+    /** Navigation principale du header (items + dropdowns). */
+    header_nav: NavItem[];
+    /** Les 3 boutons d'action à droite du header. */
+    header_buttons: HeaderButton[];
+    /** Colonnes de liens du footer. */
+    footer_columns: FooterColumn[];
   };
 
+/** Résout un lien Payload (`{type, page, url}`) en string `href`.
+ *  Retourne `undefined` si rien d'exploitable (lien vide ou populated
+ *  partiellement). */
+function resolveLink(link: PayloadLink | undefined): string | undefined {
+  if (!link) return undefined;
+  if (link.type === 'page') {
+    if (link.page && typeof link.page === 'object' && link.page.slug) {
+      return `/${link.page.slug}`;
+    }
+    return undefined;
+  }
+  // type === 'custom' ou non défini → fallback sur url
+  return link.url ?? undefined;
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
-  const [identite, parametres, liens, banderole] = await Promise.all([
-    fetchGlobal<IdentiteGlobal>('identite'),
-    fetchGlobal<ParametresGlobal>('parametres'),
-    fetchGlobal<LiensExternesGlobal>('liens-externes'),
-    fetchGlobal<BanderoleUrgenceGlobal>('banderole-urgence'),
-  ]);
+  const [identite, parametres, navigation, liens, banderole] =
+    await Promise.all([
+      fetchGlobal<IdentiteGlobal>('identite'),
+      fetchGlobal<ParametresGlobal>('parametres'),
+      fetchGlobal<NavigationGlobal>('navigation'),
+      fetchGlobal<LiensExternesGlobal>('liens-externes'),
+      fetchGlobal<BanderoleUrgenceGlobal>('banderole-urgence'),
+    ]);
 
   // url : la valeur source de vérité c'est le champ `url` du global
   // Identité (saisie par Audrey via /cms/admin). Si elle n'a pas (encore)
@@ -84,6 +164,52 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   // throw "Invalid URL" côté composants qui font `new URL(..., settings.url)`.
   const url =
     identite.url ?? process.env.ADDRESS ?? 'http://localhost:3001';
+
+  // Helloasso : récupéré tôt pour pouvoir l'utiliser dans les fallbacks
+  // de la navigation (les liens "Faire un don" / "Newsletter" du footer
+  // par défaut pointent vers ces URLs).
+  const helloassoDon =
+    liens.helloasso?.don ??
+    'https://www.helloasso.com/associations/2mains-de-femmes';
+
+  // Navigation : résolution des liens Payload (`{type, page, url}`) en
+  // simples `href` string. Si le global est vide (cas dev frais ou
+  // premier deploy avant seed migration), on retombe sur les valeurs
+  // historiques hardcodées (DEFAULT_HEADER_NAV, etc.) pour que le site
+  // reste fonctionnel.
+  const headerNav: NavItem[] =
+    navigation.header_nav && navigation.header_nav.length > 0
+      ? navigation.header_nav.map((item) => ({
+          label: item.label,
+          href: item.is_dropdown ? undefined : resolveLink(item.link),
+          children: item.is_dropdown
+            ? (item.children ?? []).map((c) => ({
+                label: c.label,
+                href: resolveLink(c.link),
+              }))
+            : undefined,
+        }))
+      : DEFAULT_HEADER_NAV;
+
+  const headerButtons: HeaderButton[] =
+    navigation.header_buttons && navigation.header_buttons.length > 0
+      ? navigation.header_buttons.map((b) => ({
+          label: b.label,
+          href: resolveLink(b.link) ?? '#',
+        }))
+      : DEFAULT_HEADER_BUTTONS;
+
+  const footerColumns: FooterColumn[] =
+    navigation.footer_columns && navigation.footer_columns.length > 0
+      ? navigation.footer_columns.map((col) => ({
+          title: col.title,
+          links: (col.links ?? []).map((l) => ({
+            label: l.label,
+            href: resolveLink(l.link) ?? '#',
+            highlight: l.highlight === true ? true : undefined,
+          })),
+        }))
+      : defaultFooterColumns(helloassoDon, liens.helloasso?.newsletter);
 
   return {
     ...identite,
@@ -99,33 +225,28 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     // Fallback HelloAsso : URL générique de l'asso si Audrey n'a pas
     // (encore) renseigné le champ dans /cms/admin. Reste hardcodée
     // parce que c'est un slug HelloAsso spécifique au compte.
-    helloasso_don:
-      liens.helloasso?.don ??
-      'https://www.helloasso.com/associations/2mains-de-femmes',
+    helloasso_don: helloassoDon,
     helloasso_adhesion: liens.helloasso?.adhesion,
     helloasso_newsletter: liens.helloasso?.newsletter,
     // Email de contact = MAIL_TO côté env. Si pas configuré, le champ
     // est `undefined` et les composants qui l'affichent doivent
     // gérer le cas (mailto silencieux, lien caché, etc.).
     email_contact: process.env.MAIL_TO || undefined,
+    header_nav: headerNav,
+    header_buttons: headerButtons,
+    footer_columns: footerColumns,
   };
 }
 
-export type NavItem = {
-  label: string;
-  /** Si absent, l'item est un parent de dropdown non cliquable (trigger
-   *  visuel uniquement). Les enfants sont dans `children`. */
-  href?: string;
-  children?: NavItem[];
-};
+// ─── Valeurs par défaut (fallback si le global Navigation est vide) ──
+//
+// Ces constantes reproduisent l'état hardcodé d'avant le global
+// Navigation. Elles servent de safety net en dev frais (DB vide, seed
+// pas appliqué) ou si Audrey vide accidentellement le global. Une fois
+// le global rempli (à minima par la seed migration en prod), ces
+// défauts ne sont jamais utilisés.
 
-// Navigation principale — refonte arborescence V2 (demande Audrey,
-// PDF « Nouvelle orga »). « Accueil » sort du header (le clic sur le
-// logo ramène à la home). « Agir et soutenir » remonte du footer
-// vers le header. Documents descend dans le footer. Le bouton
-// « Faire un don » (externe HelloAsso) est rendu séparément dans le
-// Header.
-export const navigation: NavItem[] = [
+const DEFAULT_HEADER_NAV: NavItem[] = [
   {
     label: "L'association",
     children: [
@@ -145,11 +266,47 @@ export const navigation: NavItem[] = [
       { label: 'Mécénat entreprise', href: '/mecenat' },
     ],
   },
-  // Note : les anciens enfants « Agir et soutenir » (bénévole, praticien·nes,
-  // don, mécénat) sont maintenant accessibles via les 3 boutons d'action
-  // du header (Blog / Agir / Soutenir) qui pointent vers /agir et /soutenir,
-  // pages d'aiguillage qui listent ces sous-pages.
 ];
+
+const DEFAULT_HEADER_BUTTONS: HeaderButton[] = [
+  { label: "Le blog — actualités de l'association", href: '/actualites' },
+  {
+    label: 'Nous rejoindre — bénévolat, praticien·ne·s, adhésion',
+    href: '/agir',
+  },
+  { label: 'Nous soutenir — don, mécénat', href: '/soutenir' },
+];
+
+function defaultFooterColumns(
+  helloassoDon: string,
+  helloassoNewsletter?: string,
+): FooterColumn[] {
+  return [
+    {
+      title: 'Actualités',
+      links: [
+        { label: 'Blog', href: '/actualites' },
+        { label: 'Agenda', href: '/agenda' },
+        { label: 'Nos documents cadres', href: '/documents' },
+        { label: 'Nous contacter', href: '/contact' },
+        { label: 'Faire un don →', href: helloassoDon, highlight: true },
+      ],
+    },
+    {
+      title: 'Infos légales',
+      links: [
+        { label: 'Mentions légales', href: '/mentions-legales' },
+        { label: 'RGPD et confidentialité', href: '/rgpd' },
+        { label: 'Accessibilité : non conforme', href: '/accessibilite' },
+        {
+          label: "S'inscrire à la newsletter →",
+          href: helloassoNewsletter ?? helloassoDon,
+        },
+        { label: 'Admin', href: '/cms/admin' },
+      ],
+    },
+  ];
+}
 
 // Labels pour le fil d'Ariane sur les pages hors-top-nav (footer, contenu
 // standalone). Évite le fallback moche « Benevolat » au lieu de
@@ -187,10 +344,13 @@ function findNavLabel(href: string, items: NavItem[]): string | null {
   return null;
 }
 
-// Fil d'Ariane calculé depuis le pathname. Cherche d'abord dans la nav,
-// puis dans breadcrumbLabels, puis fallback titlecase du slug.
+// Fil d'Ariane calculé depuis le pathname. Cherche d'abord dans la nav
+// (passée en argument car async — vient du global Navigation via
+// getSiteSettings), puis dans breadcrumbLabels, puis fallback titlecase
+// du slug.
 export function getBreadcrumbs(
   pathname: string,
+  nav: NavItem[] = DEFAULT_HEADER_NAV,
 ): { label: string; href: string }[] {
   const clean = pathname.replace(/\/$/, '');
   if (clean === '' || clean === '/') return [];
@@ -201,7 +361,7 @@ export function getBreadcrumbs(
   for (const seg of segments) {
     acc += '/' + seg;
     const label =
-      findNavLabel(acc, navigation) ??
+      findNavLabel(acc, nav) ??
       breadcrumbLabels[acc] ??
       seg.charAt(0).toUpperCase() + seg.slice(1).replace(/-/g, ' ');
     crumbs.push({ label, href: acc });

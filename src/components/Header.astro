@@ -1,14 +1,14 @@
 ---
 // Header sticky inspiré du design handoff (NavBar dans final-home.jsx).
 // Logo SVG (brand/logo.svg) à gauche, navigation au centre (avec
-// dropdowns hover/focus pour les parents non cliquables), bouton
-// primaire « Faire un don » à droite.
+// dropdowns hover/focus pour les parents non cliquables), 3 boutons
+// colorés à droite.
 //
-// On garde l'arborescence complète (15+ pages, navigation existante avec
-// dropdowns) — c'est uniquement la couche visuelle qui bascule sur le
-// nouveau design : couleurs chaudes, fonts éditoriales, lien actif
-// souligné de 1.5px orange.
-import { navigation, matchesItem, type SiteSettings } from '../lib/site';
+// Nav et boutons sont éditables depuis /cms/admin (global Navigation).
+// Les visuels des 3 boutons (icône SVG + couleur de fond + variante
+// mobile) sont figés par position — Audrey peut modifier libellé et
+// destination, mais l'identité graphique reste cohérente.
+import { matchesItem, type SiteSettings } from '../lib/site';
 import Btn from './atoms/Btn.astro';
 import Arrow from './atoms/Arrow.astro';
 
@@ -21,6 +21,18 @@ const isChildActive = (href: string | undefined): boolean => {
   const clean = path.replace(/\/$/, '') || '/';
   return clean === href || clean.startsWith(href + '/');
 };
+
+// Visuels figés des 3 boutons d'action (par position dans header_buttons).
+// L'icône SVG embarque le label visible ("LE BLOG" / "NOUS REJOINDRE" /
+// "NOUS SOUTENIR") — d'où la cohérence position/visuel à maintenir côté
+// admin. Sur mobile, on retombe sur le composant Btn avec sa variante
+// charte.
+const HEADER_BUTTON_VISUALS = [
+  { svg: '/brand/blog.svg', bg: 'bg-violet', mobileVariant: 'violet' as const },
+  { svg: '/brand/rejoindre.svg', bg: 'bg-magenta', mobileVariant: 'ghost' as const },
+  { svg: '/brand/soutenir.svg', bg: 'bg-orange', mobileVariant: 'primary' as const },
+];
+const buttons = settings.header_buttons.slice(0, 3);
 ---
 
 <header
@@ -39,7 +51,7 @@ const isChildActive = (href: string | undefined): boolean => {
     <nav aria-label="Navigation principale" class="hidden py-4 pl-10 lg:block">
       <ul class="flex items-center gap-7 font-sans text-sm">
         {
-          navigation.map((item) => {
+          settings.header_nav.map((item) => {
             const active = matchesItem(path, item);
             const triggerClass = [
               'inline-block py-1 transition-colors hover:text-orange',
@@ -130,39 +142,28 @@ const isChildActive = (href: string | undefined): boolean => {
          eux-mêmes sont figés en dark teal #2f4d53). Le label « LE BLOG /
          NOUS REJOINDRE / NOUS SOUTENIR » est intégré dans chaque SVG. -->
     <div class="hidden self-stretch md:flex md:items-stretch">
-      <a
-        href="/actualites"
-        class="flex w-24 items-center justify-center bg-violet text-paper transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Le blog — actualités de l'association"
-      >
-        <span
-          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
-          style="-webkit-mask:url('/brand/blog.svg') center/contain no-repeat;mask:url('/brand/blog.svg') center/contain no-repeat;"
-          aria-hidden="true"
-        ></span>
-      </a>
-      <a
-        href="/agir"
-        class="flex w-24 items-center justify-center bg-magenta text-paper transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Nous rejoindre — bénévolat, praticien·ne·s, adhésion"
-      >
-        <span
-          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
-          style="-webkit-mask:url('/brand/rejoindre.svg') center/contain no-repeat;mask:url('/brand/rejoindre.svg') center/contain no-repeat;"
-          aria-hidden="true"
-        ></span>
-      </a>
-      <a
-        href="/soutenir"
-        class="flex w-24 items-center justify-center bg-orange text-paper transition-opacity hover:opacity-85 lg:w-28"
-        aria-label="Nous soutenir — don, mécénat"
-      >
-        <span
-          class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
-          style="-webkit-mask:url('/brand/soutenir.svg') center/contain no-repeat;mask:url('/brand/soutenir.svg') center/contain no-repeat;"
-          aria-hidden="true"
-        ></span>
-      </a>
+      {
+        buttons.map((btn, i) => {
+          const visual = HEADER_BUTTON_VISUALS[i];
+          if (!visual) return null;
+          return (
+            <a
+              href={btn.href}
+              class:list={[
+                'flex w-24 items-center justify-center text-paper transition-opacity hover:opacity-85 lg:w-28',
+                visual.bg,
+              ]}
+              aria-label={btn.label}
+            >
+              <span
+                class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
+                style={`-webkit-mask:url('${visual.svg}') center/contain no-repeat;mask:url('${visual.svg}') center/contain no-repeat;`}
+                aria-hidden="true"
+              />
+            </a>
+          );
+        })
+      }
     </div>
   </div>
 
@@ -174,7 +175,7 @@ const isChildActive = (href: string | undefined): boolean => {
     <nav aria-label="Navigation mobile" class="mx-auto max-w-310 px-6 py-4">
       <ul class="space-y-1 font-sans">
         {
-          navigation.map((item) => {
+          settings.header_nav.map((item) => {
             const active = matchesItem(path, item);
             return (
               <li>
@@ -225,11 +226,19 @@ const isChildActive = (href: string | undefined): boolean => {
           })
         }
         <li class="pt-3 flex flex-col gap-2">
-          <Btn href="/actualites" variant="violet">Le blog</Btn>
-          <Btn href="/agir" variant="ghost">Nous rejoindre</Btn>
-          <Btn href="/soutenir" variant="primary">
-            Nous soutenir <Arrow color="white" />
-          </Btn>
+          {
+            buttons.map((btn, i) => {
+              const visual = HEADER_BUTTON_VISUALS[i];
+              if (!visual) return null;
+              const isLast = i === buttons.length - 1;
+              return (
+                <Btn href={btn.href} variant={visual.mobileVariant}>
+                  {btn.label}
+                  {isLast && <Arrow color="white" />}
+                </Btn>
+              );
+            })
+          }
         </li>
       </ul>
     </nav>

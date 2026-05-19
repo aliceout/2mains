@@ -1,8 +1,13 @@
 ---
 // Footer fond sombre #2B2419 inspiré du design handoff. Wordmark
-// teinté + mission + 2 colonnes de liens. Pas de barre basse de
+// teinté + mission + colonnes de liens. Pas de barre basse de
 // copyright (retirée par décision utilisateur précédente). Pas de
 // contact email/tel rendu (anti-spam).
+//
+// Les colonnes de liens sont éditables depuis /cms/admin (global
+// Navigation > footer_columns). Le nombre de colonnes (1 à 4) ajuste
+// dynamiquement la grille — le bloc logo+mission garde toujours
+// md:col-span-2 à gauche.
 //
 // Couleurs propres au footer (codées en dur car spécifiques à cette
 // surface foncée, pas réutilisées ailleurs) :
@@ -26,11 +31,27 @@ const shortSha = gitSha ? gitSha.slice(0, 7) : 'dev';
 const commitUrl = gitSha
   ? `https://github.com/aliceout/2mains/commit/${gitSha}`
   : null;
+
+// Grille dynamique : logo+mission prend md:col-span-2, puis 1 colonne
+// par item de footer_columns. Tailwind purge les classes non littérales,
+// donc on énumère explicitement les 4 cas.
+const colCount = Math.min(settings.footer_columns.length, 4);
+const gridClass =
+  colCount === 1
+    ? 'md:grid-cols-3'
+    : colCount === 2
+      ? 'md:grid-cols-4'
+      : colCount === 3
+        ? 'md:grid-cols-5'
+        : 'md:grid-cols-6';
 ---
 
 <footer class="mt-16 bg-[#2B2419]">
   <div
-    class="mx-auto grid max-w-310 gap-12 px-6 py-20 md:grid-cols-4 md:gap-16 md:px-10"
+    class:list={[
+      'mx-auto grid max-w-310 gap-12 px-6 py-20 md:gap-16 md:px-10',
+      gridClass,
+    ]}
   >
     <div class="md:col-span-2">
       <img
@@ -46,112 +67,40 @@ const commitUrl = gitSha
       />
     </div>
 
-    <div>
-      <h2
-        class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
-        style="letter-spacing: 0.1em;"
-      >
-        Actualités
-      </h2>
-      <ul class="grid gap-2.5 font-sans text-sm">
-        <li>
-          <a
-            href="/actualites"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
+    {
+      settings.footer_columns.slice(0, 4).map((col) => (
+        <div>
+          <h2
+            class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
+            style="letter-spacing: 0.1em;"
           >
-            Blog
-          </a>
-        </li>
-        <li>
-          <a
-            href="/agenda"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Agenda
-          </a>
-        </li>
-        <li>
-          <a
-            href="/documents"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Nos documents cadres
-          </a>
-        </li>
-        <li>
-          <a
-            href="/contact"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Nous contacter
-          </a>
-        </li>
-        <li>
-          <a
-            href={settings.helloasso_don}
-            target="_blank"
-            rel="noopener"
-            class="text-orange-soft transition-colors hover:text-orange"
-          >
-            Faire un don →
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div>
-      <h2
-        class="mb-5 font-mono text-[11px] font-medium uppercase text-paper-white"
-        style="letter-spacing: 0.1em;"
-      >
-        Infos légales
-      </h2>
-      <ul class="grid gap-2.5 font-sans text-sm">
-        <li>
-          <a
-            href="/mentions-legales"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Mentions légales
-          </a>
-        </li>
-        <li>
-          <a
-            href="/rgpd"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            RGPD et confidentialité
-          </a>
-        </li>
-        <li>
-          <a
-            href="/accessibilite"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Accessibilité : non conforme
-          </a>
-        </li>
-        <li>
-          <a
-            href={settings.helloasso_newsletter ?? settings.helloasso_don}
-            target="_blank"
-            rel="noopener"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            S'inscrire à la newsletter →
-          </a>
-        </li>
-        <li>
-          <a
-            href="/cms/admin"
-            rel="nofollow"
-            class="text-[#9C9080] transition-colors hover:text-orange-soft"
-          >
-            Admin
-          </a>
-        </li>
-      </ul>
-    </div>
+            {col.title}
+          </h2>
+          <ul class="grid gap-2.5 font-sans text-sm">
+            {col.links.map((link) => {
+              const isExternal = /^https?:\/\//.test(link.href);
+              return (
+                <li>
+                  <a
+                    href={link.href}
+                    target={isExternal ? '_blank' : undefined}
+                    rel={isExternal ? 'noopener' : undefined}
+                    class:list={[
+                      'transition-colors',
+                      link.highlight
+                        ? 'text-orange-soft hover:text-orange'
+                        : 'text-[#9C9080] hover:text-orange-soft',
+                    ]}
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))
+    }
   </div>
 
   <div class="border-t border-[#3a3327] px-6 py-4 text-center font-mono text-xs text-[#6e6557] md:px-10">

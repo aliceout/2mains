@@ -16,6 +16,8 @@ import * as migration_20260519_131605_migrate_globals_to_lexical from './2026051
 import * as migration_20260519_140442_migrate_temoignages_to_lexical from './20260519_140442_migrate_temoignages_to_lexical';
 import * as migration_20260519_153555_drop_legacy_markdown_columns from './20260519_153555_drop_legacy_markdown_columns';
 import * as migration_20260519_154827_auto_20260519_184819 from './20260519_154827_auto_20260519_184819';
+import * as migration_20260519_160926_migrate_accroche_to_lexical from './20260519_160926_migrate_accroche_to_lexical';
+import * as migration_20260519_162654_auto_20260519_192641 from './20260519_162654_auto_20260519_192641';
 
 export const migrations = [
   {
@@ -106,6 +108,16 @@ export const migrations = [
   {
     up: migration_20260519_154827_auto_20260519_184819.up,
     down: migration_20260519_154827_auto_20260519_184819.down,
-    name: '20260519_154827_auto_20260519_184819'
+    name: '20260519_154827_auto_20260519_184819',
+  },
+  {
+    up: migration_20260519_160926_migrate_accroche_to_lexical.up,
+    down: migration_20260519_160926_migrate_accroche_to_lexical.down,
+    name: '20260519_160926_migrate_accroche_to_lexical',
+  },
+  {
+    up: migration_20260519_162654_auto_20260519_192641.up,
+    down: migration_20260519_162654_auto_20260519_192641.down,
+    name: '20260519_162654_auto_20260519_192641'
   },
 ];

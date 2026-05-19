@@ -7,7 +7,7 @@
 import { getBreadcrumbs, getSiteSettings } from '../lib/site';
 
 const settings = await getSiteSettings();
-const crumbs = getBreadcrumbs(Astro.url.pathname);
+const crumbs = getBreadcrumbs(Astro.url.pathname, settings.header_nav);
 
 const breadcrumbSchema =
   crumbs.length > 0
