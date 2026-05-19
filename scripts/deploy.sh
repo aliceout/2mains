@@ -100,6 +100,19 @@ grep -q '^PAYLOAD_SECRET=' "$ENV_FILE" || {
 export DATA_DIR="${DATA_DIR:-$HOME/data/2mains}"
 mkdir -p "$DATA_DIR/postgres" "$DATA_DIR/payload-media"
 
+# Le container payload tourne en USER nextjs (uid 1001). Si le bind mount
+# payload-media appartient à un autre user (ex: root après un mkdir -p
+# initial), les uploads échouent avec un 400 générique "There was a
+# problem while uploading the file." (cf services/payload/Dockerfile).
+# On aligne l'owner — idempotent, no-op si déjà bon.
+current_owner=$(stat -c '%u:%g' "$DATA_DIR/payload-media" 2>/dev/null || echo "")
+if [ "$current_owner" != "1001:1001" ]; then
+  echo "[deploy] chown payload-media → 1001:1001 (était: ${current_owner:-?})"
+  chown 1001:1001 "$DATA_DIR/payload-media" 2>/dev/null \
+    || sudo chown 1001:1001 "$DATA_DIR/payload-media" 2>/dev/null \
+    || echo "[deploy] WARN: chown payload-media KO — les uploads media risquent d'échouer" >&2
+fi
+
 # 5. Pull les images GHCR + restart propre.
 #    `down` (sans -v !) avant `up -d` libère les ports et nettoie
 #    le network proprement. Sinon un docker-proxy zombie d'un deploy
