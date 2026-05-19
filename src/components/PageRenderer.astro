@@ -2,6 +2,7 @@
 import { marked } from 'marked';
 import { filterPublished } from '../lib/drafts';
 import { fetchCollectionLegacy, type LegacyPage } from '../lib/payload';
+import { lexicalToHtml, isLexicalEmpty } from '../lib/lexical';
 import Hero from './Hero.astro';
 import Section from './Section.astro';
 import Prose from './Prose.astro';
@@ -101,7 +102,14 @@ for (const s of sections) {
   sections.map((s, i) => {
     const id = sectionIds[i];
     if (s.type === 'prose') {
-      const html = marked.parse(s.body, { async: false }) as string;
+      // Pendant la migration markdown → Lexical : on rend body_rich si
+      // Audrey l'a rempli (éditeur WYSIWYG), sinon on retombe sur le
+      // body markdown legacy. Une fois toutes les entrées migrées via
+      // le script Phase 2, body deviendra obsolète.
+      const richDoc = (s as { body_rich?: unknown }).body_rich;
+      const html = richDoc && !isLexicalEmpty(richDoc)
+        ? lexicalToHtml(richDoc)
+        : (marked.parse(s.body ?? '', { async: false }) as string);
       return (
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Prose>

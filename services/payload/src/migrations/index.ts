@@ -6,6 +6,7 @@ import * as migration_20260516_202821_auto_20260516_232814 from './20260516_2028
 import * as migration_20260518_154950_auto_20260518_184944 from './20260518_154950_auto_20260518_184944';
 import * as migration_20260518_164916_split_site_global from './20260518_164916_split_site_global';
 import * as migration_20260518_175855_equipe_temoignages_ids_to_relationship from './20260518_175855_equipe_temoignages_ids_to_relationship';
+import * as migration_20260519_064537_add_prose_body_rich from './20260519_064537_add_prose_body_rich';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20260518_175855_equipe_temoignages_ids_to_relationship.up,
     down: migration_20260518_175855_equipe_temoignages_ids_to_relationship.down,
-    name: '20260518_175855_equipe_temoignages_ids_to_relationship'
+    name: '20260518_175855_equipe_temoignages_ids_to_relationship',
+  },
+  {
+    up: migration_20260519_064537_add_prose_body_rich.up,
+    down: migration_20260519_064537_add_prose_body_rich.down,
+    name: '20260519_064537_add_prose_body_rich'
   },
 ];
