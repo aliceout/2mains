@@ -187,10 +187,6 @@ export interface Page {
       };
       [k: string]: unknown;
     } | null;
-    /**
-     * Champ historique, à ignorer. Sera supprimé après vérif prod.
-     */
-    accroche?: string | null;
     variant?: ('beige' | 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
     cta_primaire?: {
       label?: string | null;
@@ -1221,7 +1217,6 @@ export interface PagesSelect<T extends boolean = true> {
         titre?: T;
         sousTitre?: T;
         accroche_rich?: T;
-        accroche?: T;
         variant?: T;
         cta_primaire?:
           | T
