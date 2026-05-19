@@ -104,12 +104,14 @@ export interface Config {
   globals: {
     identite: Identite;
     parametres: Parametre;
+    navigation: Navigation;
     'liens-externes': LiensExterne;
     'banderole-urgence': BanderoleUrgence;
   };
   globalsSelect: {
     identite: IdentiteSelect<false> | IdentiteSelect<true>;
     parametres: ParametresSelect<false> | ParametresSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
     'liens-externes': LiensExternesSelect<false> | LiensExternesSelect<true>;
     'banderole-urgence': BanderoleUrgenceSelect<false> | BanderoleUrgenceSelect<true>;
   };
@@ -170,6 +172,24 @@ export interface Page {
      */
     titre?: string | null;
     sousTitre?: string | null;
+    accroche_rich?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Champ historique, à ignorer. Sera supprimé après vérif prod.
+     */
     accroche?: string | null;
     variant?: ('beige' | 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
     cta_primaire?: {
@@ -1200,6 +1220,7 @@ export interface PagesSelect<T extends boolean = true> {
         enabled?: T;
         titre?: T;
         sousTitre?: T;
+        accroche_rich?: T;
         accroche?: T;
         variant?: T;
         cta_primaire?:
@@ -1852,6 +1873,93 @@ export interface Parametre {
   createdAt?: string | null;
 }
 /**
+ * Navigation principale (header), boutons d'action du header, et colonnes de liens du footer.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  /**
+   * Items de la barre de navigation du header. Un item peut être un lien direct, ou un menu déroulant avec des sous-liens.
+   */
+  header_nav?:
+    | {
+        label: string;
+        is_dropdown?: boolean | null;
+        link?: {
+          /**
+           * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+           */
+          type: 'page' | 'custom';
+          page?: (number | null) | Page;
+          url?: string | null;
+        };
+        children?:
+          | {
+              label: string;
+              link: {
+                /**
+                 * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                url?: string | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Les 3 boutons colorés à droite du header. Le visuel (icône + couleur) est figé par position : 1er = violet « Le blog », 2e = magenta « Nous rejoindre », 3e = orange « Nous soutenir ». Tu peux modifier le libellé (utilisé pour l'accessibilité) et la destination de chaque bouton.
+   */
+  header_buttons?:
+    | {
+        /**
+         * Lu par les lecteurs d'écran (aria-label). Le texte visible est intégré dans l'icône SVG du bouton.
+         */
+        label: string;
+        link: {
+          /**
+           * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+           */
+          type: 'page' | 'custom';
+          page?: (number | null) | Page;
+          url?: string | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Colonnes de liens affichées dans le pied de page (au-dessus de la version). Chaque colonne a un titre et une liste de liens.
+   */
+  footer_columns?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              link: {
+                /**
+                 * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                url?: string | null;
+              };
+              highlight?: boolean | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * URLs externes : profils réseaux sociaux + campagnes HelloAsso. Ces liens apparaissent dans le footer + les boutons "Faire un don", "Adhérer", "Newsletter".
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1934,6 +2042,75 @@ export interface ParametresSelect<T extends boolean = true> {
   noindex?: T;
   gate_password?: T;
   no_cache?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  header_nav?:
+    | T
+    | {
+        label?: T;
+        is_dropdown?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+            };
+        children?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  header_buttons?:
+    | T
+    | {
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              page?: T;
+              url?: T;
+            };
+        id?: T;
+      };
+  footer_columns?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                  };
+              highlight?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

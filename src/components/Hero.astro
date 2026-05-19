@@ -19,6 +19,7 @@ import HandUnderline from './atoms/HandUnderline.astro';
 import Btn from './atoms/Btn.astro';
 import Arrow from './atoms/Arrow.astro';
 import Blob from './atoms/Blob.astro';
+import { lexicalToHtmlInline } from '../lib/lexical';
 
 type Variant = 'orange' | 'violet' | 'beige' | 'magenta' | 'vert' | 'bleu';
 
@@ -27,7 +28,12 @@ type Cta = { label: string; href: string; externe?: boolean };
 type Props = {
   titre: string;
   sousTitre?: string;
+  /** Accroche plain text — utilisé par les pages Astro hardcoded
+   *  (accessibilite, adherer, agir, etc.) qui ne passent pas par le CMS. */
   accroche?: string;
+  /** Accroche Lexical (richText) — utilisé par les pages CMS.
+   *  Prioritaire sur `accroche` si non vide. */
+  accroche_rich?: unknown;
   variant?: Variant;
   cta_primaire?: Cta;
   cta_secondaire?: Cta;
@@ -37,10 +43,14 @@ const {
   titre,
   sousTitre,
   accroche,
+  accroche_rich,
   variant = 'orange',
   cta_primaire,
   cta_secondaire,
 } = Astro.props;
+
+const richHtml = lexicalToHtmlInline(accroche_rich);
+const accrocheHtml = richHtml || (accroche ?? '');
 
 // Mapping variant historique → couleur accent (italique + souligné).
 // `beige` est un legacy : on le neutralise sur orange (couleur d'accent
@@ -143,10 +153,11 @@ const colorClass: Record<AccentColor, string> = {
         return <Fragment>{token.text}</Fragment>;
       })}
     </h1>
-    {accroche && (
-      <p class="mb-9 max-w-[55ch] font-sans text-base leading-relaxed text-ink-2 md:text-lg">
-        {accroche}
-      </p>
+    {accrocheHtml && (
+      <p
+        class="mb-9 max-w-[55ch] font-sans text-base leading-relaxed text-ink-2 md:text-lg"
+        set:html={accrocheHtml}
+      />
     )}
     {(cta_primaire?.label || cta_secondaire?.label) && (
       <div class="flex flex-wrap items-center gap-3">

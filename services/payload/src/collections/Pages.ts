@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
 import { allBlocks } from '../blocks';
+import { richTextField } from '../blocks/_shared';
 
 /**
  * Collection des pages éditoriales du site (homepage, qui-sommes-nous,
@@ -77,7 +78,10 @@ export const Pages: CollectionConfig = {
         },
         { name: 'titre', type: 'text', required: false, admin: { description: 'Astuce : *italique* sur un mot pour l\'accent serif.' } },
         { name: 'sousTitre', type: 'text', required: false, label: 'Eyebrow / sur-titre' },
-        { name: 'accroche', type: 'textarea', required: false },
+        richTextField({ name: 'accroche', label: 'Accroche' }),
+        // Champ legacy à supprimer dans une seconde passe une fois la
+        // migration de données vérifiée en prod.
+        { name: 'accroche', type: 'textarea', required: false, label: 'Accroche (Markdown) — héritage', admin: { description: 'Champ historique, à ignorer. Sera supprimé après vérif prod.' } },
         {
           name: 'variant',
           type: 'select',
