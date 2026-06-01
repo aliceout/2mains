@@ -23,14 +23,12 @@ const isChildActive = (href: string | undefined): boolean => {
 };
 
 // Visuels figés des 3 boutons d'action (par position dans header_buttons).
-// L'icône SVG embarque le label visible ("LE BLOG" / "NOUS REJOINDRE" /
-// "NOUS SOUTENIR") — d'où la cohérence position/visuel à maintenir côté
-// admin. Sur mobile, on retombe sur le composant Btn avec sa variante
-// charte.
+// Icône-seule (sans texte intégré) + le label dynamique vient de Payload
+// pour qu'Audrey puisse modifier le texte sans toucher au SVG.
 const HEADER_BUTTON_VISUALS = [
-  { svg: '/brand/blog.svg', bg: 'bg-violet', mobileVariant: 'violet' as const },
-  { svg: '/brand/rejoindre.svg', bg: 'bg-magenta', mobileVariant: 'ghost' as const },
-  { svg: '/brand/soutenir.svg', bg: 'bg-orange', mobileVariant: 'primary' as const },
+  { svg: '/brand/blog-icon.svg', bg: 'bg-violet', mobileVariant: 'violet' as const },
+  { svg: '/brand/rejoindre-icon.svg', bg: 'bg-magenta', mobileVariant: 'ghost' as const },
+  { svg: '/brand/soutenir-icon.svg', bg: 'bg-orange', mobileVariant: 'primary' as const },
 ];
 const buttons = settings.header_buttons.slice(0, 3);
 ---
@@ -136,11 +134,10 @@ const buttons = settings.header_buttons.slice(0, 3);
 
     <!-- 3 boutons d'action — pleine hauteur, flush bord droit de l'écran.
          Couleurs sur les tokens charte (bg-violet / bg-magenta / bg-orange).
-         Icônes : SVG fournis par Audrey (bulle de blog, personnage bras
-         levés, main + 3 points) — chargés via mask-image pour que la
-         couleur d'encrage suive `text-paper` du parent (les fichiers
-         eux-mêmes sont figés en dark teal #2f4d53). Le label « LE BLOG /
-         NOUS REJOINDRE / NOUS SOUTENIR » est intégré dans chaque SVG. -->
+         Icônes : SVG icône-seule fournis par Audrey (bulle blog, personnage
+         bras levés, main) chargés via mask-image pour que la couleur
+         d'encrage suive `text-paper`. Le label texte vient du global
+         Navigation (Payload) pour être éditable. -->
     <div class="hidden self-stretch md:flex md:items-stretch">
       {
         buttons.map((btn, i) => {
@@ -150,16 +147,18 @@ const buttons = settings.header_buttons.slice(0, 3);
             <a
               href={btn.href}
               class:list={[
-                'flex w-24 items-center justify-center text-paper transition-opacity hover:opacity-85 lg:w-28',
+                'flex flex-col items-center justify-center gap-1 px-2 py-3 w-24 text-paper transition-opacity hover:opacity-85 lg:w-28',
                 visual.bg,
               ]}
-              aria-label={btn.label}
             >
               <span
-                class="block h-[52px] w-[52px] bg-current lg:h-[54px] lg:w-[54px]"
+                class="block h-9 w-9 bg-current lg:h-10 lg:w-10"
                 style={`-webkit-mask:url('${visual.svg}') center/contain no-repeat;mask:url('${visual.svg}') center/contain no-repeat;`}
                 aria-hidden="true"
               />
+              <span class="text-center font-sans text-[10px] font-medium leading-tight uppercase tracking-wide lg:text-[11px]">
+                {btn.label}
+              </span>
             </a>
           );
         })
