@@ -1908,12 +1908,12 @@ export interface Navigation {
       }[]
     | null;
   /**
-   * Les 3 boutons colorés à droite du header. Le visuel (icône + couleur) est figé par position : 1er = violet « Le blog », 2e = magenta « Nous rejoindre », 3e = orange « Nous soutenir ». Tu peux modifier le libellé (utilisé pour l'accessibilité) et la destination de chaque bouton.
+   * Les 3 boutons colorés à droite du header. L'icône et la couleur de chaque bouton sont figées par position (1er = violet bulle blog, 2e = magenta personnage bras levés, 3e = orange main). Tu peux modifier le texte et la destination de chaque bouton.
    */
   header_buttons?:
     | {
         /**
-         * Lu par les lecteurs d'écran (aria-label). Le texte visible est intégré dans l'icône SVG du bouton.
+         * Texte affiché sous l'icône. Sert aussi de description pour les lecteurs d'écran.
          */
         label: string;
         link: {

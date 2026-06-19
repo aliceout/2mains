@@ -12,8 +12,8 @@
     "dev": "node --watch --env-file=../../.env src/index.js"
   },
   "dependencies": {
-    "@hono/node-server": "^1.13.7",
-    "hono": "^4.7.5",
-    "nodemailer": "^6.9.16"
+    "@hono/node-server": "^2.0.5",
+    "hono": "^4.12.26",
+    "nodemailer": "^9.0.1"
   }
 }
