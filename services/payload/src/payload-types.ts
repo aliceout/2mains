@@ -1938,6 +1938,9 @@ export interface Identite {
    */
   url: string;
   accroche_globale: string;
+  /**
+   * Une à deux phrases. Pas de listes ni titres (rendu sans wrapping paragraphe au footer).
+   */
   mission_rich?: {
     root: {
       type: string;
@@ -2123,7 +2126,7 @@ export interface BanderoleUrgence {
    */
   active?: boolean | null;
   /**
-   * Bandeau court : gras, italique, lien inline. Le rendu frontend extrait le contenu sans wrapping paragraphe.
+   * Bandeau court (1 ligne) : gras, italique, lien inline. Pas de listes ni titres (rendu sans wrapping paragraphe côté frontend).
    */
   message_rich?: {
     root: {

@@ -54,28 +54,40 @@ const alterne = alignement === 'alterne';
               alterne && !right ? 'md:col-start-1 md:pr-10 md:text-right' : '',
             ]}
           >
-            <p
-              class="font-mono text-[11px] uppercase text-orange"
-              style="letter-spacing: 0.08em;"
+            {/* Layout 2 colonnes (texte gauche / image droite) sur desktop
+                en mode vertical avec image. Sinon empilé. */}
+            <div
+              class:list={[
+                !alterne && e.image
+                  ? 'md:grid md:grid-cols-[1fr_180px] md:items-start md:gap-6'
+                  : '',
+              ]}
             >
-              — {e.date}
-            </p>
-            <h3 class="mt-2 font-serif text-[22px] font-medium leading-tight tracking-tight text-ink">
-              {e.titre}
-            </h3>
-            {e.texte_rich && (
-              <div
-                class="mt-2 font-sans text-sm leading-relaxed text-ink-2"
-                set:html={lexicalToHtml(e.texte_rich)}
-              />
-            )}
-            {e.image && (
-              <SmartImage
-                src={e.image}
-                alt={e.image_alt ?? ''}
-                class="mt-4 w-full max-w-sm rounded-xl"
-              />
-            )}
+              <div>
+                <p
+                  class="font-mono text-[11px] uppercase text-orange"
+                  style="letter-spacing: 0.08em;"
+                >
+                  — {e.date}
+                </p>
+                <h3 class="mt-2 font-serif text-[22px] font-medium leading-tight tracking-tight text-ink">
+                  {e.titre}
+                </h3>
+                {e.texte_rich && (
+                  <div
+                    class="mt-2 font-sans text-sm leading-relaxed text-ink-2"
+                    set:html={lexicalToHtml(e.texte_rich)}
+                  />
+                )}
+              </div>
+              {e.image && (
+                <SmartImage
+                  src={e.image}
+                  alt={e.image_alt ?? ''}
+                  class="mt-4 w-full max-w-[200px] rounded-xl md:mt-0 md:max-w-none"
+                />
+              )}
+            </div>
           </div>
         </li>
       );
