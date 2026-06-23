@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Section from '../components/Section.astro';
-import Prose from '../components/Prose.astro';
 import Draft from '../components/Draft.astro';
 import DraftBadge from '../components/DraftBadge.astro';
 import { getSiteSettings } from '../lib/site';
@@ -239,14 +238,4 @@ function formatDateFull(debutStr: string, finStr?: string): string {
     )
   }
 
-  <Section>
-    <Prose>
-      <p class="text-sm opacity-70">
-        <em>
-          Audrey peut ajouter, modifier et retirer les événements directement depuis
-          l'admin du site — sans passer par le code.
-        </em>
-      </p>
-    </Prose>
-  </Section>
 </Layout>
