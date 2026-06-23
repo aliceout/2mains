@@ -39,6 +39,9 @@ import { Temoignages } from './Temoignages';
 import { Equipe } from './Equipe';
 import { Cta } from './Cta';
 
+// Lot F — blocs spécifiques à une page (sortent du pattern générique)
+import { SoutenirHome } from './SoutenirHome';
+
 export const allBlocks = [
   Prose,
   Callout,
@@ -63,6 +66,7 @@ export const allBlocks = [
   Temoignages,
   Equipe,
   Cta,
+  SoutenirHome,
 ];
 
 export {
@@ -89,4 +93,5 @@ export {
   Temoignages,
   Equipe,
   Cta,
+  SoutenirHome,
 };

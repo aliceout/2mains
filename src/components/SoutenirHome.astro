@@ -1,0 +1,170 @@
+---
+// Section "Soutenir" 2 colonnes spécifique à la page d'accueil.
+// Gauche = message + 2 boutons éditables depuis le CMS (bloc soutenir-home).
+// Droite = liste des prochains événements OU CTA newsletter si vide,
+// rendu auto depuis la collection Évenements (data passée par PageRenderer).
+import Btn from './atoms/Btn.astro';
+import Eyebrow from './atoms/Eyebrow.astro';
+import LinkArrow from './atoms/LinkArrow.astro';
+import Draft from './Draft.astro';
+import DraftBadge from './DraftBadge.astro';
+import { lexicalToHtmlInline } from '../lib/lexical';
+
+type Cta = { label?: string; href?: string; externe?: boolean };
+type Evt = {
+  data: {
+    title: string;
+    date_debut: string;
+    lieu: string;
+    fictif?: boolean;
+    draft?: boolean;
+  };
+};
+
+type Props = {
+  eyebrow?: string;
+  titre: string;
+  corps_rich?: unknown;
+  cta_primaire?: Cta;
+  cta_secondaire?: Cta;
+  aVenir: Evt[];
+};
+
+const {
+  eyebrow = '— Soutenir',
+  titre,
+  corps_rich,
+  cta_primaire,
+  cta_secondaire,
+  aVenir,
+} = Astro.props;
+
+const corpsHtml = lexicalToHtmlInline(corps_rich);
+const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
+
+function formatDate(s: string): string {
+  return new Intl.DateTimeFormat('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(s));
+}
+
+// Parse le titre pour repérer les *mots en italique* qui deviennent
+// orange (même pattern que Hero).
+type TitleToken = { type: 'text'; text: string } | { type: 'em'; text: string };
+function parseTitle(s: string): TitleToken[] {
+  const tokens: TitleToken[] = [];
+  for (const part of s.split(/(\*[^*]+\*)/)) {
+    if (!part) continue;
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      tokens.push({ type: 'em', text: part.slice(1, -1) });
+    } else {
+      tokens.push({ type: 'text', text: part });
+    }
+  }
+  return tokens;
+}
+const titleTokens = parseTitle(titre);
+---
+
+<section class="border-t border-line">
+  <div class="grid md:grid-cols-2">
+    <div class="relative flex flex-col justify-between gap-8 bg-peach px-6 py-20 md:min-h-120 md:px-15 md:py-25">
+      <div>
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h2 class="font-serif text-[26px] font-normal leading-tight tracking-tight text-ink md:text-[32px] mt-4 mb-5 max-w-[16ch]">
+          {titleTokens.map((t) =>
+            t.type === 'em' ? (
+              <em class="font-medium not-italic text-orange">{t.text}</em>
+            ) : (
+              <Fragment>{t.text}</Fragment>
+            ),
+          )}
+        </h2>
+        {corpsHtml && (
+          <p
+            class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch] mb-8"
+            set:html={corpsHtml}
+          />
+        )}
+      </div>
+      {(cta_primaire?.label || cta_secondaire?.label) && (
+        <div class="flex flex-wrap gap-3">
+          {cta_primaire?.label && cta_primaire.href && (
+            <Btn
+              href={cta_primaire.href}
+              external={cta_primaire.externe}
+              arrow
+            >
+              {cta_primaire.label}
+            </Btn>
+          )}
+          {cta_secondaire?.label && cta_secondaire.href && (
+            <Btn
+              variant="ghost"
+              href={cta_secondaire.href}
+              external={cta_secondaire.externe}
+            >
+              {cta_secondaire.label}
+            </Btn>
+          )}
+        </div>
+      )}
+    </div>
+
+    <div class="relative flex flex-col justify-between gap-8 bg-lav px-6 py-20 md:min-h-120 md:px-15 md:py-25">
+      {aVenir.length > 0 ? (
+        <>
+          <div>
+            <Eyebrow color="violet">— Prochain rendez-vous</Eyebrow>
+            {hasFictiveEvents ? (
+              <Draft reason="Événements fictifs — à remplacer via le CMS">
+                <ul class="mt-4 grid gap-5">
+                  {aVenir.slice(0, 2).map((e) => (
+                    <li>
+                      <DraftBadge draft={e.data.draft} />
+                      <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
+                        {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
+                      </div>
+                      <h3 class="font-serif text-lg font-medium leading-tight tracking-tight text-ink max-w-[22ch]">
+                        {e.data.title}
+                      </h3>
+                    </li>
+                  ))}
+                </ul>
+              </Draft>
+            ) : (
+              <ul class="mt-4 grid gap-5">
+                {aVenir.slice(0, 2).map((e) => (
+                  <li>
+                    <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
+                      {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
+                    </div>
+                    <h3 class="font-serif text-2xl font-medium leading-tight tracking-tight text-ink max-w-[20ch]">
+                      {e.data.title}
+                    </h3>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <LinkArrow href="/agenda" color="violet">Voir l'agenda</LinkArrow>
+        </>
+      ) : (
+        <>
+          <div>
+            <Eyebrow color="violet">— Newsletter saisonnière</Eyebrow>
+            <h2 class="font-serif text-[24px] font-normal leading-tight tracking-tight text-ink mt-4 mb-4 max-w-[18ch] md:text-[28px]">
+              Une <em class="font-medium not-italic text-violet">lettre</em> par saison.
+            </h2>
+            <p class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch]">
+              Une lettre par saison — actualités, ateliers à venir, lectures et ressources.
+            </p>
+          </div>
+          <LinkArrow href="/contact" color="violet">Nous écrire</LinkArrow>
+        </>
+      )}
+    </div>
+  </div>
+</section>

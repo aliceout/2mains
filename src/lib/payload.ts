@@ -307,7 +307,7 @@ function transformBlock(rawBlock: Record<string, unknown>): Record<string, unkno
   // `link` (relation page OU url custom + externe) → `href` + `externe`
   // directement sur le CTA, pour rester compatible avec Hero.astro &
   // co qui lisent `s.cta_primaire.href` / `s.cta_primaire.externe`.
-  if (blockType === 'cta') {
+  if (blockType === 'cta' || blockType === 'soutenir-home') {
     for (const key of ['cta_primaire', 'cta_secondaire'] as const) {
       const c = out[key] as Record<string, unknown> | undefined;
       if (c) {

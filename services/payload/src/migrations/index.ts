@@ -22,6 +22,7 @@ import * as migration_20260519_202651_backfill_accroche_lexical from './20260519
 import * as migration_20260519_202700_seed_navigation_defaults from './20260519_202700_seed_navigation_defaults';
 import * as migration_20260519_205000_drop_legacy_accroche from './20260519_205000_drop_legacy_accroche';
 import * as migration_20260623_163806_generalize_linkfield from './20260623_163806_generalize_linkfield';
+import * as migration_20260623_190304_add_soutenir_home_block from './20260623_190304_add_soutenir_home_block';
 
 export const migrations = [
   {
@@ -142,6 +143,11 @@ export const migrations = [
   {
     up: migration_20260623_163806_generalize_linkfield.up,
     down: migration_20260623_163806_generalize_linkfield.down,
-    name: '20260623_163806_generalize_linkfield'
+    name: '20260623_163806_generalize_linkfield',
+  },
+  {
+    up: migration_20260623_190304_add_soutenir_home_block.up,
+    down: migration_20260623_190304_add_soutenir_home_block.down,
+    name: '20260623_190304_add_soutenir_home_block'
   },
 ];

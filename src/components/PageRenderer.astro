@@ -25,6 +25,7 @@ import Timeline from './Timeline.astro';
 import Lettre from './Lettre.astro';
 import StatMajeste from './StatMajeste.astro';
 import Temoignages from './Temoignages.astro';
+import SoutenirHome from './SoutenirHome.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -49,6 +50,23 @@ const equipeMembres = needsEquipe
         draft?: boolean;
       }>('equipe', { sort: 'ordre' }),
     )
+  : [];
+
+// Pour le bloc soutenir-home (page d'accueil), on a besoin des prochains
+// événements à venir pour la colonne droite. 3 max, filtrés par date future.
+const needsAVenir = sections.some((s) => s.type === 'soutenir-home');
+const aVenir = needsAVenir
+  ? filterPublished(
+      await fetchCollectionLegacy<{
+        title: string;
+        date_debut: string;
+        lieu: string;
+        fictif?: boolean;
+        draft?: boolean;
+      }>('evenements', { sort: 'date_debut' }),
+    )
+      .filter((e) => Date.parse(e.data.date_debut) >= Date.now())
+      .slice(0, 3)
   : [];
 
 // Idem pour les témoignages.
@@ -441,6 +459,19 @@ for (const s of sections) {
             variant={s.variant}
           />
         </Section>
+      );
+    }
+    if (s.type === 'soutenir-home') {
+      // Rendu hors <Section> : 2 colonnes pleine largeur, pas de wrap.
+      return (
+        <SoutenirHome
+          eyebrow={s.eyebrow}
+          titre={s.titre}
+          corps_rich={s.corps_rich}
+          cta_primaire={s.cta_primaire}
+          cta_secondaire={s.cta_secondaire}
+          aVenir={aVenir}
+        />
       );
     }
     return null;

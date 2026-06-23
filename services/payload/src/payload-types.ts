@@ -886,6 +886,64 @@ export interface Page {
             blockName?: string | null;
             blockType: 'cta';
           }
+        | {
+            eyebrow?: string | null;
+            /**
+             * Astuce : *italique* sur un mot pour l'accent (ex: « grâce à *vous* »).
+             */
+            titre: string;
+            /**
+             * Texte court sous le titre.
+             */
+            corps_rich?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            cta_primaire: {
+              label?: string | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
+            };
+            cta_secondaire: {
+              label?: string | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'soutenir-home';
+          }
       )[]
     | null;
   updatedAt: string;
@@ -1103,7 +1161,7 @@ export interface Document {
   titre: string;
   categorie: 'projet associatif' | "rapport d'activité" | 'ressource' | 'communication' | 'présentation';
   /**
-   * PDF ou autre fichier téléchargeable.
+   * Glisse-dépose ton PDF dans le cadre ci-dessous, ou clique "Choose from existing" pour réutiliser un fichier déjà uploadé. Pour télécharger / remplacer un PDF existant, clique sur la vignette ou son nom une fois affichée.
    */
   fichier?: (number | null) | Media;
   /**
@@ -1673,6 +1731,41 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               fond?: T;
+              titre?: T;
+              corps_rich?: T;
+              cta_primaire?:
+                | T
+                | {
+                    label?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
+                  };
+              cta_secondaire?:
+                | T
+                | {
+                    label?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        'soutenir-home'?:
+          | T
+          | {
+              eyebrow?: T;
               titre?: T;
               corps_rich?: T;
               cta_primaire?:

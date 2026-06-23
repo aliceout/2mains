@@ -2,47 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import PageRenderer from '../components/PageRenderer.astro';
 import MissingPageFallback from '../components/MissingPageFallback.astro';
-import Draft from '../components/Draft.astro';
-import DraftBadge from '../components/DraftBadge.astro';
-import Btn from '../components/atoms/Btn.astro';
-import Eyebrow from '../components/atoms/Eyebrow.astro';
-import LinkArrow from '../components/atoms/LinkArrow.astro';
-import { getSiteSettings } from '../lib/site';
-import { filterPublished } from '../lib/drafts';
-import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
+import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('accueil');
 const hasContent =
   Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 const fallbackTitle = 'Accueil';
-
-const settings = await getSiteSettings();
-
-// Prochains événements (3 max, à venir). Payload renvoie les dates
-// en string ISO ; on les compare via Date.parse().
-type Evt = {
-  title: string;
-  date_debut: string;
-  lieu: string;
-  fictif?: boolean;
-  draft?: boolean;
-};
-const now = Date.now();
-const aVenir = filterPublished(
-  await fetchCollectionLegacy<Evt>('evenements', { sort: 'date_debut' }),
-)
-  .filter((e) => Date.parse(e.data.date_debut) >= now)
-  .slice(0, 3);
-
-function formatDate(s: string): string {
-  return new Intl.DateTimeFormat('fr-FR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(new Date(s));
-}
-
-const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
 ---
 
 <Layout
@@ -50,79 +15,4 @@ const hasFictiveEvents = aVenir.some((e) => e.data.fictif);
   ogSlug="accueil"
 >
   {page && hasContent ? <PageRenderer page={page} /> : <MissingPageFallback title={fallbackTitle} />}
-
-
-  <section class="border-t border-line">
-    <div class="grid md:grid-cols-2">
-      <div class="relative flex flex-col justify-between gap-8 bg-peach px-6 py-20 md:min-h-120 md:px-15 md:py-25">
-        <div>
-          <Eyebrow>— Soutenir</Eyebrow>
-          <h2 class="font-serif text-[26px] font-normal leading-tight tracking-tight text-ink md:text-[32px] mt-4 mb-5 max-w-[16ch]">
-            L'association tient debout grâce à <em class="font-medium not-italic text-orange">vous</em>.
-          </h2>
-          <p class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch] mb-8">
-            Adhérer, donner ou devenir bénévole — chaque engagement compte. Un don de
-            50 € permet à une femme de bénéficier d'une séance.
-          </p>
-        </div>
-        <div class="flex flex-wrap gap-3">
-          <Btn href={settings.helloasso_don} external arrow>Faire un don</Btn>
-          <Btn variant="ghost" href="/benevolat">Devenir bénévole</Btn>
-        </div>
-      </div>
-      <div class="relative flex flex-col justify-between gap-8 bg-lav px-6 py-20 md:min-h-120 md:px-15 md:py-25">
-        {aVenir.length > 0 ? (
-          <>
-            <div>
-              <Eyebrow color="violet">— Prochain rendez-vous</Eyebrow>
-              {hasFictiveEvents ? (
-                <Draft reason="Événements fictifs — à remplacer via le CMS">
-                  <ul class="mt-4 grid gap-5">
-                    {aVenir.slice(0, 2).map((e) => (
-                      <li>
-                        <DraftBadge draft={e.data.draft} />
-                        <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
-                          {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
-                        </div>
-                        <h3 class="font-serif text-lg font-medium leading-tight tracking-tight text-ink max-w-[22ch]">
-                          {e.data.title}
-                        </h3>
-                      </li>
-                    ))}
-                  </ul>
-                </Draft>
-              ) : (
-                <ul class="mt-4 grid gap-5">
-                  {aVenir.slice(0, 2).map((e) => (
-                    <li>
-                      <div class="font-mono text-xs uppercase tracking-wider text-violet mt-1 mb-2">
-                        {formatDate(e.data.date_debut).toUpperCase()} · {e.data.lieu.toUpperCase()}
-                      </div>
-                      <h3 class="font-serif text-2xl font-medium leading-tight tracking-tight text-ink max-w-[20ch]">
-                        {e.data.title}
-                      </h3>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <LinkArrow href="/agenda" color="violet">Voir l'agenda</LinkArrow>
-          </>
-        ) : (
-          <>
-            <div>
-              <Eyebrow color="violet">— Newsletter saisonnière</Eyebrow>
-              <h2 class="font-serif text-[24px] font-normal leading-tight tracking-tight text-ink mt-4 mb-4 max-w-[18ch] md:text-[28px]">
-                Une <em class="font-medium not-italic text-violet">lettre</em> par saison.
-              </h2>
-              <p class="font-sans text-base leading-relaxed text-ink-2 max-w-[40ch]">
-                Une lettre par saison — actualités, ateliers à venir, lectures et ressources.
-              </p>
-            </div>
-            <LinkArrow href="/contact" color="violet">Nous écrire</LinkArrow>
-          </>
-        )}
-      </div>
-    </div>
-  </section>
 </Layout>
