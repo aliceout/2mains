@@ -43,7 +43,11 @@ export const Documents: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: false,
-      admin: { description: "PDF ou autre fichier téléchargeable." },
+      label: 'Fichier (PDF)',
+      admin: {
+        description:
+          'Glisse-dépose ton PDF dans le cadre ci-dessous, ou clique "Choose from existing" pour réutiliser un fichier déjà uploadé. Pour télécharger / remplacer un PDF existant, clique sur la vignette ou son nom une fois affichée.',
+      },
     },
     {
       name: 'date',
