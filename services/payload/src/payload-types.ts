@@ -162,7 +162,7 @@ export interface Page {
    * Si coché, demande aux moteurs de ne pas indexer.
    */
   noindex?: boolean | null;
-  hero?: {
+  hero: {
     /**
      * Décocher si la page commence directement par les sections.
      */
@@ -188,15 +188,35 @@ export interface Page {
       [k: string]: unknown;
     } | null;
     variant?: ('beige' | 'orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
-    cta_primaire?: {
+    cta_primaire: {
       label?: string | null;
-      href?: string | null;
-      externe?: boolean | null;
+      link: {
+        /**
+         * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+         */
+        type: 'page' | 'custom';
+        page?: (number | null) | Page;
+        /**
+         * Ex: /agenda, /contact, ou https://exemple.com
+         */
+        url?: string | null;
+        externe?: boolean | null;
+      };
     };
-    cta_secondaire?: {
+    cta_secondaire: {
       label?: string | null;
-      href?: string | null;
-      externe?: boolean | null;
+      link: {
+        /**
+         * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+         */
+        type: 'page' | 'custom';
+        page?: (number | null) | Page;
+        /**
+         * Ex: /agenda, /contact, ou https://exemple.com
+         */
+        url?: string | null;
+        externe?: boolean | null;
+      };
     };
   };
   /**
@@ -414,7 +434,18 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              href?: string | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
               cta?: string | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
               id?: string | null;
@@ -478,10 +509,20 @@ export interface Page {
                   }[]
                 | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
-              cta?: {
+              cta: {
                 label?: string | null;
-                href?: string | null;
-                externe?: boolean | null;
+                link: {
+                  /**
+                   * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                   */
+                  type: 'page' | 'custom';
+                  page?: (number | null) | Page;
+                  /**
+                   * Ex: /agenda, /contact, ou https://exemple.com
+                   */
+                  url?: string | null;
+                  externe?: boolean | null;
+                };
               };
               id?: string | null;
             }[];
@@ -700,7 +741,18 @@ export interface Page {
                 };
                 [k: string]: unknown;
               } | null;
-              lien?: string | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
               lien_label?: string | null;
               id?: string | null;
             }[];
@@ -800,15 +852,35 @@ export interface Page {
               };
               [k: string]: unknown;
             } | null;
-            cta_primaire?: {
+            cta_primaire: {
               label?: string | null;
-              href?: string | null;
-              externe?: boolean | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
             };
-            cta_secondaire?: {
+            cta_secondaire: {
               label?: string | null;
-              href?: string | null;
-              externe?: boolean | null;
+              link: {
+                /**
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 */
+                type: 'page' | 'custom';
+                page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
+                url?: string | null;
+                externe?: boolean | null;
+              };
             };
             id?: string | null;
             blockName?: string | null;
@@ -1222,15 +1294,27 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               label?: T;
-              href?: T;
-              externe?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    externe?: T;
+                  };
             };
         cta_secondaire?:
           | T
           | {
               label?: T;
-              href?: T;
-              externe?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    page?: T;
+                    url?: T;
+                    externe?: T;
+                  };
             };
       };
   sections?:
@@ -1327,7 +1411,14 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     titre?: T;
                     description_rich?: T;
-                    href?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
                     cta?: T;
                     couleur?: T;
                     id?: T;
@@ -1373,8 +1464,14 @@ export interface PagesSelect<T extends boolean = true> {
                       | T
                       | {
                           label?: T;
-                          href?: T;
-                          externe?: T;
+                          link?:
+                            | T
+                            | {
+                                type?: T;
+                                page?: T;
+                                url?: T;
+                                externe?: T;
+                              };
                         };
                     id?: T;
                   };
@@ -1516,7 +1613,14 @@ export interface PagesSelect<T extends boolean = true> {
                     photo?: T;
                     photo_alt?: T;
                     bio_rich?: T;
-                    lien?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
                     lien_label?: T;
                     id?: T;
                   };
@@ -1575,15 +1679,27 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     label?: T;
-                    href?: T;
-                    externe?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
                   };
               cta_secondaire?:
                 | T
                 | {
                     label?: T;
-                    href?: T;
-                    externe?: T;
+                    link?:
+                      | T
+                      | {
+                          type?: T;
+                          page?: T;
+                          url?: T;
+                          externe?: T;
+                        };
                   };
               id?: T;
               blockName?: T;
@@ -1884,22 +2000,30 @@ export interface Navigation {
         is_dropdown?: boolean | null;
         link?: {
           /**
-           * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+           * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
            */
           type: 'page' | 'custom';
           page?: (number | null) | Page;
+          /**
+           * Ex: /agenda, /contact, ou https://exemple.com
+           */
           url?: string | null;
+          externe?: boolean | null;
         };
         children?:
           | {
               label: string;
               link: {
                 /**
-                 * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
                  */
                 type: 'page' | 'custom';
                 page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
                 url?: string | null;
+                externe?: boolean | null;
               };
               id?: string | null;
             }[]
@@ -1918,11 +2042,15 @@ export interface Navigation {
         label: string;
         link: {
           /**
-           * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+           * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
            */
           type: 'page' | 'custom';
           page?: (number | null) | Page;
+          /**
+           * Ex: /agenda, /contact, ou https://exemple.com
+           */
           url?: string | null;
+          externe?: boolean | null;
         };
         id?: string | null;
       }[]
@@ -1938,11 +2066,15 @@ export interface Navigation {
               label: string;
               link: {
                 /**
-                 * « Page du site » = lien suit automatiquement si la page est renommée. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
+                 * « Page du site » = sélection dans la liste, suit automatiquement les renommages. « URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, /actualites, /contact, /documents) ou pour les liens externes (https://...).
                  */
                 type: 'page' | 'custom';
                 page?: (number | null) | Page;
+                /**
+                 * Ex: /agenda, /contact, ou https://exemple.com
+                 */
                 url?: string | null;
+                externe?: boolean | null;
               };
               highlight?: boolean | null;
               id?: string | null;
@@ -2057,6 +2189,7 @@ export interface NavigationSelect<T extends boolean = true> {
               type?: T;
               page?: T;
               url?: T;
+              externe?: T;
             };
         children?:
           | T
@@ -2068,6 +2201,7 @@ export interface NavigationSelect<T extends boolean = true> {
                     type?: T;
                     page?: T;
                     url?: T;
+                    externe?: T;
                   };
               id?: T;
             };
@@ -2083,6 +2217,7 @@ export interface NavigationSelect<T extends boolean = true> {
               type?: T;
               page?: T;
               url?: T;
+              externe?: T;
             };
         id?: T;
       };
@@ -2100,6 +2235,7 @@ export interface NavigationSelect<T extends boolean = true> {
                     type?: T;
                     page?: T;
                     url?: T;
+                    externe?: T;
                   };
               highlight?: T;
               id?: T;

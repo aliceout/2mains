@@ -1,6 +1,6 @@
 import type { Block } from 'payload';
 
-import { fondField, richTextField, titreField } from './_shared';
+import { fondField, linkField, richTextField, titreField } from './_shared';
 import { thumbPortraits } from './_thumbnails';
 
 export const Portraits: Block = {
@@ -48,7 +48,7 @@ export const Portraits: Block = {
         },
         { name: 'photo_alt', type: 'text', required: false },
         richTextField({ name: 'bio', label: 'Bio' }),
-        { name: 'lien', type: 'text', required: false, label: 'URL externe' },
+        linkField({ label: 'Lien' }),
         { name: 'lien_label', type: 'text', required: false, label: 'Texte du lien' },
       ],
     },

@@ -182,6 +182,46 @@ function nullsToUndefined<T>(obj: T): T {
 }
 
 /**
+ * Sous-objet « lien » Payload (champ groupé `link`) : peut être
+ * `type='page'` (relation vers Pages, populated avec depth >= 1) ou
+ * `type='custom'` (URL libre, avec flag `externe` pour `target=_blank`).
+ *
+ * Ce shape vit dans Payload sous `cta_primaire.link`, `carte.link`,
+ * `personne.link`, `format.cta.link`, etc. Le helper `resolveLink`
+ * l'aplatit en `{href, externe}` pour que les composants Astro
+ * consomment toujours les mêmes champs string/boolean qu'avant.
+ */
+export type PayloadLink = {
+  type?: 'page' | 'custom';
+  page?: number | { id: number; slug?: string } | null;
+  url?: string | null;
+  externe?: boolean | null;
+};
+
+/**
+ * Aplatit un `PayloadLink` en `{href, externe}` consommable directement
+ * par les composants Astro. `type='page'` résout le slug de la relation
+ * populated ; `type='custom'` retombe sur `url`. `externe` n'a de sens
+ * que pour les liens custom (les liens internes restent dans le site).
+ */
+export function resolveLink(
+  link: PayloadLink | null | undefined,
+): { href?: string; externe?: boolean } {
+  if (!link) return {};
+  if (link.type === 'page') {
+    if (link.page && typeof link.page === 'object' && link.page.slug) {
+      return { href: `/${link.page.slug}` };
+    }
+    return {};
+  }
+  // type === 'custom' ou non défini → fallback sur url + flag externe
+  return {
+    href: link.url ?? undefined,
+    externe: link.externe ?? undefined,
+  };
+}
+
+/**
  * Transforme un block Payload (sections[]) pour qu'il ait la shape
  * de l'ancienne section astro:content (discriminated union avec
  * `type` au lieu de `blockType`).
@@ -213,13 +253,21 @@ function transformBlock(rawBlock: Record<string, unknown>): Record<string, unkno
     }));
   }
 
-  // Portraits.personnes[].photo
+  // Portraits.personnes[].photo + aplatissement du lien
+  // (personne.link → personne.lien + personne.externe ; on conserve
+  // `lien_label` tel quel, c'est juste un texte libre)
   if (blockType === 'portraits' && Array.isArray(out.personnes)) {
     out.personnes = (out.personnes as Array<Record<string, unknown>>).map(
-      (p) => ({
-        ...p,
-        photo: imgUrl(p.photo as { filename?: string }),
-      }),
+      (p) => {
+        const resolved = resolveLink(p.link as PayloadLink | undefined);
+        const { link: _l, ...rest } = p;
+        return {
+          ...rest,
+          photo: imgUrl(p.photo as { filename?: string }),
+          lien: resolved.href,
+          externe: resolved.externe,
+        };
+      },
     );
   }
 
@@ -232,14 +280,53 @@ function transformBlock(rawBlock: Record<string, unknown>): Record<string, unkno
   }
 
   // Formats.formats[].points : [{point}] → string[]
+  // + Formats.formats[].cta.link : aplatissement en cta.href + cta.externe
+  // (le bloc Formats consomme f.cta.href / f.cta.externe ; on garde
+  // f.cta.label intact)
   if (blockType === 'formats' && Array.isArray(out.formats)) {
-    out.formats = (out.formats as Array<Record<string, unknown>>).map((f) => ({
-      ...f,
-      points: unwrapArray(
-        f.points as Array<Record<string, string>> | undefined,
-        'point',
-      ) ?? [],
-    }));
+    out.formats = (out.formats as Array<Record<string, unknown>>).map((f) => {
+      const cta = f.cta as Record<string, unknown> | undefined;
+      let flatCta: Record<string, unknown> | undefined = cta;
+      if (cta) {
+        const resolved = resolveLink(cta.link as PayloadLink | undefined);
+        const { link: _l, ...rest } = cta;
+        flatCta = { ...rest, href: resolved.href, externe: resolved.externe };
+      }
+      return {
+        ...f,
+        cta: flatCta,
+        points: unwrapArray(
+          f.points as Array<Record<string, string>> | undefined,
+          'point',
+        ) ?? [],
+      };
+    });
+  }
+
+  // Cta.cta_primaire / cta_secondaire : aplatissement du sous-objet
+  // `link` (relation page OU url custom + externe) → `href` + `externe`
+  // directement sur le CTA, pour rester compatible avec Hero.astro &
+  // co qui lisent `s.cta_primaire.href` / `s.cta_primaire.externe`.
+  if (blockType === 'cta') {
+    for (const key of ['cta_primaire', 'cta_secondaire'] as const) {
+      const c = out[key] as Record<string, unknown> | undefined;
+      if (c) {
+        const resolved = resolveLink(c.link as PayloadLink | undefined);
+        const { link: _l, ...rest } = c;
+        out[key] = { ...rest, href: resolved.href, externe: resolved.externe };
+      }
+    }
+  }
+
+  // Cartes.cartes[].link : aplatissement en carte.href + carte.externe.
+  // On conserve `carte.cta` tel quel (c'est le label du lien, pas le
+  // lien lui-même — cf. BlocCartes.astro qui lit `c.href` + `c.cta`).
+  if (blockType === 'cartes' && Array.isArray(out.cartes)) {
+    out.cartes = (out.cartes as Array<Record<string, unknown>>).map((c) => {
+      const resolved = resolveLink(c.link as PayloadLink | undefined);
+      const { link: _l, ...rest } = c;
+      return { ...rest, href: resolved.href, externe: resolved.externe };
+    });
   }
 
   // temoignages/equipe.ids : maintenant des relations hasMany. Selon
@@ -305,6 +392,26 @@ export async function fetchPageLegacy(slug: string): Promise<LegacyPage | null> 
   }>(slug, 2);
   if (!page) return null;
   const cleaned = nullsToUndefined(page);
+  // Hero : aplatissement des sous-objets `link` des CTAs, comme pour
+  // le block `cta` dans transformBlock. Le composant Hero.astro
+  // consomme `hero.cta_primaire.href` + `hero.cta_primaire.externe`.
+  let hero = cleaned.hero?.enabled === false ? undefined : cleaned.hero;
+  if (hero) {
+    const flatHero: Record<string, unknown> = { ...hero };
+    for (const key of ['cta_primaire', 'cta_secondaire'] as const) {
+      const c = flatHero[key] as Record<string, unknown> | undefined;
+      if (c) {
+        const resolved = resolveLink(c.link as PayloadLink | undefined);
+        const { link: _l, ...rest } = c;
+        flatHero[key] = {
+          ...rest,
+          href: resolved.href,
+          externe: resolved.externe,
+        };
+      }
+    }
+    hero = flatHero;
+  }
   return {
     id: cleaned.slug,
     slug: cleaned.slug,
@@ -312,7 +419,7 @@ export async function fetchPageLegacy(slug: string): Promise<LegacyPage | null> 
       title: cleaned.title,
       description: cleaned.description,
       noindex: cleaned.noindex,
-      hero: cleaned.hero?.enabled === false ? undefined : cleaned.hero,
+      hero,
       sections: (cleaned.sections ?? []).map(transformBlock),
     },
     body: '',

@@ -1,57 +1,7 @@
-import type { Field, GlobalConfig } from 'payload';
+import type { GlobalConfig } from 'payload';
 
 import { isAdminOrRoot } from '../access/roles';
-
-/**
- * Sous-objet « lien » réutilisé partout dans le global Navigation
- * (header nav, header buttons, footer columns).
- *
- * Deux modes : `type='page'` (relation vers la collection Pages, suit
- * automatiquement les renommages de slug) ou `type='custom'` (URL libre,
- * pour les routes spéciales comme /agenda, /actualites, /contact, ou
- * pour les liens externes https://...).
- */
-const linkField: Field = {
-  name: 'link',
-  type: 'group',
-  label: 'Destination',
-  fields: [
-    {
-      name: 'type',
-      type: 'select',
-      required: true,
-      defaultValue: 'custom',
-      options: [
-        { label: 'Page du site (sélection)', value: 'page' },
-        { label: 'URL ou chemin libre', value: 'custom' },
-      ],
-      admin: {
-        description:
-          "« Page du site » = lien suit automatiquement si la page est renommée. " +
-          "« URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, " +
-          "/actualites, /contact, /documents) ou pour les liens externes (https://...).",
-      },
-    },
-    {
-      name: 'page',
-      type: 'relationship',
-      relationTo: 'pages',
-      label: 'Page',
-      admin: {
-        condition: (_, sibling) => sibling?.type === 'page',
-      },
-    },
-    {
-      name: 'url',
-      type: 'text',
-      label: 'URL ou chemin',
-      admin: {
-        condition: (_, sibling) => sibling?.type === 'custom',
-        placeholder: '/agenda  ou  https://exemple.org',
-      },
-    },
-  ],
-};
+import { linkField } from '../blocks/_shared';
 
 export const Navigation: GlobalConfig = {
   slug: 'navigation',
@@ -88,13 +38,7 @@ export const Navigation: GlobalConfig = {
           defaultValue: false,
           label: 'Menu déroulant (avec sous-liens)',
         },
-        {
-          ...linkField,
-          admin: {
-            ...linkField.admin,
-            condition: (_, sibling) => sibling?.is_dropdown !== true,
-          },
-        },
+        linkField({ condition: (_, sibling) => sibling?.is_dropdown !== true }),
         {
           name: 'children',
           type: 'array',
@@ -105,7 +49,7 @@ export const Navigation: GlobalConfig = {
           },
           fields: [
             { name: 'label', type: 'text', required: true, label: 'Libellé' },
-            linkField,
+            linkField(),
           ],
         },
       ],
@@ -135,7 +79,7 @@ export const Navigation: GlobalConfig = {
               "lecteurs d'écran.",
           },
         },
-        linkField,
+        linkField(),
       ],
     },
     {
@@ -158,7 +102,7 @@ export const Navigation: GlobalConfig = {
           labels: { singular: 'Lien', plural: 'Liens' },
           fields: [
             { name: 'label', type: 'text', required: true, label: 'Libellé' },
-            linkField,
+            linkField(),
             {
               name: 'highlight',
               type: 'checkbox',

@@ -128,13 +128,11 @@ export const titreField = {
 } satisfies Field;
 
 /** Bouton d'action — sous-objet réutilisé dans Cta, Hero, Formats, etc.
- *  Texte (= label affiché) et URL (= href) sont en required:false côté
- *  schéma car Payload n'a pas de "tout-ou-rien" sur les groups
- *  optionnels : si on les marquait required, un bloc SANS bouton serait
- *  quand même rejeté. La cohérence (texte+url ensemble) est validée
- *  côté UI/UX.
- *  Slugs `label`/`href`/`externe` conservés tels quels pour ne pas
- *  invalider la DB existante. */
+ *  `label` est en required:false (Payload n'a pas de "tout-ou-rien" sur
+ *  les groups optionnels : si on le marquait required, un bloc SANS
+ *  bouton serait quand même rejeté). La cohérence (texte+lien ensemble)
+ *  est validée côté UI/UX.
+ *  Le lien lui-même est délégué à `linkField()` (group type/page/url/externe). */
 export const ctaFields = [
   {
     name: 'label',
@@ -142,16 +140,72 @@ export const ctaFields = [
     required: false,
     label: 'Texte du bouton',
   },
-  {
-    name: 'href',
-    type: 'text',
-    required: false,
-    label: 'URL (interne ex. /contact, ou externe https://...)',
-  },
-  {
-    name: 'externe',
-    type: 'checkbox',
-    defaultValue: false,
-    label: 'Lien externe (ouvre dans un nouvel onglet)',
-  },
+  linkField({ label: 'Destination du bouton' }),
 ] satisfies Field[];
+
+/**
+ * Helper partagé pour les champs « lien » : permet à la rédactrice de
+ * choisir entre une Page du site (relationship, suit les renommages de
+ * slug) ou une URL/chemin libre (sections non-Pages comme /agenda,
+ * /contact, ou liens externes https://...).
+ *
+ * Le frontend (transformBlock dans src/lib/payload.ts) aplatit ce groupe
+ * en { href, externe } pour rester compatible avec les composants Astro
+ * existants.
+ */
+export function linkField(opts?: {
+  label?: string;
+  description?: string;
+  condition?: (data: Partial<Record<string, unknown>>, sibling: Partial<Record<string, unknown>>) => boolean;
+}): Field {
+  const base: Field = {
+    name: 'link',
+    type: 'group',
+    label: opts?.label ?? 'Destination',
+    fields: [
+      {
+        name: 'type',
+        type: 'select',
+        required: true,
+        defaultValue: 'page',
+        options: [
+          { label: 'Page du site (sélection)', value: 'page' },
+          { label: 'URL ou chemin libre', value: 'custom' },
+        ],
+        admin: {
+          description:
+            '« Page du site » = sélection dans la liste, suit automatiquement les renommages. ' +
+            '« URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, ' +
+            '/actualites, /contact, /documents) ou pour les liens externes (https://...).',
+        },
+      },
+      {
+        name: 'page',
+        type: 'relationship',
+        relationTo: 'pages',
+        label: 'Page',
+        admin: { condition: (_, sibling) => sibling?.type === 'page' },
+      },
+      {
+        name: 'url',
+        type: 'text',
+        label: 'URL ou chemin',
+        admin: {
+          condition: (_, sibling) => sibling?.type === 'custom',
+          description: 'Ex: /agenda, /contact, ou https://exemple.com',
+        },
+      },
+      {
+        name: 'externe',
+        type: 'checkbox',
+        defaultValue: false,
+        label: 'Ouvrir dans un nouvel onglet',
+        admin: { condition: (_, sibling) => sibling?.type === 'custom' },
+      },
+    ],
+  };
+  if (opts?.condition) {
+    return { ...base, admin: { condition: opts.condition } } as Field;
+  }
+  return base;
+}

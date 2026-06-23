@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
 import { allBlocks } from '../blocks';
-import { richTextField } from '../blocks/_shared';
+import { linkField, richTextField } from '../blocks/_shared';
 
 /**
  * Collection des pages éditoriales du site (homepage, qui-sommes-nous,
@@ -98,8 +98,7 @@ export const Pages: CollectionConfig = {
           label: 'Bouton principal',
           fields: [
             { name: 'label', type: 'text', label: 'Texte du bouton' },
-            { name: 'href', type: 'text', label: 'URL (interne ex. /contact, ou externe https://...)' },
-            { name: 'externe', type: 'checkbox', defaultValue: false, label: 'Lien externe (ouvre dans un nouvel onglet)' },
+            linkField({ label: 'Destination du bouton' }),
           ],
         },
         {
@@ -108,8 +107,7 @@ export const Pages: CollectionConfig = {
           label: 'Bouton secondaire (facultatif)',
           fields: [
             { name: 'label', type: 'text', label: 'Texte du bouton' },
-            { name: 'href', type: 'text', label: 'URL (interne ex. /contact, ou externe https://...)' },
-            { name: 'externe', type: 'checkbox', defaultValue: false, label: 'Lien externe (ouvre dans un nouvel onglet)' },
+            linkField({ label: 'Destination du bouton' }),
           ],
         },
       ],
