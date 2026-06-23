@@ -43,10 +43,23 @@ import {
  *     ...richTextFieldEditor(),
  *   }
  */
-export function richTextFieldEditor() {
-  return {
-    editor: lexicalEditor({
-      features: [
+export function richTextFieldEditor(opts?: { inline?: boolean }) {
+  // Mode `inline` = pour les champs rendus sans wrapping <p> (banderole
+  // d'urgence, mission asso au footer). On retire headings + listes pour
+  // qu'Audrey ne puisse pas saisir des blocs qui seraient aplatis au
+  // rendu (le frontend utilise lexicalToHtmlInline qui strip les <p>
+  // mais ne peut pas correctement rendre une <ul> sans wrapping block).
+  const features = opts?.inline
+    ? [
+        ParagraphFeature(),
+        BoldFeature(),
+        ItalicFeature(),
+        UnderlineFeature(),
+        StrikethroughFeature(),
+        LinkFeature(),
+        FixedToolbarFeature(),
+      ]
+    : [
         ParagraphFeature(),
         HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }),
         BoldFeature(),
@@ -57,9 +70,8 @@ export function richTextFieldEditor() {
         OrderedListFeature(),
         LinkFeature(),
         FixedToolbarFeature(),
-      ],
-    }),
-  };
+      ];
+  return { editor: lexicalEditor({ features }) };
 }
 
 /**
@@ -78,13 +90,16 @@ export function richTextField(opts: {
   label: string;
   /** Description optionnelle affichée sous le champ. */
   description?: string;
+  /** Si true : toolbar restreinte (pas de listes/headings) pour les champs
+   *  rendus en inline côté frontend (banderole, mission). */
+  inline?: boolean;
 }): Field {
   return {
     name: `${opts.name}_rich`,
     type: 'richText',
     label: opts.label,
     required: false,
-    ...richTextFieldEditor(),
+    ...richTextFieldEditor({ inline: opts.inline }),
     admin: {
       description: opts.description,
     },

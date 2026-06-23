@@ -19,7 +19,7 @@ import HandUnderline from './atoms/HandUnderline.astro';
 import Btn from './atoms/Btn.astro';
 import Arrow from './atoms/Arrow.astro';
 import Blob from './atoms/Blob.astro';
-import { lexicalToHtmlInline } from '../lib/lexical';
+import { lexicalToHtml, isLexicalEmpty } from '../lib/lexical';
 
 type Variant = 'orange' | 'violet' | 'beige' | 'magenta' | 'vert' | 'bleu';
 
@@ -49,8 +49,13 @@ const {
   cta_secondaire,
 } = Astro.props;
 
-const richHtml = lexicalToHtmlInline(accroche_rich);
-const accrocheHtml = richHtml || (accroche ?? '');
+// Rendu block-level (lexicalToHtml) si Audrey a saisi du richText :
+// peut contenir des paragraphes multiples, des listes, des liens.
+// Sinon fallback sur la string plain text des pages Astro hardcoded.
+const richHtml = accroche_rich && !isLexicalEmpty(accroche_rich)
+  ? lexicalToHtml(accroche_rich)
+  : '';
+const accrocheHtml = richHtml || (accroche ? `<p>${accroche}</p>` : '');
 
 // Mapping variant historique → couleur accent (italique + souligné).
 // `beige` est un legacy : on le neutralise sur orange (couleur d'accent
@@ -154,8 +159,8 @@ const colorClass: Record<AccentColor, string> = {
       })}
     </h1>
     {accrocheHtml && (
-      <p
-        class="mb-9 max-w-[55ch] font-sans text-base leading-relaxed text-ink-2 md:text-lg"
+      <div
+        class="hero-accroche mb-9 max-w-[55ch] font-sans text-base leading-relaxed text-ink-2 md:text-lg"
         set:html={accrocheHtml}
       />
     )}
@@ -183,3 +188,41 @@ const colorClass: Record<AccentColor, string> = {
     )}
   </div>
 </section>
+
+<style>
+  /* Rendu accroche richText : Tailwind reset list-style:none par défaut,
+     on restaure les bullets + on espace les paragraphes / list-items. */
+  .hero-accroche :global(p) {
+    margin-bottom: 0.5rem;
+  }
+  .hero-accroche :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  .hero-accroche :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .hero-accroche :global(ol) {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .hero-accroche :global(li) {
+    margin-bottom: 0.15rem;
+  }
+  .hero-accroche :global(a) {
+    color: var(--color-orange);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .hero-accroche :global(strong) {
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .hero-accroche :global(em) {
+    font-style: italic;
+    color: var(--color-orange);
+  }
+</style>
+

@@ -40,7 +40,8 @@ export const BanderoleUrgence: GlobalConfig = {
       name: 'message',
       label: 'Message',
       description:
-        'Bandeau court : gras, italique, lien inline. Le rendu frontend extrait le contenu sans wrapping paragraphe.',
+        'Bandeau court (1 ligne) : gras, italique, lien inline. Pas de listes ni titres (rendu sans wrapping paragraphe côté frontend).',
+      inline: true,
     }),
     {
       name: 'couleur',

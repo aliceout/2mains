@@ -50,7 +50,12 @@ export const Identite: GlobalConfig = {
       required: true,
       label: 'Accroche globale (slogan)',
     },
-    richTextField({ name: 'mission', label: 'Mission (texte court, footer/about)' }),
+    richTextField({
+      name: 'mission',
+      label: 'Mission (texte court, footer/about)',
+      description: 'Une à deux phrases. Pas de listes ni titres (rendu sans wrapping paragraphe au footer).',
+      inline: true,
+    }),
     {
       name: 'directeur_publication',
       type: 'text',
