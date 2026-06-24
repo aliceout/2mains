@@ -45,6 +45,9 @@ import { SoutenirHome } from './SoutenirHome';
 // Lot G — média embarqué
 import { Video } from './Video';
 
+// Lot H — listes alimentées par une collection
+import { PartenairesListe } from './PartenairesListe';
+
 export const allBlocks = [
   Prose,
   Callout,
@@ -71,6 +74,7 @@ export const allBlocks = [
   Cta,
   SoutenirHome,
   Video,
+  PartenairesListe,
 ];
 
 export {
@@ -99,4 +103,5 @@ export {
   Cta,
   SoutenirHome,
   Video,
+  PartenairesListe,
 };

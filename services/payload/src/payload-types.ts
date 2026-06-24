@@ -965,6 +965,15 @@ export interface Page {
             blockName?: string | null;
             blockType: 'video';
           }
+        | {
+            titre_financeurs?: string | null;
+            titre_partenaires?: string | null;
+            texte_partenaires?: string | null;
+            titre_reseaux?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'liste-partenaires';
+          }
       )[]
     | null;
   updatedAt: string;
@@ -1834,6 +1843,16 @@ export interface PagesSelect<T extends boolean = true> {
               fond?: T;
               url?: T;
               legende?: T;
+              id?: T;
+              blockName?: T;
+            };
+        'liste-partenaires'?:
+          | T
+          | {
+              titre_financeurs?: T;
+              titre_partenaires?: T;
+              texte_partenaires?: T;
+              titre_reseaux?: T;
               id?: T;
               blockName?: T;
             };

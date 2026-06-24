@@ -1,0 +1,189 @@
+---
+// Liste des partenaires groupée par type, 3 présentations distinctes.
+// Les données viennent de la collection Partenaires (passées par
+// PageRenderer) ; les titres de section viennent du bloc.
+// Logos affichés en haut de carte, carte cliquable si site web renseigné.
+import Section from './Section.astro';
+import SmartImage from './SmartImage.astro';
+import DraftBadge from './DraftBadge.astro';
+
+type Partenaire = {
+  id: string;
+  data: {
+    nom: string;
+    type: string;
+    logo?: string;
+    url?: string;
+    description_courte?: string;
+    draft?: boolean;
+  };
+};
+
+type Props = {
+  id?: string;
+  partenaires: Partenaire[];
+  titre_financeurs?: string;
+  titre_partenaires?: string;
+  texte_partenaires?: string;
+  titre_reseaux?: string;
+};
+
+const {
+  id,
+  partenaires,
+  titre_financeurs = 'Nos financeurs',
+  titre_partenaires = 'Nos partenaires associatifs et médico-sociaux',
+  texte_partenaires,
+  titre_reseaux = "Nos réseaux d'accompagnement",
+} = Astro.props;
+
+const financeurs = partenaires.filter(
+  (p) => p.data.type === 'financeur public' || p.data.type === 'financeur privé',
+);
+const partenairesAsso = partenaires.filter((p) => p.data.type === 'partenaire associatif');
+const reseaux = partenaires.filter((p) => p.data.type === 'réseau');
+
+// Wrapper de carte : <a> si url présente (carte cliquable, nouvel onglet),
+// sinon <div>. astro:Fragment ne permet pas de tag dynamique simple, on
+// gère via deux branches dans chaque section.
+---
+
+{
+  financeurs.length > 0 && (
+    <Section id={id} titre={titre_financeurs}>
+      <ul class="grid gap-4 md:grid-cols-3">
+        {financeurs.map((f) => {
+          const inner = (
+            <>
+              <DraftBadge draft={f.data.draft} />
+              {f.data.logo && (
+                <SmartImage
+                  src={f.data.logo}
+                  alt={`Logo ${f.data.nom}`}
+                  class="mb-3 h-12 w-auto object-contain"
+                />
+              )}
+              <p class="text-xs font-semibold tracking-wide uppercase text-violet">
+                {f.data.type}
+              </p>
+              <h3 class="mt-1 mb-2 text-lg font-bold">{f.data.nom}</h3>
+              {f.data.description_courte && (
+                <p class="text-sm leading-relaxed">{f.data.description_courte}</p>
+              )}
+            </>
+          );
+          const cls =
+            'block rounded-xl border-t-4 border-t-violet bg-paper p-6 shadow-sm transition-shadow';
+          return (
+            <li>
+              {f.data.url ? (
+                <a
+                  href={f.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={[cls, 'hover:shadow-md']}
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div class={cls}>{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Section>
+  )
+}
+
+{
+  partenairesAsso.length > 0 && (
+    <Section titre={titre_partenaires} fond="beige">
+      <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        {partenairesAsso.map((p) => {
+          const inner = (
+            <>
+              <DraftBadge draft={p.data.draft} />
+              {p.data.logo && (
+                <SmartImage
+                  src={p.data.logo}
+                  alt={`Logo ${p.data.nom}`}
+                  class="mb-2 h-10 w-auto object-contain"
+                />
+              )}
+              <p class="text-xs font-semibold uppercase text-orange">{p.data.type}</p>
+              <p class="mt-1 font-bold">{p.data.nom}</p>
+              {p.data.description_courte && (
+                <p class="mt-1 text-sm leading-relaxed">{p.data.description_courte}</p>
+              )}
+            </>
+          );
+          const cls = 'block rounded-lg bg-paper p-4 transition-shadow';
+          return (
+            <li>
+              {p.data.url ? (
+                <a
+                  href={p.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={[cls, 'hover:shadow-md']}
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div class={cls}>{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {texte_partenaires && (
+        <p class="mt-6 text-sm opacity-80">{texte_partenaires}</p>
+      )}
+    </Section>
+  )
+}
+
+{
+  reseaux.length > 0 && (
+    <Section titre={titre_reseaux}>
+      <ul class="grid gap-4 md:grid-cols-2">
+        {reseaux.map((r) => {
+          const inner = (
+            <>
+              <DraftBadge draft={r.data.draft} />
+              {r.data.logo && (
+                <SmartImage
+                  src={r.data.logo}
+                  alt={`Logo ${r.data.nom}`}
+                  class="mb-3 h-12 w-auto object-contain"
+                />
+              )}
+              <h3 class="text-lg font-bold">{r.data.nom}</h3>
+              {r.data.description_courte && (
+                <p class="mt-1 text-sm">{r.data.description_courte}</p>
+              )}
+            </>
+          );
+          const cls = 'block rounded-xl border border-line bg-paper p-6 transition-shadow';
+          return (
+            <li>
+              {r.data.url ? (
+                <a
+                  href={r.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class:list={[cls, 'hover:shadow-md']}
+                >
+                  {inner}
+                </a>
+              ) : (
+                <div class={cls}>{inner}</div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </Section>
+  )
+}

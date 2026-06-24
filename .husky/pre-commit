@@ -26,6 +26,26 @@ fi
 echo "→ Schéma Payload modifié, génération de la migration…"
 echo "$SCHEMA_CHANGED" | sed 's/^/   /'
 
+# Workaround bug tsx + Node >=24 : la résolution des imports `node:crypto`
+# (utilisés par le code auth chargé via payload.config) est cassée sous
+# Node 24, ce qui fait planter `payload migrate:create`
+# ("ENOENT ... node:crypto?tsx-namespace"). La prod tourne sur Node 22
+# (cf. Dockerfile). Si le Node courant est >=24 et qu'un Node 22 est
+# disponible via nvm4w (Windows), on bascule dessus juste pour la
+# génération de migration. Sur Linux/CI (pas de /c/nvm4w) ou Node <=22,
+# ce bloc est sans effet.
+NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
+if [ "$NODE_MAJOR" -ge 24 ] && [ -x "/c/nvm4w/nodejs/node.exe" ]; then
+  NVM_MAJOR=$(/c/nvm4w/nodejs/node.exe -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
+  if [ "$NVM_MAJOR" = "22" ]; then
+    export PATH="/c/nvm4w/nodejs:$PATH"
+    echo "   (contournement bug tsx+Node${NODE_MAJOR} → Node 22 de nvm4w)"
+  else
+    echo "   ⚠ Node ${NODE_MAJOR} détecté et pas de Node 22 via nvm4w —"
+    echo "     migrate:create peut échouer (bug tsx). Bascule en Node 22 si besoin."
+  fi
+fi
+
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 MIGRATION_NAME="auto_${TIMESTAMP}"
 

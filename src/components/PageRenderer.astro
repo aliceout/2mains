@@ -27,6 +27,7 @@ import StatMajeste from './StatMajeste.astro';
 import Temoignages from './Temoignages.astro';
 import SoutenirHome from './SoutenirHome.astro';
 import Video from './Video.astro';
+import PartenairesListe from './PartenairesListe.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -68,6 +69,23 @@ const aVenir = needsAVenir
     )
       .filter((e) => Date.parse(e.data.date_debut) >= Date.now())
       .slice(0, 3)
+  : [];
+
+// Pour le bloc liste-partenaires : on charge la collection Partenaires
+// (groupée par type côté composant). logo/url résolus par fetchCollectionLegacy.
+const needsPartenaires = sections.some((s) => s.type === 'liste-partenaires');
+const partenaires = needsPartenaires
+  ? filterPublished(
+      await fetchCollectionLegacy<{
+        nom: string;
+        type: string;
+        logo?: string;
+        url?: string;
+        description_courte?: string;
+        ordre?: number;
+        draft?: boolean;
+      }>('partenaires', { sort: 'ordre' }),
+    )
   : [];
 
 // Idem pour les témoignages.
@@ -170,7 +188,15 @@ const sectionIds: (string | undefined)[] = sections.map((s) => {
             </h2>
             {corpsHtml && (
               <div
-                class:list={['font-sans text-base leading-relaxed max-w-220', corpsColor]}
+                class:list={[
+                  'font-sans text-base leading-relaxed max-w-220',
+                  corpsColor,
+                  // Liens dans le corps : sur fond foncé, clair + souligné
+                  // (sinon couleur par défaut illisible sur violet/orange).
+                  isDark
+                    ? '[&_a]:text-paper [&_a]:underline [&_a]:underline-offset-2 [&_a]:font-medium'
+                    : '[&_a]:text-orange [&_a]:underline [&_a]:underline-offset-2',
+                ]}
                 set:html={corpsHtml}
               />
             )}
@@ -452,6 +478,20 @@ const sectionIds: (string | undefined)[] = sections.map((s) => {
         <Section id={id} titre={s.titre} fond={s.fond}>
           <Video url={s.url} legende={s.legende} />
         </Section>
+      );
+    }
+    if (s.type === 'liste-partenaires') {
+      // Rendu hors <Section> : le composant gère ses propres 3 sections
+      // (présentations distinctes par type de partenaire).
+      return (
+        <PartenairesListe
+          id={id}
+          partenaires={partenaires}
+          titre_financeurs={s.titre_financeurs}
+          titre_partenaires={s.titre_partenaires}
+          texte_partenaires={s.texte_partenaires}
+          titre_reseaux={s.titre_reseaux}
+        />
       );
     }
     if (s.type === 'soutenir-home') {

@@ -1,31 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import Section from '../components/Section.astro';
-import Prose from '../components/Prose.astro';
-import DraftBadge from '../components/DraftBadge.astro';
-import { filterPublished } from '../lib/drafts';
-import { fetchPageLegacy, fetchCollectionLegacy } from '../lib/payload';
+import PageRenderer from '../components/PageRenderer.astro';
+import MissingPageFallback from '../components/MissingPageFallback.astro';
+import { fetchPageLegacy } from '../lib/payload';
 
 const page = await fetchPageLegacy('financeurs');
-const hasContent = Boolean(page?.data.hero?.titre);
+const hasContent =
+  Boolean(page?.data.hero?.titre) || Boolean(page?.data.sections?.length);
 const fallbackTitle = 'Nos financeurs et partenaires';
-
-type Partenaire = {
-  nom: string;
-  type: string;
-  description_courte?: string;
-  ordre?: number;
-  draft?: boolean;
-};
-const all = filterPublished(
-  await fetchCollectionLegacy<Partenaire>('partenaires', { sort: 'ordre' }),
-);
-const financeurs = all.filter(
-  (p) => p.data.type === 'financeur public' || p.data.type === 'financeur privé',
-);
-const partenairesAsso = all.filter((p) => p.data.type === 'partenaire associatif');
-const reseaux = all.filter((p) => p.data.type === 'réseau');
 ---
 
 <Layout
@@ -33,83 +15,5 @@ const reseaux = all.filter((p) => p.data.type === 'réseau');
   description={hasContent && page ? page.data.description : undefined}
   ogSlug={page?.slug ?? 'financeurs'}
 >
-  {page?.data.hero ? <Hero {...page.data.hero} /> : <Hero titre={fallbackTitle} variant="violet" />}
-
-  {
-    financeurs.length > 0 && (
-      <Section titre="Nos financeurs">
-        <ul class="grid gap-4 md:grid-cols-3">
-          {financeurs.map((f) => (
-            <li class="rounded-xl border-t-4 border-t-violet bg-paper p-6 shadow-sm">
-              <DraftBadge draft={f.data.draft} />
-              <p class="text-xs font-semibold tracking-wide uppercase text-violet">
-                {f.data.type}
-              </p>
-              <h3 class="mt-1 mb-2 text-lg font-bold">{f.data.nom}</h3>
-              {f.data.description_courte && (
-                <p class="text-sm leading-relaxed">{f.data.description_courte}</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      </Section>
-    )
-  }
-
-  {
-    partenairesAsso.length > 0 && (
-      <Section titre="Nos partenaires associatifs et médico-sociaux" fond="beige">
-        <ul class="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          {partenairesAsso.map((p) => (
-            <li class="rounded-lg bg-paper p-4">
-              <DraftBadge draft={p.data.draft} />
-              <p class="text-xs font-semibold uppercase text-orange">{p.data.type}</p>
-              <p class="mt-1 font-bold">{p.data.nom}</p>
-              {p.data.description_courte && (
-                <p class="mt-1 text-sm leading-relaxed">{p.data.description_courte}</p>
-              )}
-            </li>
-          ))}
-        </ul>
-        <p class="mt-6 text-sm opacity-80">
-          À ces partenaires s'ajoutent les centres sociaux, les conciergeries sociales et
-          les associations de quartier qui repèrent et orientent les femmes concernées sur
-          les quartiers prioritaires de la métropole lyonnaise.
-        </p>
-      </Section>
-    )
-  }
-
-  {
-    reseaux.length > 0 && (
-      <Section titre="Nos réseaux d'accompagnement">
-        <ul class="grid gap-4 md:grid-cols-2">
-          {reseaux.map((r) => (
-            <li class="rounded-xl border border-line bg-paper p-6">
-              <DraftBadge draft={r.data.draft} />
-              <h3 class="text-lg font-bold">{r.data.nom}</h3>
-              {r.data.description_courte && (
-                <p class="mt-1 text-sm">{r.data.description_courte}</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      </Section>
-    )
-  }
-
-  <Section fond="violet">
-    <Prose>
-      <h2 class="!text-paper">Vous souhaitez nous soutenir ?</h2>
-      <p>
-        Collectivité, entreprise, fondation, réseau ou structure associative :
-        parlons-nous.
-      </p>
-      <p>
-        <a href="/contact" class="!text-paper !underline">Nous écrire</a> ·{' '}
-        <a href="/mecenat" class="!text-paper !underline">Mécénat</a> ·{' '}
-        <a href="/dons" class="!text-paper !underline">Faire un don</a>
-      </p>
-    </Prose>
-  </Section>
+  {page && hasContent ? <PageRenderer page={page} /> : <MissingPageFallback title={fallbackTitle} />}
 </Layout>
