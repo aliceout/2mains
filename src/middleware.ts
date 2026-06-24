@@ -35,6 +35,9 @@ function buildCsp(): string {
     "connect-src 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
+    // Lecteurs vidéo embarqués (bloc Vidéo, click-to-load) : YouTube
+    // domaine nocookie + Vimeo. Les miniatures passent déjà via img-src https:.
+    'frame-src https://www.youtube-nocookie.com https://player.vimeo.com',
     "base-uri 'self'",
     "object-src 'none'",
   ].join('; ');

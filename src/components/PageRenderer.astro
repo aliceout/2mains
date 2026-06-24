@@ -26,6 +26,7 @@ import Lettre from './Lettre.astro';
 import StatMajeste from './StatMajeste.astro';
 import Temoignages from './Temoignages.astro';
 import SoutenirHome from './SoutenirHome.astro';
+import Video from './Video.astro';
 import Draft from './Draft.astro';
 
 type Props = {
@@ -443,6 +444,13 @@ const sectionIds: (string | undefined)[] = sections.map((s) => {
             eyebrow={s.eyebrow}
             variant={s.variant}
           />
+        </Section>
+      );
+    }
+    if (s.type === 'video') {
+      return (
+        <Section id={id} titre={s.titre} fond={s.fond}>
+          <Video url={s.url} legende={s.legende} />
         </Section>
       );
     }

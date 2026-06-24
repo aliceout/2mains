@@ -312,3 +312,26 @@ export const thumbEquipe = wrap(`
   ${portrait(215, 140, 18, '#EC6A2C')}
   <rect x="198" y="168" width="34" height="4" rx="1.5" fill="#1A1A1A" opacity="0.5"/>
 `);
+
+// ─── Média / spécifiques ─────────────────────────────────────────
+
+export const thumbVideo = wrap(`
+  <rect x="50" y="45" width="200" height="110" rx="8" fill="#1A1A1A" opacity="0.18"/>
+  <circle cx="150" cy="100" r="30" fill="#FFFFFF"/>
+  <path d="M 141 86 L 167 100 L 141 114 Z" fill="#695EA3"/>
+  <rect x="90" y="166" width="120" height="6" rx="2" fill="#1A1A1A" opacity="0.35"/>
+`);
+
+export const thumbSoutenirHome = wrap(`
+  <rect x="0" y="20" width="150" height="160" fill="#EC6A2C" opacity="0.12"/>
+  <rect x="150" y="20" width="150" height="160" fill="#695EA3" opacity="0.12"/>
+  <path d="M 60 70 C 60 62 72 62 72 72 C 72 62 84 62 84 70 C 84 80 72 90 72 90 C 72 90 60 80 60 70 Z" fill="#EC6A2C" opacity="0.7"/>
+  <rect x="40" y="105" width="90" height="7" rx="2" fill="#1A1A1A" opacity="0.6"/>
+  <rect x="40" y="120" width="70" height="5" rx="2" fill="#1A1A1A" opacity="0.35"/>
+  <rect x="40" y="140" width="50" height="14" rx="4" fill="#EC6A2C" opacity="0.7"/>
+  <rect x="175" y="70" width="60" height="5" rx="2" fill="#695EA3" opacity="0.7"/>
+  <rect x="175" y="84" width="100" height="6" rx="2" fill="#1A1A1A" opacity="0.5"/>
+  <rect x="175" y="98" width="80" height="6" rx="2" fill="#1A1A1A" opacity="0.5"/>
+  <rect x="175" y="120" width="60" height="5" rx="2" fill="#695EA3" opacity="0.7"/>
+  <rect x="175" y="134" width="100" height="6" rx="2" fill="#1A1A1A" opacity="0.5"/>
+`);

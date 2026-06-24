@@ -953,6 +953,18 @@ export interface Page {
             blockName?: string | null;
             blockType: 'soutenir-home';
           }
+        | {
+            titre?: string | null;
+            fond?: ('paper' | 'beige' | 'violet' | 'orange' | 'magenta' | 'vert' | 'bleu') | null;
+            /**
+             * Colle l'adresse complète de la vidéo, ex : https://www.youtube.com/watch?v=… ou https://vimeo.com/… Astuce : mets la vidéo en « non répertoriée » sur YouTube/Vimeo pour qu'elle reste invisible des recherches mais lisible ici.
+             */
+            url: string;
+            legende?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'video';
+          }
       )[]
     | null;
   updatedAt: string;
@@ -1812,6 +1824,16 @@ export interface PagesSelect<T extends boolean = true> {
                           anchor?: T;
                         };
                   };
+              id?: T;
+              blockName?: T;
+            };
+        video?:
+          | T
+          | {
+              titre?: T;
+              fond?: T;
+              url?: T;
+              legende?: T;
               id?: T;
               blockName?: T;
             };

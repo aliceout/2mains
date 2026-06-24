@@ -24,6 +24,7 @@ import * as migration_20260519_205000_drop_legacy_accroche from './20260519_2050
 import * as migration_20260623_163806_generalize_linkfield from './20260623_163806_generalize_linkfield';
 import * as migration_20260623_190304_add_soutenir_home_block from './20260623_190304_add_soutenir_home_block';
 import * as migration_20260624_072553_add_link_anchor from './20260624_072553_add_link_anchor';
+import * as migration_20260624_105446_add_video_block from './20260624_105446_add_video_block';
 
 export const migrations = [
   {
@@ -154,6 +155,11 @@ export const migrations = [
   {
     up: migration_20260624_072553_add_link_anchor.up,
     down: migration_20260624_072553_add_link_anchor.down,
-    name: '20260624_072553_add_link_anchor'
+    name: '20260624_072553_add_link_anchor',
+  },
+  {
+    up: migration_20260624_105446_add_video_block.up,
+    down: migration_20260624_105446_add_video_block.down,
+    name: '20260624_105446_add_video_block'
   },
 ];

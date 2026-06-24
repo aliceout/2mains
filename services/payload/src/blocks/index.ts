@@ -42,6 +42,9 @@ import { Cta } from './Cta';
 // Lot F — blocs spécifiques à une page (sortent du pattern générique)
 import { SoutenirHome } from './SoutenirHome';
 
+// Lot G — média embarqué
+import { Video } from './Video';
+
 export const allBlocks = [
   Prose,
   Callout,
@@ -67,6 +70,7 @@ export const allBlocks = [
   Equipe,
   Cta,
   SoutenirHome,
+  Video,
 ];
 
 export {
@@ -94,4 +98,5 @@ export {
   Equipe,
   Cta,
   SoutenirHome,
+  Video,
 };

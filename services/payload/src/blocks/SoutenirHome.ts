@@ -1,15 +1,13 @@
 import type { Block } from 'payload';
 
 import { ctaFields, richTextField } from './_shared';
+import { thumbSoutenirHome } from './_thumbnails';
 
 /**
  * Bloc spécifique à la page d'accueil : section « Soutenir » 2 colonnes,
  * gauche = message + boutons éditable, droite = liste des prochains
  * événements (rendue automatiquement par le composant Astro à partir
  * de la collection Évenements).
- *
- * Pas de thumbnail dédié (bloc spécifique accueil — pas dans la palette
- * générale de tous les blocks).
  */
 export const SoutenirHome: Block = {
   slug: 'soutenir-home',
@@ -17,6 +15,8 @@ export const SoutenirHome: Block = {
     singular: 'Soutenir (accueil)',
     plural: 'Soutenir (accueil)',
   },
+  imageURL: thumbSoutenirHome,
+  imageAltText: 'Aperçu : 2 colonnes, message + boutons à gauche, agenda à droite',
   fields: [
     {
       name: 'eyebrow',
