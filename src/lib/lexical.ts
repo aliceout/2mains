@@ -32,6 +32,13 @@ type LexicalNode = {
     linkType?: 'custom' | 'internal';
     url?: string;
     newTab?: boolean;
+    /** Lien interne : relation vers une page (populated à depth>=1). */
+    doc?: {
+      relationTo?: string;
+      value?: { slug?: string; [k: string]: unknown } | string | number;
+    } | null;
+    /** id Payload d'un bloc cible (ancre) — ajouté par notre LinkFeature. */
+    anchor?: string | null;
   };
 };
 
@@ -94,9 +101,21 @@ function renderNode(node: LexicalNode): string {
       return `<blockquote>${renderChildren(node.children)}</blockquote>`;
 
     case 'link': {
-      const url = node.fields?.url ?? '#';
-      const newTab = node.fields?.newTab;
-      const attrs = newTab
+      const f = node.fields;
+      let url: string;
+      if (f?.linkType === 'internal') {
+        // Lien interne : la relation `doc` est populated (depth>=1) avec
+        // le slug de la page cible. Fallback '#' si non résolu.
+        const docVal = f.doc?.value;
+        const slug =
+          docVal && typeof docVal === 'object' ? docVal.slug : undefined;
+        url = slug ? `/${slug}` : '#';
+        // Ancre optionnelle vers un bloc précis (id="bloc-<id>").
+        if (slug && f.anchor) url += `#bloc-${f.anchor}`;
+      } else {
+        url = f?.url ?? '#';
+      }
+      const attrs = f?.newTab
         ? ` target="_blank" rel="noopener noreferrer"`
         : '';
       return `<a href="${escapeHtml(url)}"${attrs}>${renderChildren(node.children)}</a>`;

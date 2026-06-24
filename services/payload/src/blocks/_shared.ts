@@ -43,6 +43,47 @@ import {
  *     ...richTextFieldEditor(),
  *   }
  */
+/**
+ * LinkFeature configuré avec un champ "anchor" en plus, pour pointer un
+ * lien interne (dans un texte riche) vers un bloc précis de la page cible.
+ *
+ * - Le champ `anchor` (custom select PageAnchorSelect) liste les blocs de
+ *   la page choisie (sibling `doc` du drawer Lexical) et stocke l'id du bloc.
+ * - `internalDocToHref` résout le lien interne en `/slug#bloc-<id>` (utilisé
+ *   par le converter markdown ; notre walker lexicalToHtml fait pareil).
+ * - Visible seulement quand linkType === 'internal' (un lien externe n'a
+ *   pas de blocs à cibler).
+ */
+function linkFeatureWithAnchor() {
+  return LinkFeature({
+    fields: ({ defaultFields }) => [
+      ...defaultFields,
+      {
+        name: 'anchor',
+        type: 'text',
+        label: 'Aller à un bloc (optionnel)',
+        admin: {
+          condition: (_data, siblingData) =>
+            (siblingData as { linkType?: string })?.linkType === 'internal',
+          components: {
+            Field: '@/components/admin/PageAnchorSelect#default',
+          },
+        },
+      },
+    ],
+    internalDocToHref: ({ linkNode }) => {
+      const doc = linkNode.fields?.doc as
+        | { value?: { slug?: string } | string | number }
+        | undefined;
+      const val = doc?.value;
+      const slug = val && typeof val === 'object' ? val.slug : undefined;
+      const anchor = linkNode.fields?.anchor as string | undefined;
+      if (!slug) return '#';
+      return anchor ? `/${slug}#bloc-${anchor}` : `/${slug}`;
+    },
+  });
+}
+
 export function richTextFieldEditor(opts?: { inline?: boolean }) {
   // Mode `inline` = pour les champs rendus sans wrapping <p> (banderole
   // d'urgence, mission asso au footer). On retire headings + listes pour
@@ -56,7 +97,7 @@ export function richTextFieldEditor(opts?: { inline?: boolean }) {
         ItalicFeature(),
         UnderlineFeature(),
         StrikethroughFeature(),
-        LinkFeature(),
+        linkFeatureWithAnchor(),
         FixedToolbarFeature(),
       ]
     : [
@@ -68,7 +109,7 @@ export function richTextFieldEditor(opts?: { inline?: boolean }) {
         StrikethroughFeature(),
         UnorderedListFeature(),
         OrderedListFeature(),
-        LinkFeature(),
+        linkFeatureWithAnchor(),
         FixedToolbarFeature(),
       ];
   return { editor: lexicalEditor({ features }) };
@@ -216,6 +257,21 @@ export function linkField(opts?: {
         defaultValue: false,
         label: 'Ouvrir dans un nouvel onglet',
         admin: { condition: (_, sibling) => sibling?.type === 'custom' },
+      },
+      {
+        // Ancre optionnelle : cible un bloc précis de la page choisie.
+        // Stocke l'id Payload du bloc. Le menu déroulant (custom field
+        // PageAnchorSelect) liste les blocs de la page sélectionnée.
+        // Visible uniquement en mode "Page du site".
+        name: 'anchor',
+        type: 'text',
+        label: 'Aller à un bloc (optionnel)',
+        admin: {
+          condition: (_, sibling) => sibling?.type === 'page',
+          components: {
+            Field: '@/components/admin/PageAnchorSelect#default',
+          },
+        },
       },
     ],
   };

@@ -23,6 +23,7 @@ import * as migration_20260519_202700_seed_navigation_defaults from './20260519_
 import * as migration_20260519_205000_drop_legacy_accroche from './20260519_205000_drop_legacy_accroche';
 import * as migration_20260623_163806_generalize_linkfield from './20260623_163806_generalize_linkfield';
 import * as migration_20260623_190304_add_soutenir_home_block from './20260623_190304_add_soutenir_home_block';
+import * as migration_20260624_072553_add_link_anchor from './20260624_072553_add_link_anchor';
 
 export const migrations = [
   {
@@ -148,6 +149,11 @@ export const migrations = [
   {
     up: migration_20260623_190304_add_soutenir_home_block.up,
     down: migration_20260623_190304_add_soutenir_home_block.down,
-    name: '20260623_190304_add_soutenir_home_block'
+    name: '20260623_190304_add_soutenir_home_block',
+  },
+  {
+    up: migration_20260624_072553_add_link_anchor.up,
+    down: migration_20260624_072553_add_link_anchor.down,
+    name: '20260624_072553_add_link_anchor'
   },
 ];

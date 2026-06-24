@@ -201,6 +201,7 @@ export interface Page {
          */
         url?: string | null;
         externe?: boolean | null;
+        anchor?: string | null;
       };
     };
     cta_secondaire: {
@@ -216,6 +217,7 @@ export interface Page {
          */
         url?: string | null;
         externe?: boolean | null;
+        anchor?: string | null;
       };
     };
   };
@@ -445,6 +447,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
               cta?: string | null;
               couleur?: ('orange' | 'violet' | 'magenta' | 'vert' | 'bleu') | null;
@@ -522,6 +525,7 @@ export interface Page {
                    */
                   url?: string | null;
                   externe?: boolean | null;
+                  anchor?: string | null;
                 };
               };
               id?: string | null;
@@ -752,6 +756,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
               lien_label?: string | null;
               id?: string | null;
@@ -865,6 +870,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
             };
             cta_secondaire: {
@@ -880,6 +886,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
             };
             id?: string | null;
@@ -923,6 +930,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
             };
             cta_secondaire: {
@@ -938,6 +946,7 @@ export interface Page {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
             };
             id?: string | null;
@@ -1359,6 +1368,7 @@ export interface PagesSelect<T extends boolean = true> {
                     page?: T;
                     url?: T;
                     externe?: T;
+                    anchor?: T;
                   };
             };
         cta_secondaire?:
@@ -1372,6 +1382,7 @@ export interface PagesSelect<T extends boolean = true> {
                     page?: T;
                     url?: T;
                     externe?: T;
+                    anchor?: T;
                   };
             };
       };
@@ -1476,6 +1487,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                     cta?: T;
                     couleur?: T;
@@ -1529,6 +1541,7 @@ export interface PagesSelect<T extends boolean = true> {
                                 page?: T;
                                 url?: T;
                                 externe?: T;
+                                anchor?: T;
                               };
                         };
                     id?: T;
@@ -1678,6 +1691,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                     lien_label?: T;
                     id?: T;
@@ -1744,6 +1758,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                   };
               cta_secondaire?:
@@ -1757,6 +1772,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                   };
               id?: T;
@@ -1779,6 +1795,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                   };
               cta_secondaire?:
@@ -1792,6 +1809,7 @@ export interface PagesSelect<T extends boolean = true> {
                           page?: T;
                           url?: T;
                           externe?: T;
+                          anchor?: T;
                         };
                   };
               id?: T;
@@ -2105,6 +2123,7 @@ export interface Navigation {
            */
           url?: string | null;
           externe?: boolean | null;
+          anchor?: string | null;
         };
         children?:
           | {
@@ -2120,6 +2139,7 @@ export interface Navigation {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
               id?: string | null;
             }[]
@@ -2147,6 +2167,7 @@ export interface Navigation {
            */
           url?: string | null;
           externe?: boolean | null;
+          anchor?: string | null;
         };
         id?: string | null;
       }[]
@@ -2171,6 +2192,7 @@ export interface Navigation {
                  */
                 url?: string | null;
                 externe?: boolean | null;
+                anchor?: string | null;
               };
               highlight?: boolean | null;
               id?: string | null;
@@ -2286,6 +2308,7 @@ export interface NavigationSelect<T extends boolean = true> {
               page?: T;
               url?: T;
               externe?: T;
+              anchor?: T;
             };
         children?:
           | T
@@ -2298,6 +2321,7 @@ export interface NavigationSelect<T extends boolean = true> {
                     page?: T;
                     url?: T;
                     externe?: T;
+                    anchor?: T;
                   };
               id?: T;
             };
@@ -2314,6 +2338,7 @@ export interface NavigationSelect<T extends boolean = true> {
               page?: T;
               url?: T;
               externe?: T;
+              anchor?: T;
             };
         id?: T;
       };
@@ -2332,6 +2357,7 @@ export interface NavigationSelect<T extends boolean = true> {
                     page?: T;
                     url?: T;
                     externe?: T;
+                    anchor?: T;
                   };
               highlight?: T;
               id?: T;

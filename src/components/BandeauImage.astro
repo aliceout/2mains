@@ -5,6 +5,8 @@
 import SmartImage from './SmartImage.astro';
 
 type Props = {
+  /** Ancre stable (id="bloc-<id>") pour les liens vers ce bloc. */
+  anchorId?: string;
   image: string;
   alt: string;
   titre: string;
@@ -16,6 +18,7 @@ type Props = {
 };
 
 const {
+  anchorId,
   image,
   alt,
   titre,
@@ -45,7 +48,7 @@ const flexV = {
 }[position_verticale];
 ---
 
-<section class:list={['relative w-full overflow-hidden', heightClass]}>
+<section id={anchorId} class:list={['relative w-full overflow-hidden', heightClass]}>
   <SmartImage src={image} alt={alt} class="absolute inset-0 h-full w-full" eager />
   {scrim && (
     <div

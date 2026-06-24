@@ -196,6 +196,10 @@ export type PayloadLink = {
   page?: number | { id: number; slug?: string } | null;
   url?: string | null;
   externe?: boolean | null;
+  /** id Payload d'un bloc de la page cible (lien vers une ancre).
+   *  Seulement pertinent quand type='page'. Le frontend ajoute
+   *  `#bloc-<anchor>` à l'href. */
+  anchor?: string | null;
 };
 
 /**
@@ -210,7 +214,11 @@ export function resolveLink(
   if (!link) return {};
   if (link.type === 'page') {
     if (link.page && typeof link.page === 'object' && link.page.slug) {
-      return { href: `/${link.page.slug}` };
+      // Ancre optionnelle vers un bloc précis de la page cible.
+      // L'id Payload du bloc est rendu en `id="bloc-<id>"` côté frontend
+      // (cf. PageRenderer / Section), d'où le préfixe `bloc-`.
+      const hash = link.anchor ? `#bloc-${link.anchor}` : '';
+      return { href: `/${link.page.slug}${hash}` };
     }
     return {};
   }
@@ -228,7 +236,10 @@ export function resolveLink(
  */
 function transformBlock(rawBlock: Record<string, unknown>): Record<string, unknown> {
   const b = nullsToUndefined(rawBlock);
-  const { blockType, blockName: _bn, id: _id, ...rest } = b;
+  // On PRÉSERVE `id` (id Payload stable du bloc) : il sert d'ancre
+  // stable côté frontend (`id="bloc-<id>"`) pour les liens vers un bloc
+  // précis. Stable au renommage et au réordonnancement (clé primaire DB).
+  const { blockType, blockName: _bn, ...rest } = b;
   const out: Record<string, unknown> = { ...rest, type: blockType };
 
   // Numérique : `colonnes` est un string Payload (select), on

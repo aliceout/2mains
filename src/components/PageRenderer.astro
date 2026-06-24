@@ -87,30 +87,14 @@ const tousTemoignages = needsTemoignages
     )
   : [];
 
-function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{Diacritic}/gu, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-const sectionIds: (string | undefined)[] = [];
-const used = new Set<string>();
-for (const s of sections) {
-  const t = 'titre' in s ? s.titre : undefined;
-  if (!t) {
-    sectionIds.push(undefined);
-    continue;
-  }
-  let base = slugify(t);
-  let id = base;
-  let n = 2;
-  while (used.has(id)) id = `${base}-${n++}`;
-  used.add(id);
-  sectionIds.push(id);
-}
+// Ancre stable par bloc : on utilise l'id Payload du bloc (clé primaire,
+// stable au renommage et au réordonnancement) préfixé `bloc-`. C'est la
+// cible des liens "vers un bloc précis" construits par resolveLink
+// (`#bloc-<id>`). Le menu déroulant d'ancres côté admin stocke ce même id.
+const sectionIds: (string | undefined)[] = sections.map((s) => {
+  const blockId = (s as { id?: string | number }).id;
+  return blockId != null ? `bloc-${blockId}` : undefined;
+});
 ---
 
 {hero && <Hero {...hero} />}
@@ -344,6 +328,7 @@ for (const s of sections) {
       // Rendu hors <Section> pour que l'image soit vraiment pleine largeur.
       return (
         <BandeauImage
+          anchorId={id}
           image={s.image}
           alt={s.alt}
           titre={s.titre}
@@ -465,6 +450,7 @@ for (const s of sections) {
       // Rendu hors <Section> : 2 colonnes pleine largeur, pas de wrap.
       return (
         <SoutenirHome
+          anchorId={id}
           eyebrow={s.eyebrow}
           titre={s.titre}
           corps_rich={s.corps_rich}
