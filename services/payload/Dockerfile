@@ -24,6 +24,9 @@ RUN corepack enable pnpm && pnpm run build
 FROM base AS runner
 WORKDIR /app
 
+# Ghostscript : compression des PDF uploadés (cf. src/lib/compress-pdf.ts).
+RUN apk add --no-cache ghostscript
+
 # GIT_SHA injecté en build-arg par le workflow CI ; exposé en runtime
 # via process.env.GIT_SHA pour affichage du SHA déployé dans /cms/admin
 # (champ ui sur le global Site).
