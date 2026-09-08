@@ -183,6 +183,15 @@ export const titreField = {
   required: false,
 } satisfies Field;
 
+/**
+ * Aide affichée sous le « Texte du bouton ». C'est le seul geste qui
+ * retire un bouton : le frontend ne le rend que s'il a un label (cf.
+ * Hero.astro, `{cta_primaire?.label && ...}`). Vider la destination ne
+ * sert à rien — et n'est plus possible, cf. `isClearable` dans linkField.
+ */
+export const ctaLabelDescription =
+  "Laisse ce champ vide pour que le bouton ne s'affiche pas.";
+
 /** Bouton d'action — sous-objet réutilisé dans Cta, Hero, Formats, etc.
  *  `label` est en required:false (Payload n'a pas de "tout-ou-rien" sur
  *  les groups optionnels : si on le marquait required, un bloc SANS
@@ -195,6 +204,7 @@ export const ctaFields = [
     type: 'text',
     required: false,
     label: 'Texte du bouton',
+    admin: { description: ctaLabelDescription },
   },
   linkField({ label: 'Destination du bouton' }),
 ] satisfies Field[];
@@ -229,6 +239,24 @@ export function linkField(opts?: {
           { label: 'URL ou chemin libre', value: 'custom' },
         ],
         admin: {
+          // `isClearable: false` est indispensable, pas cosmétique.
+          //
+          // Payload rend les select effaçables (petite croix) par défaut,
+          // SANS tenir compte de `required` — cf. @payloadcms/ui,
+          // fields/Select/index.tsx : `isClearable = true`. Un select
+          // required donc vidable = état impossible à sauvegarder :
+          // la validation rejette le document et l'autrice est bloquée
+          // sans comprendre pourquoi (elle vidait juste un bouton).
+          //
+          // C'est exactement le bug rencontré sur les CTA du hero : pour
+          // retirer un bouton, on vide la destination → la page refuse de
+          // se sauvegarder. La colonne est en plus `NOT NULL` en base
+          // (migration 20260623_163806_generalize_linkfield), donc laisser
+          // passer un vide échouerait aussi côté Postgres.
+          //
+          // Pour retirer un bouton on vide son `label` (cf. la description
+          // du champ) — le frontend n'affiche le bouton que s'il a un label.
+          isClearable: false,
           description:
             '« Page du site » = sélection dans la liste, suit automatiquement les renommages. ' +
             '« URL libre » = pour les sections du site qui ne sont pas des Pages (/agenda, ' +
