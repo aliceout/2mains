@@ -13,6 +13,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { HeadingFeatureClient as HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ParagraphFeatureClient as ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { default as default_83821287226bebaf0b24b9baffeb4c81 } from '@/components/auth/AccountSecurity'
+import { default as default_9d4431649fd51293157e830db55dba1a } from '@/components/auth/PasswordResetButton'
 import { default as default_53d63216743950c49d1b24206b7bd206 } from '@/components/auth/InviteUserButton'
 import { default as default_1ce253103b433182a3d98ff89696b27f } from '@/components/admin/CommitInfo'
 import { default as default_adc61939dc5a909d8da4810167f98315 } from '@/components/auth/SessionKeepalive'
@@ -38,6 +39,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#HeadingFeatureClient": HeadingFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ParagraphFeatureClient": ParagraphFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/components/auth/AccountSecurity#default": default_83821287226bebaf0b24b9baffeb4c81,
+  "@/components/auth/PasswordResetButton#default": default_9d4431649fd51293157e830db55dba1a,
   "@/components/auth/InviteUserButton#default": default_53d63216743950c49d1b24206b7bd206,
   "@/components/admin/CommitInfo#default": default_1ce253103b433182a3d98ff89696b27f,
   "@/components/auth/SessionKeepalive#default": default_adc61939dc5a909d8da4810167f98315,

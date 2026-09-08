@@ -1,6 +1,7 @@
 import type { Endpoint } from 'payload';
 
 import { invitationEndpoints } from './invitations';
+import { passwordResetEndpoints } from './password-reset';
 import { profileEndpoints } from './profile';
 import { twoFactorLoginEndpoints } from './two-factor';
 
@@ -32,4 +33,5 @@ export const authEndpoints: Endpoint[] = [
   ...invitationEndpoints,
   ...twoFactorLoginEndpoints,
   ...profileEndpoints,
+  ...passwordResetEndpoints,
 ];

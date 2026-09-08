@@ -199,6 +199,31 @@ export const Users: CollectionConfig = {
       },
     },
 
+    // ─── Mot de passe d'un autre compte ──────────────────────────────
+    // Condition exactement inverse du panneau Sécurité ci-dessus : ce bloc
+    // n'apparaît que sur le profil de QUELQU'UN D'AUTRE, et seulement pour
+    // un admin/root (seuls à pouvoir ouvrir la fiche d'un autre compte).
+    //
+    // Il masque le bouton natif « Change Password », qui ne pouvait
+    // qu'échouer ici — le hook beforeChange plus bas interdit à quiconque,
+    // root compris, de poser le mot de passe d'autrui — et propose à la
+    // place l'envoi d'un lien de réinitialisation à la personne concernée.
+    {
+      name: 'passwordReset',
+      type: 'ui',
+      admin: {
+        condition: (data, _siblingData, { user }) => {
+          if (!user || !data?.id) return false;
+          if (String(data.id) === String(user.id)) return false;
+          const role = (user as { role?: string }).role;
+          return role === 'admin' || role === 'root';
+        },
+        components: {
+          Field: '@/components/auth/PasswordResetButton#default',
+        },
+      },
+    },
+
     // ─── Invitation (workflow d'activation) ──────────────────────────
     {
       name: 'invitation',
