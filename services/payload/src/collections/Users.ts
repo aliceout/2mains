@@ -1,4 +1,11 @@
 import type { CollectionConfig, FieldHook } from 'payload';
+// APIError (et non `Error` nu) pour tout message destiné à l'utilisateur.
+// Payload masque le message des erreurs qu'il juge non publiques et renvoie
+// « Something went wrong. » à la place : cf. utilities/isErrorPublic — une
+// erreur n'est publique que si `isPublic === true` ou si son `status` est
+// différent de 500. Une `Error` JS nue n'a ni l'un ni l'autre, donc son
+// message n'atteint jamais l'admin.
+import { APIError } from 'payload';
 
 import { canMutateRole, isAdminOrRoot, isSelfOrAdmin, userRole } from '../access/roles';
 import { AUTH_CONFIG } from '../auth/config';
@@ -266,8 +273,9 @@ export const Users: CollectionConfig = {
       // auto-géré par Payload (pas surchargeable directement).
       async ({ data }) => {
         if (typeof data?.password === 'string' && data.password.length > 0 && data.password.length < 12) {
-          throw new Error(
+          throw new APIError(
             'Le mot de passe doit contenir au moins 12 caractères.',
+            400,
           );
         }
         return data;
@@ -288,9 +296,10 @@ export const Users: CollectionConfig = {
           req.user &&
           String(req.user.id) !== String(originalDoc?.id)
         ) {
-          throw new Error(
+          throw new APIError(
             'Vous ne pouvez pas modifier le mot de passe d\'un autre utilisateur. ' +
               'Demandez-lui d\'utiliser « Mot de passe oublié » sur la page de connexion.',
+            403,
           );
         }
         return data;
@@ -306,7 +315,7 @@ export const Users: CollectionConfig = {
             req,
           });
           if (existingRoot.totalDocs > 0) {
-            throw new Error('Un compte root existe déjà.');
+            throw new APIError('Un compte root existe déjà.', 400);
           }
         }
         // Empêche un changement implicite role=root via update — sauf si
@@ -318,7 +327,10 @@ export const Users: CollectionConfig = {
           originalDoc?.role !== 'root' &&
           req.user
         ) {
-          throw new Error('Le rôle root ne peut pas être attribué via mise à jour.');
+          throw new APIError(
+            'Le rôle root ne peut pas être attribué via mise à jour.',
+            403,
+          );
         }
         return data;
       },
@@ -333,7 +345,7 @@ export const Users: CollectionConfig = {
           overrideAccess: true,
         });
         if ((target as { role?: string }).role === 'root') {
-          throw new Error('Le compte root ne peut pas être supprimé.');
+          throw new APIError('Le compte root ne peut pas être supprimé.', 403);
         }
       },
     ],
