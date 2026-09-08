@@ -28,6 +28,8 @@ export const ChiffreDetail: Block = {
         { label: 'Gauche', value: 'gauche' },
         { label: 'Droite', value: 'droite' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     couleurField,
   ],

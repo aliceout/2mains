@@ -27,6 +27,8 @@ export const BandeauImage: Block = {
         { label: 'Moyenne', value: 'moyenne' },
         { label: 'Grande', value: 'grande' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'position_texte',
@@ -38,6 +40,8 @@ export const BandeauImage: Block = {
         { label: 'Centre', value: 'centre' },
         { label: 'Droite', value: 'droite' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'position_verticale',
@@ -49,6 +53,8 @@ export const BandeauImage: Block = {
         { label: 'Milieu', value: 'milieu' },
         { label: 'Bas', value: 'bas' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'scrim',

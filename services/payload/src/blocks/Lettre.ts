@@ -38,6 +38,8 @@ export const Lettre: Block = {
         { label: 'Orange', value: 'orange' },
         { label: 'Violet', value: 'violet' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
   ],
 };

@@ -20,6 +20,8 @@ export const Timeline: Block = {
         { label: 'Vertical (toutes étapes à gauche)', value: 'vertical' },
         { label: 'Alterné (zigzag desktop)', value: 'alterne' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'etapes',

@@ -37,6 +37,8 @@ export const Documents: CollectionConfig = {
         { label: 'Communication', value: 'communication' },
         { label: 'Présentation', value: 'présentation' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'fichier',

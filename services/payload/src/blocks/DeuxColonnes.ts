@@ -34,6 +34,8 @@ export const DeuxColonnes: Block = {
         { label: 'Bleu', value: 'bleu' },
         { label: 'Beige', value: 'beige' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'image',

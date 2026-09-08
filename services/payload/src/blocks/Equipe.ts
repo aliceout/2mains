@@ -27,6 +27,8 @@ export const Equipe: Block = {
         { label: 'Rond', value: 'rond' },
         { label: 'Carré', value: 'carre' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'colonnes',
@@ -38,6 +40,8 @@ export const Equipe: Block = {
         { label: '3 colonnes', value: '3' },
         { label: '4 colonnes', value: '4' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'ids',

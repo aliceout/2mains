@@ -42,6 +42,8 @@ export const Temoignages: CollectionConfig = {
         { label: 'Partenaire', value: 'partenaire' },
         { label: 'Professionnelle', value: 'professionnelle' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'photo',
