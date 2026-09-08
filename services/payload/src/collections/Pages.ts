@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 
 import { authenticated } from '../access/authenticated';
 import { allBlocks } from '../blocks';
-import { linkField, richTextField } from '../blocks/_shared';
+import { ctaFields, richTextField } from '../blocks/_shared';
 
 /**
  * Collection des pages éditoriales du site (homepage, qui-sommes-nous,
@@ -92,23 +92,20 @@ export const Pages: CollectionConfig = {
             { label: 'Bleu (mauve accent)', value: 'bleu' },
           ],
         },
+        // Mêmes champs que les CTA des blocs (cf. ctaFields) : texte +
+        // destination. On mutualise pour que l'aide « laisse vide pour
+        // masquer le bouton » soit identique partout.
         {
           name: 'cta_primaire',
           type: 'group',
           label: 'Bouton principal',
-          fields: [
-            { name: 'label', type: 'text', label: 'Texte du bouton' },
-            linkField({ label: 'Destination du bouton' }),
-          ],
+          fields: ctaFields,
         },
         {
           name: 'cta_secondaire',
           type: 'group',
           label: 'Bouton secondaire (facultatif)',
-          fields: [
-            { name: 'label', type: 'text', label: 'Texte du bouton' },
-            linkField({ label: 'Destination du bouton' }),
-          ],
+          fields: ctaFields,
         },
       ],
     },

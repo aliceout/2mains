@@ -27,6 +27,8 @@ export const CitationLarge: Block = {
         { label: 'Beige', value: 'beige' },
         { label: 'Paper', value: 'paper' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
   ],
 };

@@ -37,6 +37,8 @@ export const Partenaires: CollectionConfig = {
         { label: 'Partenaire associatif', value: 'partenaire associatif' },
         { label: 'Réseau', value: 'réseau' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'logo',

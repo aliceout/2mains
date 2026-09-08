@@ -29,6 +29,8 @@ export const Figure: Block = {
         { label: 'Moyenne', value: 'moyenne' },
         { label: 'Grande', value: 'grande' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
   ],
 };

@@ -142,6 +142,8 @@ export const Users: CollectionConfig = {
         beforeChange: [lockRoleField],
       },
       admin: {
+        // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+        isClearable: false,
         description: 'Root = compte propriétaire (1 seul, non supprimable). Admin = peut gérer les comptes. Éditeur·ice = édite le contenu.',
       },
     },
@@ -162,6 +164,8 @@ export const Users: CollectionConfig = {
       // ou que quelqu'un crée des incohérences manuellement.
       access: { update: () => false },
       admin: {
+        // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+        isClearable: false,
         position: 'sidebar',
         readOnly: true,
         description: 'Géré automatiquement par le système d\'invitation.',

@@ -20,6 +20,8 @@ export const Formats: Block = {
         { label: '2 colonnes', value: '2' },
         { label: '3 colonnes', value: '3' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'formats',

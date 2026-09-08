@@ -21,6 +21,8 @@ export const Callout: Block = {
         { label: 'Astuce', value: 'astuce' },
         { label: 'Note', value: 'note' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     { ...titreField, label: 'Titre (optionnel)' },
     richTextField({ name: 'body', label: 'Contenu' }),

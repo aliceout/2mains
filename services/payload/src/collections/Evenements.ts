@@ -48,6 +48,8 @@ export const Evenements: CollectionConfig = {
         { label: 'Femmes concernées', value: 'femmes concernées' },
         { label: 'Adhérents', value: 'adhérents' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'gratuit',

@@ -45,6 +45,8 @@ export const TextePhoto: Block = {
         { label: 'Image à droite', value: 'droite' },
         { label: 'Image à gauche', value: 'gauche' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
     {
       name: 'ratio',
@@ -56,6 +58,8 @@ export const TextePhoto: Block = {
         { label: '2/3 texte', value: '2-tiers-texte' },
         { label: '2/3 image', value: '2-tiers-image' },
       ],
+      // Non effaçable : un select obligatoire vidé bloque la sauvegarde.
+      admin: { isClearable: false },
     },
   ],
 };
