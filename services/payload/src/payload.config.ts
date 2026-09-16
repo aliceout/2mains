@@ -80,9 +80,14 @@ export default buildConfig({
           Component: '@/components/auth/LoginView#default',
         },
         // Page d'acceptation d'invitation : /cms/admin/invitation/:token
+        // Path SANS `:token` : Payload considère une vue custom comme
+        // publique (accessible sans être connecté) via une comparaison
+        // littérale `route.startsWith(view.path + '/')` — un segment
+        // dynamique n'y matche jamais et renvoie vers le login. Le token
+        // est lu depuis params.segments dans la vue.
         invitation: {
           Component: '@/components/auth/InvitationAcceptView#default',
-          path: '/invitation/:token',
+          path: '/invitation',
         },
       },
       // Keepalive + style sheet injectée globale. Le slot `actions` est
