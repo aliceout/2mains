@@ -203,6 +203,12 @@ const acceptInvitationEndpoint: Endpoint = {
     const token = (req.routeParams as { token?: string } | undefined)?.token;
     if (!token) return errorResponse('Token manquant', 400);
 
+    // Endpoint public : on ignore une éventuelle session déjà ouverte dans
+    // le navigateur (ex. admin qui teste le lien). Sinon le hook Users
+    // « pas de changement du mdp d'un autre utilisateur » voit req.user
+    // ≠ compte invité et fait échouer l'activation (500 opaque).
+    req.user = null;
+
     const ip = clientIpFromHeaders(req.headers);
     const rl = consume(RATE_PROFILES.login, ip);
     if (!rl.ok) return errorResponse('Trop de tentatives, réessayez plus tard.', 429);
