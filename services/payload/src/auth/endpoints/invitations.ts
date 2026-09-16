@@ -237,82 +237,105 @@ const acceptInvitationEndpoint: Endpoint = {
     }
 
     // Active le compte, vide les champs d'invitation, set le mdp.
-    await req.payload.update({
-      collection: 'users',
-      id: u.id,
-      overrideAccess: true,
-      req,
-      data: {
-        password,
-        displayName,
-        status: 'active',
-        invitation: {
-          tokenHash: null,
-          expiresAt: null,
-          invitedAt: null,
-          invitedBy: null,
-        },
-      },
-    });
-
-    // Connexion immédiate (l'email vient d'être prouvé en cliquant le lien
-    // → on saute le 2FA cette fois et on marque le device comme trusted
-    // pour la durée standard).
-    const loginResult = await req.payload.login({
-      collection: 'users',
-      data: { email: u.email, password },
-      req,
-    });
-
-    const setCookies: string[] = [];
-    if (loginResult.token) {
-      setCookies.push(buildPayloadTokenCookie(loginResult.token));
-    }
-
-    // Trusted device de confiance d'office.
-    const deviceId = generateUrlSafeToken();
-    const fingerprint = generateUrlSafeToken();
-    const fingerprintHash = hashToken(fingerprint);
-    const ttlMs = AUTH_CONFIG.trustedDeviceTtlDays * 24 * 60 * 60 * 1000;
-    await req.payload.update({
-      collection: 'users',
-      id: u.id,
-      overrideAccess: true,
-      req,
-      data: {
-        trustedDevices: [
-          {
-            deviceId,
-            fingerprintHash,
-            label: 'Activation initiale',
-            userAgent: req.headers.get('user-agent') ?? undefined,
-            ip,
-            createdAt: new Date().toISOString(),
-            expiresAt: new Date(Date.now() + ttlMs).toISOString(),
-          },
-        ],
-        lastLoginAt: new Date().toISOString(),
-        lastActivityAt: new Date().toISOString(),
-      },
-    });
-    setCookies.push(buildTrustedDeviceCookie({ uid: u.id, did: deviceId, fp: fingerprint }));
-
-    // Mail de bienvenue (best-effort)
     try {
-      const tpl = welcomeEmail({ email: u.email, loginUrl: buildLoginUrl() });
-      await req.payload.sendEmail({
-        to: u.email,
-        subject: tpl.subject,
-        html: tpl.html,
-        text: tpl.text,
+      await req.payload.update({
+        collection: 'users',
+        id: u.id,
+        overrideAccess: true,
+        req,
+        data: {
+          password,
+          displayName,
+          status: 'active',
+          invitation: {
+            tokenHash: null,
+            expiresAt: null,
+            invitedAt: null,
+            invitedBy: null,
+          },
+        },
       });
     } catch (err) {
-      req.payload.logger.warn({ err }, 'welcome_email_failed');
+      req.payload.logger.error({ err }, 'invitation_activation_failed');
+      const detail = err instanceof Error ? err.message : String(err);
+      return errorResponse(`Activation impossible : ${detail}`, 500);
     }
 
-    return jsonResponse({ ok: true, user: loginResult.user }, { status: 200 }, setCookies);
+    // À partir d'ici le compte est actif et le token consommé : un échec
+    // de la connexion automatique ne doit pas bloquer l'utilisateur·ice
+    // (le lien ne marcherait plus) → on log et on renvoie vers le login.
+    try {
+      return await loginAfterActivation(req, u, password, ip);
+    } catch (err) {
+      req.payload.logger.error({ err }, 'invitation_auto_login_failed');
+      return jsonResponse({ ok: true, needsLogin: true }, { status: 200 });
+    }
   },
 };
+
+async function loginAfterActivation(
+  req: PayloadRequest,
+  u: { id: number | string; email: string },
+  password: string,
+  ip: string,
+): Promise<Response> {
+  // Connexion immédiate (l'email vient d'être prouvé en cliquant le lien
+  // → on saute le 2FA cette fois et on marque le device comme trusted
+  // pour la durée standard).
+  const loginResult = await req.payload.login({
+    collection: 'users',
+    data: { email: u.email, password },
+    req,
+  });
+
+  const setCookies: string[] = [];
+  if (loginResult.token) {
+    setCookies.push(buildPayloadTokenCookie(loginResult.token));
+  }
+
+  // Trusted device de confiance d'office.
+  const deviceId = generateUrlSafeToken();
+  const fingerprint = generateUrlSafeToken();
+  const fingerprintHash = hashToken(fingerprint);
+  const ttlMs = AUTH_CONFIG.trustedDeviceTtlDays * 24 * 60 * 60 * 1000;
+  await req.payload.update({
+    collection: 'users',
+    id: u.id,
+    overrideAccess: true,
+    req,
+    data: {
+      trustedDevices: [
+        {
+          deviceId,
+          fingerprintHash,
+          label: 'Activation initiale',
+          userAgent: req.headers.get('user-agent') ?? undefined,
+          ip,
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + ttlMs).toISOString(),
+        },
+      ],
+      lastLoginAt: new Date().toISOString(),
+      lastActivityAt: new Date().toISOString(),
+    },
+  });
+  setCookies.push(buildTrustedDeviceCookie({ uid: u.id, did: deviceId, fp: fingerprint }));
+
+  // Mail de bienvenue (best-effort)
+  try {
+    const tpl = welcomeEmail({ email: u.email, loginUrl: buildLoginUrl() });
+    await req.payload.sendEmail({
+      to: u.email,
+      subject: tpl.subject,
+      html: tpl.html,
+      text: tpl.text,
+    });
+  } catch (err) {
+    req.payload.logger.warn({ err }, 'welcome_email_failed');
+  }
+
+  return jsonResponse({ ok: true, user: loginResult.user }, { status: 200 }, setCookies);
+}
 
 export const invitationEndpoints: Endpoint[] = [
   inviteEndpoint,

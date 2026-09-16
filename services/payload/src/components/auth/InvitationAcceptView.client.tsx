@@ -57,8 +57,12 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
         body: JSON.stringify({ password, displayName: cleanedFirstName }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error((data as { error?: string })?.error || 'Activation impossible');
-      window.location.href = ADMIN_BASE;
+      if (!res.ok) {
+        const d = data as { error?: string; errors?: { message?: string }[] };
+        throw new Error(d.error || d.errors?.[0]?.message || `Activation impossible (HTTP ${res.status})`);
+      }
+      // Compte activé mais connexion auto échouée → login classique.
+      window.location.href = (data as { needsLogin?: boolean }).needsLogin ? `${ADMIN_BASE}/login` : ADMIN_BASE;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
     } finally {
