@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "nodemailer": "^9.0.1"
+    "nodemailer": "^10.0.10"
   },
   "engines": {
     "node": ">=22"
