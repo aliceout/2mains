@@ -103,7 +103,7 @@ export default function InviteUserButton({ canInviteAdmin }: { canInviteAdmin: b
               )}
             </select>
             <p style={{ margin: 'calc(var(--base) / 4) 0 0', fontSize: '0.85em', opacity: 0.7 }}>
-              Un mail d'invitation sera envoyé. Lien valable 7 jours.
+              Un mail d’invitation sera envoyé. Lien valable 7 jours.
             </p>
           </div>
           <div style={{ display: 'flex', gap: 'calc(var(--base) / 2)', justifyContent: 'flex-end' }}>

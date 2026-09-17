@@ -1,16 +1,12 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
-
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+// eslint-config-next ≥16 exporte directement des configs flat — plus
+// besoin de FlatCompat / @eslint/eslintrc.
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
     rules: {
       '@typescript-eslint/ban-ts-comment': 'warn',
@@ -31,8 +27,10 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    // Migrations générées par `payload migrate:create` : signature imposée
+    // ({ db, payload, req }) même quand tout n'est pas utilisé.
+    files: ['src/migrations/**'],
+    rules: { '@typescript-eslint/no-unused-vars': 'off' },
   },
-]
-
-export default eslintConfig
+  globalIgnores(['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts']),
+])

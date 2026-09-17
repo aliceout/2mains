@@ -86,7 +86,7 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
     return (
       <div style={wrapper}>
         <h1 style={{ margin: 0 }}>Invitation introuvable</h1>
-        <p style={{ margin: 0 }}>Ce lien d'invitation est invalide ou a déjà été utilisé. Demande à un administrateur de te renvoyer une invitation.</p>
+        <p style={{ margin: 0 }}>Ce lien d’invitation est invalide ou a déjà été utilisé. Demande à un administrateur de te renvoyer une invitation.</p>
       </div>
     );
   }
@@ -95,7 +95,7 @@ export default function InvitationAcceptViewClient({ token }: { token: string })
     return (
       <div style={wrapper}>
         <h1 style={{ margin: 0 }}>Invitation expirée</h1>
-        <p style={{ margin: 0 }}>Le délai pour activer ce compte a expiré. Demande à un administrateur de t'inviter à nouveau.</p>
+        <p style={{ margin: 0 }}>Le délai pour activer ce compte a expiré. Demande à un administrateur de t’inviter à nouveau.</p>
       </div>
     );
   }

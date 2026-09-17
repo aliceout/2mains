@@ -17,25 +17,36 @@ type Device = {
   expiresAt: string;
 };
 
+async function fetchDevices(): Promise<Device[] | null> {
+  try {
+    const res = await fetch(`${API_BASE}/me/trusted-devices`, { credentials: 'include' });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { devices: Device[] };
+    return data.devices;
+  } catch {
+    // silencieux
+    return null;
+  }
+}
+
 export default function AccountSecurityClient(): React.ReactElement {
   const [devices, setDevices] = useState<Device[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    void loadDevices();
-  }, []);
-
   async function loadDevices() {
-    try {
-      const res = await fetch(`${API_BASE}/me/trusted-devices`, { credentials: 'include' });
-      if (res.ok) {
-        const data = (await res.json()) as { devices: Device[] };
-        setDevices(data.devices);
-      }
-    } catch {
-      // silencieux
-    }
+    const list = await fetchDevices();
+    if (list) setDevices(list);
   }
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchDevices().then((list) => {
+      if (!cancelled && list) setDevices(list);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function revokeDevice(deviceId: string) {
     setError(null);

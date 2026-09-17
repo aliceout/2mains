@@ -82,20 +82,21 @@ const PageAnchorSelect: SelectFieldClientComponent = ({ path, field }) => {
       | undefined;
   });
 
-  const [options, setOptions] = useState<OptionObject[]>([]);
-  const [loading, setLoading] = useState(false);
+  // Options mémorisées avec l'id de la page pour laquelle elles ont été
+  // chargées : options et état « chargement » en sont dérivés, sans
+  // setState synchrone dans l'effet.
+  const [loaded, setLoaded] = useState<{
+    pageId: string | number;
+    options: OptionObject[];
+  } | null>(null);
 
   // Normalise : un relationship mono peut arriver en id brut ou {value}.
   const resolvedPageId =
     pageId && typeof pageId === 'object' ? pageId.value : pageId;
 
   useEffect(() => {
-    if (!resolvedPageId) {
-      setOptions([]);
-      return;
-    }
+    if (!resolvedPageId) return;
     let cancelled = false;
-    setLoading(true);
     fetch(`/cms/api/pages/${resolvedPageId}?depth=0`, {
       credentials: 'include',
     })
@@ -106,23 +107,24 @@ const PageAnchorSelect: SelectFieldClientComponent = ({ path, field }) => {
         const opts: OptionObject[] = sections
           .filter((b) => b.id != null)
           .map((b, i) => ({ label: labelForBlock(b, i), value: String(b.id) }));
-        setOptions(opts);
+        setLoaded({ pageId: resolvedPageId, options: opts });
         // Reset si l'ancre stockée ne correspond plus à un bloc existant.
         if (value && !opts.some((o) => o.value === value)) {
           setValue(undefined);
         }
       })
       .catch(() => {
-        if (!cancelled) setOptions([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoaded({ pageId: resolvedPageId, options: [] });
       });
     return () => {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedPageId]);
+
+  const isCurrent = Boolean(resolvedPageId) && loaded?.pageId === resolvedPageId;
+  const options = isCurrent ? loaded!.options : [];
+  const loading = Boolean(resolvedPageId) && !isCurrent;
 
   const label =
     (typeof field?.label === 'string' && field.label) || 'Aller à un bloc (optionnel)';

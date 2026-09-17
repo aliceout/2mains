@@ -3,6 +3,7 @@
 // Login en deux étapes : email/mdp puis code 2FA. Utilise les primitives
 // @payloadcms/ui pour suivre le thème admin (light/dark/auto).
 
+import Link from 'next/link';
 import React, { useState } from 'react';
 import { Banner, Button } from '@payloadcms/ui';
 
@@ -38,6 +39,8 @@ export default function LoginView(): React.ReactElement {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((data as { error?: string })?.error || 'Erreur de connexion');
       if ((data as { status?: string }).status === 'logged_in') {
+        // Rechargement complet voulu : l'admin doit relire le cookie de session.
+        // eslint-disable-next-line @next/next/no-location-assign-relative-destination
         window.location.href = ADMIN_BASE;
         return;
       }
@@ -73,6 +76,7 @@ export default function LoginView(): React.ReactElement {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error((data as { error?: string })?.error || 'Code invalide');
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = ADMIN_BASE;
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -147,12 +151,12 @@ export default function LoginView(): React.ReactElement {
             {loading ? 'Connexion…' : 'Se connecter'}
           </Button>
           <p style={{ margin: 0, textAlign: 'center', fontSize: 14 }}>
-            <a
+            <Link
               href="/cms/admin/forgot"
               style={{ color: 'var(--theme-text)', opacity: 0.7 }}
             >
               Mot de passe oublié ?
-            </a>
+            </Link>
           </p>
         </form>
       )}

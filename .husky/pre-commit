@@ -12,9 +12,10 @@
 # blocks, payload.config) et génère la migration correspondante,
 # qu'il ajoute automatiquement au commit en cours.
 #
-# Pré-requis : Postgres dev qui tourne au moment du commit. Sinon le
-# hook plante et bloque le commit (volontaire — mieux vaut bloquer
-# que pousser un schéma sans SQL associé).
+# Pas besoin de Postgres : migrate:create compare le schéma au dernier
+# snapshot JSON versionné dans src/migrations/. Si la génération échoue,
+# le hook bloque le commit (volontaire — mieux vaut bloquer que pousser
+# un schéma sans SQL associé).
 
 SCHEMA_CHANGED=$(git diff --cached --name-only --diff-filter=ACMR | \
   grep -E '^services/payload/src/(collections|globals|blocks)/.+\.ts$|^services/payload/src/payload\.config\.ts$' || true)
@@ -26,39 +27,33 @@ fi
 echo "→ Schéma Payload modifié, génération de la migration…"
 echo "$SCHEMA_CHANGED" | sed 's/^/   /'
 
-# Workaround bug tsx + Node >=24 : la résolution des imports `node:crypto`
-# (utilisés par le code auth chargé via payload.config) est cassée sous
-# Node 24, ce qui fait planter `payload migrate:create`
-# ("ENOENT ... node:crypto?tsx-namespace"). La prod tourne sur Node 22
-# (cf. Dockerfile). Si le Node courant est >=24 et qu'un Node 22 est
-# disponible via nvm4w (Windows), on bascule dessus juste pour la
-# génération de migration. Sur Linux/CI (pas de /c/nvm4w) ou Node <=22,
-# ce bloc est sans effet.
-NODE_MAJOR=$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
-if [ "$NODE_MAJOR" -ge 24 ] && [ -x "/c/nvm4w/nodejs/node.exe" ]; then
-  NVM_MAJOR=$(/c/nvm4w/nodejs/node.exe -p 'process.versions.node.split(".")[0]' 2>/dev/null || echo 0)
-  if [ "$NVM_MAJOR" = "22" ]; then
-    export PATH="/c/nvm4w/nodejs:$PATH"
-    echo "   (contournement bug tsx+Node${NODE_MAJOR} → Node 22 de nvm4w)"
-  else
-    echo "   ⚠ Node ${NODE_MAJOR} détecté et pas de Node 22 via nvm4w —"
-    echo "     migrate:create peut échouer (bug tsx). Bascule en Node 22 si besoin."
-  fi
-fi
-
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 MIGRATION_NAME="auto_${TIMESTAMP}"
 
 cd services/payload
 
+if [ ! -d node_modules ]; then
+  echo "✖ services/payload/node_modules absent — lance \`pnpm install\` dans services/payload puis recommite."
+  exit 1
+fi
+
 BEFORE=$(ls src/migrations/*.ts 2>/dev/null | wc -l)
 
-# `< /dev/null` : si Payload ne détecte aucun changement de schéma, il
-# prompte "create blank migration? (y/N)" — on lui envoie EOF, il
-# tombe sur le N par défaut et ne crée rien. Sans ça, le commit
-# pause sur un prompt interactif.
+# --skip-empty : si aucun changement de schéma, Payload sort proprement
+# au lieu de proposer une migration vide (prompt interactif).
+# Sortie capturée dans un fichier pour garder le code retour (pas de
+# pipefail en sh POSIX).
+LOG=$(mktemp)
 pnpm exec dotenv -e ../../.env -- cross-env NODE_OPTIONS=--no-deprecation \
-  payload migrate:create "$MIGRATION_NAME" < /dev/null 2>&1 | sed 's/^/   /'
+  payload migrate:create "$MIGRATION_NAME" --skip-empty < /dev/null > "$LOG" 2>&1
+STATUS=$?
+sed 's/^/   /' "$LOG"
+rm -f "$LOG"
+
+if [ "$STATUS" -ne 0 ]; then
+  echo "✖ Génération de la migration en échec (code $STATUS) — commit bloqué."
+  exit 1
+fi
 
 AFTER=$(ls src/migrations/*.ts 2>/dev/null | wc -l)
 
